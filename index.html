@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080">
-<title>Xfinity Call Logger v0.03.18.51</title>
+<title>Xfinity Call Logger v0.03.19.17</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -224,9 +224,9 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 /* ── Settings ── */
 .gear-btn{background:none;border:none;cursor:pointer;font-size:16px;padding:0 2px;opacity:.5;transition:opacity .2s;line-height:1}
 .gear-btn:hover{opacity:1}
-#settings-panel{display:none;position:absolute;top:52px;right:0;bottom:0;width:360px;background:var(--card);border-left:1px solid var(--border);z-index:300;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,.4)}
-#settings-panel.open{display:block}
-.settings-inner{padding:20px}
+#settings-panel{display:none;position:absolute;top:52px;right:0;bottom:0;width:360px;background:var(--card);border-left:1px solid var(--border);z-index:300;box-shadow:-4px 0 24px rgba(0,0,0,.4);flex-direction:column}
+#settings-panel.open{display:flex}
+.settings-inner{padding:20px;flex:1;overflow-y:auto;min-height:0}
 .settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .settings-title{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text2)}
 .settings-close{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0;line-height:1}
@@ -312,30 +312,32 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 
 /* ── Monopoly board calendar ── */
 #pace-cal{
-  display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;
-  padding:4px 8px;background:var(--surface);
+  display:flex;gap:0;overflow:hidden;
+  padding:0;background:var(--surface);
+  height:32px;
 }
-#pace-cal::-webkit-scrollbar{display:none}
 .cal-day{
   display:flex;flex-direction:column;align-items:stretch;
   flex:1;min-width:0;
-  border:1.5px solid var(--border2);
-  border-radius:3px;
+  border-right:1px solid var(--border2);
+  border-top:none;border-bottom:none;border-left:none;
   overflow:hidden;
   position:relative;
   cursor:default;
   transition:border-color .15s,box-shadow .15s;
   background:rgba(255,255,255,.04);
 }
+.cal-day:first-child{border-left:none}
+.cal-day:last-child{border-right:none}
 /* ── deed strip (top colored band) ── */
 .cal-day-strip{
-  height:9px;
+  height:8px;
   background:var(--border2);
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
 }
 .cal-day-dow{
-  font-size:6px;font-family:var(--mono);text-transform:uppercase;
+  font-size:7px;font-family:var(--mono);text-transform:uppercase;
   font-weight:700;letter-spacing:.02em;line-height:1;
   color:rgba(255,255,255,.9);
   text-shadow:0 1px 1px rgba(0,0,0,.4);
@@ -344,19 +346,23 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 .cal-day-body{
   flex:1;display:flex;flex-direction:column;
   align-items:center;justify-content:flex-end;
-  padding:0 1px 0;
+  padding:0 0 1px;
   background:rgba(255,255,255,.03);
-  gap:0;
+  position:relative;
 }
+
 .cal-day-token{
-  font-size:10px;line-height:1;
-  opacity:0;transform:scale(.4);
-  transition:opacity .22s,transform .22s;
-  display:block;
-  margin-bottom:0;
+  font-size:12px;line-height:1;
+  opacity:0;
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  transition:opacity .22s;
+  pointer-events:none;
 }
+.cal-day.today .cal-day-token{opacity:1}
 .cal-day-num{
-  font-size:8px;font-family:var(--mono);font-weight:600;
+  font-size:11px;font-family:var(--mono);font-weight:700;
   color:var(--text2);line-height:1;
 }
 /* ── state variants ── */
@@ -371,15 +377,15 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 .cal-day.past{opacity:.45}
 .cal-day.past .cal-day-strip{filter:saturate(.4)}
 .cal-day.today{
-  border:2px solid var(--amber);
-  box-shadow:0 0 0 1px rgba(245,158,11,.3),0 2px 8px rgba(245,158,11,.2);
+  border-right:1px solid var(--amber);
+  border-left:1px solid var(--amber);
+  box-shadow:inset 0 0 0 1px rgba(245,158,11,.4);
   z-index:2;
-  background:rgba(245,158,11,.06);
+  background:rgba(245,158,11,.08);
 }
 .cal-day.today .cal-day-strip{background:var(--amber)}
 .cal-day.today .cal-day-dow{color:rgba(0,0,0,.75)}
 .cal-day.today .cal-day-num{color:var(--amber);font-weight:700}
-.cal-day.today .cal-day-token{opacity:1;transform:scale(1)}
 
 .main.editing .form-card{display:none}
 .main.editing .table-card{border-radius:12px}
@@ -424,11 +430,8 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 .form-row-center{display:flex;justify-content:center;width:100%}
 .frow-top{display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap}
 .frow-notes{display:inline-flex;gap:10px;align-items:flex-end;min-width:min(calc(100% - 36px), 700px)}
-/* 720px: hide cb toggle from row 1, show it above Log Call in row 2 */
-.cback-wrap-r2{display:none}
+/* 720px: notes wraps full width, cb toggle + submit stack below */
 @media(max-width:780px){
-  .cback-wrap-r1{display:none}
-  .cback-wrap-r2{display:flex;flex-direction:column;gap:5px;align-items:center}
   .frow-notes{flex-wrap:wrap}
   .frow-notes .notes-wrap{min-width:100%}
   .frow-notes-actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;width:100%}
@@ -443,13 +446,133 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 .notes-wrap textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
 .notes-wrap textarea.cb-req-ta{border-color:rgba(167,139,250,.4)}
 .notes-wrap textarea.cb-req-ta:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
+
+/* ── Job Aid sub-tabs ── */
+.ja-panel{display:none}
+.ja-panel.active{display:block}
+
+/* ── Compass Navigator ── */
+.cn-sub-bar{background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;padding:8px 24px;flex-wrap:wrap}
+.cn-type-btn{height:30px;padding:0 14px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap}
+.cn-type-btn:hover{border-color:var(--blue);color:var(--blue)}
+.cn-type-btn.active{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+.cn-stage-bar{display:flex;overflow:hidden;border-bottom:1px solid var(--border)}
+.cn-stage-btn{flex:1;height:34px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;border-right:1px solid rgba(255,255,255,.1);letter-spacing:.03em}
+.cn-stage-btn:last-child{border-right:none}
+.cn-stage-btn.active{filter:brightness(1.15)}
+.cn-panel{display:none;padding:20px 24px;display:none}
+.cn-panel.active{display:block}
+.cn-speech{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:13px;color:var(--text2);line-height:1.6}
+.cn-speech strong{color:var(--text);font-weight:600}
+.cn-speech ul{margin:6px 0 0 18px;display:flex;flex-direction:column;gap:3px}
+.cn-speech li{font-size:12px;color:var(--text3)}
+.cn-speech .cn-sub-ul{margin:2px 0 0 16px}
+.cn-tip{background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.cn-alert{background:var(--red-lt);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--red);line-height:1.5}
+.cn-section-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:16px 0 8px}
+.cn-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.cn-card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px}
+.cn-card-num{width:20px;height:20px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:10px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.cn-card-title{font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px}
+.cn-card-body{font-size:11px;color:var(--text3);line-height:1.5}
+.cn-services{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.cn-svc{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px}
+.cn-svc-name{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--blue);margin-bottom:6px}
+.cn-svc-body{font-size:12px;color:var(--text2);line-height:1.5}
+.cn-objections{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cn-obj-btn{padding:10px;background:var(--surface);border:1px solid rgba(248,113,113,.25);border-radius:8px;font-size:12px;font-weight:600;color:var(--red);cursor:default;text-align:center}
+.cn-close-card{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.cn-close-step{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.cn-close-step:last-child{border-bottom:none}
+.cn-close-num{width:24px;height:24px;border-radius:50%;background:var(--blue-lt);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.cn-close-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.cn-close-body{font-size:11px;color:var(--text3);line-height:1.5}
+.cn-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.cn-tieback-ta{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:8px 10px;font-family:var(--sans);font-size:12px;color:var(--text);resize:vertical;min-height:70px;width:100%;outline:none;transition:border-color .15s,box-shadow .15s}
+.cn-tieback-ta:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+
+/* ── Key Phrases ── */
+.kp-section{margin-bottom:22px}
+.kp-lob-header{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 0 6px;border-bottom:2px solid var(--border);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.kp-plans{font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:8px;font-weight:400;letter-spacing:.02em}
+.kp-row{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.kp-row:last-child{border-bottom:none}
+.kp-bullet{color:var(--blue);font-size:14px;flex-shrink:0;line-height:1.4}
+.kp-text{font-size:12px;color:var(--text2);line-height:1.6;flex:1;font-style:italic}
+.kp-tag{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:3px;flex-shrink:0}
+.kp-tag-pitch{background:rgba(20,184,166,.15);color:var(--teal)}
+.kp-tag-disc{background:rgba(167,139,250,.15);color:var(--purple)}
+.kp-tag-listen{background:rgba(59,130,246,.15);color:var(--blue)}
+.kp-tag-open{background:rgba(34,197,94,.15);color:var(--green)}
+.kp-divider{height:1px;background:var(--border);margin:16px 0}
+
+/* ── Job Aid tab drag-to-reorder ── */
+.ja-tab-dragging{opacity:.45;background:var(--blue-lt)!important;border-color:var(--blue)!important}
+.ja-tab-drag-over{border-left:2px solid var(--blue)!important;margin-left:-1px}
+
+/* ── Schedule settings ── */
+.sched-btn{height:28px;padding:0 14px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s}
+.sched-btn.active{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+.workday-lbl{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.workday-lbl input{display:none}
+.workday-lbl span{width:34px;height:28px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);font-size:10px;font-weight:700;color:var(--text3);display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer}
+.workday-lbl input:checked + span{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+
+/* ── Settings sub-tabs ── */
+.stab-bar{display:flex;flex-wrap:wrap;gap:2px;margin:10px 0 0;border-bottom:1px solid var(--border)}
+.stab-btn{flex:1 0 30%;height:30px;border:none;border-bottom:2px solid transparent;background:transparent;font-family:var(--sans);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap;padding:0 4px}
+.stab-btn:hover{color:var(--text);background:var(--surface)}
+.stab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.stab-panel{display:none}
+.stab-panel.active{display:block}
+
+/* ── Chargeback fields ── */
+.cb-prefix{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.35);border-right:none;border-radius:7px 0 0 7px;height:34px;padding:0 8px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--red);flex-shrink:0}
+.cb-input{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.35);border-left:none;border-radius:0 7px 7px 0;height:34px;padding:0 8px;font-family:var(--mono);font-size:13px;color:var(--red);outline:none;width:100%;transition:border-color .15s}
+.cb-input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(248,113,113,.15)}
+
+/* ── Log search ── */
+.log-search-wrap{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border2);border-radius:7px;height:30px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.log-search-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
+.log-search-icon{padding:0 6px 0 8px;font-size:11px;color:var(--text3);flex-shrink:0}
+.log-search-input{background:none;border:none;outline:none;font-family:var(--mono);font-size:11px;color:var(--text);width:130px;padding:0}
+.log-search-input::placeholder{color:var(--text3)}
+.log-search-clear{display:none;background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 8px;line-height:1;height:100%}
+.log-search-clear:hover{color:var(--red)}
+.log-search-clear.visible{display:flex;align-items:center}
+.log-search-wrap.active{border-color:var(--teal)}
+.log-search-wrap.active .log-search-icon{color:var(--teal)}
+tr.search-highlight td{background:rgba(20,184,166,.06)}
+
+/* ── Trends stats dump ── */
+.tr-section{margin-bottom:16px}
+.tr-section-title{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding:8px 0 6px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.tr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.tr-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.tr-card-label{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.tr-card-val{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.tr-card-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.tr-card.accent-green{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.05)}
+.tr-card.accent-green .tr-card-val{color:var(--green)}
+.tr-card.accent-blue{border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.05)}
+.tr-card.accent-blue .tr-card-val{color:var(--blue)}
+.tr-card.accent-teal{border-color:rgba(20,184,166,.3);background:rgba(20,184,166,.05)}
+.tr-card.accent-teal .tr-card-val{color:var(--teal)}
+.tr-card.accent-amber{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.05)}
+.tr-card.accent-amber .tr-card-val{color:var(--amber)}
+.tr-table{width:100%;border-collapse:collapse;font-size:12px}
+.tr-table th{padding:6px 10px;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);text-align:left;background:var(--card2);border-bottom:1px solid var(--border)}
+.tr-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--mono)}
+.tr-table tr:last-child td{border-bottom:none}
+.tr-table td.td-num{text-align:right;color:var(--text)}
+.tr-table tr:hover td{background:var(--surface)}
 </style>
 </head>
 <body>
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.18.51</div>
+    <div class="version-chip">v0.03.19.17</div>
     <div class="clock" id="clock">--:-- --</div>
     <div class="month-chip" id="month-chip-label">…</div>
     <button class="gear-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
@@ -459,6 +582,7 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 <div class="tab-bar">
   <button class="tab-btn active" id="tab-tracker" onclick="switchTab('tracker')">📞 Tracker</button>
   <button class="tab-btn" id="tab-trends" onclick="switchTab('trends')">📈 Trends</button>
+  <button class="tab-btn" id="tab-compass" onclick="switchTab('compass')">🧭 Compass</button>
   <button class="tab-btn" id="tab-jobaid" onclick="switchTab('jobaid')">📖 Job Aids</button>
   <button class="tab-btn" id="tab-disputes" onclick="switchTab('disputes')">⚖ Disputes</button>
 </div>
@@ -470,89 +594,191 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
       <div class="settings-title">⚙ Settings</div>
       <button class="settings-close" onclick="toggleSettings()">✕</button>
     </div>
-    <div class="settings-section-label" style="margin-top:14px">Theme</div>
-    <div class="theme-presets">
-      <button class="theme-preset" id="tp-dark" onclick="applyPreset('dark')">
-        <div class="tp-swatch"><div class="tp-dot" style="background:#0a0f1e;border:1px solid #263147"></div><div class="tp-dot" style="background:#3b82f6"></div><div class="tp-dot" style="background:#22c55e"></div></div>
-        🌙 Dark
-      </button>
-      <button class="theme-preset" id="tp-light" onclick="applyPreset('light')">
-        <div class="tp-swatch"><div class="tp-dot" style="background:#f1f5f9;border:1px solid #cbd5e1"></div><div class="tp-dot" style="background:#2563eb"></div><div class="tp-dot" style="background:#16a34a"></div></div>
-        ☀️ Light
-      </button>
-      <button class="theme-preset" id="tp-xfinity" onclick="applyPreset('xfinity')">
-        <div class="tp-swatch"><div class="tp-dot" style="background:#ffffff;border:1px solid #c4b5fd"></div><div class="tp-dot" style="background:#7b2fff"></div><div class="tp-dot" style="background:#a78bfa"></div></div>
-        ✦ Xfinity
-      </button>
-      <button class="theme-preset" id="tp-xfinity-dark" onclick="applyPreset('xfinity-dark')">
-        <div class="tp-swatch"><div class="tp-dot" style="background:#0c1a2e;border:1px solid #1e4070"></div><div class="tp-dot" style="background:#38bdf8"></div><div class="tp-dot" style="background:#4ade80"></div></div>
-        ✦ Xfinity Dark
-      </button>
+    <!-- Settings sub-tabs -->
+    <div class="stab-bar">
+      <button class="stab-btn active" id="stab-display"  onclick="switchStab('display')" >🎨 Display</button>
+      <button class="stab-btn"        id="stab-goals"    onclick="switchStab('goals')"   >🎯 Goals</button>
+      <button class="stab-btn"        id="stab-schedule" onclick="switchStab('schedule')">📅 Schedule</button>
+      <button class="stab-btn"        id="stab-data"     onclick="switchStab('data')"    >🗄 Data</button>
+      <button class="stab-btn"        id="stab-outcomes" onclick="switchStab('outcomes')">📋 Outcomes</button>
+      <button class="stab-btn"        id="stab-alerts"   onclick="switchStab('alerts')"  >🔔 Alerts</button>
     </div>
-    <div class="settings-section-label" style="margin-top:10px">Layout Width</div>
-    <div class="width-toggle">
-      <button class="width-btn" id="wb-regular" onclick="applyWidth('regular')">◫ Regular (720px)</button>
-      <button class="width-btn" id="wb-wide" onclick="applyWidth('wide')">⬛ Wide (1080px)</button>
+
+    <!-- ── Display ── -->
+    <div class="stab-panel active" id="stabp-display">
+      <div class="settings-section-label" style="margin-top:14px">Theme</div>
+      <div class="theme-presets">
+        <button class="theme-preset" id="tp-dark" onclick="applyPreset('dark')">
+          <div class="tp-swatch"><div class="tp-dot" style="background:#0a0f1e;border:1px solid #263147"></div><div class="tp-dot" style="background:#3b82f6"></div><div class="tp-dot" style="background:#22c55e"></div></div>
+          🌙 Dark
+        </button>
+        <button class="theme-preset" id="tp-light" onclick="applyPreset('light')">
+          <div class="tp-swatch"><div class="tp-dot" style="background:#f1f5f9;border:1px solid #cbd5e1"></div><div class="tp-dot" style="background:#2563eb"></div><div class="tp-dot" style="background:#16a34a"></div></div>
+          ☀️ Light
+        </button>
+        <button class="theme-preset" id="tp-xfinity" onclick="applyPreset('xfinity')">
+          <div class="tp-swatch"><div class="tp-dot" style="background:#ffffff;border:1px solid #c4b5fd"></div><div class="tp-dot" style="background:#7b2fff"></div><div class="tp-dot" style="background:#a78bfa"></div></div>
+          ✦ Xfinity
+        </button>
+        <button class="theme-preset" id="tp-xfinity-dark" onclick="applyPreset('xfinity-dark')">
+          <div class="tp-swatch"><div class="tp-dot" style="background:#0c1a2e;border:1px solid #1e4070"></div><div class="tp-dot" style="background:#38bdf8"></div><div class="tp-dot" style="background:#4ade80"></div></div>
+          ✦ Xfinity Dark
+        </button>
+      </div>
+      <div class="settings-section-label" style="margin-top:14px">Layout Width</div>
+      <div class="width-toggle">
+        <button class="width-btn" id="wb-regular" onclick="applyWidth('regular')">◫ Regular (720px)</button>
+        <button class="width-btn" id="wb-wide" onclick="applyWidth('wide')">⬛ Wide (1080px)</button>
+      </div>
+      <div class="settings-section-label" style="margin-top:14px">Calendar Token</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Your piece on the board — shown on today's space.</div>
+      <div class="token-grid" id="token-grid"></div>
     </div>
-    <div class="settings-section-label">Monthly Goals</div>
-    <div class="settings-row">
-      <div class="settings-field"><label>Revenue ($)</label><input type="number" id="s-rev" min="0" step="1"></div>
-      <div class="settings-field"><label>XM Lines</label><input type="number" id="s-xm" min="0" step="1"></div>
-      <div class="settings-field"><label>TV</label><input type="number" id="s-tv" min="0" step="1"></div>
-      <div class="settings-field"><label>CHSI</label><input type="number" id="s-chsi" min="0" step="1"></div>
-      <div class="settings-field"><label>CDV</label><input type="number" id="s-cdv" min="0" step="1"></div>
-      <div class="settings-field"><label>XH</label><input type="number" id="s-xh" min="0" step="1"></div>
-    </div>
-    <div class="settings-section-label" style="margin-top:14px">Call Back Options</div>
-    <div class="settings-row" style="align-items:flex-start">
-      <div style="display:flex;flex-direction:column;gap:6px;flex:1">
-        <div style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Alert Windows</div>
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px">Select one or more thresholds — alerts fire when a callback is within that many minutes.</div>
-        <div class="alert-options">
-          <label class="alert-opt"><input type="checkbox" value="5" id="ao-5"><span>5 min</span></label>
-          <label class="alert-opt"><input type="checkbox" value="10" id="ao-10"><span>10 min</span></label>
-          <label class="alert-opt"><input type="checkbox" value="15" id="ao-15"><span>15 min</span></label>
-          <label class="alert-opt"><input type="checkbox" value="20" id="ao-20"><span>20 min</span></label>
-          <label class="alert-opt"><input type="checkbox" value="30" id="ao-30"><span>30 min</span></label>
-          <label class="alert-opt"><input type="checkbox" value="60" id="ao-60"><span>60 min</span></label>
+
+    <!-- ── Goals ── -->
+    <div class="stab-panel" id="stabp-goals">
+      <div class="settings-section-label" style="margin-top:14px">PTO Hours Used This Month</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Every 8 hrs of PTO adds +5% to your progress toward each goal — reflecting time you weren't on the phones. A ✦ appears on boosted stats.</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <input type="number" id="s-pto" min="0" max="160" step="8" value="0"
+          style="width:80px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;height:34px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none"
+          oninput="updatePtoPreview()">
+        <span style="font-size:11px;color:var(--text3)">hours</span>
+        <span id="pto-preview" style="font-size:11px;font-family:var(--mono);color:var(--teal);font-weight:600"></span>
+      </div>
+      <div id="pto-breakdown" style="font-size:10px;color:var(--text3);line-height:1.8;margin-bottom:4px"></div>
+      <div class="settings-section-label" style="margin-top:14px">Monthly Goals</div>
+      <div class="settings-row">
+        <div class="settings-field"><label>Revenue ($)</label><input type="number" id="s-rev" min="0" step="1"></div>
+        <div class="settings-field"><label>XM Lines</label><input type="number" id="s-xm" min="0" step="1"></div>
+        <div class="settings-field"><label>TV</label><input type="number" id="s-tv" min="0" step="1"></div>
+        <div class="settings-field"><label>CHSI</label><input type="number" id="s-chsi" min="0" step="1"></div>
+        <div class="settings-field"><label>CDV</label><input type="number" id="s-cdv" min="0" step="1"></div>
+        <div class="settings-field"><label>XH</label><input type="number" id="s-xh" min="0" step="1"></div>
+      </div>
+      <div class="settings-section-label" style="margin-top:14px;color:var(--red)">⬇ Charge Backs</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Units lost to disconnects this month. These are subtracted directly from your monthly totals — revenue can go negative.</div>
+      <div class="settings-row">
+        <div class="settings-field cb-field">
+          <label style="color:var(--red)">Revenue ($)</label>
+          <div style="display:flex;align-items:center;gap:0">
+            <span class="cb-prefix">−</span>
+            <input type="number" id="s-cb-rev" min="0" step="1" value="0" class="cb-input">
+          </div>
+        </div>
+        <div class="settings-field cb-field">
+          <label style="color:var(--red)">XM Lines</label>
+          <div style="display:flex;align-items:center;gap:0">
+            <span class="cb-prefix">−</span>
+            <input type="number" id="s-cb-xm" min="0" step="1" value="0" class="cb-input">
+          </div>
+        </div>
+        <div class="settings-field cb-field">
+          <label style="color:var(--red)">TV</label>
+          <div style="display:flex;align-items:center;gap:0">
+            <span class="cb-prefix">−</span>
+            <input type="number" id="s-cb-tv" min="0" step="1" value="0" class="cb-input">
+          </div>
+        </div>
+        <div class="settings-field cb-field">
+          <label style="color:var(--red)">CHSI</label>
+          <div style="display:flex;align-items:center;gap:0">
+            <span class="cb-prefix">−</span>
+            <input type="number" id="s-cb-chsi" min="0" step="1" value="0" class="cb-input">
+          </div>
+        </div>
+        <div class="settings-field cb-field">
+          <label style="color:var(--red)">CDV</label>
+          <div style="display:flex;align-items:center;gap:0">
+            <span class="cb-prefix">−</span>
+            <input type="number" id="s-cb-cdv" min="0" step="1" value="0" class="cb-input">
+          </div>
+        </div>
+        <div class="settings-field cb-field">
+          <label style="color:var(--red)">XH</label>
+          <div style="display:flex;align-items:center;gap:0">
+            <span class="cb-prefix">−</span>
+            <input type="number" id="s-cb-xh" min="0" step="1" value="0" class="cb-input">
+          </div>
         </div>
       </div>
     </div>
-    <div class="settings-section-label" style="margin-top:14px">Call Outcome Options</div>
-    <div style="font-size:10px;color:var(--text3);margin-bottom:8px">Drag to reorder. First 3 are fixed. Click × to remove, or add new options below.</div>
-    <div class="outcome-editor" id="outcome-editor"></div>
-    <div class="outcome-add-row">
-      <input class="outcome-add-input" id="outcome-new-input" placeholder="Add new outcome…" onkeydown="if(event.key==='Enter')addOutcomeItem()">
-      <button class="outcome-add-btn" onclick="addOutcomeItem()">+ Add</button>
-    </div>
-    <div class="settings-section-label" style="margin-top:14px">Calendar Token</div>
-    <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Your piece on the board — shown on today's space.</div>
-    <div class="token-grid" id="token-grid"></div>
-    <div class="settings-actions">
-      <button class="settings-save" onclick="saveSettings()">✓ Save Settings</button>
-      <button class="settings-reset" onclick="resetSettings()">Reset Defaults</button>
-    </div>
-    <div class="settings-section-label" style="margin-top:14px">Import Previous Tracker</div>
-    <div style="font-size:10px;color:var(--text3);margin-bottom:6px;line-height:1.5">Load call history from your old Excel tracker (Sheet11). Rows without a valid DATE are skipped. Existing calls are preserved; duplicates by timestamp+account are skipped.</div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <input type="file" id="import-prev-file" accept=".xlsx,.xls,.csv" onchange="onImportPrevFile(this)" style="background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;height:34px;font-size:11px;color:var(--text2);cursor:pointer;flex:1;min-width:180px">
-      <span id="import-prev-status" style="font-size:11px;color:var(--text3);font-family:var(--mono)"></span>
-    </div>
-    <div class="settings-section-label" style="margin-top:14px">Google Sheets Sync</div>
-    <div class="settings-row">
-      <div class="settings-field" style="flex:1;min-width:200px">
-        <label>Apps Script Web App URL</label>
-        <input type="url" id="s-sheets-url" placeholder="https://script.google.com/macros/s/…/exec" style="font-size:11px">
+
+    <!-- ── Schedule ── -->
+    <div class="stab-panel" id="stabp-schedule">
+      <div class="settings-section-label" style="margin-top:14px">Shift Type</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Sets which days appear as work days on the calendar.</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="sched-btn active" id="sched-5x8" onclick="setSchedType('5x8',this)">5×8 hrs</button>
+        <button class="sched-btn" id="sched-4x10" onclick="setSchedType('4x10',this)">4×10 hrs</button>
+      </div>
+      <div class="settings-section-label">Work Days</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px" id="workday-grid">
+        <label class="workday-lbl"><input type="checkbox" id="wd-0" value="0"><span>Sun</span></label>
+        <label class="workday-lbl"><input type="checkbox" id="wd-1" value="1" checked><span>Mon</span></label>
+        <label class="workday-lbl"><input type="checkbox" id="wd-2" value="2" checked><span>Tue</span></label>
+        <label class="workday-lbl"><input type="checkbox" id="wd-3" value="3" checked><span>Wed</span></label>
+        <label class="workday-lbl"><input type="checkbox" id="wd-4" value="4" checked><span>Thu</span></label>
+        <label class="workday-lbl"><input type="checkbox" id="wd-5" value="5" checked><span>Fri</span></label>
+        <label class="workday-lbl"><input type="checkbox" id="wd-6" value="6"><span>Sat</span></label>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
-      <button class="outcome-add-btn" onclick="testSheetsConnection()" style="font-size:11px;justify-content:center">⚡ Test</button>
-      <button class="outcome-add-btn" onclick="loadFromSheets()" style="font-size:11px;justify-content:center;background:var(--teal-lt);border-color:rgba(20,184,166,.3);color:var(--teal)" title="Pull calls from sheet into tracker">↓ Pull from Sheet</button>
-      <button class="outcome-add-btn" onclick="syncAllToSheets()" style="font-size:11px;justify-content:center;grid-column:1/-1;background:var(--blue-lt);border-color:rgba(59,130,246,.3);color:var(--blue)" title="Push all local calls to sheet, then verify">↑ Push All Calls to Sheet</button>
+
+    <!-- ── Data ── -->
+    <div class="stab-panel" id="stabp-data">
+      <div class="settings-section-label" style="margin-top:14px">Import Previous Tracker</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:6px;line-height:1.5">Load call history from your old Excel tracker (Sheet11). Rows without a valid DATE are skipped. Existing calls are preserved; duplicates by timestamp+account are skipped.</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <input type="file" id="import-prev-file" accept=".xlsx,.xls,.csv" onchange="onImportPrevFile(this)" style="background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;height:34px;font-size:11px;color:var(--text2);cursor:pointer;flex:1;min-width:180px">
+        <span id="import-prev-status" style="font-size:11px;color:var(--text3);font-family:var(--mono)"></span>
+      </div>
+      <div class="settings-section-label" style="margin-top:14px">Google Sheets Sync</div>
+      <div class="settings-row">
+        <div class="settings-field" style="flex:1;min-width:200px">
+          <label>Apps Script Web App URL</label>
+          <input type="url" id="s-sheets-url" placeholder="https://script.google.com/macros/s/…/exec" style="font-size:11px">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+        <button class="outcome-add-btn" onclick="testSheetsConnection()" style="font-size:11px;justify-content:center">⚡ Test</button>
+        <button class="outcome-add-btn" onclick="loadFromSheets()" style="font-size:11px;justify-content:center;background:var(--teal-lt);border-color:rgba(20,184,166,.3);color:var(--teal)" title="Pull calls from sheet into tracker">↓ Pull from Sheet</button>
+        <button class="outcome-add-btn" onclick="syncAllToSheets()" style="font-size:11px;justify-content:center;grid-column:1/-1;background:var(--blue-lt);border-color:rgba(59,130,246,.3);color:var(--blue)" title="Push all local calls to sheet, then verify">↑ Push All Calls to Sheet</button>
+      </div>
+      <div style="margin-top:6px">
+        <span id="sheets-status" style="font-size:11px;color:var(--text3);font-family:var(--mono);display:block;min-height:16px"></span>
+      </div>
     </div>
-    <div style="margin-top:6px;padding-bottom:20px">
-      <span id="sheets-status" style="font-size:11px;color:var(--text3);font-family:var(--mono);display:block;min-height:16px"></span>
+
+    <!-- ── Outcomes ── -->
+    <div class="stab-panel" id="stabp-outcomes">
+      <div class="settings-section-label" style="margin-top:14px">Call Outcome Options</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:8px">Drag to reorder. First 3 are fixed. Click × to remove, or add new options below.</div>
+      <div class="outcome-editor" id="outcome-editor"></div>
+      <div class="outcome-add-row">
+        <input class="outcome-add-input" id="outcome-new-input" placeholder="Add new outcome…" onkeydown="if(event.key==='Enter')addOutcomeItem()">
+        <button class="outcome-add-btn" onclick="addOutcomeItem()">+ Add</button>
+      </div>
     </div>
+
+    <!-- ── Alerts ── -->
+    <div class="stab-panel" id="stabp-alerts">
+      <div class="settings-section-label" style="margin-top:14px">Call Back Alert Windows</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:10px;line-height:1.5">Alerts fire when a callback is within that many minutes of its scheduled time.</div>
+      <div class="alert-options">
+        <label class="alert-opt"><input type="checkbox" value="5" id="ao-5"><span>5 min</span></label>
+        <label class="alert-opt"><input type="checkbox" value="10" id="ao-10"><span>10 min</span></label>
+        <label class="alert-opt"><input type="checkbox" value="15" id="ao-15"><span>15 min</span></label>
+        <label class="alert-opt"><input type="checkbox" value="20" id="ao-20"><span>20 min</span></label>
+        <label class="alert-opt"><input type="checkbox" value="30" id="ao-30"><span>30 min</span></label>
+        <label class="alert-opt"><input type="checkbox" value="60" id="ao-60"><span>60 min</span></label>
+      </div>
+    </div>
+
+  </div>
+  <!-- Sticky footer -->
+  <div style="padding:12px 20px;border-top:1px solid var(--border);background:var(--card);flex-shrink:0;display:flex;gap:8px">
+    <button class="settings-save" onclick="saveSettings()" style="flex:1">✓ Save Settings</button>
+    <button class="settings-reset" onclick="resetSettings()">Reset</button>
   </div>
 </div>
 <div id="settings-overlay" onclick="toggleSettings()" style="display:none;position:absolute;inset:0;z-index:299;background:rgba(0,0,0,.25);backdrop-filter:blur(1px)"></div>
@@ -614,8 +840,6 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
           <div class="v-div"></div>
           <div class="field"><label>Call Outcome</label><select class="outcome-select" id="f-reason" onchange="onReasonChange()"><option value="">— select outcome —</option><option>NO SALE MADE</option><option>IE (.75)</option><option>BULK</option><option>BILLING</option><option>TECH SUPPORT</option><option>NOT SERVICEABLE</option><option>DROP ISSUES</option><option>DISCONNECTED</option><option>INVALID XFER</option><option>DEAD AIR</option><option>HAS ALL SERVICES</option><option>XM PORT OUT</option><option>HS TICKET</option><option>TECH (SAME DAY)</option><option>OTHER</option></select></div>
           <div class="play-indicator"><div class="play-name" id="play-name"></div><div class="play-services" id="play-svcs"></div></div>
-          <div class="v-div"></div>
-          <div class="cback-wrap cback-wrap-r1"><label>Call Back</label><div class="cback-toggle" id="cb-toggle" onclick="toggleCb()">📞</div></div>
         </div>
       </div>
       <!-- ── Row 2: Notes + Submit — same center width as row 1 ── -->
@@ -626,7 +850,7 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
             <textarea id="f-notes" placeholder="Optional…"></textarea>
           </div>
           <div class="frow-notes-actions">
-            <div class="cback-wrap cback-wrap-r2"><label>Call Back</label><div class="cback-toggle" id="cb-toggle-r2" onclick="toggleCb()">📞</div></div>
+            <div class="cback-wrap"><label>Call Back</label><div class="cback-toggle" id="cb-toggle" onclick="toggleCb()">📞</div></div>
             <button class="submit-btn" id="submit-btn" onclick="logCall()"><div class="btn-dot"></div>Log Call</button>
           </div>
         </div>
@@ -661,7 +885,7 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
   <div class="table-card">
     <div class="table-header">
       <div class="table-title">Call Log <span style="font-size:10px;color:var(--text3);font-weight:400;margin-left:6px">— click any row to edit</span></div>
-      <div class="table-actions"><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
+      <div class="table-actions"><div class="log-search-wrap"><span class="log-search-icon">🔍</span><input class="log-search-input" id="log-search" type="text" placeholder="Search acct #…" oninput="setLogSearch(this.value)" autocomplete="off" spellcheck="false"><button class="log-search-clear" id="log-search-clear" onclick="clearLogSearch()" title="Clear">✕</button></div><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
     </div>
     <table>
       <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Sched</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th><th>Call Back</th><th>Notes</th></tr></thead>
@@ -673,93 +897,49 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 
 <!-- ══ TAB: TRENDS ══ -->
 <div class="tab-panel" id="panel-trends">
-  <div class="main">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div class="form-card">
-        <div class="form-header"><div class="form-header-title">Daily Call Volume</div></div>
-        <div style="padding:16px 18px"><canvas id="chart-volume" height="180"></canvas></div>
-      </div>
-      <div class="form-card">
-        <div class="form-header"><div class="form-header-title">Close Rate by Day</div></div>
-        <div style="padding:16px 18px"><canvas id="chart-closerate" height="180"></canvas></div>
-      </div>
-      <div class="form-card">
-        <div class="form-header"><div class="form-header-title">Revenue Pace (Cumulative)</div></div>
-        <div style="padding:16px 18px"><canvas id="chart-revenue" height="180"></canvas></div>
-      </div>
-      <div class="form-card">
-        <div class="form-header"><div class="form-header-title">RGU Mix Breakdown</div></div>
-        <div style="padding:16px 18px"><canvas id="chart-rgumix" height="180"></canvas></div>
-      </div>
-    </div>
-    <div class="form-card">
-      <div class="form-header"><div class="form-header-title">Call Outcome Breakdown</div></div>
-      <div style="padding:16px 18px;display:flex;gap:20px;align-items:center">
-        <canvas id="chart-outcomes" width="200" height="200" style="flex-shrink:0"></canvas>
-        <div id="outcome-legend" style="display:flex;flex-direction:column;gap:6px;flex:1;font-size:12px;font-family:var(--mono);color:var(--text2)"></div>
-      </div>
-    </div>
-  </div>
+  <div class="main" id="trends-main"></div>
 </div>
 
 <!-- ══ TAB: JOB AIDS ══ -->
+
+<!-- ══ TAB: COMPASS NAVIGATOR ══ -->
+<div class="tab-panel" id="panel-compass">
+
+  <!-- Call type selector -->
+  <div class="cn-sub-bar">
+    <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-right:4px">Call Type:</span>
+    <button class="cn-type-btn active" onclick="cnSetType('new',this)">🆕 New</button>
+    <button class="cn-type-btn" onclick="cnSetType('moves',this)">🚚 Moves+</button>
+    <button class="cn-type-btn" onclick="cnSetType('ie',this)">📶 IE</button>
+    <button class="cn-type-btn" onclick="cnSetType('upgrade',this)">⬆ Upgrade</button>
+    <button class="cn-type-btn" onclick="cnSetType('downgrade',this)">⬇ Downgrade</button>
+    <button class="cn-type-btn" onclick="cnSetType('nontraditional',this)">🔄 Non-Traditional</button>
+    <button class="cn-type-btn" onclick="cnSetType('secondswing',this)">🏌️ 2nd Swing</button>
+  </div>
+
+  <!-- Stage bar -->
+  <div class="cn-stage-bar">
+    <button class="cn-stage-btn active" id="cnstg-connect" onclick="cnSetStage('connect')" style="background:#2563eb;color:#fff">Open / Connect</button>
+    <button class="cn-stage-btn" id="cnstg-explore" onclick="cnSetStage('explore')" style="background:#7c3aed;color:#fff">Discover / Explore</button>
+    <button class="cn-stage-btn" id="cnstg-consult" onclick="cnSetStage('consult')" style="background:#b45309;color:#fff">Present / Consult</button>
+    <button class="cn-stage-btn" id="cnstg-overcome" onclick="cnSetStage('overcome')" style="background:#854d0e;color:#fff">Overcome</button>
+    <button class="cn-stage-btn" id="cnstg-review" onclick="cnSetStage('review')" style="background:#0f766e;color:#fff">Close / Review</button>
+  </div>
+
+  <div style="padding:20px 24px;max-width:900px" id="cn-content"></div>
+
+</div>
+
 <div class="tab-panel" id="panel-jobaid">
-  <div class="main">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+  <!-- ── Job Aid sub-tab bar (drag to reorder) ── -->
+  <div id="ja-tab-bar" style="background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 24px;gap:2px">
+    <button class="tab-btn active" id="jatab-tips"    data-ja="tips"     draggable="false">💡 Sales Tips</button>
+    <button class="tab-btn"        id="jatab-phrases" data-ja="phrases"  draggable="false">🗣 Key Phrases</button>
+  </div>
 
-      <div class="form-card">
-        <div class="form-header"><div class="form-header-title">🎮 Play Definitions</div></div>
-        <div style="padding:0">
-          <table style="width:100%;border-collapse:collapse">
-            <thead><tr style="background:var(--card2);border-bottom:1px solid var(--border)">
-              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Play</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Services</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:right">RGUs</th>
-            </tr></thead>
-            <tbody>
-              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--green)">Single Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Any 1 service</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">1</td></tr>
-              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">Double Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Any 2 services</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">2</td></tr>
-              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--teal)">Triple Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Any 3 services</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">3</td></tr>
-              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--amber)">Quad Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Any 4 services</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">4</td></tr>
-              <tr><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--purple)">5-Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">All 5 services</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">5</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="form-card">
-        <div class="form-header"><div class="form-header-title">📡 Service Codes</div></div>
-        <div style="padding:0">
-          <table style="width:100%;border-collapse:collapse">
-            <thead><tr style="background:var(--card2);border-bottom:1px solid var(--border)">
-              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Code</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Service</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Note</th>
-            </tr></thead>
-            <tbody>
-              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--teal)">XM</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Xfinity Mobile</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">Lines counted individually</td></tr>
-              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">TV</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Xfinity TV / X1</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">1 RGU per account</td></tr>
-              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">CHSI</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Internet</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">IE = 0.75 RGU</td></tr>
-              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">CDV</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Voice / Home Phone</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">1 RGU per account</td></tr>
-              <tr><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">XH</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Xfinity Home</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">Security / automation</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="form-card">
-        <div class="form-header"><div class="form-header-title">📋 No-Sale Outcomes</div></div>
-        <div style="padding:0">
-          <table style="width:100%;border-collapse:collapse">
-            <thead><tr style="background:var(--card2);border-bottom:1px solid var(--border)">
-              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Outcome</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">When to Use</th>
-            </tr></thead>
-            <tbody id="jobaid-outcomes-table"><tr><td colspan="2" style="padding:20px;text-align:center;color:var(--text3);font-size:12px">Loading outcomes…</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-
+  <!-- ── Sales Tips ── -->
+  <div class="ja-panel active" id="japanel-tips">
+    <div class="main">
       <div class="form-card">
         <div class="form-header"><div class="form-header-title">💡 Sales Tips</div></div>
         <div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">
@@ -785,9 +965,107 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
           </div>
         </div>
       </div>
-
     </div>
   </div>
+
+  <!-- ── Key Phrases ── -->
+  <div class="ja-panel" id="japanel-phrases">
+    <div class="main">
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">🗣 Key Phrases by LOB</div></div>
+        <div style="padding:16px 18px">
+
+          <!-- WIFI / INTERNET -->
+          <div class="kp-section">
+            <div class="kp-lob-header" style="color:var(--teal)">🌐 WiFi / Internet</div>
+            <div class="kp-plans">Plans: 300 Mbps · 500 Mbps · 1 Gig · 1.2 Gig · 2 Gig · Xfinity Gateway (XB6, XB7, XB8, XB10)</div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get the most reliable fiber-powered WiFi for all your connected devices in the home.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">There&#39;s no contract and your price is guaranteed for 5 years.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Upgrade your home WiFi with Xfinity Pro for extended coverage, a cellular backup during outages, plus boost an activity like gaming, working from home, or streaming.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get the most intelligent WiFi and reliability for all your connected devices.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Stay safe with Advanced Security protecting you from online threats, and WiFi motion informing you of home activity.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Manage your home WiFi, devices, and family settings in the Xfinity app.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">A breakdown of pricing and features for our internet and mobile plans is available at xfinity.com/labels.</span><span class="kp-tag kp-tag-open">Compliance</span></div>
+          </div>
+
+          <!-- MOBILE -->
+          <div class="kp-section">
+            <div class="kp-lob-header" style="color:var(--purple)">📱 Mobile</div>
+            <div class="kp-plans">Plans: Unlimited · Premium Unlimited</div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get a new line of Unlimited included for 12 months.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Cut your bill in half compared to AT&amp;T, T-Mobile, and Verizon — a simple way to save every month.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">With Premium Unlimited for just $10 more, you can upgrade your device anytime with a guaranteed discount, get 4K video, international calling, and spam protection.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Connect to the most reliable 5G network and get superfast WiFi in millions of locations nationwide.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">You&#39;re covered nationwide with 5G, 4G LTE, and millions of secure Xfinity WiFi hotspots — all in one powerful network.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Who&#39;s your current mobile provider? And what does ___ lines of (that provider) cost nowadays?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+          </div>
+
+          <!-- TV & STREAMING -->
+          <div class="kp-section">
+            <div class="kp-lob-header" style="color:var(--blue)">📺 TV &amp; Streaming</div>
+            <div class="kp-plans">Plans: TV Core · Sports &amp; News TV · TV Plus · TV Premium · NOW TV · Xumo Stream Box</div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get one simple, all-in price for your TV and save $10 per month as an Xfinity Internet customer.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Your first 4K TV Box and our award-winning voice remote is included.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Record your favorite shows with up to 300 hours of DVR included.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Take your entertainment everywhere and on any device with the Xfinity Stream app.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">For just $20 per month, stream 125+ live TV and OnDemand channels and get Peacock Premium included with NOW TV.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get hundreds of live channels, on-demand movies, and your favorite apps all in one place with Xumo Stream Box.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Any must-have sports or shows? I&#39;m looking for suggestions — what are you watching now?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+          </div>
+
+          <!-- HOME SOLUTIONS -->
+          <div class="kp-section">
+            <div class="kp-lob-header" style="color:var(--green)">🏠 Home Solutions (Security)</div>
+            <div class="kp-plans">Plans: Smart Home · Home Security</div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get the best value in smart home with easy-to-install cameras, 24/7 video recording, and intelligent alerts for people, pets, vehicles, and package deliveries.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get peace of mind with 24/7 on-demand urgent response, so you can get help when you need it.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Control sensors, lights, locks, and thermostats all in one place with the Xfinity app.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get even more peace of mind with 24/7 professional monitoring from Xfinity Home Security.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Any home security systems? How do you protect your home?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+          </div>
+
+          <!-- VOICE -->
+          <div class="kp-section">
+            <div class="kp-lob-header" style="color:var(--amber)">📞 Home Phone (Voice)</div>
+            <div class="kp-plans">Plans: Voice Premier</div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Stay connected with friends and family across the U.S. with unlimited nationwide calling.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
+          </div>
+
+          <div class="kp-divider"></div>
+
+          <!-- DISCOVERY -->
+          <div class="kp-section">
+            <div class="kp-lob-header" style="color:var(--text2)">🔍 Discovery Questions (All LOBs)</div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Besides you, who else will be using the services inside the home?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Any kids? How old?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Do you own or rent your home?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">What might a typical day of using Xfinity services look like?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Any gamers? Any streaming?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">What devices will you be connecting to the WiFi? Any cellphones, smartwatches, or tablets?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
+          </div>
+
+          <!-- TACTICAL LISTENING -->
+          <div class="kp-section">
+            <div class="kp-lob-header" style="color:var(--text2)">👂 Tactical Listening (All LOBs)</div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Stay focused and avoid interrupting.</span><span class="kp-tag kp-tag-listen">Listen</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Detect needs that align with Xfinity product features.</span><span class="kp-tag kp-tag-listen">Listen</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Paraphrase key points to show understanding.</span><span class="kp-tag kp-tag-listen">Listen</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Mirror customer language to personalize your pitch. Example: if they say &#39;My kids love Fortnite,&#39; later say &#39;This plan supports gaming without lag.&#39;</span><span class="kp-tag kp-tag-listen">Listen</span></div>
+          </div>
+
+          <!-- OPENERS -->
+          <div class="kp-section">
+            <div class="kp-lob-header" style="color:var(--text2)">👋 Openers &amp; General</div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">I appreciate the call — we have wonderful promotions going on right now.</span><span class="kp-tag kp-tag-open">Open</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">How can I help today?</span><span class="kp-tag kp-tag-open">Open</span></div>
+<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">We also keep a breakdown of features for our internet and mobile plans at xfinity.com/labels.</span><span class="kp-tag kp-tag-open">Compliance</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ══ TAB: DISPUTES ══ -->
@@ -886,17 +1164,23 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const GOALS={rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2};
+const CB={rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0};
 const TOKENS = ['🎩','🚂','🐶','🐱','⚓','👞','🚗','💎','🎲','⭐','🔥','⚡','🏆','👑','🦊','🐸','🍀','🌟','🪙','🎯'];
 let calToken = localStorage.getItem('xcl_token') || '🎩';
 const RGU_GOAL=GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;
 function getRguGoal(){return GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;}
+function getPtoBonus(){
+  // Each 8 hrs PTO = +5% added to percent-to-goal display
+  var hrs = window._ptoHours||0;
+  return Math.floor(hrs/8) * 0.05;
+}
 const PLAY_NAMES=['','Single Play','Double Play','Triple Play','Quad Play','5-Play'];
 const LOCKED_OUTCOMES=['NO SALE MADE','IE (.75)','BULK'];
 const DEFAULT_OUTCOMES=[...LOCKED_OUTCOMES,'BILLING','TECH SUPPORT','NOT SERVICEABLE','DROP ISSUES','DISCONNECTED','INVALID XFER','DEAD AIR','HAS ALL SERVICES','XM PORT OUT','HS TICKET','TECH (SAME DAY)','OTHER'];
 let OUTCOMES=[...DEFAULT_OUTCOMES];
 const ALERT_MIN=15;
 document.getElementById('m-rgus-lbl').textContent='of '+getRguGoal();
-let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all';
+let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all',_logSearch='',_activeTab='tracker';
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});},1000);
 function checkAlerts(){
   const now=Date.now();if(now<alertDismissed)return;
@@ -939,7 +1223,7 @@ function onReasonChange(){syncProds();colorReason();updatePlay();updateSale();}
 function colorReason(){const s=document.getElementById('f-reason');s.classList.remove('val-nosale','val-ie','val-bulk');if(s.value==='NO SALE MADE')s.classList.add('val-nosale');else if(s.value==='IE (.75)')s.classList.add('val-ie');else if(s.value==='BULK')s.classList.add('val-bulk');}
 function getSvcs(){const s=[];if(xmVal>0)s.push('XM');if(prods.tv)s.push('TV');if(prods.chsi)s.push('CHSI');if(prods.cdv)s.push('CDV');if(prods.xh)s.push('XH');return s;}
 function updatePlay(){const s=getSvcs(),pn=document.getElementById('play-name'),ps=document.getElementById('play-svcs');if(s.length){pn.textContent=PLAY_NAMES[Math.min(s.length,5)];ps.textContent=s.join(' · ');pn.classList.add('show');ps.classList.add('show');}else{pn.classList.remove('show');ps.classList.remove('show');}}
-function toggleCb(){cbOpen=!cbOpen;document.getElementById('cb-toggle').classList.toggle('active',cbOpen);const r2=document.getElementById('cb-toggle-r2');if(r2)r2.classList.toggle('active',cbOpen);document.getElementById('cb-row').classList.toggle('open',cbOpen);updateNotesState();if(cbOpen){const d=new Date(Date.now()+30*60000),pad=n=>String(n).padStart(2,'0');document.getElementById('f-cb-dt').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;setTimeout(()=>document.getElementById('f-cb-name').focus(),300);}else{['f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>document.getElementById(id).value='');}}
+function toggleCb(){cbOpen=!cbOpen;document.getElementById('cb-toggle').classList.toggle('active',cbOpen);document.getElementById('cb-row').classList.toggle('open',cbOpen);updateNotesState();if(cbOpen){const d=new Date(Date.now()+30*60000),pad=n=>String(n).padStart(2,'0');document.getElementById('f-cb-dt').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;setTimeout(()=>document.getElementById('f-cb-name').focus(),300);}else{['f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>document.getElementById(id).value='');}}
 function updateNotesState(){const b=document.getElementById('notes-badge'),ta=document.getElementById('f-notes');if(cbOpen){b.className='req-badge-p';b.textContent='required';ta.classList.add('cb-req-ta');ta.placeholder='Why is a call back needed?';}else{b.className='opt-badge';b.textContent='optional';ta.classList.remove('cb-req-ta');ta.placeholder='Optional…';}}
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
 function updateSale(){const s=isSale();document.getElementById('sale-row').classList.toggle('open',s);if(!s)['f-acct','f-sched','f-rev'].forEach(id=>document.getElementById(id).value='');else setTimeout(()=>document.getElementById('f-acct').focus(),50);}
@@ -973,7 +1257,7 @@ function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=
 function pillCls(c){if(c.hasSale)return'p-sale';if(c.callOutcome==='NO SALE MADE')return'p-nosale';if(c.callOutcome==='IE (.75)')return'p-ie';if(c.callOutcome==='BULK')return'p-bulk';if(['BILLING','TECH SUPPORT','TECH (SAME DAY)','DROP ISSUES','DISCONNECTED'].includes(c.callOutcome))return'p-tech';return'p-other';}
 function pillTxt(c){if(c.hasSale)return c.xm>0?`${c.playName} (${c.xm} XM)`:c.playName;return c.callOutcome==='NO SALE MADE'?'NO SALE':(c.callOutcome||'—');}
 function outcomeOpts(sel=''){return`<option value="">— select outcome —</option>`+OUTCOMES.map(v=>`<option${sel===v?' selected':''}>${v}</option>`).join('');}
-function renderReadRow(c){const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(0)}</span>`:`<span class="td-nil">—</span>`;const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;const st=cbStatus(c);let cb='<span class="td-nil">—</span>';if(st==='done')cb=`<span class="cb-badge done">${fmtCb(c.cbTime)}</span>`;else if(st==='overdue')cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;else if(st==='due-soon')cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;else if(st==='pending')cb=`<span class="cb-badge">${fmtCb(c.cbTime)}</span>`;const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'?' has-callback':'');return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}">${c.acct||'—'}</td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;}
+function renderReadRow(c){const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(2)}</span>`:`<span class="td-nil">—</span>`;const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;const st=cbStatus(c);let cb='<span class="td-nil">—</span>';if(st==='done')cb=`<span class="cb-badge done">${fmtCb(c.cbTime)}</span>`;else if(st==='overdue')cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;else if(st==='due-soon')cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;else if(st==='pending')cb=`<span class="cb-badge">${fmtCb(c.cbTime)}</span>`;const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'?' has-callback':'');return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}">${c.acct||'—'}</td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;}
 function renderEditRow(c){
   const es=editState;
   const pb=(k,l)=>{
@@ -1127,7 +1411,7 @@ function buildFilterOptions(){
 }
 
 function getFilteredCalls(){
-  if(activeFilter==='all') return calls;
+  if(activeFilter==='all') return _logSearch ? calls.filter(c=>(c.acctRaw||c.acct||'').includes(_logSearch)) : calls;
   const now=new Date();
   const sod=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
   const eod=d=>{const x=new Date(d);x.setHours(23,59,59,999);return x;};
@@ -1144,7 +1428,9 @@ function getFilteredCalls(){
     else return calls;
   }
   else return calls;
-  return calls.filter(c=>c.ts>=from&&c.ts<=to);
+  let res = calls.filter(c=>c.ts>=from&&c.ts<=to);
+  if(_logSearch) res=res.filter(c=>(c.acctRaw||c.acct||'').includes(_logSearch));
+  return res;
 }
 
 function setLogFilter(val){
@@ -1208,13 +1494,15 @@ function setStat(pfx, val, goal){
   const fp = getFiscalProgress();
   const raw = goal > 0 ? val / goal : 0;
   const pc  = Math.min(1, raw);
+  const bonus = getPtoBonus();
+  const displayRaw = raw + bonus; // PTO bonus added to displayed % only
 
-  // Percent label — true value, no cap
+  // Percent label — true value + PTO bonus
   const pe = document.getElementById(pfx+'-pct');
   if(pe){
-    pe.textContent = Math.round(raw*100)+'%';
-    pe.className   = 'pct-val '+(raw>=1?'good':raw>=.7?'ok':'warn');
-    pe.style.color = raw>=1?'var(--green)':'';
+    pe.textContent = Math.round(displayRaw*100)+'%'+(bonus>0?' ✦':'');
+    pe.className   = 'pct-val '+(displayRaw>=1?'good':displayRaw>=.7?'ok':'warn');
+    pe.style.color = displayRaw>=1?'var(--green)':'';
   }
 
   // Green base bar fills up to 100%
@@ -1274,7 +1562,8 @@ function setStatsView(v){
 function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d=new Date(sched+'T00:00:00');const r=d>=fi.fiscalStart&&d<fi.fiscalEnd;return r;}
 function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=fi.fiscalEnd;const ne=new Date(ns.getFullYear(),ns.getMonth()+1,22);return{fiscalStart:ns,fiscalEnd:ne};}
 function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<nf.fiscalEnd;}
-function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls;const mRev=mc.reduce((s,c)=>s+c.rev,0),mRgus=mc.reduce((s,c)=>s+c.rgus,0),mXm=mc.reduce((s,c)=>s+c.xm,0),mTv=mc.filter(c=>c.tv).length,mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),mCdv=mc.filter(c=>c.cdv).length,mXh=mc.filter(c=>c.xh).length,mN=mc.length,mSales=mc.filter(c=>c.hasSale).length;document.getElementById('m-rev').textContent='$'+mRev.toLocaleString();document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,getRguGoal());document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString();document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
+function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls;const _mRev=mc.reduce((s,c)=>s+c.rev,0),_mRgus=mc.reduce((s,c)=>s+c.rgus,0),_mXm=mc.reduce((s,c)=>s+c.xm,0),_mTv=mc.filter(c=>c.tv).length,_mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),_mCdv=mc.filter(c=>c.cdv).length,_mXh=mc.filter(c=>c.xh).length,mN=mc.length,mSales=mc.filter(c=>c.hasSale).length;
+const mRev=_mRev-CB.rev,mXm=_mXm-CB.xm,mTv=_mTv-CB.tv,mChsi=_mChsi-CB.chsi,mCdv=_mCdv-CB.cdv,mXh=_mXh-CB.xh,mRgus=_mRgus-(CB.xm>0?1:0)-(CB.tv)-(CB.chsi)-(CB.cdv)-(CB.xh);document.getElementById('m-rev').textContent=(mRev<0?'-$'+Math.abs(mRev).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+mRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,getRguGoal());document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}if(e.target.tagName!=='BUTTON')logCall();}});
 
 (function(){
@@ -1315,13 +1604,17 @@ function getFiscalMonth(){
   const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
   return names[fiscalMonth]+' '+fiscalYear;
 }
-const DEFAULTS={rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbxOwwNu4GuENLqy8NIyLIkn8EPIxKprI8-ZsgrIic_XLscg3Gv_RpFv_YE4fi1e1yFo/exec'};
+const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cbTv:0,cbChsi:0,cbCdv:0,cbXh:0,rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbxOwwNu4GuENLqy8NIyLIkn8EPIxKprI8-ZsgrIic_XLscg3Gv_RpFv_YE4fi1e1yFo/exec'};
 function loadSettings(){
   const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
   return Object.assign({},DEFAULTS,s);
 }
 function applySettings(s){
+  window._schedule = s.schedule||'5x8';
+  window._workDays = Array.isArray(s.workDays)&&s.workDays.length ? s.workDays : [1,2,3,4,5];
+  window._ptoHours = parseFloat(s.ptoHours)||0;
   GOALS.rev=s.rev;GOALS.xm=s.xm;GOALS.tv=s.tv;GOALS.chsi=s.chsi;GOALS.cdv=s.cdv;GOALS.xh=s.xh;
+  CB.rev=parseFloat(s.cbRev)||0;CB.xm=parseFloat(s.cbXm)||0;CB.tv=parseFloat(s.cbTv)||0;CB.chsi=parseFloat(s.cbChsi)||0;CB.cdv=parseFloat(s.cbCdv)||0;CB.xh=parseFloat(s.cbXh)||0;
   const rgu=GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;
   document.getElementById('m-rgus-lbl').textContent='of '+rgu;
   document.getElementById('month-chip-label').textContent=getFiscalMonth();
@@ -1341,7 +1634,6 @@ function applySettings(s){
   if(fReason){const cur=fReason.value;fReason.innerHTML='<option value="">— select outcome —</option>'+OUTCOMES.map(v=>`<option${cur===v?' selected':''}>${v}</option>`).join('');fReason.value=cur;}
 }
 
-
 function toggleSettings(){
   const p=document.getElementById('settings-panel');
   const ov=document.getElementById('settings-overlay');
@@ -1357,6 +1649,12 @@ function toggleSettings(){
     document.getElementById('s-chsi').value=s.chsi;
     document.getElementById('s-cdv').value=s.cdv;
     document.getElementById('s-xh').value=s.xh;
+    document.getElementById('s-cb-rev').value=s.cbRev||0;
+    document.getElementById('s-cb-xm').value=s.cbXm||0;
+    document.getElementById('s-cb-tv').value=s.cbTv||0;
+    document.getElementById('s-cb-chsi').value=s.cbChsi||0;
+    document.getElementById('s-cb-cdv').value=s.cbCdv||0;
+    document.getElementById('s-cb-xh').value=s.cbXh||0;
     // populate alert window checkboxes
     const aw=s.alertWindows||[15];
     [5,10,15,20,30,60].forEach(v=>{
@@ -1367,6 +1665,14 @@ function toggleSettings(){
     renderOutcomeEditor(s.outcomes||[...DEFAULT_OUTCOMES]);
     document.getElementById('s-sheets-url').value=s.sheetsUrl||localStorage.getItem('xcl_sheets_url')||'';
     renderTokenGrid();
+    document.getElementById('s-pto').value = s.ptoHours||0;
+    updatePtoPreview();
+    // populate schedule
+    const sch = s.schedule||'5x8';
+    document.getElementById('sched-5x8').classList.toggle('active', sch==='5x8');
+    document.getElementById('sched-4x10').classList.toggle('active', sch==='4x10');
+    const wd = Array.isArray(s.workDays) ? s.workDays : [1,2,3,4,5];
+    [0,1,2,3,4,5,6].forEach(function(d){ const el=document.getElementById('wd-'+d); if(el) el.checked=wd.includes(d); });
     const cw=localStorage.getItem('xcl_width')||'wide';
     document.getElementById('wb-regular').classList.toggle('active',cw==='regular');
     document.getElementById('wb-wide').classList.toggle('active',cw==='wide');
@@ -1380,14 +1686,24 @@ function saveSettings(){
     chsi:parseInt(document.getElementById('s-chsi').value)||DEFAULTS.chsi,
     cdv:parseInt(document.getElementById('s-cdv').value)||DEFAULTS.cdv,
     xh:parseInt(document.getElementById('s-xh').value)||DEFAULTS.xh,
+    cbRev:parseFloat(document.getElementById('s-cb-rev').value)||0,
+    cbXm:parseFloat(document.getElementById('s-cb-xm').value)||0,
+    cbTv:parseFloat(document.getElementById('s-cb-tv').value)||0,
+    cbChsi:parseFloat(document.getElementById('s-cb-chsi').value)||0,
+    cbCdv:parseFloat(document.getElementById('s-cb-cdv').value)||0,
+    cbXh:parseFloat(document.getElementById('s-cb-xh').value)||0,
     alertWindows:(()=>{const sel=[5,10,15,20,30,60].filter(v=>{const el=document.getElementById('ao-'+v);return el&&el.checked;});return sel.length?sel:[15];})(),
     outcomes:getOutcomeEditorValues(),
+    ptoHours:parseFloat(document.getElementById('s-pto').value)||0,
+    schedule:(document.getElementById('sched-4x10').classList.contains('active')?'4x10':'5x8'),
+    workDays:[0,1,2,3,4,5,6].filter(function(d){var el=document.getElementById('wd-'+d);return el&&el.checked;}),
     sheetsUrl:(()=>{const u=document.getElementById('s-sheets-url').value.trim();if(u)localStorage.setItem('xcl_sheets_url',u);return u;})(),
   };
   localStorage.setItem('xcl_settings',JSON.stringify(s));
   saveColorSettings();
   applySettings(s);
   updateStats();
+  buildCalendar && updatePace && updatePace();
   const btn=document.querySelector('.settings-save');
   btn.textContent='✓ Saved!';btn.classList.add('saved');
   setTimeout(()=>{btn.textContent='✓ Save Settings';btn.classList.remove('saved');},1200);
@@ -1470,7 +1786,6 @@ function applyPreset(name){
   saveColorSettings(name);
 }
 
-
 function saveColorSettings(presetName){
   const name=presetName||localStorage.getItem('xcl_preset')||'xfinity-dark';
   localStorage.setItem('xcl_colors',JSON.stringify({preset:name}));
@@ -1489,7 +1804,6 @@ function markActivePreset(name){
   const btn=document.getElementById('tp-'+name);
   if(btn) btn.classList.add('tp-active');
 }
-
 
 // Init on load
 (function(){
@@ -1513,7 +1827,6 @@ function markActivePreset(name){
   calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
   render();updateStats();buildFilterOptions();
 })();
-
 
 /* ── Outcome editor ── */
 let _dragSrc=null;
@@ -1998,7 +2311,8 @@ function buildCalendar(fiscalStart, totalDays, elapsedDays){
     const dow = date.getDay();
     const isToday   = date.getTime() === today.getTime();
     const isPast    = date < today;
-    const isWeekend = dow===0||dow===6;
+    const workDays = window._workDays||[1,2,3,4,5];
+    const isWeekend = !workDays.includes(dow);
     const isFirst   = d === 0;
     const isLast    = d === totalDays - 1;
     const div = document.createElement('div');
@@ -2013,15 +2327,12 @@ function buildCalendar(fiscalStart, totalDays, elapsedDays){
     div.innerHTML =
       '<div class="cal-day-strip"><div class="cal-day-dow">' + DOWS[dow] + '</div></div>' +
       '<div class="cal-day-body">' +
-        '<div class="cal-day-token">' + (isToday ? calToken : '') + '</div>' +
         '<div class="cal-day-num">' + date.getDate() + '</div>' +
-      '</div>';
+      '</div>' +
+      '<div class="cal-day-token">' + (isToday ? calToken : '') + '</div>';
     cal.appendChild(div);
   }
-  setTimeout(()=>{
-    const todayEl = cal.querySelector('.cal-day.today');
-    if(todayEl) todayEl.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
-  }, 100);
+
 }
 
 const TOKEN_LABELS={'🎩':'Top Hat','🚂':'Train','🐶':'Dog','🐱':'Cat','⚓':'Anchor','👞':'Boot','🚗':'Car','💎':'Diamond','🎲':'Dice','⭐':'Star','🔥':'Fire','⚡':'Lightning','🏆':'Trophy','👑':'Crown','🦊':'Fox','🐸':'Frog','🍀':'Clover','🌟':'Glitter','🪙':'Coin','🎯':'Bullseye'};
@@ -2047,79 +2358,191 @@ function updatePace(){
 }
 
 /* ── Tab switching ── */
-let _activeTab = 'tracker';
 function switchTab(tab){
   _activeTab = tab;
-  ['tracker','trends','jobaid','disputes'].forEach(t=>{
+  ['tracker','trends','compass','jobaid','disputes'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active', t===tab);
     document.getElementById('panel-'+t).classList.toggle('active', t===tab);
   });
   if(tab==='trends') renderTrends();
-  if(tab==='jobaid') renderJobAidOutcomes();
   if(tab==='disputes') buildReconFiscalOptions();
+  if(tab==='compass') cnRender();
 }
 
 /* ── Trends charts ── */
 let _charts = {};
 function renderTrends(){
-  if(typeof Chart==='undefined') return;
+  const el = document.getElementById('trends-main');
+  if(!el) return;
+  if(!calls.length){ el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:13px">No calls logged yet.</div>'; return; }
+
   const fi = getFiscalInfo();
   const now = new Date();
+  const mc = calls; // all-time
 
-  // Group calls by date string
+  // ── Aggregates ────────────────────────────────────────────────────────
+  const sales = mc.filter(c=>c.hasSale);
+  const totalCalls = mc.length;
+  const totalSales = sales.length;
+  const totalRev = sales.reduce((s,c)=>s+c.rev,0);
+  const totalRgus = sales.reduce((s,c)=>s+c.rgus,0);
+  const totalXm = sales.reduce((s,c)=>s+c.xm,0);
+  const totalTv = sales.filter(c=>c.tv).length;
+  const totalChsi = sales.reduce((s,c)=>s+c.chsiRgu,0);
+  const totalCdv = sales.filter(c=>c.cdv).length;
+  const totalXh = sales.filter(c=>c.xh).length;
+  const closeRate = totalCalls ? (totalSales/totalCalls*100) : 0;
+  const arpu = totalSales ? totalRev/totalSales : 0;
+  const arpc = totalCalls ? totalRev/totalCalls : 0;
+
+  // ── By day ────────────────────────────────────────────────────────────
   const byDate = {};
-  calls.forEach(c=>{
-    const d = c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});
-    if(!byDate[d]) byDate[d]={total:0,sales:0,rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0};
+  mc.forEach(c=>{
+    const d = c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
+    if(!byDate[d]) byDate[d]={total:0,sales:0,rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0,rgus:0};
     byDate[d].total++;
-    if(c.hasSale){ byDate[d].sales++; byDate[d].rev+=c.rev; byDate[d].xm+=c.xm; if(c.tv)byDate[d].tv++; byDate[d].chsi+=c.chsiRgu; if(c.cdv)byDate[d].cdv++; if(c.xh)byDate[d].xh++; }
+    if(c.hasSale){byDate[d].sales++;byDate[d].rev+=c.rev;byDate[d].xm+=c.xm;if(c.tv)byDate[d].tv++;byDate[d].chsi+=c.chsiRgu;if(c.cdv)byDate[d].cdv++;if(c.xh)byDate[d].xh++;byDate[d].rgus+=c.rgus;}
   });
-  const days = Object.keys(byDate).sort((a,b)=>new Date(a)-new Date(b)).slice(-14);
-  const labels = days;
-  const cs = s=>'rgba('+s+',';
-  const chartDefaults = {responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}}}};
+  const dayKeys = Object.keys(byDate);
+  const numDays = dayKeys.length;
+  const avgCallsDay = numDays ? (totalCalls/numDays).toFixed(1) : '—';
+  const avgRevDay = numDays ? '$'+(totalRev/numDays).toFixed(2) : '—';
+  const avgSalesDay = numDays ? (totalSales/numDays).toFixed(1) : '—';
 
-  // 1. Volume
-  makeChart('chart-volume','bar',labels,
-    [{label:'Total',data:days.map(d=>byDate[d].total),backgroundColor:'rgba(59,130,246,.5)',borderColor:'#3b82f6',borderWidth:1},
-     {label:'Sales',data:days.map(d=>byDate[d].sales),backgroundColor:'rgba(34,197,94,.5)',borderColor:'#22c55e',borderWidth:1}],
-    chartDefaults);
+  // best day
+  const bestRevDay = dayKeys.sort((a,b)=>byDate[b].rev-byDate[a].rev)[0];
+  const bestCallDay = dayKeys.sort((a,b)=>byDate[b].total-byDate[a].total)[0];
+  dayKeys.sort((a,b)=>new Date(a)-new Date(b)); // restore order
 
-  // 2. Close rate
-  makeChart('chart-closerate','line',labels,
-    [{label:'Close %',data:days.map(d=>byDate[d].total?+(byDate[d].sales/byDate[d].total*100).toFixed(1):0),borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.1)',tension:.4,fill:true,pointRadius:3}],
-    {...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+'%'}}}});
+  // ── Current fiscal ────────────────────────────────────────────────────
+  const fiscalCalls = mc.filter(c=>inFiscal(c.ts.toISOString().slice(0,10)));
+  const fiscalSales = fiscalCalls.filter(c=>c.hasSale);
+  const fiscalRev = fiscalSales.reduce((s,c)=>s+c.rev,0);
+  const fiscalRgus = fiscalSales.reduce((s,c)=>s+c.rgus,0);
+  const fiscalXm = fiscalSales.reduce((s,c)=>s+c.xm,0);
+  const fiscalTv = fiscalSales.filter(c=>c.tv).length;
+  const fiscalChsi = fiscalSales.reduce((s,c)=>s+c.chsiRgu,0);
+  const fiscalCdv = fiscalSales.filter(c=>c.cdv).length;
+  const fiscalXh = fiscalSales.filter(c=>c.xh).length;
+  const pctRev = GOALS.rev ? Math.round(fiscalRev/GOALS.rev*100) : 0;
+  const pctRgu = getRguGoal() ? Math.round(fiscalRgus/getRguGoal()*100) : 0;
 
-  // 3. Cumulative revenue vs goal line
-  let cumRev = 0;
-  const revData = days.map(d=>{cumRev+=byDate[d].rev;return+cumRev.toFixed(0);});
-  const daysFiscal = Math.round((now-fi.fiscalStart)/86400000)+1;
-  const totalFiscal = fi.totalDays;
-  const goalLine = days.map((_,i)=>+((GOALS.rev/totalFiscal)*Math.min(i+1,daysFiscal)).toFixed(0));
-  makeChart('chart-revenue','line',labels,
-    [{label:'Revenue',data:revData,borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,.08)',tension:.3,fill:true,pointRadius:2},
-     {label:'Goal Pace',data:goalLine,borderColor:'#f59e0b',borderDash:[4,4],tension:0,pointRadius:0,fill:false}],
-    chartDefaults);
+  // ── Outcome counts ────────────────────────────────────────────────────
+  const outcomes = {};
+  mc.forEach(c=>{ const k=c.callOutcome||'—'; outcomes[k]=(outcomes[k]||0)+1; });
+  const outcomeRows = Object.entries(outcomes).sort((a,b)=>b[1]-a[1]);
 
-  // 4. RGU mix doughnut-style bar
-  const totals = {XM:0,TV:0,CHSI:0,CDV:0,XH:0};
-  calls.filter(c=>c.hasSale).forEach(c=>{totals.XM+=c.xm;if(c.tv)totals.TV++;totals.CHSI+=c.chsiRgu;if(c.cdv)totals.CDV++;if(c.xh)totals.XH++;});
-  makeChart('chart-rgumix','bar',Object.keys(totals),
-    [{data:Object.values(totals),backgroundColor:['rgba(20,184,166,.7)','rgba(59,130,246,.7)','rgba(59,130,246,.5)','rgba(59,130,246,.4)','rgba(59,130,246,.3)'],borderWidth:0}],
-    {...chartDefaults,indexAxis:'y'});
+  // ── Play counts ───────────────────────────────────────────────────────
+  const plays = {};
+  sales.forEach(c=>{ const k=c.playName||'Other'; plays[k]=(plays[k]||0)+1; });
+  const playRows = Object.entries(plays).sort((a,b)=>b[1]-a[1]);
 
-  // 5. Outcome pie
-  const outcomeCounts = {};
-  calls.forEach(c=>{ const k=c.callOutcome||'Unknown'; outcomeCounts[k]=(outcomeCounts[k]||0)+1; });
-  const sorted = Object.entries(outcomeCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const pieColors = ['#3b82f6','#22c55e','#f59e0b','#a78bfa','#14b8a6','#f87171','#64748b','#94a3b8'];
-  makeChart('chart-outcomes','doughnut',sorted.map(e=>e[0]),
-    [{data:sorted.map(e=>e[1]),backgroundColor:pieColors,borderWidth:2,borderColor:'#161e30'}],
-    {responsive:true,plugins:{legend:{display:false}}});
+  // ── Today ─────────────────────────────────────────────────────────────
+  const todayStr = now.toDateString();
+  const todayCalls = mc.filter(c=>c.ts.toDateString()===todayStr);
+  const todaySales = todayCalls.filter(c=>c.hasSale);
+  const todayRev = todaySales.reduce((s,c)=>s+c.rev,0);
 
-  // Legend for outcomes
-  const legend = document.getElementById('outcome-legend');
-  if(legend) legend.innerHTML = sorted.map((e,i)=>`<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:2px;background:${pieColors[i]};flex-shrink:0"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e[0]}</span><span style="color:var(--text3)">${e[1]}</span></div>`).join('');
+  // ── Render ────────────────────────────────────────────────────────────
+  const fmtRev = v => v<0 ? '-$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const card = (label,val,sub,accent) =>
+    `<div class="tr-card${accent?' accent-'+accent:''}"><div class="tr-card-label">${label}</div><div class="tr-card-val">${val}</div>${sub?`<div class="tr-card-sub">${sub}</div>`:''}</div>`;
+
+  let html = '';
+
+  // Today
+  html += `<div class="tr-section"><div class="tr-section-title">Today</div><div class="tr-grid">`;
+  html += card('Calls',todayCalls.length,'logged today','blue');
+  html += card('Sales',todaySales.length,todayCalls.length?(todaySales.length/todayCalls.length*100).toFixed(0)+'% close rate':'—','green');
+  html += card('Revenue',fmtRev(todayRev),'today gross','green');
+  html += card('RGUs',fmtR(todaySales.reduce((s,c)=>s+c.rgus,0)),'today','teal');
+  html += `</div></div>`;
+
+  // This fiscal month
+  html += `<div class="tr-section"><div class="tr-section-title">This Fiscal Month</div><div class="tr-grid">`;
+  html += card('Revenue',fmtRev(fiscalRev),pctRev+'% of goal','green');
+  html += card('RGUs',fmtR(fiscalRgus),pctRgu+'% of goal','teal');
+  html += card('XM Lines',fiscalXm,'of '+GOALS.xm+' goal','teal');
+  html += card('TV',fiscalTv,'of '+GOALS.tv+' goal','blue');
+  html += card('CHSI',fmtR(fiscalChsi),'of '+GOALS.chsi+' goal','blue');
+  html += card('CDV',fiscalCdv,'of '+GOALS.cdv+' goal','blue');
+  html += card('XH',fiscalXh,'of '+GOALS.xh+' goal','blue');
+  html += card('Sales',fiscalSales.length,fiscalCalls.length?Math.round(fiscalSales.length/fiscalCalls.length*100)+'% close rate':'—','green');
+  html += `</div></div>`;
+
+  // All-time summary
+  // Rate metrics (all-time basis)
+  const chsiCR  = totalCalls ? (totalChsi/totalCalls*100).toFixed(1)+'%' : '—';
+  const xmCR    = totalCalls ? (totalXm/totalCalls*100).toFixed(1)+'%' : '—';
+  const rguCR   = totalCalls ? (totalRgus/totalCalls*100).toFixed(2) : '—';
+  const rpc     = totalCalls ? fmtR(totalRgus/totalCalls) : '—';
+  const arps    = totalSales ? fmtR(totalRgus/totalSales) : '—';
+
+  html += `<div class="tr-section"><div class="tr-section-title">Performance Rates</div><div class="tr-grid">`;
+  const arpc2   = totalCalls ? '$'+(totalRev/totalCalls).toFixed(2) : '—';
+  const truArpu = totalRgus ? '$'+(totalRev/totalRgus).toFixed(2) : '—';
+  html += card('ARPU',truArpu,'avg revenue / RGU','amber');
+  html += card('Avg Rev/Sale','$'+arpu.toFixed(2),'avg revenue / sale','amber');
+  html += card('RPC',arpc2,'avg revenue / call','amber');
+  html += card('Avg RGU/Sale',arps,'avg RGUs / sale','teal');
+  html += card('Avg RGU/Call',rpc,'avg RGUs / call','teal');
+  html += card('CHSI CR',chsiCR,'CHSI closes / calls','blue');
+  html += card('XM CR',xmCR,'XM closes / calls','teal');
+  html += card('RGU CR',rguCR,'avg RGUs / call','blue');
+  html += `</div></div>`;
+
+  // Daily averages
+  html += `<div class="tr-section"><div class="tr-section-title">Daily Averages (${numDays} active days)</div><div class="tr-grid">`;
+  html += card('Calls/Day',avgCallsDay,'avg per active day');
+  html += card('Sales/Day',avgSalesDay,'avg per active day','green');
+  html += card('Rev/Day',avgRevDay,'avg per active day','green');
+  if(bestRevDay) html += card('Best Rev Day',bestRevDay,fmtRev(byDate[bestRevDay].rev),'amber');
+  if(bestCallDay) html += card('Busiest Day',bestCallDay,byDate[bestCallDay].total+' calls','amber');
+  html += `</div></div>`;
+
+  // Play breakdown table
+  if(playRows.length){
+    html += `<div class="tr-section"><div class="tr-section-title">Play Breakdown</div>
+    <div class="form-card" style="overflow:hidden"><table class="tr-table">
+    <thead><tr><th>Play</th><th style="text-align:right">Count</th><th style="text-align:right">% of Sales</th></tr></thead><tbody>`;
+    playRows.forEach(([k,v])=>{
+      html += `<tr><td>${k}</td><td class="td-num">${v}</td><td class="td-num">${totalSales?(v/totalSales*100).toFixed(1)+'%':'—'}</td></tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+
+  // Outcome breakdown table
+  if(outcomeRows.length){
+    html += `<div class="tr-section"><div class="tr-section-title">Call Outcome Breakdown</div>
+    <div class="form-card" style="overflow:hidden"><table class="tr-table">
+    <thead><tr><th>Outcome</th><th style="text-align:right">Count</th><th style="text-align:right">% of Calls</th></tr></thead><tbody>`;
+    outcomeRows.forEach(([k,v])=>{
+      html += `<tr><td>${k}</td><td class="td-num">${v}</td><td class="td-num">${totalCalls?(v/totalCalls*100).toFixed(1)+'%':'—'}</td></tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+
+  // Day-by-day log (last 14 active days)
+  const recentDays = Object.keys(byDate).sort((a,b)=>new Date(b)-new Date(a)).slice(0,14);
+  if(recentDays.length){
+    html += `<div class="tr-section"><div class="tr-section-title">Recent Days (last 14 active)</div>
+    <div class="form-card" style="overflow:hidden"><table class="tr-table">
+    <thead><tr><th>Date</th><th style="text-align:right">Calls</th><th style="text-align:right">Sales</th><th style="text-align:right">Close%</th><th style="text-align:right">Revenue</th><th style="text-align:right">RGUs</th><th>Units Sold</th></tr></thead><tbody>`;
+    recentDays.forEach(d=>{
+      const r = byDate[d];
+      const cr = r.total ? (r.sales/r.total*100).toFixed(0)+'%' : '—';
+      const units = [];
+      if(r.xm)   units.push(r.xm+'XM');
+      if(r.tv)   units.push(r.tv+'TV');
+      if(r.chsi) units.push(fmtR(r.chsi)+'CHSI');
+      if(r.cdv)  units.push(r.cdv+'CDV');
+      if(r.xh)   units.push(r.xh+'XH');
+      html += `<tr><td>${d}</td><td class="td-num">${r.total}</td><td class="td-num">${r.sales}</td><td class="td-num">${cr}</td><td class="td-num">${fmtRev(r.rev)}</td><td class="td-num">${fmtR(r.rgus)}</td><td style="font-size:11px;color:var(--text3);font-family:var(--mono)">${units.join(' · ')||'—'}</td></tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+
+  el.innerHTML = `<div style="padding:16px 0">${html}</div>`;
 }
 
 function makeChart(id, type, labels, datasets, options){
@@ -2127,30 +2550,6 @@ function makeChart(id, type, labels, datasets, options){
   const ctx = document.getElementById(id);
   if(!ctx) return;
   _charts[id] = new Chart(ctx, {type, data:{labels, datasets}, options:{...options, animation:{duration:400}}});
-}
-
-/* ── Job Aids ── */
-function renderJobAidOutcomes(){
-  const tb = document.getElementById('jobaid-outcomes-table');
-  if(!tb) return;
-  const descs = {
-    'NO SALE MADE':'Customer declined — no services added',
-    'IE (.75)':'Internet Eligible — CHSI counts as 0.75 RGU',
-    'BULK':'Bulk account — does not count toward individual goals',
-    'BILLING':'Customer called in for billing support only',
-    'TECH SUPPORT':'Technical issue, no sale opportunity',
-    'TECH (SAME DAY)':'Same-day tech appointment — no sale',
-    'DROP ISSUES':'Service drop / infrastructure issue',
-    'DISCONNECTED':'Call dropped before completion',
-    'NOT SERVICEABLE':'Address not in serviceable area',
-    'HAS ALL SERVICES':'Customer already has all available services',
-    'INVALID XFER':'Call transferred incorrectly to wrong queue',
-    'HS TICKET':'Home Solutions ticket created — not a direct sale',
-    'DEAD AIR':'No customer audio detected',
-    'XM PORT OUT':'Customer porting out Xfinity Mobile number',
-    'OTHER':'None of the above categories apply',
-  };
-  tb.innerHTML = OUTCOMES.map(o=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap">${o}</td><td style="padding:8px 14px;font-size:11px;color:var(--text3)">${descs[o]||'—'}</td></tr>`).join('');
 }
 
 /* ── Disputes / Reconciliation ── */
@@ -2294,7 +2693,6 @@ function openCallFromAlert(id){
   document.getElementById('alert-bar').classList.remove('visible');
   openEdit(id,true);
 }
-
 
 /* ── Import Previous Tracker (Sheet11 column mapping) ──────────────────────
  *
@@ -2638,6 +3036,374 @@ function setImportPrevStatus(msg, color) {
 }
 /* ── End Import Previous Tracker ── */
 
+function switchJaTab(t){
+  document.querySelectorAll('#ja-tab-bar .tab-btn').forEach(function(btn){
+    var id = btn.getAttribute('data-ja');
+    btn.classList.toggle('active', id===t);
+    document.getElementById('japanel-'+id).classList.toggle('active', id===t);
+  });
+}
+
+/* ── Job Aid tab drag-to-reorder ── */
+(function(){
+  var bar, dragSrc, holdTimer, startX, startY, isDragging;
+  var HOLD_MS = 500;
+
+  function init(){
+    bar = document.getElementById('ja-tab-bar');
+    if(!bar) return;
+    bar.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.addEventListener('mousedown',  onDown);
+      btn.addEventListener('touchstart', onDown, {passive:true});
+      btn.addEventListener('mouseup',    onUp);
+      btn.addEventListener('touchend',   onUp);
+      btn.addEventListener('click',      onClick);
+    });
+  }
+
+  function onDown(e){
+    var btn = e.currentTarget;
+    startX = e.touches ? e.touches[0].clientX : e.clientX;
+    startY = e.touches ? e.touches[0].clientY : e.clientY;
+    isDragging = false;
+    holdTimer = setTimeout(function(){
+      isDragging = true;
+      startDrag(btn);
+    }, HOLD_MS);
+  }
+
+  function onUp(e){
+    clearTimeout(holdTimer);
+  }
+
+  function onClick(e){
+    if(isDragging){ e.preventDefault(); e.stopPropagation(); return; }
+    var id = e.currentTarget.getAttribute('data-ja');
+    switchJaTab(id);
+  }
+
+  function startDrag(btn){
+    dragSrc = btn;
+    btn.classList.add('ja-tab-dragging');
+    bar.querySelectorAll('.tab-btn').forEach(function(b){
+      if(b !== btn){
+        b.addEventListener('dragenter', onDragEnter);
+        b.addEventListener('dragleave', onDragLeave);
+        b.addEventListener('drop',      onDrop);
+        b.setAttribute('data-drop-target','1');
+      }
+    });
+    document.addEventListener('mouseup',  endDrag);
+    document.addEventListener('touchend', endDrag);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('touchmove', onMove, {passive:false});
+  }
+
+  function onMove(e){
+    if(!isDragging || !dragSrc) return;
+    var cx = e.touches ? e.touches[0].clientX : e.clientX;
+    var cy = e.touches ? e.touches[0].clientY : e.clientY;
+    // find which button we're hovering over
+    bar.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('ja-tab-drag-over'); });
+    var el = document.elementFromPoint(cx, cy);
+    if(el && el.classList.contains('tab-btn') && el !== dragSrc && el.closest('#ja-tab-bar')){
+      el.classList.add('ja-tab-drag-over');
+    }
+  }
+
+  function onDragEnter(e){ e.currentTarget.classList.add('ja-tab-drag-over'); }
+  function onDragLeave(e){ e.currentTarget.classList.remove('ja-tab-drag-over'); }
+
+  function onDrop(e){
+    var target = e.currentTarget;
+    if(target && dragSrc && target !== dragSrc){
+      var btns = Array.from(bar.querySelectorAll('.tab-btn'));
+      var si = btns.indexOf(dragSrc);
+      var ti = btns.indexOf(target);
+      if(si < ti) bar.insertBefore(dragSrc, target.nextSibling);
+      else        bar.insertBefore(dragSrc, target);
+    }
+  }
+
+  function endDrag(e){
+    if(!isDragging) return;
+    // find hovered target and drop
+    var cx = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    var cy = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+    var el = document.elementFromPoint(cx, cy);
+    if(el && el.classList.contains('tab-btn') && el !== dragSrc && el.closest('#ja-tab-bar')){
+      onDrop({currentTarget: el});
+    }
+    if(dragSrc) dragSrc.classList.remove('ja-tab-dragging');
+    bar.querySelectorAll('.tab-btn').forEach(function(b){
+      b.classList.remove('ja-tab-drag-over');
+      b.removeEventListener('dragenter', onDragEnter);
+      b.removeEventListener('dragleave', onDragLeave);
+      b.removeEventListener('drop',      onDrop);
+      b.removeAttribute('data-drop-target');
+    });
+    document.removeEventListener('mouseup',  endDrag);
+    document.removeEventListener('touchend', endDrag);
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('touchmove', onMove);
+    dragSrc = null;
+    setTimeout(function(){ isDragging = false; }, 50);
+  }
+
+  // init after DOM ready
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+/* ── Compass Navigator ── */
+var _cnType  = 'new';
+var _cnStage = 'connect';
+
+function cnSetType(t, btn) {
+  _cnType = t;
+  document.querySelectorAll('.cn-type-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  cnRender();
+}
+function cnSetStage(s) {
+  _cnStage = s;
+  ['connect','explore','consult','overcome','review'].forEach(function(id){
+    document.getElementById('cnstg-'+id).classList.toggle('active', id===s);
+  });
+  cnRender();
+}
+
+function cnRender() {
+  var el = document.getElementById('cn-content');
+  if (!el) return;
+  var t = _cnType, s = _cnStage;
+  var html = '';
+
+  /* ── CONNECT ── */
+  if (s === 'connect') {
+    if (t === 'new') {
+      html = '<div class="cn-speech"><strong>Thank you for calling Xfinity. My name is…</strong><br>May I have your name please?<br>Awesome, thank you so much!<br>How may I assist you today?</div>'
+           + '<div class="cn-speech">I\'d be happy to help get you taken care of, may I ask you a few questions to get us started?<br><br>'
+           + 'Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>'
+           + 'May I have the address where you would like service, please?</div>'
+           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
+           + '<div class="cn-speech">In order to find the best deal, would it be ok if I ask a few more questions about how you will be using the service?</div>';
+    } else if (t === 'moves') {
+      html = '<div class="cn-speech">First of all, let me say <strong>thank you for taking us with you to your new home.</strong><br>You\'ve reached the movers department, and I\'d be happy to take care of this for you.<br>May I ask you a few questions to get us started?</div>'
+           + '<div class="cn-speech">Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>Can you please verify the address where you <em>currently</em> have service?<br>And what is the address that you will be <em>moving to</em>?</div>'
+           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
+           + '<div class="cn-speech">One great thing about moving is that you qualify for some specific transfer promotions — would it be ok if I asked a few questions about how you\'ll be using the service to see what you might qualify for?</div>';
+    } else if (t === 'ie') {
+      html = '<div class="cn-speech">Thank you for considering us for your internet!<br>I\'d be happy to help get you taken care of, may I ask you a few questions to get us started?</div>'
+           + '<div class="cn-speech">Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?</div>'
+           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
+           + '<div class="cn-speech">Great! I can absolutely help you find a low-cost internet service. To make sure that we find the best fit for your household, would it be ok if I asked a few more questions about how you\'ll be using it?</div>';
+    } else if (t === 'upgrade') {
+      html = '<div class="cn-speech">I\'d be happy to review your account to help find you the best deal. May I ask you a few questions to get us started?</div>'
+           + '<div class="cn-speech">Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>Can you please verify the address where you have service?</div>'
+           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
+           + '<div class="cn-speech">I see that you\'ve been a customer since _____! <strong>Thank you for your loyalty!</strong><br>To make sure that you get the most out of this change, let\'s do a quick account review. Do you mind if I ask a few more questions about how you\'ll be using the new service?</div>';
+    } else if (t === 'downgrade') {
+      html = '<div class="cn-speech">To make sure that we find the right plan for your household needs, may I ask you a few questions to get us started?</div>'
+           + '<div class="cn-speech">Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>Can you please verify the address where you have service?</div>'
+           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
+           + '<div class="cn-speech">I see that you\'ve been a customer since _____! <strong>Thank you for your loyalty!</strong><br>To make sure that you get the most out of this change, let\'s do a quick account review. Do you mind if I ask a few more questions about how you\'ll be using the new service?</div>';
+    } else if (t === 'nontraditional') {
+      html = '<div class="cn-speech">I\'d be happy to help get you taken care of, may I ask you a few questions to get us started?<br><br>'
+           + 'Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>Can I please have the address you are calling about?</div>'
+           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport.</div>'
+           + '<div class="cn-speech" style="font-style:italic">Choose an option for specific troubleshooting guidance based on the reason for the call.</div>'
+           + '<div class="cn-section-title">Reason for Call</div>'
+           + '<div class="cn-objections" style="grid-template-columns:repeat(4,1fr)">'
+           + ['Internet Outage','Payment','Change Open Order','Down Line / Plant Issue','Business Service','Tech Late / No Show','Activate Modem','Log-in Issue','Activate Peacock','Order Fallout / Collections Block','Unmet Promises','Transfer Equipment','Slow WiFi','Review Bill','Ticket Status','NOW WiFi / Prepaid Issue','Employee Complaint','Pending IE Application'].map(function(o){return '<div class="cn-obj-btn">'+o+'</div>';}).join('')
+           + '</div>';
+    } else if (t === 'secondswing') {
+      html = '<div class="cn-speech"><strong>Set Yourself Up for Success</strong><br><br>'
+           + 'I totally understand that you need some time to make a decision like this — however, I would hate to make you have to start back over from the beginning.<br><br>'
+           + 'What is a good day and time for me to call you back?<br><br>'
+           + 'That should give you enough time to… (check with your significant other / current provider / other)<br><br>'
+           + 'I will just need a little more information to make that conversation easier for us…</div>'
+           + '<div class="cn-section-title">2nd Swing Notes Checklist</div>'
+           + '<div class="cn-card" style="grid-column:span 4">'
+           + ['Preferred Date/Time (EST) for Callback','Name','Phone Number','Email','Account Number / Location Number','Services Ordered','Services Interested In','Notes / IMEI Numbers'].map(function(item){return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)"><span style="color:var(--blue)">☐</span> '+item+'</div>';}).join('')
+           + '</div>';
+    }
+  }
+
+  /* ── EXPLORE / DISCOVER ── */
+  else if (s === 'explore') {
+    var intro = '';
+    if (t === 'new')          intro = 'Ask questions with relevant follow-ups';
+    else if (t === 'moves')   intro = 'Ask questions with relevant follow-ups — moving focus';
+    else if (t === 'ie')      intro = 'Ask questions with relevant follow-ups — IE focus';
+    else if (t === 'upgrade') intro = 'To make sure that you get the most out of this change, let\'s do a quick account review.';
+    else if (t === 'downgrade') intro = 'Let\'s start by making sure the services you have match your current needs.';
+    else if (t === 'nontraditional') intro = 'Existing: Let\'s start by making sure services match current needs. &nbsp;|&nbsp; Non-Existing: Let\'s start with a few questions to understand your needs.';
+
+    html = '<div class="cn-tip">📝 ' + intro + '</div>';
+
+    if (t !== 'upgrade') {
+      html += '<div class="cn-speech"><strong>Great! Besides you, who else will be using the services in the home?</strong>'
+            + '<ul><li>Any kids? How old?</li>'
+            + (t === 'moves' ? '<li>Did you buy this new place or are you renting?</li>' : '<li>Do you own or rent your home?</li>')
+            + '</ul></div>'
+            + '<div class="cn-speech"><strong>And paint me a picture of what a typical day of using our services might look like?</strong>'
+            + '<ul><li>Any gamers?</li><li>Any streaming?<ul class="cn-sub-ul"><li>I\'m looking for suggestions — what are you watching now?</li><li>What service is that on?</li><li>Will you be using any other streaming services?</li></ul></li></ul></div>';
+    } else {
+      html += '<div class="cn-speech"><strong>01 — Start with the product/feature the customer called about</strong><ul>'
+            + '<li>Internet: "What will you be using the faster speed for?"</li>'
+            + '<li>Channel Upgrade: "What will they be watching on this new channel?"</li>'
+            + '<li>Add a product: "Tell me a little about what you need out of this?"</li></ul></div>'
+            + '<div class="cn-speech"><strong>02 — If the customer doesn\'t have TV, how are they accessing Video Content?</strong><ul><li>I am looking for suggestions — what\'s your favorite show on that streaming service?</li></ul></div>'
+            + '<div class="cn-speech"><strong>03 — When everybody is home, who all will be enjoying the services with you?</strong><ul><li>Any kids? How old?</li></ul></div>';
+    }
+
+    html += '<div class="cn-speech"><strong>What devices will you be connecting to the Wi-Fi?</strong>'
+          + '<ul><li>Any cell phones?</li><li>Any smartwatches or tablets?</li><li>Who is your current mobile provider?</li><li>And what does ___ lines of (that provider) cost nowadays?</li></ul></div>';
+
+    if (t === 'ie') {
+      html += '<div class="cn-alert">⚠ If IE is the best option based on discovery, ask if they participate in any qualifying programs.</div>';
+    }
+    if (t === 'nontraditional') {
+      html += '<div class="cn-speech" style="border-color:rgba(59,130,246,.4);color:var(--blue)"><strong>Reviewing your account</strong>, I see that you haven\'t yet taken advantage of the discounted mobile line that comes with your service. Did anyone talk with you about that?</div>';
+    }
+
+    html += '<div class="cn-section-title">Record Your Tie-backs</div>'
+          + '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">'
+          + ['Internet','Video','Mobile','Security','Voice'].map(function(svc){
+              return '<div style="display:flex;flex-direction:column;gap:5px">'
+                   + '<label style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">'+svc+'</label>'
+                   + '<textarea class="cn-tieback-ta" placeholder="Notes…"></textarea>'
+                   + '</div>';
+            }).join('')
+          + '</div>';
+  }
+
+  /* ── CONSULT / PRESENT ── */
+  else if (s === 'consult') {
+    if (t === 'ie') {
+      html = '<div class="cn-tip">💡 Sounds like you might be a perfect candidate for our Internet Essentials program!</div>'
+           + '<div class="cn-row2">'
+           + '<div class="cn-svc"><div class="cn-svc-name">Internet Essentials</div><div class="cn-svc-body">It sounds like you would be a perfect candidate for our Internet Essentials program. With our Internet Essentials (Plus) you will receive our ___ Mbps speed, you can ____ and ____ at the same time.</div></div>'
+           + '<div class="cn-svc"><div class="cn-svc-name">Xfinity/NOW Internet</div><div class="cn-svc-body">Internet Essentials is a great program but given what you\'ve told me I would recommend our ____ Mbps. It\'s quite a bit faster for just a little bit more, and will allow you to ____ and ___ at the same time, while also locking your price for up to 5 years.</div></div>'
+           + '</div>';
+    } else if (t === 'downgrade') {
+      html = '<div class="cn-speech"><strong>I heard you say ________, so based on what you told me I think I found a great solution…</strong></div>';
+    } else if (t === 'upgrade') {
+      html = '<div class="cn-speech"><strong>I know that you called for _______, so based on what you told me I think I have the perfect plan…</strong></div>';
+    } else if (t === 'nontraditional') {
+      html = '<div class="cn-speech"><strong>Based on my review, I do have some ideas about how we might be serving you better.</strong></div>';
+    } else {
+      html = '<div class="cn-speech"><strong>Based on what you told me, I think I have the perfect plan…</strong></div>';
+    }
+
+    html += '<div class="cn-services">'
+          + '<div class="cn-svc"><div class="cn-svc-name">🌐 Internet</div><div class="cn-svc-body">I recommend our ____ Mbps. You will get the fiber-powered speeds you need for all your connected devices in home to ____. You get everything you need with Unlimited Data and Xfinity Gateway included, plus there\'s no contract and your price won\'t change for 5 years.</div></div>'
+          + '<div class="cn-svc"><div class="cn-svc-name">📺 Video</div><div class="cn-svc-body">I know that you are a big fan of <em>(shows)</em> so I set you up with our _____ TV plan to make sure that you can watch all you want!</div></div>'
+          + '<div class="cn-svc"><div class="cn-svc-name">📱 Mobile</div><div class="cn-svc-body">You mentioned that you were paying <em>(your provider)</em> $_____ for your ___ mobile lines. One of the best things about Xfinity is that you get your first line of Unlimited included for 12 months. That means $(x × 12) savings! Cut your bill in half compared to AT&T, T-Mobile, and Verizon.</div></div>'
+          + '<div class="cn-svc"><div class="cn-svc-name">🏠 Xfinity Home</div><div class="cn-svc-body">I also heard you say you <em>(had kids / live alone / have a house full of gadgets)</em> so I included our Xfinity Home system you can <em>(protect or automate)</em> what\'s important.</div></div>'
+          + '<div class="cn-svc"><div class="cn-svc-name">📞 Voice</div><div class="cn-svc-body">And to back up your cell phone I also included our Xfinity Voice service.</div></div>'
+          + '</div>'
+          + '<div class="cn-alert">⚠ <strong>Broadband Facts Required:</strong> When offering Internet or Mobile you MUST say — "Also, before I go into plan details, I wanted to let you know that you can now review a breakdown of pricing and features for Internet and mobile plans online at <strong>Xfinity.com/labels</strong>."</div>';
+  }
+
+  /* ── OVERCOME ── */
+  else if (s === 'overcome') {
+    html = '<div class="cn-section-title">Steps to Overcome</div>'
+         + '<div class="cn-cards">'
+         + '<div class="cn-card"><div class="cn-card-num">1</div><div class="cn-card-title">Understand the Objection</div><div class="cn-card-body">(If the objection is unclear) What about that plan didn\'t you like?</div></div>'
+         + '<div class="cn-card"><div class="cn-card-num">2</div><div class="cn-card-title">Empathize and Overcome</div><div class="cn-card-body">I completely understand that, however, with our services…</div></div>'
+         + '<div class="cn-card"><div class="cn-card-num">3</div><div class="cn-card-title">Restate Key Tie-Backs</div><div class="cn-card-body">I heard you say that ______, so I wanted to make sure…</div></div>'
+         + '<div class="cn-card"><div class="cn-card-num">4</div><div class="cn-card-title">Add Additional Value</div><div class="cn-card-body">One other thing about that product that you might like is…</div></div>'
+         + '</div>'
+         + '<div class="cn-section-title">Top Objections</div>'
+         + '<div class="cn-objections">'
+         + ['Internet','Video','Mobile','Security','Voice','General Objections'].map(function(o){return '<div class="cn-obj-btn">'+o+'</div>';}).join('')
+         + '</div>';
+  }
+
+  /* ── REVIEW / CLOSE ── */
+  else if (s === 'review') {
+    html = '<div class="cn-close-card">'
+         + '<div class="cn-close-step"><div class="cn-close-num">1</div><div><div class="cn-close-title">Summarize the Order</div><div class="cn-close-body">Cover: All Services on the Order · Promotional Pricing &amp; Duration · Roll to Pricing</div></div></div>'
+         + '<div class="cn-close-step"><div class="cn-close-num">2</div><div><div class="cn-close-title">Process Digital Consent</div><div class="cn-close-body">Text Message &nbsp;|&nbsp; Email &nbsp;|&nbsp; Verbal</div></div></div>'
+         + '<div class="cn-close-step"><div class="cn-close-num">3</div><div><div class="cn-close-title">Installation &amp; Activation</div><div class="cn-close-body">Date &amp; Time of Install and On-Time Guarantee · Shipping and Activation Details · Canceling your Provider</div></div></div>'
+         + '<div class="cn-close-step"><div class="cn-close-num">4</div><div><div class="cn-close-title" style="color:var(--blue)">Xfinity App &amp; Membership</div><div class="cn-close-body">Share HOW7002 "Using the Xfinity App" &amp; HOW20303 "What is Xfinity Membership" with customer.</div></div></div>'
+         + '</div>'
+         + '<div class="cn-speech"><strong>Recommended Closing:</strong><br><br>'
+         + '"Thank you so much for your business! You should know that with your purchase you are now enrolled as an <em>(tier)</em> tier Xfinity Member, which will grant you access to special rewards and benefits."<br><br>'
+         + '"I am going to be sending you a link to download our Xfinity App where you can start enjoying some of those benefits as soon as today, get help with any new product activation, and control your Xfinity Account."<br><br>'
+         + 'Share <strong>HOW20203</strong> to help explain membership benefits to the customer.'
+         + '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+function setSchedType(t, btn){
+  document.getElementById('sched-5x8').classList.toggle('active', t==='5x8');
+  document.getElementById('sched-4x10').classList.toggle('active', t==='4x10');
+  // suggest default days for each type
+  var defaults5x8=[1,2,3,4,5], defaults4x10=[1,2,3,4];
+  var suggest = t==='5x8' ? defaults5x8 : defaults4x10;
+  // only auto-update if current selection matches other type's default (fresh change)
+  var cur=[0,1,2,3,4,5,6].filter(function(d){var el=document.getElementById('wd-'+d);return el&&el.checked;});
+  var other5=[1,2,3,4,5].join(','), other4=[1,2,3,4].join(',');
+  if(cur.join(',')===(t==='5x8'?other4:other5)){
+    [0,1,2,3,4,5,6].forEach(function(d){var el=document.getElementById('wd-'+d);if(el)el.checked=suggest.includes(d);});
+  }
+}
+
+function updatePtoPreview(){
+  var hrs = parseFloat(document.getElementById('s-pto').value)||0;
+  var blocks = Math.floor(hrs/8);
+  var reduction = blocks * 0.05;
+  var remaining = hrs % 8;
+  var prev = document.getElementById('pto-preview');
+  var breakdown = document.getElementById('pto-breakdown');
+  if(hrs === 0){
+    prev.textContent = '';
+    breakdown.textContent = '';
+    return;
+  }
+  var pct = Math.round(reduction * 100);
+  prev.textContent = '+' + pct + '% to progress';
+  var lines = [];
+  if(blocks > 0) lines.push(blocks + ' × 8-hr block' + (blocks>1?'s':'') + ' = +' + pct + '% added to all % indicators');
+  if(remaining > 0) lines.push(remaining + ' partial hrs (next block at ' + (8-remaining) + ' more hrs)');
+  breakdown.innerHTML = lines.join('<br>');
+}
+
+function switchStab(t){
+  ['display','goals','schedule','data','outcomes','alerts'].forEach(function(id){
+    document.getElementById('stab-'+id).classList.toggle('active', id===t);
+    document.getElementById('stabp-'+id).classList.toggle('active', id===t);
+  });
+}
+
+function setLogSearch(val){
+  _logSearch = val.trim().replace(/[^0-9]/g,''); // digits only
+  const wrap = document.getElementById('log-search').parentElement;
+  const clear = document.getElementById('log-search-clear');
+  if(_logSearch){
+    wrap.classList.add('active');
+    clear.classList.add('visible');
+  } else {
+    wrap.classList.remove('active');
+    clear.classList.remove('visible');
+  }
+  render();
+}
+function clearLogSearch(){
+  _logSearch='';
+  const inp=document.getElementById('log-search');
+  if(inp) inp.value='';
+  const wrap=inp?inp.parentElement:null;
+  const clear=document.getElementById('log-search-clear');
+  if(wrap) wrap.classList.remove('active');
+  if(clear) clear.classList.remove('visible');
+  render();
+}
 
 </script>
 
