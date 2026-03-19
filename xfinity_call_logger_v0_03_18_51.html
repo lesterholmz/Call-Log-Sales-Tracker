@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>Xfinity Call Logger v0.03.18.51</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f1e;--surface:#111827;--card:#161e30;--card2:#1c2638;
+  --border:#263147;--border2:#2e3d56;
+  --blue:#3b82f6;--blue-lt:#1e3a5f;--blue-glow:rgba(59,130,246,0.15);
+  --teal:#14b8a6;--teal-lt:#0d2f2c;
+  --green:#22c55e;--green-lt:#0f2e1a;
+  --amber:#f59e0b;--amber-lt:#2d1f05;
+  --red:#f87171;--red-lt:#2d1010;
+  --purple:#a78bfa;--purple-lt:#1e1535;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;min-width:1080px;max-width:1080px;margin:0 auto;position:relative}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--blue) 0%,#6366f1 100%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;font-family:var(--mono)}
+.brand-name{font-size:14px;font-weight:600;color:var(--text)}
+.brand-name span{color:var(--blue)}
+.header-right{display:flex;align-items:center;gap:12px}
+/* ── Tab navigation ── */
+.tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 24px;gap:2px;position:sticky;top:52px;z-index:190}
+.tab-btn{height:40px;padding:0 18px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s;letter-spacing:.03em;white-space:nowrap;margin-bottom:-1px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.filter-tab-btn{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;border-radius:5px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:var(--mono);transition:all .15s}
+.filter-tab-btn:hover{color:var(--text);border-color:var(--blue)}
+.filter-tab-btn.active{background:var(--surface);color:var(--text);border-color:var(--blue)}
+.clock{font-family:var(--mono);font-size:12px;color:var(--text3)}
+.version-chip{font-size:10px;font-weight:600;letter-spacing:0.06em;font-family:var(--mono);color:var(--text3);opacity:.6}
+.month-chip{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);background:var(--amber-lt);border:1px solid rgba(245,158,11,0.25);padding:4px 12px;border-radius:20px}
+#alert-bar{display:none;position:sticky;top:52px;z-index:190;background:rgba(45,31,5,0.75);backdrop-filter:blur(6px);border-bottom:1px solid rgba(245,158,11,0.4)}
+#alert-bar.visible{display:block}
+.alert-inner{padding:10px 24px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-content{flex:1;min-width:200px}
+.alert-title{font-size:12px;font-weight:700;color:var(--amber);margin-bottom:4px}
+.alert-items{display:flex;flex-direction:column;gap:3px}
+.alert-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px;cursor:pointer;padding:3px 6px;border-radius:5px;transition:background .15s;margin:0 -6px}
+.alert-item:hover{background:rgba(245,158,11,.15)}
+.alert-item-time{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--amber)}
+.alert-dismiss{background:none;border:1px solid rgba(245,158,11,.3);border-radius:6px;color:var(--amber);font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;white-space:nowrap;font-family:var(--sans)}
+.alert-dismiss:hover{background:rgba(245,158,11,.1)}
+.stats-panel{background:var(--surface);border-bottom:1px solid var(--border)}
+.stats-section-label{padding:8px 24px 6px;font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:10px;position:relative}
+.stats-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.stats-row{display:grid;grid-template-columns:repeat(8,1fr);padding:0 24px}
+.stats-row.monthly{border-bottom:1px solid var(--border2)}
+.stat{padding:10px 8px 6px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
+.stat:first-child{padding-left:0;min-width:90px}.stat:last-child{border-right:none}
+.stat-label{font-size:9px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3)}
+.stats-row.monthly .stat-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text);line-height:1}
+.stats-row.daily .stat-val{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);line-height:1}
+.stat-val.c-blue{color:var(--blue)}.stat-val.c-green{color:var(--green)}.stat-val.c-amber{color:var(--amber)}.stat-val.c-teal{color:var(--teal)}
+.stat-pct{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px;margin-top:auto;flex-wrap:nowrap;padding-top:4px}
+.pct-val{font-family:var(--mono);font-size:10px;font-weight:600;min-width:32px}
+.pct-val.good{color:var(--green)}.pct-val.ok{color:var(--blue)}.pct-val.warn{color:var(--amber)}
+.goal-bar-track{height:4px;background:var(--border2);border-radius:4px;margin-top:2px;overflow:visible;position:relative}
+.goal-bar-fill{height:100%;border-radius:2px;transition:width .5s ease,background .5s ease,box-shadow .5s ease;position:relative;z-index:1}
+.goal-bar-over{position:absolute;top:0;left:0;height:100%;border-radius:2px;background:var(--blue);transition:width .5s ease;z-index:2;pointer-events:none}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:0}
+.stats-row.daily{padding-bottom:4px}
+.stats-row.monthly .stat{padding-top:10px;padding-bottom:6px}
+.stats-row.daily .stat{padding-top:5px;padding-bottom:4px}
+.main{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:12px}
+.form-header{padding:11px 18px;background:var(--card2);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between}
+.form-header-title{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text2);display:flex;align-items:center;gap:8px}
+.form-header-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.form-hint{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.form-body{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.frow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
+.field input,.field select{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);height:38px;outline:none;transition:border-color .15s,box-shadow .15s}
+.field input::placeholder,.field textarea::placeholder{color:var(--text3)}
+.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+.field textarea{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:38px;transition:border-color .15s,box-shadow .15s}
+.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+.field textarea.cb-req-ta{border-color:rgba(167,139,250,.4)}
+.field textarea.cb-req-ta:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
+.outcome-select{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);height:38px;outline:none;width:190px;cursor:pointer;transition:border-color .15s,box-shadow .15s,color .15s}
+.outcome-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+.outcome-select.val-nosale{color:var(--red);border-color:rgba(248,113,113,.3)}
+.outcome-select.val-ie{color:var(--green);border-color:rgba(34,197,94,.3)}
+.outcome-select.val-bulk{color:var(--blue);border-color:rgba(59,130,246,.3)}
+.req-badge{font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);background:var(--amber-lt);border:1px solid rgba(245,158,11,.2);padding:1px 6px;border-radius:4px}
+.req-badge-p{font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--purple);background:var(--purple-lt);border:1px solid rgba(167,139,250,.2);padding:1px 6px;border-radius:4px;flex-shrink:0}
+.opt-badge{font-size:9px;color:var(--text3);font-weight:400;font-style:italic}
+.w-acct{width:220px}.w-sched{width:140px}.w-rev{width:90px}
+.xm-wrap{display:flex;flex-direction:column;gap:5px}
+.xm-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.xm-stepper{display:flex;align-items:center;height:38px;width:110px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;overflow:hidden;transition:border-color .15s}
+.xm-stepper.has-val{border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.12);background:var(--teal-lt)}
+.xm-stepper.has-val .xm-val{color:var(--teal)}
+.xm-btn{width:34px;height:100%;border:none;background:none;cursor:pointer;color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .1s;flex-shrink:0;user-select:none}
+.xm-btn:hover{background:rgba(255,255,255,.06);color:var(--blue)}
+.xm-val{flex:1;text-align:center;font-family:var(--mono);font-size:18px;font-weight:500;color:var(--text2);pointer-events:none;user-select:none}
+.checks-group{display:flex;gap:6px;align-items:flex-end}
+.check-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}
+.check-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.chk{width:38px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.chk:hover{background:var(--card2)}
+.chk.checked{background:var(--green-lt);border-color:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,.15)}
+.chk.ie-adj{background:var(--amber-lt);border-color:var(--amber);box-shadow:0 0 0 2px rgba(245,158,11,.15)}
+.chk svg{width:18px;height:18px;stroke:var(--text3);stroke-width:2.5;fill:none;transition:stroke .15s}
+.chk.checked svg{stroke:var(--green)}
+.chk.ie-adj svg{stroke:var(--amber)}
+.cback-wrap{display:flex;flex-direction:column;gap:5px;align-items:center}
+.cback-wrap label{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
+.cback-toggle{width:38px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:16px;filter:grayscale(1) opacity(.5)}
+.cback-toggle:hover{filter:grayscale(.3) opacity(.8);background:var(--card2)}
+.cback-toggle.active{background:var(--purple-lt);border-color:var(--purple);box-shadow:0 0 0 2px rgba(167,139,250,.25),0 0 10px rgba(167,139,250,.15);filter:grayscale(0) opacity(1)}
+#cb-row{overflow:hidden;max-height:0;opacity:0;transform:translateY(-6px);transition:max-height .28s ease,opacity .22s ease,transform .22s ease;margin-top:0}
+#cb-row.open{max-height:120px;opacity:1;transform:translateY(0);margin-top:2px}
+.cb-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cb-divider-line{flex:1;height:1px;background:var(--border)}
+.cb-divider-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);white-space:nowrap}
+.cb-fields{display:flex;flex-direction:row;flex-wrap:nowrap;gap:10px;align-items:flex-end}
+.cb-field{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.cb-field label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple);display:flex;align-items:center;gap:5px;overflow:hidden;white-space:nowrap}
+.cb-field-name{width:180px}
+.cb-name{width:180px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+.cb-name:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
+.cb-name::placeholder{color:var(--text3)}
+.cb-field-phone{width:153px}
+.cb-phone{width:153px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;text-align:center;transition:border-color .15s,box-shadow .15s}
+.cb-phone:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
+.cb-phone::placeholder{color:var(--text3)}
+.cb-dt{width:235px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+.cb-dt:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
+#sale-row{overflow:hidden;max-height:0;opacity:0;transform:translateY(-6px);transition:max-height .28s ease,opacity .22s ease,transform .22s ease;margin-top:0}
+#sale-row.open{max-height:120px;opacity:1;transform:translateY(0);margin-top:2px}
+.sale-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sale-divider-line{flex:1;height:1px;background:var(--border)}
+.sale-divider-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
+.play-indicator{display:flex;flex-direction:column;justify-content:center;gap:3px;align-self:stretch;padding-bottom:0;min-width:110px;max-width:140px}
+.play-name{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--green);opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s}
+.play-services{font-size:10px;color:var(--text3);opacity:0;transition:opacity .2s}
+.play-name.show,.play-services.show{opacity:1;transform:none}
+.v-div{width:1px;background:var(--border2);align-self:stretch}
+.submit-btn{height:38px;padding:0 22px;background:var(--blue);border:none;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap;flex-shrink:0;align-self:flex-end}
+.submit-btn:hover{background:#2563eb;transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,.3)}
+.submit-btn:active{transform:none;box-shadow:none}
+.submit-btn.ok{background:var(--green)}
+.btn-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.6)}
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.table-header{padding:11px 18px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.table-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text2)}
+.table-actions{display:flex;align-items:center;gap:10px}
+.count-chip{font-family:var(--mono);font-size:11px;color:var(--blue);background:var(--blue-lt);padding:3px 10px;border-radius:20px}
+.export-btn{height:30px;padding:0 14px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--teal);cursor:pointer}
+.export-btn:hover{background:rgba(20,184,166,.2)}
+.filter-select{height:30px;padding:0 10px;background:var(--card2);border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text);cursor:pointer;outline:none;transition:border-color .15s,box-shadow .15s}
+.filter-select:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
+.filter-select.active{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);font-weight:600}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--card2);border-bottom:1px solid var(--border)}
+thead th{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:10px 14px;text-align:left;white-space:nowrap}
+tbody tr.read-row{cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s;animation:fadeUp .2s ease}
+tbody tr.read-row:last-child{border-bottom:none}
+tbody tr.read-row:hover{background:rgba(59,130,246,.06)}
+.edit-hint{opacity:0;transition:opacity .15s;font-size:9px;color:var(--blue);font-family:var(--mono);margin-left:4px}
+tbody tr.read-row:hover .edit-hint{opacity:1}
+tbody tr.edit-row{border-bottom:1px solid var(--border);background:rgba(59,130,246,.06);outline:2px solid var(--blue);outline-offset:-2px}
+tbody tr.has-callback{background:rgba(167,139,250,.04)}
+tbody tr.callback-due{background:rgba(245,158,11,.06)!important;animation:cbPulse 2s ease-in-out infinite}
+@keyframes cbPulse{0%,100%{background:rgba(245,158,11,.06)}50%{background:rgba(245,158,11,.13)}}
+td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
+.td-time{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.td-acct{font-family:var(--mono);font-size:12px;color:var(--blue);max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.td-rev-pos{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--green)}
+.td-nil{font-family:var(--mono);font-size:12px;color:var(--text3)}
+.rgu-val{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--blue)}
+.rgu-nil{font-family:var(--mono);font-size:12px;color:var(--text3)}
+.cb-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;font-family:var(--mono);color:var(--purple);background:var(--purple-lt);border:1px solid rgba(167,139,250,.2);padding:2px 8px;border-radius:20px}
+.cb-badge.overdue{color:var(--red);background:var(--red-lt);border-color:rgba(248,113,113,.2)}
+.cb-badge.due-soon{color:var(--amber);background:var(--amber-lt);border-color:rgba(245,158,11,.2)}
+.cb-badge.done{color:var(--text3);background:transparent;border-color:var(--border2);text-decoration:line-through;opacity:.5}
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.p-sale{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.p-nosale{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.p-bulk{background:var(--blue-lt);color:var(--blue);border:1px solid rgba(59,130,246,.2)}
+.p-ie{background:rgba(34,197,94,.08);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.p-tech{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
+.p-other{background:rgba(255,255,255,.04);color:var(--text3);border:1px solid var(--border2)}
+.e-input{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 9px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;width:100%}
+.e-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
+.e-input.e-text{font-family:var(--sans)}
+.e-select{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none;width:100%;cursor:pointer}
+.e-select:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
+.e-select option{background:var(--card)}
+.edit-action-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(59,130,246,.08);border-top:1px solid var(--blue);flex-wrap:wrap}
+.edit-action-bar .hint{font-size:10px;color:var(--text3);font-family:var(--mono);margin-left:auto}
+.e-btn{height:30px;padding:0 14px;border:none;border-radius:6px;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all .12s;white-space:nowrap}
+.e-btn.save{background:var(--green);color:#fff}.e-btn.save:hover{background:#16a34a}
+.e-btn.cancel{background:var(--card2);color:var(--text2);border:1px solid var(--border2)}.e-btn.cancel:hover{color:var(--red)}
+.e-btn.del{background:var(--red-lt);color:var(--red);border:1px solid rgba(248,113,113,.2)}.e-btn.del:hover{background:rgba(248,113,113,.15)}
+.e-btn.cbdone{background:var(--purple-lt);color:var(--purple);border:1px solid rgba(167,139,250,.2)}.e-btn.cbdone:hover{background:rgba(167,139,250,.15)}
+.e-products{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.e-prod-check{display:flex;flex-direction:column;align-items:center;gap:3px}
+.e-prod-label{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.e-chk{width:28px;height:28px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.e-chk:hover{background:var(--card2)}
+.e-chk.on{background:var(--green-lt);border-color:var(--green)}
+.e-chk.ie{background:var(--amber-lt);border-color:var(--amber)}
+.e-chk svg{width:15px;height:15px;stroke:var(--text3);stroke-width:2.5;fill:none}
+.e-chk.on svg{stroke:var(--green)}
+.e-chk.ie svg{stroke:var(--amber)}
+.empty{text-align:center;padding:48px;color:var(--text3);font-size:13px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Settings ── */
+.gear-btn{background:none;border:none;cursor:pointer;font-size:16px;padding:0 2px;opacity:.5;transition:opacity .2s;line-height:1}
+.gear-btn:hover{opacity:1}
+#settings-panel{display:none;position:absolute;top:52px;right:0;bottom:0;width:360px;background:var(--card);border-left:1px solid var(--border);z-index:300;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,.4)}
+#settings-panel.open{display:block}
+.settings-inner{padding:20px}
+.settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.settings-title{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text2)}
+.settings-close{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0;line-height:1}
+.settings-close:hover{color:var(--red)}
+.settings-section-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.settings-row{display:flex;flex-wrap:wrap;gap:10px}
+.settings-field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:80px}
+.settings-field label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.settings-field input{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:13px;color:var(--text);height:36px;outline:none;width:100%;transition:border-color .15s,box-shadow .15s}
+.settings-field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+.settings-actions{display:flex;gap:8px;margin-top:20px}
+.settings-save{flex:1;height:34px;background:var(--blue);border:none;border-radius:7px;font-family:var(--sans);font-size:12px;font-weight:600;color:#fff;cursor:pointer;transition:background .15s}
+.settings-save:hover{background:#2563eb}
+.settings-save.saved{background:var(--green)}
+.settings-reset{height:34px;padding:0 14px;background:var(--card2);border:1px solid var(--border2);border-radius:7px;font-family:var(--sans);font-size:12px;color:var(--text3);cursor:pointer}
+.settings-reset:hover{color:var(--red);border-color:rgba(248,113,113,.3)}
+/* ── Outcome editor ── */
+.outcome-editor{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.outcome-item{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 8px}
+.outcome-item.locked{opacity:.5;cursor:default}
+.outcome-item-handle{cursor:grab;color:var(--text3);font-size:13px;flex-shrink:0;line-height:1;padding:0 2px}
+.outcome-item.locked .outcome-item-handle{cursor:default;opacity:0}
+.outcome-item-text{flex:1;font-family:var(--sans);font-size:12px;color:var(--text);background:none;border:none;outline:none;min-width:0}
+.outcome-item-text:focus{color:var(--blue)}
+.outcome-item.locked .outcome-item-text{color:var(--text3);pointer-events:none}
+.outcome-item-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;line-height:1;padding:0 2px;flex-shrink:0}
+.outcome-item-del:hover{color:var(--red)}
+.outcome-item.locked .outcome-item-del{display:none}
+.outcome-add-row{display:flex;gap:6px;margin-top:2px}
+.outcome-add-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 10px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none}
+.outcome-add-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
+.outcome-add-btn{height:30px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--blue);cursor:pointer;white-space:nowrap}
+.outcome-add-btn:hover{background:rgba(59,130,246,.2)}
+
+.alert-options{display:flex;flex-wrap:wrap;gap:8px}
+.alert-opt{display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:12px;color:var(--text2);transition:all .15s;user-select:none}
+.alert-opt:hover{border-color:var(--purple);color:var(--text)}
+.alert-opt input[type=checkbox]{display:none}
+.alert-opt input[type=checkbox]:checked+span{color:var(--purple);font-weight:600}
+.alert-opt:has(input:checked){background:var(--purple-lt);border-color:var(--purple)}
+
+/* ── Token picker ── */
+.token-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.token-opt{width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;border-radius:7px;border:2px solid var(--border2);background:var(--surface);cursor:pointer;transition:all .15s;user-select:none}
+.token-opt:hover{border-color:var(--blue);background:var(--blue-lt)}
+.token-opt.selected{border-color:var(--amber);background:rgba(245,158,11,.1);box-shadow:0 0 0 2px rgba(245,158,11,.2)}
+.token-name{font-size:8px;font-family:var(--mono);color:var(--text3);margin-top:3px;text-align:center;letter-spacing:.04em;text-transform:uppercase}
+
+/* ── Sheets load indicator ── */
+#sheets-load-bar{display:none;position:fixed;top:52px;left:0;right:0;z-index:250;background:var(--surface);border-bottom:2px solid var(--blue);padding:10px 24px;font-family:var(--mono);flex-direction:column;gap:6px}
+#sheets-load-bar.visible{display:flex}
+.sync-bar-top{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--blue)}
+.sync-bar-detail{font-size:11px;color:var(--text3)}
+.sync-bar-track{height:4px;background:var(--border2);border-radius:4px;overflow:hidden;width:100%}
+.sync-bar-fill{height:100%;background:var(--blue);border-radius:4px;transition:width .2s ease;width:0%}
+.sync-bar-fill.done{background:var(--green)}
+.sync-bar-fill.error{background:var(--red)}
+.load-spinner{width:12px;height:12px;border:2px solid var(--blue);border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Color theme picker ── */
+
+.color-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:7px 10px}
+.color-row-label{font-size:11px;color:var(--text2);font-weight:500;white-space:nowrap}
+.color-swatch{display:flex;align-items:center;gap:6px}
+.color-swatch input[type=color]{width:32px;height:24px;border:none;border-radius:4px;cursor:pointer;padding:0;background:none}
+.color-swatch-val{font-family:var(--mono);font-size:10px;color:var(--text3);width:54px}
+.theme-presets{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.theme-preset{height:28px;padding:0 12px;border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text2);transition:all .15s}
+.theme-preset:hover{border-color:var(--blue);color:var(--blue)}
+.theme-preset.active{border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
+.theme-reset-colors{height:28px;padding:0 12px;border:1px solid rgba(248,113,113,.3);border-radius:6px;font-size:11px;color:var(--red);cursor:pointer;background:var(--red-lt);font-weight:600}
+.theme-reset-colors:hover{background:rgba(248,113,113,.15)}
+.width-toggle{display:flex;gap:6px;margin-top:6px}
+.width-btn{flex:1;height:32px;border:1px solid var(--border2);border-radius:6px;background:var(--surface);font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s}
+.width-btn:hover{border-color:var(--blue);color:var(--blue)}
+.width-btn.active{border-color:var(--blue);background:var(--blue-lt);color:var(--blue)}
+
+.pace-summary{background:var(--surface);border-bottom:1px solid var(--border);overflow:hidden}
+.pace-summary-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+.pace-summary-val{font-size:11px;font-family:var(--mono);font-weight:600}
+.pace-summary-val.ahead{color:var(--green)}.pace-summary-val.behind{color:var(--red)}.pace-summary-val.on{color:var(--amber)}
+
+/* ── Monopoly board calendar ── */
+#pace-cal{
+  display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;
+  padding:4px 8px;background:var(--surface);
+}
+#pace-cal::-webkit-scrollbar{display:none}
+.cal-day{
+  display:flex;flex-direction:column;align-items:stretch;
+  flex:1;min-width:0;
+  border:1.5px solid var(--border2);
+  border-radius:3px;
+  overflow:hidden;
+  position:relative;
+  cursor:default;
+  transition:border-color .15s,box-shadow .15s;
+  background:rgba(255,255,255,.04);
+}
+/* ── deed strip (top colored band) ── */
+.cal-day-strip{
+  height:9px;
+  background:var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.cal-day-dow{
+  font-size:6px;font-family:var(--mono);text-transform:uppercase;
+  font-weight:700;letter-spacing:.02em;line-height:1;
+  color:rgba(255,255,255,.9);
+  text-shadow:0 1px 1px rgba(0,0,0,.4);
+}
+/* ── space body: token above, number pinned to bottom ── */
+.cal-day-body{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 1px 0;
+  background:rgba(255,255,255,.03);
+  gap:0;
+}
+.cal-day-token{
+  font-size:10px;line-height:1;
+  opacity:0;transform:scale(.4);
+  transition:opacity .22s,transform .22s;
+  display:block;
+  margin-bottom:0;
+}
+.cal-day-num{
+  font-size:8px;font-family:var(--mono);font-weight:600;
+  color:var(--text2);line-height:1;
+}
+/* ── state variants ── */
+.cal-day:not(.weekend):not(.fiscal-start):not(.fiscal-end) .cal-day-strip{background:#2563eb}
+.cal-day.weekend .cal-day-strip{background:#b45309}
+.cal-day.weekend{border-color:rgba(180,83,9,.35)}
+.cal-day.weekend .cal-day-num{color:var(--amber)}
+.cal-day.fiscal-start .cal-day-strip{background:#15803d}
+.cal-day.fiscal-start{border-color:rgba(21,128,61,.5)}
+.cal-day.fiscal-end .cal-day-strip{background:#dc2626}
+.cal-day.fiscal-end{border-color:rgba(220,38,38,.5)}
+.cal-day.past{opacity:.45}
+.cal-day.past .cal-day-strip{filter:saturate(.4)}
+.cal-day.today{
+  border:2px solid var(--amber);
+  box-shadow:0 0 0 1px rgba(245,158,11,.3),0 2px 8px rgba(245,158,11,.2);
+  z-index:2;
+  background:rgba(245,158,11,.06);
+}
+.cal-day.today .cal-day-strip{background:var(--amber)}
+.cal-day.today .cal-day-dow{color:rgba(0,0,0,.75)}
+.cal-day.today .cal-day-num{color:var(--amber);font-weight:700}
+.cal-day.today .cal-day-token{opacity:1;transform:scale(1)}
+
+.main.editing .form-card{display:none}
+.main.editing .table-card{border-radius:12px}
+
+#back-to-top{
+  position:fixed;bottom:16px;right:calc(50% - 524px);z-index:500;
+  width:32px;height:32px;border-radius:8px;
+  background:var(--blue-lt);border:1px solid var(--blue);color:var(--blue);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease;
+  transform:translateY(6px);
+}
+#back-to-top.visible{opacity:1;pointer-events:all;transform:translateY(0)}
+#back-to-top:hover{background:var(--blue);color:#fff}
+
+.stats-view-toggle{position:absolute;right:24px;bottom:6px;display:flex;align-items:center;gap:0;background:var(--border2);border-radius:6px;padding:2px}
+.stats-view-btn{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;background:none;color:var(--text3);transition:all .15s}
+.stats-view-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+
+/* ── Sync toast ── */
+#sync-toast{
+  position:fixed;bottom:56px;right:16px;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:8px;padding:8px 14px;
+  font-family:var(--mono);font-size:11px;
+  display:flex;align-items:center;gap:8px;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+  opacity:0;pointer-events:none;
+  transform:translateY(6px);
+  transition:opacity .2s ease,transform .2s ease;
+  z-index:400;max-width:320px;
+}
+#sync-toast.visible{opacity:1;pointer-events:none;transform:translateY(0)}
+.toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.toast-dot.syncing{background:var(--amber);animation:pulse 1s ease-in-out infinite}
+.toast-dot.ok{background:var(--green)}
+.toast-dot.err{background:var(--red)}
+
+/* ── Form layout: centered rows, notes aligned to row 1 width ── */
+/* Row container — centers each row and constrains width to match row 1 */
+.form-row-center{display:flex;justify-content:center;width:100%}
+.frow-top{display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap}
+.frow-notes{display:inline-flex;gap:10px;align-items:flex-end;min-width:min(calc(100% - 36px), 700px)}
+/* 720px: hide cb toggle from row 1, show it above Log Call in row 2 */
+.cback-wrap-r2{display:none}
+@media(max-width:780px){
+  .cback-wrap-r1{display:none}
+  .cback-wrap-r2{display:flex;flex-direction:column;gap:5px;align-items:center}
+  .frow-notes{flex-wrap:wrap}
+  .frow-notes .notes-wrap{min-width:100%}
+  .frow-notes-actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;width:100%}
+}
+@media(min-width:781px){
+  .frow-notes-actions{display:contents}
+}
+/* Notes wrap fills the same inline width as row 1 */
+.notes-wrap{flex:1;display:flex;flex-direction:column;gap:5px;min-width:200px}
+.notes-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
+.notes-wrap textarea{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:70px;width:100%;transition:border-color .15s,box-shadow .15s}
+.notes-wrap textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+.notes-wrap textarea.cb-req-ta{border-color:rgba(167,139,250,.4)}
+.notes-wrap textarea.cb-req-ta:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
+  <div class="header-right">
+    <div class="version-chip">v0.03.18.51</div>
+    <div class="clock" id="clock">--:-- --</div>
+    <div class="month-chip" id="month-chip-label">…</div>
+    <button class="gear-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
+  </div>
+</div>
+<!-- Tab bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" id="tab-tracker" onclick="switchTab('tracker')">📞 Tracker</button>
+  <button class="tab-btn" id="tab-trends" onclick="switchTab('trends')">📈 Trends</button>
+  <button class="tab-btn" id="tab-jobaid" onclick="switchTab('jobaid')">📖 Job Aids</button>
+  <button class="tab-btn" id="tab-disputes" onclick="switchTab('disputes')">⚖ Disputes</button>
+</div>
+<!-- Settings Panel -->
+<div id="settings-overlay" onclick="toggleSettings()" style="display:none;position:absolute;inset:0;z-index:299;background:rgba(0,0,0,.25);backdrop-filter:blur(1px)"></div>
+<div id="settings-panel">
+  <div class="settings-inner">
+    <div class="settings-header">
+      <div class="settings-title">⚙ Settings</div>
+      <button class="settings-close" onclick="toggleSettings()">✕</button>
+    </div>
+    <div class="settings-section-label" style="margin-top:14px">Theme</div>
+    <div class="theme-presets">
+      <button class="theme-preset" id="tp-dark" onclick="applyPreset('dark')">
+        <div class="tp-swatch"><div class="tp-dot" style="background:#0a0f1e;border:1px solid #263147"></div><div class="tp-dot" style="background:#3b82f6"></div><div class="tp-dot" style="background:#22c55e"></div></div>
+        🌙 Dark
+      </button>
+      <button class="theme-preset" id="tp-light" onclick="applyPreset('light')">
+        <div class="tp-swatch"><div class="tp-dot" style="background:#f1f5f9;border:1px solid #cbd5e1"></div><div class="tp-dot" style="background:#2563eb"></div><div class="tp-dot" style="background:#16a34a"></div></div>
+        ☀️ Light
+      </button>
+      <button class="theme-preset" id="tp-xfinity" onclick="applyPreset('xfinity')">
+        <div class="tp-swatch"><div class="tp-dot" style="background:#ffffff;border:1px solid #c4b5fd"></div><div class="tp-dot" style="background:#7b2fff"></div><div class="tp-dot" style="background:#a78bfa"></div></div>
+        ✦ Xfinity
+      </button>
+      <button class="theme-preset" id="tp-xfinity-dark" onclick="applyPreset('xfinity-dark')">
+        <div class="tp-swatch"><div class="tp-dot" style="background:#0c1a2e;border:1px solid #1e4070"></div><div class="tp-dot" style="background:#38bdf8"></div><div class="tp-dot" style="background:#4ade80"></div></div>
+        ✦ Xfinity Dark
+      </button>
+    </div>
+    <div class="settings-section-label" style="margin-top:10px">Layout Width</div>
+    <div class="width-toggle">
+      <button class="width-btn" id="wb-regular" onclick="applyWidth('regular')">◫ Regular (720px)</button>
+      <button class="width-btn" id="wb-wide" onclick="applyWidth('wide')">⬛ Wide (1080px)</button>
+    </div>
+    <div class="settings-section-label">Monthly Goals</div>
+    <div class="settings-row">
+      <div class="settings-field"><label>Revenue ($)</label><input type="number" id="s-rev" min="0" step="1"></div>
+      <div class="settings-field"><label>XM Lines</label><input type="number" id="s-xm" min="0" step="1"></div>
+      <div class="settings-field"><label>TV</label><input type="number" id="s-tv" min="0" step="1"></div>
+      <div class="settings-field"><label>CHSI</label><input type="number" id="s-chsi" min="0" step="1"></div>
+      <div class="settings-field"><label>CDV</label><input type="number" id="s-cdv" min="0" step="1"></div>
+      <div class="settings-field"><label>XH</label><input type="number" id="s-xh" min="0" step="1"></div>
+    </div>
+    <div class="settings-section-label" style="margin-top:14px">Call Back Options</div>
+    <div class="settings-row" style="align-items:flex-start">
+      <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Alert Windows</div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:2px">Select one or more thresholds — alerts fire when a callback is within that many minutes.</div>
+        <div class="alert-options">
+          <label class="alert-opt"><input type="checkbox" value="5" id="ao-5"><span>5 min</span></label>
+          <label class="alert-opt"><input type="checkbox" value="10" id="ao-10"><span>10 min</span></label>
+          <label class="alert-opt"><input type="checkbox" value="15" id="ao-15"><span>15 min</span></label>
+          <label class="alert-opt"><input type="checkbox" value="20" id="ao-20"><span>20 min</span></label>
+          <label class="alert-opt"><input type="checkbox" value="30" id="ao-30"><span>30 min</span></label>
+          <label class="alert-opt"><input type="checkbox" value="60" id="ao-60"><span>60 min</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="settings-section-label" style="margin-top:14px">Call Outcome Options</div>
+    <div style="font-size:10px;color:var(--text3);margin-bottom:8px">Drag to reorder. First 3 are fixed. Click × to remove, or add new options below.</div>
+    <div class="outcome-editor" id="outcome-editor"></div>
+    <div class="outcome-add-row">
+      <input class="outcome-add-input" id="outcome-new-input" placeholder="Add new outcome…" onkeydown="if(event.key==='Enter')addOutcomeItem()">
+      <button class="outcome-add-btn" onclick="addOutcomeItem()">+ Add</button>
+    </div>
+    <div class="settings-section-label" style="margin-top:14px">Calendar Token</div>
+    <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Your piece on the board — shown on today's space.</div>
+    <div class="token-grid" id="token-grid"></div>
+    <div class="settings-actions">
+      <button class="settings-save" onclick="saveSettings()">✓ Save Settings</button>
+      <button class="settings-reset" onclick="resetSettings()">Reset Defaults</button>
+    </div>
+    <div class="settings-section-label" style="margin-top:14px">Import Previous Tracker</div>
+    <div style="font-size:10px;color:var(--text3);margin-bottom:6px;line-height:1.5">Load call history from your old Excel tracker (Sheet11). Rows without a valid DATE are skipped. Existing calls are preserved; duplicates by timestamp+account are skipped.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <input type="file" id="import-prev-file" accept=".xlsx,.xls,.csv" onchange="onImportPrevFile(this)" style="background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;height:34px;font-size:11px;color:var(--text2);cursor:pointer;flex:1;min-width:180px">
+      <span id="import-prev-status" style="font-size:11px;color:var(--text3);font-family:var(--mono)"></span>
+    </div>
+    <div class="settings-section-label" style="margin-top:14px">Google Sheets Sync</div>
+    <div class="settings-row">
+      <div class="settings-field" style="flex:1;min-width:200px">
+        <label>Apps Script Web App URL</label>
+        <input type="url" id="s-sheets-url" placeholder="https://script.google.com/macros/s/…/exec" style="font-size:11px">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+      <button class="outcome-add-btn" onclick="testSheetsConnection()" style="font-size:11px;justify-content:center">⚡ Test</button>
+      <button class="outcome-add-btn" onclick="loadFromSheets()" style="font-size:11px;justify-content:center;background:var(--teal-lt);border-color:rgba(20,184,166,.3);color:var(--teal)" title="Pull calls from sheet into tracker">↓ Pull from Sheet</button>
+      <button class="outcome-add-btn" onclick="syncAllToSheets()" style="font-size:11px;justify-content:center;grid-column:1/-1;background:var(--blue-lt);border-color:rgba(59,130,246,.3);color:var(--blue)" title="Push all local calls to sheet, then verify">↑ Push All Calls to Sheet</button>
+    </div>
+    <div style="margin-top:6px;padding-bottom:20px">
+      <span id="sheets-status" style="font-size:11px;color:var(--text3);font-family:var(--mono);display:block;min-height:16px"></span>
+    </div>
+  </div>
+</div>
+<div id="settings-overlay" onclick="toggleSettings()" style="display:none;position:absolute;inset:0;z-index:299;background:rgba(0,0,0,.25);backdrop-filter:blur(1px)"></div>
+<div id="sheets-load-bar">
+  <div class="sync-bar-top">
+    <div class="load-spinner" id="sync-spinner"></div>
+    <span id="sheets-load-msg">Syncing…</span>
+    <span id="sync-count" style="margin-left:auto;color:var(--text2)"></span>
+  </div>
+  <div class="sync-bar-detail" id="sync-detail"></div>
+  <div class="sync-bar-track"><div class="sync-bar-fill" id="sync-fill"></div></div>
+</div>
+
+<div id="sync-toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
+<div id="alert-bar"><div class="alert-inner"><div class="alert-icon">🔔</div><div class="alert-content"><div class="alert-title">Call Back Alert</div><div class="alert-items" id="alert-items"></div></div><button class="alert-dismiss" onclick="dismissAlerts()">Dismiss</button></div></div>
+<!-- ══ TAB: TRACKER ══ -->
+<div class="tab-panel active" id="panel-tracker">
+<div class="stats-panel">
+  <div class="stats-section-label"><span id="stats-period-label">Month to date</span><div class="stats-view-toggle" id="stats-toggle"><button class="stats-view-btn active" id="btn-orders" onclick="setStatsView('orders')">Entered</button><button class="stats-view-btn" id="btn-installs" onclick="setStatsView('installs')">Complete</button><button class="stats-view-btn" id="btn-pipeline" onclick="setStatsView('pipeline')">Pipeline</button></div></div>
+  <div class="stats-row monthly">
+    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-blue" id="m-rev">$0</div><div class="stat-pct"><span class="pct-val warn" id="m-rev-pct">0%</span><span>of $6,870</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rev-bar"></div><div class="goal-bar-over" id="m-rev-over"></div></div><span class="stat-pace" id="m-rev-pace"></span></div>
+    <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-blue" id="m-rgus">0</div><div class="stat-pct"><span class="pct-val warn" id="m-rgus-pct">0%</span><span id="m-rgus-lbl">of 123</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rgus-bar"></div><div class="goal-bar-over" id="m-rgus-over"></div></div><span class="stat-pace" id="m-rgus-pace"></span></div>
+    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span>of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
+    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="m-tv">0</div><div class="stat-pct"><span class="pct-val warn" id="m-tv-pct">0%</span><span>of 23</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-tv-bar"></div><div class="goal-bar-over" id="m-tv-over"></div></div><span class="stat-pace" id="m-tv-pace"></span></div>
+    <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="m-chsi">0</div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span>of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
+    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="m-cdv">0</div><div class="stat-pct"><span class="pct-val warn" id="m-cdv-pct">0%</span><span>of 3</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-cdv-bar"></div><div class="goal-bar-over" id="m-cdv-over"></div></div><span class="stat-pace" id="m-cdv-pace"></span></div>
+    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="m-xh">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xh-pct">0%</span><span>of 2</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xh-bar"></div><div class="goal-bar-over" id="m-xh-over"></div></div><span class="stat-pace" id="m-xh-pace"></span></div>
+    <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="m-calls">0</div><div class="stat-pct"><span class="pct-val" id="m-cr" style="color:var(--text3)">—</span><span>close rate</span></div></div>
+  </div>
+  <div class="stats-section-label" style="padding-top:6px">Today</div>
+  <div class="stats-row daily">
+    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-green" id="d-rev">$0</div><div class="stat-sub" id="d-rev-sub">—</div></div>
+    <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-green" id="d-rgus">0</div><div class="stat-sub" id="d-rgus-sub">—</div></div>
+    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="d-xm">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="d-tv">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="d-chsi">0</div><div class="stat-sub" id="d-chsi-sub">today</div></div>
+    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="d-cdv">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="d-xh">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="d-calls">0</div><div class="stat-sub" id="d-calls-sub">no calls yet</div></div>
+  </div>
+</div>
+<div class="pace-summary" id="pace-summary">
+  <div id="pace-cal"></div>
+</div>
+<div class="main">
+  <div class="form-card">
+    <div class="form-header"><div class="form-header-title">Log New Call</div><div class="form-hint">Enter ↵ to submit</div></div>
+    <div class="form-body">
+      <!-- ── Row 1: Products · Outcome · Play · Callback — centered ── -->
+      <div class="form-row-center">
+        <div class="frow-top">
+          <div class="xm-wrap"><label>XM Lines</label><div class="xm-stepper" id="xm-stepper"><button class="xm-btn" type="button" onclick="setXm(xmVal-1)">−</button><div class="xm-val" id="xm-val">0</div><button class="xm-btn" type="button" onclick="setXm(xmVal+1)">+</button></div></div>
+          <div class="checks-group">
+            <div class="check-wrap"><label>TV</label><div class="chk" id="chk-tv" onclick="toggleProd('tv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+            <div class="check-wrap"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+            <div class="check-wrap"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+            <div class="check-wrap"><label>XH</label><div class="chk" id="chk-xh" onclick="toggleProd('xh')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+          </div>
+          <div class="v-div"></div>
+          <div class="field"><label>Call Outcome</label><select class="outcome-select" id="f-reason" onchange="onReasonChange()"><option value="">— select outcome —</option><option>NO SALE MADE</option><option>IE (.75)</option><option>BULK</option><option>BILLING</option><option>TECH SUPPORT</option><option>NOT SERVICEABLE</option><option>DROP ISSUES</option><option>DISCONNECTED</option><option>INVALID XFER</option><option>DEAD AIR</option><option>HAS ALL SERVICES</option><option>XM PORT OUT</option><option>HS TICKET</option><option>TECH (SAME DAY)</option><option>OTHER</option></select></div>
+          <div class="play-indicator"><div class="play-name" id="play-name"></div><div class="play-services" id="play-svcs"></div></div>
+          <div class="v-div"></div>
+          <div class="cback-wrap cback-wrap-r1"><label>Call Back</label><div class="cback-toggle" id="cb-toggle" onclick="toggleCb()">📞</div></div>
+        </div>
+      </div>
+      <!-- ── Row 2: Notes + Submit — same center width as row 1 ── -->
+      <div class="form-row-center">
+        <div class="frow-notes">
+          <div class="notes-wrap">
+            <label id="notes-lbl">Notes <span id="notes-badge" class="opt-badge">optional</span></label>
+            <textarea id="f-notes" placeholder="Optional…"></textarea>
+          </div>
+          <div class="frow-notes-actions">
+            <div class="cback-wrap cback-wrap-r2"><label>Call Back</label><div class="cback-toggle" id="cb-toggle-r2" onclick="toggleCb()">📞</div></div>
+            <button class="submit-btn" id="submit-btn" onclick="logCall()"><div class="btn-dot"></div>Log Call</button>
+          </div>
+        </div>
+      </div>
+      <div id="cb-row">
+        <div class="cb-divider"><div class="cb-divider-line"></div><div class="cb-divider-label">Call Back details</div><div class="cb-divider-line"></div></div>
+        <div class="form-row-center"><div class="cb-fields">
+          <div class="cb-field cb-field-name">
+            <label>Name <span class="req-badge-p">required</span></label>
+            <input class="cb-name" id="f-cb-name" placeholder="First Last" autocomplete="off">
+          </div>
+          <div class="cb-field cb-field-phone">
+            <label>Phone # <span class="req-badge-p">required</span></label>
+            <input class="cb-phone" id="f-cb-phone" placeholder="(555) 867-5309" maxlength="14" autocomplete="off">
+          </div>
+          <div class="cb-field">
+            <label>Call Back Time <span class="req-badge-p">required</span></label>
+            <input type="datetime-local" class="cb-dt" id="f-cb-dt">
+          </div>
+        </div></div>
+      </div>
+      <div id="sale-row">
+        <div class="sale-divider"><div class="sale-divider-line"></div><div class="sale-divider-label">Sale details</div><div class="sale-divider-line"></div></div>
+        <div class="form-row-center"><div class="frow">
+          <div class="field"><label>Acct / Loc / Ticket # <span class="req-badge">required</span></label><input class="w-acct" id="f-acct" placeholder="8529114…" autocomplete="off" spellcheck="false"></div>
+          <div class="field"><label>Sched Date</label><input type="date" class="w-sched" id="f-sched"></div>
+          <div class="field"><label>Rev ($)</label><input type="text" class="w-rev" id="f-rev" placeholder="$0.00" style="padding:0 8px;font-family:var(--mono);font-size:13px" oninput="fmtRevInput(this)" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)"></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">Call Log <span style="font-size:10px;color:var(--text3);font-weight:400;margin-left:6px">— click any row to edit</span></div>
+      <div class="table-actions"><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Sched</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th><th>Call Back</th><th>Notes</th></tr></thead>
+      <tbody id="log-body"><tr><td colspan="8" class="empty">No calls logged yet — fill in the form above to get started</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</div><!-- end panel-tracker -->
+
+<!-- ══ TAB: TRENDS ══ -->
+<div class="tab-panel" id="panel-trends">
+  <div class="main">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">Daily Call Volume</div></div>
+        <div style="padding:16px 18px"><canvas id="chart-volume" height="180"></canvas></div>
+      </div>
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">Close Rate by Day</div></div>
+        <div style="padding:16px 18px"><canvas id="chart-closerate" height="180"></canvas></div>
+      </div>
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">Revenue Pace (Cumulative)</div></div>
+        <div style="padding:16px 18px"><canvas id="chart-revenue" height="180"></canvas></div>
+      </div>
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">RGU Mix Breakdown</div></div>
+        <div style="padding:16px 18px"><canvas id="chart-rgumix" height="180"></canvas></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-header"><div class="form-header-title">Call Outcome Breakdown</div></div>
+      <div style="padding:16px 18px;display:flex;gap:20px;align-items:center">
+        <canvas id="chart-outcomes" width="200" height="200" style="flex-shrink:0"></canvas>
+        <div id="outcome-legend" style="display:flex;flex-direction:column;gap:6px;flex:1;font-size:12px;font-family:var(--mono);color:var(--text2)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: JOB AIDS ══ -->
+<div class="tab-panel" id="panel-jobaid">
+  <div class="main">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">🎮 Play Definitions</div></div>
+        <div style="padding:0">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="background:var(--card2);border-bottom:1px solid var(--border)">
+              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Play</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Services</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:right">RGUs</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--green)">Single Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Any 1 service</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">1</td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">Double Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Any 2 services</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">2</td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--teal)">Triple Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Any 3 services</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">3</td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--amber)">Quad Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Any 4 services</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">4</td></tr>
+              <tr><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--purple)">5-Play</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">All 5 services</td><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text2);text-align:right">5</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">📡 Service Codes</div></div>
+        <div style="padding:0">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="background:var(--card2);border-bottom:1px solid var(--border)">
+              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Code</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Service</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Note</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--teal)">XM</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Xfinity Mobile</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">Lines counted individually</td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">TV</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Xfinity TV / X1</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">1 RGU per account</td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">CHSI</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Internet</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">IE = 0.75 RGU</td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">CDV</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Voice / Home Phone</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">1 RGU per account</td></tr>
+              <tr><td style="padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">XH</td><td style="padding:9px 14px;font-size:12px;color:var(--text2)">Xfinity Home</td><td style="padding:9px 14px;font-size:11px;color:var(--text3)">Security / automation</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">📋 No-Sale Outcomes</div></div>
+        <div style="padding:0">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="background:var(--card2);border-bottom:1px solid var(--border)">
+              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Outcome</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">When to Use</th>
+            </tr></thead>
+            <tbody id="jobaid-outcomes-table"><tr><td colspan="2" style="padding:20px;text-align:center;color:var(--text3);font-size:12px">Loading outcomes…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-header"><div class="form-header-title">💡 Sales Tips</div></div>
+        <div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--green)">
+            <div style="font-size:18px;flex-shrink:0">🎯</div>
+            <div><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px">Lead with value, not price</div><div style="font-size:11px;color:var(--text3);line-height:1.5">Open with what the customer gains — speed, reliability, savings — before quoting a number.</div></div>
+          </div>
+          <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--blue)">
+            <div style="font-size:18px;flex-shrink:0">📱</div>
+            <div><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px">Always stack XM</div><div style="font-size:11px;color:var(--text3);line-height:1.5">Xfinity Mobile is the easiest add-on. Ask "how many lines does your household use?" every call.</div></div>
+          </div>
+          <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--teal)">
+            <div style="font-size:18px;flex-shrink:0">🔁</div>
+            <div><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px">Overcome the "I'll think about it"</div><div style="font-size:11px;color:var(--text3);line-height:1.5">Anchor to a specific concern: "What specifically would you want to think over?" — then address it directly.</div></div>
+          </div>
+          <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--amber)">
+            <div style="font-size:18px;flex-shrink:0">📅</div>
+            <div><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px">Schedule before you hang up</div><div style="font-size:11px;color:var(--text3);line-height:1.5">A call-back without a time is a dead lead. Lock in a specific day and time before ending the call.</div></div>
+          </div>
+          <div style="display:flex;gap:10px;padding:10px 12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--purple)">
+            <div style="font-size:18px;flex-shrink:0">⚡</div>
+            <div><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px">Use the IE window</div><div style="font-size:11px;color:var(--text3);line-height:1.5">Introductory Eligible customers get a .75 CHSI RGU — still a win. Log it correctly and move on.</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: DISPUTES ══ -->
+<div class="tab-panel" id="panel-disputes">
+  <div class="main">
+
+    <div class="form-card">
+      <div class="form-header"><div class="form-header-title">📋 How It Works</div></div>
+      <div style="display:flex;border-top:1px solid var(--border)">
+        <div style="flex:1;padding:14px 16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center">1</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text)">Upload Excel / CSV</div>
+          <div style="font-size:11px;color:var(--text3);line-height:1.5">Export your completed orders from the system. Supports .xlsx, .xls, and .csv.</div>
+        </div>
+        <div style="flex:1;padding:14px 16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center">2</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text)">Map Acct # Column</div>
+          <div style="font-size:11px;color:var(--text3);line-height:1.5">Pick which column in the export contains the account number to match against your log.</div>
+        </div>
+        <div style="flex:1;padding:14px 16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center">3</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text)">Select Fiscal Month</div>
+          <div style="font-size:11px;color:var(--text3);line-height:1.5">Choose the 22nd–22nd period. Only sales scheduled in that window are compared.</div>
+        </div>
+        <div style="flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center">4</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text)">Review & Download</div>
+          <div style="font-size:11px;color:var(--text3);line-height:1.5">Results appear inline — every logged sale marked Found or Missing. Download CSV to file a dispute.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-header">
+        <div class="form-header-title">⚙ Reconciliation Setup</div>
+        <span id="recon-status" style="font-size:11px;font-family:var(--mono);color:var(--text3)"></span>
+      </div>
+      <div class="form-body">
+        <div class="frow">
+          <div class="field" style="flex:1;min-width:260px">
+            <label>Excel / CSV Export File</label>
+            <input type="file" id="recon-file" accept=".xlsx,.xls,.csv" onchange="onReconFile(this)" style="background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;height:38px;font-size:12px;color:var(--text2);cursor:pointer">
+          </div>
+          <div class="field" style="min-width:220px">
+            <label>Fiscal Month</label>
+            <select id="recon-fiscal" onchange="checkReconReady()" style="background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);height:38px;outline:none;cursor:pointer">
+              <option value="">— select period —</option>
+            </select>
+          </div>
+          <div class="field" style="align-self:flex-end">
+            <button class="submit-btn" id="recon-run-btn" onclick="runReconciliation()" disabled style="opacity:.5;cursor:not-allowed">▶ Run Reconciliation</button>
+          </div>
+        </div>
+        <div id="recon-col-section" style="display:none;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;display:none;flex-direction:column;gap:8px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Map Account # Column</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <select id="recon-acct-col" onchange="onReconColChange()" style="background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);height:34px;outline:none;cursor:pointer;min-width:200px">
+              <option value="">— select column —</option>
+            </select>
+            <span id="recon-col-preview" style="font-size:10px;color:var(--text3);font-family:var(--mono)"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card" id="recon-results-card" style="display:none">
+      <div class="form-header">
+        <div class="form-header-title">📊 Results</div>
+      </div>
+      <div id="recon-summary" style="display:flex;gap:20px;flex-wrap:wrap;padding:14px 18px;background:var(--card2);border-bottom:1px solid var(--border)"></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 18px;background:var(--card2);border-bottom:1px solid var(--border)">
+        <button class="export-btn" onclick="downloadReconCSV()">↓ Download Report CSV</button>
+        <div style="display:flex;gap:4px;margin-left:auto">
+          <button class="filter-tab-btn active" id="rtab-all" onclick="setReconTab('all')">All</button>
+          <button class="filter-tab-btn" id="rtab-missing" onclick="setReconTab('missing')">Missing Only</button>
+          <button class="filter-tab-btn" id="rtab-found" onclick="setReconTab('found')">Found Only</button>
+        </div>
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr style="background:var(--card2);border-bottom:1px solid var(--border)">
+          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left;white-space:nowrap">Date Logged</th>
+          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Acct #</th>
+          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Play</th>
+          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">RGUs</th>
+          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Revenue</th>
+          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Sched</th>
+          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Status</th>
+        </tr></thead>
+        <tbody id="recon-table-body"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const GOALS={rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2};
+const TOKENS = ['🎩','🚂','🐶','🐱','⚓','👞','🚗','💎','🎲','⭐','🔥','⚡','🏆','👑','🦊','🐸','🍀','🌟','🪙','🎯'];
+let calToken = localStorage.getItem('xcl_token') || '🎩';
+const RGU_GOAL=GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;
+function getRguGoal(){return GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;}
+const PLAY_NAMES=['','Single Play','Double Play','Triple Play','Quad Play','5-Play'];
+const LOCKED_OUTCOMES=['NO SALE MADE','IE (.75)','BULK'];
+const DEFAULT_OUTCOMES=[...LOCKED_OUTCOMES,'BILLING','TECH SUPPORT','NOT SERVICEABLE','DROP ISSUES','DISCONNECTED','INVALID XFER','DEAD AIR','HAS ALL SERVICES','XM PORT OUT','HS TICKET','TECH (SAME DAY)','OTHER'];
+let OUTCOMES=[...DEFAULT_OUTCOMES];
+const ALERT_MIN=15;
+document.getElementById('m-rgus-lbl').textContent='of '+getRguGoal();
+let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all';
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});},1000);
+function checkAlerts(){
+  const now=Date.now();if(now<alertDismissed)return;
+  // fire if within ANY of the selected alert windows
+  const windows=window._alertWindows||[15];
+  const maxWindow=Math.max(...windows);
+  const a=calls.filter(c=>{
+    if(!c.cbTime||c.cbDone)return false;
+    const ms=new Date(c.cbTime).getTime()-now;
+    if(ms<0)return true; // always show overdue
+    return windows.some(w=>ms<=w*60000);
+  });
+  if(!a.length){document.getElementById('alert-bar').classList.remove('visible');return;}
+  document.getElementById('alert-items').innerHTML=a.map(c=>{
+    const ms=new Date(c.cbTime).getTime()-now,ov=ms<0,m=Math.abs(Math.round(ms/60000));
+    const thresh=ov?null:windows.filter(w=>ms<=w*60000).sort((x,y)=>x-y)[0];
+    const label=ov?m+'m overdue':(thresh?'in '+m+'m ('+thresh+'m alert)':'in '+m+'m');
+    const name=c.cbName||c.cbPhone||c.acct||'Unknown';
+    return`<div class="alert-item" onclick="openCallFromAlert(${c.id})" title="Click to open call log">` +
+      `<span class="alert-item-time">${label}</span>` +
+      `<span>${name}${c.notes?' — '+c.notes:''}</span>` +
+      `<span style="margin-left:auto;font-size:10px;opacity:.5">↗ open</span>` +
+      `</div>`;
+  }).join('');
+  document.getElementById('alert-bar').classList.add('visible');render();
+}
+setInterval(checkAlerts,10000);
+document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});
+function fmtPhone(raw){const d=raw.replace(/\D/g,'').slice(0,10);if(d.length<4)return d;if(d.length<7)return`(${d.slice(0,3)}) ${d.slice(3)}`;return`(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;}
+function onPhoneInput(el){const pos=el.selectionStart,old=el.value,fmt=fmtPhone(old);el.value=fmt;const diff=fmt.length-old.length;el.setSelectionRange(pos+diff,pos+diff);}
+function rawPhone(v){return v.replace(/\D/g,'');}
+document.getElementById('f-cb-phone').addEventListener('input',function(){onPhoneInput(this);});
+
+function dismissAlerts(){alertDismissed=Date.now()+5*60000;document.getElementById('alert-bar').classList.remove('visible');}
+function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();updateSale();}
+function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();updateSale();}
+function isIE(){return document.getElementById('f-reason').value==='IE (.75)';}
+function syncProds(){const ie=isIE(),el=document.getElementById('chk-chsi');el.classList.remove('checked','ie-adj');if(prods.chsi)el.classList.add(ie?'ie-adj':'checked');['tv','cdv','xh'].forEach(k=>document.getElementById('chk-'+k).classList.toggle('checked',prods[k]));}
+function onReasonChange(){syncProds();colorReason();updatePlay();updateSale();}
+function colorReason(){const s=document.getElementById('f-reason');s.classList.remove('val-nosale','val-ie','val-bulk');if(s.value==='NO SALE MADE')s.classList.add('val-nosale');else if(s.value==='IE (.75)')s.classList.add('val-ie');else if(s.value==='BULK')s.classList.add('val-bulk');}
+function getSvcs(){const s=[];if(xmVal>0)s.push('XM');if(prods.tv)s.push('TV');if(prods.chsi)s.push('CHSI');if(prods.cdv)s.push('CDV');if(prods.xh)s.push('XH');return s;}
+function updatePlay(){const s=getSvcs(),pn=document.getElementById('play-name'),ps=document.getElementById('play-svcs');if(s.length){pn.textContent=PLAY_NAMES[Math.min(s.length,5)];ps.textContent=s.join(' · ');pn.classList.add('show');ps.classList.add('show');}else{pn.classList.remove('show');ps.classList.remove('show');}}
+function toggleCb(){cbOpen=!cbOpen;document.getElementById('cb-toggle').classList.toggle('active',cbOpen);const r2=document.getElementById('cb-toggle-r2');if(r2)r2.classList.toggle('active',cbOpen);document.getElementById('cb-row').classList.toggle('open',cbOpen);updateNotesState();if(cbOpen){const d=new Date(Date.now()+30*60000),pad=n=>String(n).padStart(2,'0');document.getElementById('f-cb-dt').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;setTimeout(()=>document.getElementById('f-cb-name').focus(),300);}else{['f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>document.getElementById(id).value='');}}
+function updateNotesState(){const b=document.getElementById('notes-badge'),ta=document.getElementById('f-notes');if(cbOpen){b.className='req-badge-p';b.textContent='required';ta.classList.add('cb-req-ta');ta.placeholder='Why is a call back needed?';}else{b.className='opt-badge';b.textContent='optional';ta.classList.remove('cb-req-ta');ta.placeholder='Optional…';}}
+function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
+function updateSale(){const s=isSale();document.getElementById('sale-row').classList.toggle('open',s);if(!s)['f-acct','f-sched','f-rev'].forEach(id=>document.getElementById(id).value='');else setTimeout(()=>document.getElementById('f-acct').focus(),50);}
+function compute(c){const ie=c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?c.playName:(c.reason||'');return c;}
+function buildAcct(raw,name,phone){const p=[];if(raw)p.push(raw);if(name)p.push(name);if(phone)p.push('CB:'+phone);return p.join(' | ');}
+function flash(id,rb=''){const el=document.getElementById(id);if(!el)return;el.style.borderColor='var(--red)';el.style.boxShadow='0 0 0 3px rgba(248,113,113,.2)';el.focus();setTimeout(()=>{el.style.borderColor=rb;el.style.boxShadow='';},2500);}
+function logCall(){
+  if(isSale()&&!document.getElementById('f-acct').value.trim()){flash('f-acct');return;}
+  if(cbOpen){if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}}
+  const cbName=cbOpen?document.getElementById('f-cb-name').value.trim():'';const cbPhone=cbOpen?document.getElementById('f-cb-phone').value.trim():'';const cbTime=cbOpen?document.getElementById('f-cb-dt').value:'';const raw=document.getElementById('f-acct').value.trim();
+  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,rev:getRevVal(),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,reason:document.getElementById('f-reason').value,notes:document.getElementById('f-notes').value.trim()});
+  calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
+  const btn=document.getElementById('submit-btn');btn.classList.add('ok');btn.innerHTML='<div class="btn-dot"></div>Logged!';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<div class="btn-dot"></div>Log Call';},800);
+}
+function resetForm(){['f-acct','f-sched','f-rev','f-reason','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>document.getElementById(id).value='');setXm(0);Object.keys(prods).forEach(k=>{prods[k]=false;document.getElementById('chk-'+k).classList.remove('checked','ie-adj');});document.getElementById('f-reason').classList.remove('val-nosale','val-ie','val-bulk');cbOpen=false;document.getElementById('cb-toggle').classList.remove('active');document.getElementById('cb-row').classList.remove('open');document.getElementById('sale-row').classList.remove('open');updateNotesState();updatePlay();}
+function openEdit(id,fromAlert){if(editingId===id)return;editingId=id;window._editFromAlert=!!fromAlert;const c=calls.find(x=>x.id===id);editState={xm:c.xm,tv:c.tv,chsi:c.chsi,cdv:c.cdv,xh:c.xh};document.querySelector('.main').classList.add('editing');render();setTimeout(()=>{const r=document.querySelector('tr.edit-row');if(r){if(!fromAlert){r.scrollIntoView({block:'nearest',behavior:'smooth'});}const f=r.querySelector('input:not([type=checkbox]):not([type=datetime-local]),select');if(f)f.focus();}},50);}
+function closeEdit(){
+  editingId=null;editState={};window._editFromAlert=false;
+  document.querySelector('.main').classList.remove('editing');
+  render();
+}
+function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=document.getElementById('e-acct').value.trim();c.cbName=document.getElementById('e-cb-name').value.trim();c.cbPhone=document.getElementById('e-cb-phone').value.trim();c.acct=buildAcct(c.acctRaw,c.cbName,c.cbPhone);c.sched=document.getElementById('e-sched').value;c.rev=parseFloat(document.getElementById('e-rev').value)||0;c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=document.getElementById('e-reason').value;c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.cbDone=document.getElementById('e-cb-done').checked;c.ieAdj=c.chsi&&c.reason==='IE (.75)';compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();}
+function delCall(id){if(editingId===id)closeEdit();deleteCallFromSheets(id);calls=calls.filter(c=>c.id!==id);render();updateStats();}
+function markCbDone(id){const c=calls.find(x=>x.id===id);if(c){c.cbDone=true;const el=document.getElementById('e-cb-done');if(el)el.checked=true;render();checkAlerts();upsertCallToSheets(c);}}
+function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}}
+function eToggleProd(k){editState[k]=!editState[k];const el=document.getElementById('e-chk-'+k);if(!el)return;const ie=k==='chsi'&&(document.getElementById('e-reason')?.value||'')==='IE (.75)';el.className='e-chk'+(k==='chsi'?(editState.chsi?(ie?' ie':' on'):''):(editState[k]?' on':''));}
+function eReasonChange(){const re=document.getElementById('e-reason'),ce=document.getElementById('e-chk-chsi');if(!re||!ce)return;if(editState.chsi)ce.className='e-chk'+(re.value==='IE (.75)'?' ie':' on');}
+function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
+function fmtCb(iso){if(!iso)return'';const d=new Date(iso);return d.toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}
+function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=new Date(c.cbTime).getTime()-Date.now();if(ms<0)return'overdue';const maxW=Math.max(...(window._alertWindows||[15]));if(ms<maxW*60000)return'due-soon';return'pending';}
+function pillCls(c){if(c.hasSale)return'p-sale';if(c.callOutcome==='NO SALE MADE')return'p-nosale';if(c.callOutcome==='IE (.75)')return'p-ie';if(c.callOutcome==='BULK')return'p-bulk';if(['BILLING','TECH SUPPORT','TECH (SAME DAY)','DROP ISSUES','DISCONNECTED'].includes(c.callOutcome))return'p-tech';return'p-other';}
+function pillTxt(c){if(c.hasSale)return c.xm>0?`${c.playName} (${c.xm} XM)`:c.playName;return c.callOutcome==='NO SALE MADE'?'NO SALE':(c.callOutcome||'—');}
+function outcomeOpts(sel=''){return`<option value="">— select outcome —</option>`+OUTCOMES.map(v=>`<option${sel===v?' selected':''}>${v}</option>`).join('');}
+function renderReadRow(c){const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(0)}</span>`:`<span class="td-nil">—</span>`;const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;const st=cbStatus(c);let cb='<span class="td-nil">—</span>';if(st==='done')cb=`<span class="cb-badge done">${fmtCb(c.cbTime)}</span>`;else if(st==='overdue')cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;else if(st==='due-soon')cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;else if(st==='pending')cb=`<span class="cb-badge">${fmtCb(c.cbTime)}</span>`;const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'?' has-callback':'');return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}">${c.acct||'—'}</td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;}
+function renderEditRow(c){
+  const es=editState;
+  const pb=(k,l)=>{
+    const on=es[k],ie=k==='chsi'&&es.chsi&&(document.getElementById('e-reason')?.value||c.reason)==='IE (.75)';
+    const cls='e-chk'+(k==='chsi'?(es.chsi?(ie?' ie':' on'):''):(on?' on':''));
+    return`<div class="e-prod-check"><div class="e-prod-label">${l}</div><div class="${cls}" id="e-chk-${k}" onclick="eToggleProd('${k}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>`;
+  };
+  const st=cbStatus(c),doneBtn=st&&st!=='done'?`<button class="e-btn cbdone" onclick="markCbDone(${c.id})">✓ Done</button>`:'';
+
+  return`<tr class="edit-row"><td colspan="8" style="padding:0">
+
+  <div style="display:flex;border-bottom:1px solid var(--border)">
+
+    <!-- Notes ~232px -->
+    <div style="flex:0 0 275px;padding:8px 10px;border-right:1px solid var(--border);box-sizing:border-box;display:flex;flex-direction:column;gap:4px;min-width:0">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">📝 Notes</div>
+      <textarea id="e-notes" style="flex:1;width:100%;background:var(--surface);border:2px solid rgba(167,139,250,.4);border-radius:6px;padding:5px 7px;font-family:var(--sans);font-size:11px;color:var(--text);outline:none;resize:none;min-height:90px;box-sizing:border-box" onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='rgba(167,139,250,.4)'" placeholder="Notes…">${c.notes||''}</textarea>
+    </div>
+
+    <!-- Details: remaining width -->
+    <div style="flex:1;padding:8px 10px;box-sizing:border-box;display:flex;flex-direction:column;gap:5px;min-width:0;overflow:hidden">
+
+      <!-- Row 1: Outcome + Acct -->
+      <div style="display:flex;gap:5px;align-items:flex-end">
+        <div style="display:flex;flex-direction:column;gap:3px;width:160px;flex-shrink:0">
+          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Outcome</div>
+          <select id="e-reason" class="e-select" onchange="eReasonChange()" style="width:160px;font-size:11px">${outcomeOpts(c.reason)}</select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;width:190px;flex-shrink:0">
+          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">CB Time</div>
+          <input id="e-cb-dt" class="e-input" type="datetime-local" value="${c.cbTime||''}" style="width:190px;height:28px;font-size:10px;border-color:rgba(167,139,250,.35)">
+        </div>
+      </div>
+
+      <!-- Row 2: Products + Sched + Rev -->
+      <div style="display:flex;gap:5px;align-items:flex-end;flex-wrap:nowrap">
+        <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
+          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Products</div>
+          <div class="e-products" style="gap:4px">
+            <div class="e-prod-check"><div class="e-prod-label">XM</div>
+              <div id="e-xm-wrap" style="display:flex;align-items:center;height:28px;border-radius:5px;overflow:hidden;border:1px solid ${es.xm>0?'var(--teal)':'var(--border2)'};background:${es.xm>0?'var(--teal-lt)':'var(--surface)'}">
+                <button style="width:20px;height:100%;border:none;background:none;cursor:pointer;color:var(--text2);font-size:12px;display:flex;align-items:center;justify-content:center" type="button" onclick="eStepXm(-1)">−</button>
+                <div id="e-xm-val" style="min-width:18px;text-align:center;font-family:var(--mono);font-size:12px;font-weight:500;color:var(--teal)">${es.xm}</div>
+                <button style="width:20px;height:100%;border:none;background:none;cursor:pointer;color:var(--text2);font-size:12px;display:flex;align-items:center;justify-content:center" type="button" onclick="eStepXm(1)">+</button>
+              </div>
+            </div>
+            ${pb('tv','TV')}${pb('chsi','CHSI')}${pb('cdv','CDV')}${pb('xh','XH')}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
+          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Sched</div>
+          <div style="position:relative;width:90px">
+              <input id="e-sched-display" class="e-input" type="text" readonly
+                value="${c.sched?((d=>d.getMonth()+1+'/'+(d.getDate())+'/'+(String(d.getFullYear()).slice(-2)))(new Date(c.sched+'T00:00:00'))):''}"
+                placeholder="MM/DD/YY"
+                style="width:90px;font-size:11px;font-family:var(--mono);cursor:pointer;caret-color:transparent"
+                onclick="document.getElementById('e-sched').click()">
+              <input id="e-sched" type="date" value="${c.sched||''}"
+                style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer"
+                onchange="(function(v){const d=new Date(v+'T00:00:00');document.getElementById('e-sched-display').value=v?((d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(-2)):'';})(this.value)">
+            </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;width:75px">
+          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Revenue ($)</div>
+          <input id="e-rev" class="e-input" type="number" min="0" step="1" value="${c.rev||''}" style="width:75px;padding:5px 6px;font-family:var(--mono);font-size:11px" placeholder="0">
+        </div>
+      </div>
+
+      <!-- Row 3: CB fields -->
+      <div style="display:flex;gap:5px;align-items:flex-end;padding-top:3px;border-top:1px solid var(--border)">
+        <div style="font-size:12px;align-self:center;flex-shrink:0;padding-bottom:2px">📞</div>
+        <div style="display:flex;flex-direction:column;gap:3px;width:70px;flex-shrink:0">
+          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">Name</div>
+          <input id="e-cb-name" class="e-input e-text" value="${c.cbName||''}" placeholder="Name" style="width:70px;font-size:11px;height:28px;border-color:rgba(167,139,250,.35)">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;width:96px;flex-shrink:0">
+          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">Phone</div>
+          <input id="e-cb-phone" class="e-input" value="${c.cbPhone||''}" placeholder="(555) 000-0000" maxlength="14" style="width:96px;height:28px;padding:0 5px;font-family:var(--mono);font-size:10px;text-align:center;border-color:rgba(167,139,250,.35);box-sizing:border-box" oninput="onPhoneInput(this)">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;width:130px;flex-shrink:0">
+          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Acct / Ticket</div>
+          <input id="e-acct" class="e-input" value="${c.acctRaw||''}" placeholder="Acct#" style="width:130px;font-size:11px;font-family:var(--mono)">
+        </div>
+        <label style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);cursor:pointer;padding-bottom:3px;flex-shrink:0;white-space:nowrap">
+          <input type="checkbox" id="e-cb-done" ${c.cbDone?'checked':''} style="accent-color:var(--green);width:13px;height:13px"> Done
+        </label>
+        ${doneBtn}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Action bar -->
+  <div class="edit-action-bar">
+    <button class="e-btn save" onclick="saveEdit(${c.id})">✓ Save</button>
+    <button class="e-btn cancel" onclick="closeEdit()">Cancel</button>
+    <button class="e-btn del" onclick="delCall(${c.id})">Delete</button>
+    <span class="hint">Esc to cancel · Enter to save</span>
+  </div>
+
+</td></tr>`;}
+
+/* ── Log filter ── */
+function buildFilterOptions(){
+  const sel=document.getElementById('log-filter');
+  if(!sel)return;
+  // Static options
+  const statics=[
+    {value:'all',label:'All Calls'},
+    {value:'today',label:'Today'},
+    {value:'yesterday',label:'Yesterday'},
+    {value:'this-week',label:'This Week'},
+    {value:'last-week',label:'Last Week'},
+  ];
+  // Fiscal months: generate up to 6 months back from now
+  const fiscalMonths=[];
+  const now=new Date();
+  for(let i=0;i<6;i++){
+    // fiscal month i months ago
+    let ref=new Date(now.getFullYear(),now.getMonth()-i,1);
+    let fs,fe;
+    // determine the fiscal period containing mid-month of ref
+    let day=i===0?now.getDate():15; // current month use today, past use mid
+    if(i===0&&now.getDate()>=22){
+      fs=new Date(now.getFullYear(),now.getMonth(),22);
+      fe=new Date(now.getFullYear(),now.getMonth()+1,22);
+    } else {
+      let yr=ref.getFullYear(),mo=ref.getMonth();
+      fs=new Date(yr,mo-1,22);
+      fe=new Date(yr,mo,22);
+    }
+    // Skip future fiscal months
+    if(fs>now) continue;
+    const key='fiscal-'+fs.getTime();
+    const label=fs.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+
+      new Date(fe.getTime()-86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    // Avoid duplicates
+    if(!fiscalMonths.find(f=>f.value===key)){
+      fiscalMonths.push({value:key,label:'FM: '+label,fs:fs.getTime(),fe:fe.getTime()});
+    }
+  }
+  sel.innerHTML='';
+  statics.forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.textContent=o.label;sel.appendChild(opt);});
+  if(fiscalMonths.length){
+    const grp=document.createElement('optgroup');grp.label='Fiscal Months';
+    fiscalMonths.forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.dataset.fs=o.fs;opt.dataset.fe=o.fe;opt.textContent=o.label;grp.appendChild(opt);});
+    sel.appendChild(grp);
+  }
+  sel.value=activeFilter;
+  sel.classList.toggle('active',activeFilter!=='all');
+}
+
+function getFilteredCalls(){
+  if(activeFilter==='all') return calls;
+  const now=new Date();
+  const sod=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
+  const eod=d=>{const x=new Date(d);x.setHours(23,59,59,999);return x;};
+  const today=sod(now);
+  let from,to;
+  if(activeFilter==='today'){from=today;to=eod(now);}
+  else if(activeFilter==='yesterday'){const y=new Date(today);y.setDate(y.getDate()-1);from=y;to=eod(y);}
+  else if(activeFilter==='this-week'){from=sod(now);from.setDate(from.getDate()-from.getDay());to=eod(now);}
+  else if(activeFilter==='last-week'){const lws=new Date(today);lws.setDate(lws.getDate()-lws.getDay()-7);const lwe=new Date(lws);lwe.setDate(lwe.getDate()+6);from=lws;to=eod(lwe);}
+  else if(activeFilter.startsWith('fiscal-')){
+    const sel=document.getElementById('log-filter');
+    const opt=sel?[...sel.querySelectorAll('option')].find(o=>o.value===activeFilter):null;
+    if(opt&&opt.dataset.fs){from=new Date(+opt.dataset.fs);to=new Date(+opt.dataset.fe);}
+    else return calls;
+  }
+  else return calls;
+  return calls.filter(c=>c.ts>=from&&c.ts<=to);
+}
+
+function setLogFilter(val){
+  activeFilter=val;
+  const sel=document.getElementById('log-filter');
+  if(sel)sel.classList.toggle('active',val!=='all');
+  render();
+}
+
+function render(){const tb=document.getElementById('log-body');const filtered=getFilteredCalls();document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="8" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}if(editingId&&window._editFromAlert){const ec=filtered.find(c=>c.id===editingId);const oc=filtered.filter(c=>c.id!==editingId);tb.innerHTML=(ec?renderEditRow(ec):'')+oc.map(renderReadRow).join('');}else{tb.innerHTML=filtered.map(c=>c.id===editingId?renderEditRow(c):renderReadRow(c)).join('');}}
+
+function pctCls(p){return p>=1?'good':p>=.7?'ok':'warn';}
+
+function statGradient(p, fiscalP){
+  // p = goal %, fiscalP = how far thru fiscal month
+  // Compare attainment vs time — gradient reflects pace
+  const ahead = p - fiscalP;
+  if(p >= 1){
+    // Hit goal — celebration gradient
+    return 'linear-gradient(90deg,var(--green),#4ade80)';
+  }
+  if(ahead >= 0.1){
+    // Well ahead — green gradient
+    return 'linear-gradient(90deg,var(--green),var(--teal))';
+  }
+  if(ahead >= 0){
+    // Slightly ahead — green to blue
+    return 'linear-gradient(90deg,var(--blue),var(--green))';
+  }
+  if(ahead >= -0.1){
+    // Slightly behind — blue to amber
+    return 'linear-gradient(90deg,var(--amber),var(--blue))';
+  }
+  if(ahead >= -0.25){
+    // Behind — amber to red
+    return 'linear-gradient(90deg,var(--red),var(--amber))';
+  }
+  // Significantly behind — red
+  return 'linear-gradient(90deg,#dc2626,var(--red))';
+}
+
+function statBgTint(p, fiscalP){
+  const ahead = p - fiscalP;
+  if(p >= 1) return 'rgba(34,197,94,0.22)';
+  if(ahead >= 0.05) return 'rgba(34,197,94,0.16)';
+  if(ahead >= -0.05) return 'rgba(59,130,246,0.14)';
+  if(ahead >= -0.15) return 'rgba(245,158,11,0.18)';
+  return 'rgba(248,113,113,0.22)';
+}
+
+function statGlow(p, fiscalP){
+  const ahead = p - fiscalP;
+  if(p >= 1) return '0 0 14px rgba(34,197,94,0.7)';
+  if(ahead >= 0.05) return '0 0 10px rgba(34,197,94,0.5)';
+  if(ahead >= -0.05) return '0 0 8px rgba(59,130,246,0.35)';
+  if(ahead >= -0.15) return '0 0 10px rgba(245,158,11,0.5)';
+  return '0 0 10px rgba(248,113,113,0.55)';
+}
+
+function setStat(pfx, val, goal){
+  const fp = getFiscalProgress();
+  const raw = goal > 0 ? val / goal : 0;
+  const pc  = Math.min(1, raw);
+
+  // Percent label — true value, no cap
+  const pe = document.getElementById(pfx+'-pct');
+  if(pe){
+    pe.textContent = Math.round(raw*100)+'%';
+    pe.className   = 'pct-val '+(raw>=1?'good':raw>=.7?'ok':'warn');
+    pe.style.color = raw>=1?'var(--green)':'';
+  }
+
+  // Green base bar fills up to 100%
+  const be = document.getElementById(pfx+'-bar');
+  if(be){
+    be.style.width      = Math.round(pc*100)+'%';
+    be.style.background = statGradient(pc, fp);
+    be.style.boxShadow  = statGlow(pc, fp);
+  }
+
+  // Blue overlay: grows from left, covers green as overage rises
+  // 100%→0 blue, 150%→50% blue, 200%→100% blue (fully overtakes)
+  const oe = document.getElementById(pfx+'-over');
+  if(oe){
+    if(raw > 1){
+      oe.style.width   = Math.min(100, Math.round((raw-1)*100))+'%';
+      oe.style.opacity = '1';
+    } else {
+      oe.style.width   = '0';
+      oe.style.opacity = '0';
+    }
+  }
+
+  // Cell background tint
+  const se = be ? be.closest('.stat') : null;
+  if(se) se.style.background = raw>=1 ? 'rgba(34,197,94,0.22)' : statBgTint(pc, fp);
+
+  // Pace icon
+  const pi = document.getElementById(pfx+'-pace');
+  if(pi){
+    if(raw>=1){ pi.textContent='✓'; pi.style.color='var(--green)'; }
+    else{
+      const a = pc - fp;
+      if(a>=0.05){      pi.textContent='▲'; pi.style.color='var(--green)'; }
+      else if(a<=-0.05){ pi.textContent='▼'; pi.style.color='var(--red)'; }
+      else{              pi.textContent='●'; pi.style.color='var(--amber)'; }
+    }
+  }
+}
+
+let statsView='orders';
+let _statsRevertTimer=null;
+function setStatsView(v){
+  statsView=v;
+  document.getElementById('btn-orders').classList.toggle('active',v==='orders');
+  document.getElementById('btn-installs').classList.toggle('active',v==='installs');
+  document.getElementById('btn-pipeline').classList.toggle('active',v==='pipeline');
+  const lbl=document.getElementById('stats-period-label');
+  if(lbl){
+    if(v==='pipeline'){const nf=getNextFiscalInfo();lbl.textContent='Next fiscal ('+nf.fiscalStart.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+new Date(nf.fiscalEnd-86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'})+')';}
+    else lbl.textContent='Month to date';
+  }
+  clearTimeout(_statsRevertTimer);
+  if(v!=='orders') _statsRevertTimer=setTimeout(()=>setStatsView('orders'),15000);
+  updateStats();
+}
+function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d=new Date(sched+'T00:00:00');const r=d>=fi.fiscalStart&&d<fi.fiscalEnd;return r;}
+function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=fi.fiscalEnd;const ne=new Date(ns.getFullYear(),ns.getMonth()+1,22);return{fiscalStart:ns,fiscalEnd:ne};}
+function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<nf.fiscalEnd;}
+function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls;const mRev=mc.reduce((s,c)=>s+c.rev,0),mRgus=mc.reduce((s,c)=>s+c.rgus,0),mXm=mc.reduce((s,c)=>s+c.xm,0),mTv=mc.filter(c=>c.tv).length,mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),mCdv=mc.filter(c=>c.cdv).length,mXh=mc.filter(c=>c.xh).length,mN=mc.length,mSales=mc.filter(c=>c.hasSale).length;document.getElementById('m-rev').textContent='$'+mRev.toLocaleString();document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,getRguGoal());document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString();document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}if(e.target.tagName!=='BUTTON')logCall();}});
+
+(function(){
+  var W=720, H=900;
+  var isPopup = window.opener || window.name === "xfinity_logger";
+  if(!isPopup){
+    var left = Math.round((screen.width - W) / 2);
+    var top  = Math.round((screen.height - H) / 2);
+    var popup = window.open(
+      window.location.href,
+      "xfinity_logger",
+      "width="+W+",height="+H+",left="+left+",top="+top+
+      ",menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=no"
+    );
+    if(popup){ window.close(); }
+  } else {
+    try{ document.documentElement.requestFullscreen(); }catch(e){}
+  }
+})();
+
+/* ── Settings ── */
+// Fiscal month: starts 22nd, so if today >= 22 we're in next calendar month's fiscal period
+function getFiscalMonth(){
+  const now=new Date();
+  const day=now.getDate();
+  const month=now.getMonth(); // 0-indexed
+  const year=now.getFullYear();
+  // If on or after the 22nd, fiscal month = next calendar month
+  let fiscalMonth, fiscalYear;
+  if(day>=22){
+    fiscalMonth=month+1; // could be 12 (Jan next year)
+    fiscalYear=year;
+    if(fiscalMonth===12){fiscalMonth=0;fiscalYear=year+1;}
+  } else {
+    fiscalMonth=month;
+    fiscalYear=year;
+  }
+  const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return names[fiscalMonth]+' '+fiscalYear;
+}
+const DEFAULTS={rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbxOwwNu4GuENLqy8NIyLIkn8EPIxKprI8-ZsgrIic_XLscg3Gv_RpFv_YE4fi1e1yFo/exec'};
+function loadSettings(){
+  const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
+  return Object.assign({},DEFAULTS,s);
+}
+function applySettings(s){
+  GOALS.rev=s.rev;GOALS.xm=s.xm;GOALS.tv=s.tv;GOALS.chsi=s.chsi;GOALS.cdv=s.cdv;GOALS.xh=s.xh;
+  const rgu=GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;
+  document.getElementById('m-rgus-lbl').textContent='of '+rgu;
+  document.getElementById('month-chip-label').textContent=getFiscalMonth();
+  window._alertWindows=Array.isArray(s.alertWindows)&&s.alertWindows.length?s.alertWindows:[15];
+  window._sheetsUrl=s.sheetsUrl||localStorage.getItem('xcl_sheets_url')||'';
+  if(window._sheetsUrl)localStorage.setItem('xcl_sheets_url',window._sheetsUrl);
+  if(Array.isArray(s.outcomes)&&s.outcomes.length){
+    OUTCOMES=[...new Set([...LOCKED_OUTCOMES,...s.outcomes.filter(o=>o)])];
+  }
+  // refresh outcome dropdowns in any open edit rows
+  document.querySelectorAll('.e-select').forEach(sel=>{
+    const cur=sel.value;
+    sel.innerHTML=outcomeOpts(cur);
+    sel.value=cur;
+  });
+  const fReason=document.getElementById('f-reason');
+  if(fReason){const cur=fReason.value;fReason.innerHTML='<option value="">— select outcome —</option>'+OUTCOMES.map(v=>`<option${cur===v?' selected':''}>${v}</option>`).join('');fReason.value=cur;}
+}
+
+
+function toggleSettings(){
+  const p=document.getElementById('settings-panel');
+  const ov=document.getElementById('settings-overlay');
+  const opening=!p.classList.contains('open');
+  if(!opening) saveSettings(); // auto-save on close
+  p.classList.toggle('open');
+  if(ov) ov.style.display=opening?'block':'none';
+  if(opening){
+    const s=loadSettings();
+    document.getElementById('s-rev').value=s.rev;
+    document.getElementById('s-xm').value=s.xm;
+    document.getElementById('s-tv').value=s.tv;
+    document.getElementById('s-chsi').value=s.chsi;
+    document.getElementById('s-cdv').value=s.cdv;
+    document.getElementById('s-xh').value=s.xh;
+    // populate alert window checkboxes
+    const aw=s.alertWindows||[15];
+    [5,10,15,20,30,60].forEach(v=>{
+      const el=document.getElementById('ao-'+v);
+      if(el)el.checked=aw.includes(v);
+    });
+    // populate outcome editor
+    renderOutcomeEditor(s.outcomes||[...DEFAULT_OUTCOMES]);
+    document.getElementById('s-sheets-url').value=s.sheetsUrl||localStorage.getItem('xcl_sheets_url')||'';
+    renderTokenGrid();
+    const cw=localStorage.getItem('xcl_width')||'wide';
+    document.getElementById('wb-regular').classList.toggle('active',cw==='regular');
+    document.getElementById('wb-wide').classList.toggle('active',cw==='wide');
+  }
+}
+function saveSettings(){
+  const s={
+    rev:parseFloat(document.getElementById('s-rev').value)||DEFAULTS.rev,
+    xm:parseInt(document.getElementById('s-xm').value)||DEFAULTS.xm,
+    tv:parseInt(document.getElementById('s-tv').value)||DEFAULTS.tv,
+    chsi:parseInt(document.getElementById('s-chsi').value)||DEFAULTS.chsi,
+    cdv:parseInt(document.getElementById('s-cdv').value)||DEFAULTS.cdv,
+    xh:parseInt(document.getElementById('s-xh').value)||DEFAULTS.xh,
+    alertWindows:(()=>{const sel=[5,10,15,20,30,60].filter(v=>{const el=document.getElementById('ao-'+v);return el&&el.checked;});return sel.length?sel:[15];})(),
+    outcomes:getOutcomeEditorValues(),
+    sheetsUrl:(()=>{const u=document.getElementById('s-sheets-url').value.trim();if(u)localStorage.setItem('xcl_sheets_url',u);return u;})(),
+  };
+  localStorage.setItem('xcl_settings',JSON.stringify(s));
+  saveColorSettings();
+  applySettings(s);
+  updateStats();
+  const btn=document.querySelector('.settings-save');
+  btn.textContent='✓ Saved!';btn.classList.add('saved');
+  setTimeout(()=>{btn.textContent='✓ Save Settings';btn.classList.remove('saved');},1200);
+}
+function resetSettings(){
+  localStorage.removeItem('xcl_settings');
+  applySettings(DEFAULTS);
+  updateStats();
+  toggleSettings();
+}
+const PRESETS = {
+  dark: {
+    '--blue':'#3b82f6','--green':'#22c55e','--amber':'#f59e0b','--purple':'#a78bfa',
+    '--teal':'#14b8a6','--red':'#f87171',
+    '--bg':'#0a0f1e','--surface':'#111827','--card':'#161e30','--card2':'#1c2638',
+    '--border':'#263147','--border2':'#2e3d56',
+    '--text':'#e2e8f0','--text2':'#94a3b8','--text3':'#64748b'
+  },
+  light: {
+    '--blue':'#2563eb','--green':'#16a34a','--amber':'#d97706','--purple':'#7c3aed',
+    '--teal':'#0d9488','--red':'#dc2626',
+    '--bg':'#f1f5f9','--surface':'#ffffff','--card':'#f8fafc','--card2':'#f1f5f9',
+    '--border':'#e2e8f0','--border2':'#cbd5e1',
+    '--text':'#0f172a','--text2':'#334155','--text3':'#64748b'
+  },
+  xfinity: {
+    '--blue':'#7b2fff','--green':'#6941e0','--amber':'#9b59f5','--purple':'#7b2fff',
+    '--teal':'#a78bfa','--red':'#f87171',
+    '--bg':'#ffffff','--surface':'#f5f3ff','--card':'#ede9fe','--card2':'#ddd6fe',
+    '--border':'#c4b5fd','--border2':'#a78bfa',
+    '--text':'#1e0a3c','--text2':'#4c1d95','--text3':'#6d28d9'
+  },
+  'xfinity-dark': {
+    '--blue':'#38bdf8','--green':'#4ade80','--amber':'#fde047','--purple':'#a78bfa',
+    '--teal':'#2dd4bf','--red':'#f87171',
+    '--bg':'#0c1a2e','--surface':'#0f2744','--card':'#163354','--card2':'#1a3d63',
+    '--border':'#1e4070','--border2':'#2a5490',
+    '--text':'#e0f2fe','--text2':'#7dd3fc','--text3':'#38bdf8'
+  }
+};
+
+function hexToRgb(hex){
+  const h=hex.replace('#','');
+  return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];
+}
+
+function liveColor(varName, value){
+  const el=document.documentElement;
+  el.style.setProperty(varName, value);
+  const [r,g,b]=hexToRgb(value);
+  const lt=`rgba(${r},${g},${b},0.12)`;
+  const glow=`rgba(${r},${g},${b},0.15)`;
+  const map={'--blue':['--blue-lt','--blue-glow'],'--green':['--green-lt'],'--amber':['--amber-lt'],'--red':['--red-lt'],'--purple':['--purple-lt'],'--teal':['--teal-lt']};
+  if(map[varName]) map[varName].forEach(v=>el.style.setProperty(v,v.includes('glow')?glow:lt));
+}
+
+function applyWidth(w){
+  const wide=w==='wide';
+  const px=wide?'1080px':'720px';
+  document.body.style.minWidth=px;
+  document.body.style.maxWidth=px;
+  const btn=document.getElementById('back-to-top');
+  if(btn)btn.style.right='calc(50% - '+(wide?524:344)+'px)';
+  localStorage.setItem('xcl_width',w);
+  document.getElementById('wb-regular').classList.toggle('active',!wide);
+  document.getElementById('wb-wide').classList.toggle('active',wide);
+}
+(function(){applyWidth(localStorage.getItem('xcl_width')||'wide');})();
+
+function applyPreset(name){
+  const p=PRESETS[name];
+  if(!p) return;
+  // Apply all vars in preset
+  Object.entries(p).forEach(([v,val])=>liveColor(v,val));
+  // Mark active preset button
+  document.querySelectorAll('.theme-preset').forEach(b=>b.style.outline='none');
+  const btn=document.getElementById('tp-'+name);
+  if(btn) btn.style.outline='2px solid var(--blue)';
+  // Update accent pickers
+  saveColorSettings(name);
+}
+
+
+function saveColorSettings(presetName){
+  const name=presetName||localStorage.getItem('xcl_preset')||'xfinity-dark';
+  localStorage.setItem('xcl_colors',JSON.stringify({preset:name}));
+  localStorage.setItem('xcl_preset',name);
+}
+
+function loadColorSettings(){
+  const presetName=localStorage.getItem('xcl_preset')||'xfinity-dark';
+  const base=PRESETS[presetName]||PRESETS.dark;
+  Object.entries(base).forEach(([v,val])=>liveColor(v,val));
+  setTimeout(()=>markActivePreset(presetName),50);
+}
+
+function markActivePreset(name){
+  document.querySelectorAll('.theme-preset').forEach(b=>b.classList.remove('tp-active'));
+  const btn=document.getElementById('tp-'+name);
+  if(btn) btn.classList.add('tp-active');
+}
+
+
+// Init on load
+(function(){
+  const s=loadSettings();
+  applySettings(s);
+  // refresh fiscal label at midnight
+  function msToMidnight(){const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);return m-n;}
+  function schedFiscalRefresh(){setTimeout(()=>{document.getElementById('month-chip-label').textContent=getFiscalMonth();schedFiscalRefresh();},msToMidnight());}
+  loadColorSettings();
+  schedFiscalRefresh();
+  setTimeout(loadFromSheets, 500);
+  window.addEventListener('scroll',function(){
+    const btn=document.getElementById('back-to-top');
+    if(btn) btn.classList.toggle('visible', window.scrollY > 200);
+  },{passive:true});
+})();
+
+(function(){
+  const seed3=[];
+  seed3.forEach(function(c){c.ts=new Date(c.ts);calls.push(c);});
+  calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
+  render();updateStats();buildFilterOptions();
+})();
+
+
+/* ── Outcome editor ── */
+let _dragSrc=null;
+function renderOutcomeEditor(outcomes){
+  const ed=document.getElementById('outcome-editor');
+  if(!ed)return;
+  // ensure locked are always first
+  const all=[...new Set([...LOCKED_OUTCOMES,...outcomes.filter(o=>o&&!LOCKED_OUTCOMES.includes(o))])];
+  ed.innerHTML=all.map((o,i)=>{
+    const locked=LOCKED_OUTCOMES.includes(o);
+    return`<div class="outcome-item${locked?' locked':''}" draggable="${locked?'false':'true'}"
+      data-val="${o.replace(/"/g,'&quot;')}"
+      ondragstart="if(!this.classList.contains('locked')){_dragSrc=this;this.style.opacity='.4'}"
+      ondragend="this.style.opacity='';_dragSrc=null"
+      ondragover="event.preventDefault()"
+      ondrop="dropOutcome(event,this)">
+      <span class="outcome-item-handle">${locked?'🔒':'⠿'}</span>
+      <input class="outcome-item-text" value="${o}" ${locked?'readonly':''} onblur="this.setAttribute('data-val',this.value);this.closest('.outcome-item').dataset.val=this.value">
+      <button class="outcome-item-del" onclick="this.closest('.outcome-item').remove()" title="Remove">×</button>
+    </div>`;
+  }).join('');
+}
+function dropOutcome(e,target){
+  e.preventDefault();
+  if(!_dragSrc||_dragSrc===target)return;
+  if(target.classList.contains('locked'))return;
+  const ed=document.getElementById('outcome-editor');
+  const items=[...ed.querySelectorAll('.outcome-item')];
+  const srcIdx=items.indexOf(_dragSrc);
+  const tgtIdx=items.indexOf(target);
+  if(tgtIdx<LOCKED_OUTCOMES.length)return; // can't drag before locked
+  ed.insertBefore(_dragSrc,tgtIdx>srcIdx?target.nextSibling:target);
+}
+function addOutcomeItem(){
+  const inp=document.getElementById('outcome-new-input');
+  const val=inp.value.trim();
+  if(!val)return;
+  const ed=document.getElementById('outcome-editor');
+  const div=document.createElement('div');
+  div.className='outcome-item';div.draggable=true;div.dataset.val=val;
+  div.innerHTML=`<span class="outcome-item-handle">⠿</span>
+    <input class="outcome-item-text" value="${val}" onblur="this.closest('.outcome-item').dataset.val=this.value">
+    <button class="outcome-item-del" onclick="this.closest('.outcome-item').remove()" title="Remove">×</button>`;
+  div.addEventListener('dragstart',function(){_dragSrc=this;this.style.opacity='.4';});
+  div.addEventListener('dragend',function(){this.style.opacity='';_dragSrc=null;});
+  div.addEventListener('dragover',e=>e.preventDefault());
+  div.addEventListener('drop',e=>dropOutcome(e,div));
+  ed.appendChild(div);
+  inp.value='';inp.focus();
+}
+function getOutcomeEditorValues(){
+  const ed=document.getElementById('outcome-editor');
+  if(!ed)return[...DEFAULT_OUTCOMES];
+  return[...ed.querySelectorAll('.outcome-item')].map(el=>{
+    const inp=el.querySelector('input');
+    return(inp?inp.value:el.dataset.val||'').trim();
+  }).filter(Boolean);
+}
+
+/* ── Google Sheets Sync ── */
+function getSheetsUrl(){return window._sheetsUrl||localStorage.getItem('xcl_sheets_url')||'https://script.google.com/macros/s/AKfycbxOwwNu4GuENLqy8NIyLIkn8EPIxKprI8-ZsgrIic_XLscg3Gv_RpFv_YE4fi1e1yFo/exec';}
+
+function sheetsPost(payload){
+  const url=getSheetsUrl();
+  if(!url)return Promise.reject(new Error('No Sheets URL configured'));
+  return fetch(url,{
+    method:'POST',
+    body:JSON.stringify(payload),
+    headers:{'Content-Type':'text/plain'},
+    redirect:'follow'
+  }).then(function(r){
+    // Apps Script POST redirects — a response of any kind means it was received
+    return {status:'ok'};
+  }).catch(function(err){
+    // Network error or CORS block — log but don't surface unless caller handles
+    console.warn('[Sheets POST] failed:', err.message);
+    throw err;
+  });
+}
+
+function sheetsGet(params){
+  const url=getSheetsUrl();
+  if(!url)return Promise.reject(new Error('No Sheets URL configured'));
+  const qs=Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
+  return fetch(url+'?'+qs,{method:'GET',redirect:'follow'})
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status+' — check your Apps Script URL and deployment');
+      return r.text();
+    })
+    .then(function(raw){
+      const clean=raw.replace(/^\uFEFF/,'').trim();
+      if(!clean) throw new Error('Empty response from Apps Script');
+      if(clean[0]!=='{'&&clean[0]!=='['){
+        const hint=clean.length>120?clean.slice(0,120)+'\u2026':clean;
+        throw new Error('Apps Script did not return JSON. Got: '+hint);
+      }
+      try{ return JSON.parse(clean); }
+      catch(e){ throw new Error('JSON parse failed: '+e.message+' — raw: '+clean.slice(0,80)); }
+    });
+}
+
+function setSheetsStatus(msg,color='var(--text3)'){
+  const el=document.getElementById('sheets-status');
+  if(el){el.textContent=msg;el.style.color=color;}
+}
+
+function testSheetsConnection(){
+  const url=getSheetsUrl();
+  if(!url){setSheetsStatus('No URL set','var(--red)');return;}
+  setSheetsStatus('Testing…','var(--amber)');
+  sheetsGet({action:'ping'})
+    .then(d=>{
+      if(d.status==='ok')setSheetsStatus('✓ Connected','var(--green)');
+      else setSheetsStatus('⚠ '+(d.message||'Error'),'var(--amber)');
+    })
+    .catch(e=>setSheetsStatus('✗ Failed: '+e.message,'var(--red)'));
+}
+
+/* ── Sync progress helpers ─────────────────────────────────────────────── */
+function _syncShow(msg, detail, pct, state) {
+  var bar    = document.getElementById('sheets-load-bar');
+  var msgEl  = document.getElementById('sheets-load-msg');
+  var detEl  = document.getElementById('sync-detail');
+  var fill   = document.getElementById('sync-fill');
+  var count  = document.getElementById('sync-count');
+  var spin   = document.getElementById('sync-spinner');
+  if (!bar) return;
+  bar.classList.add('visible');
+  if (msgEl)  msgEl.textContent  = msg    || '';
+  if (detEl)  detEl.textContent  = detail || '';
+  if (count)  count.textContent  = '';
+  if (fill) {
+    fill.style.width = (pct || 0) + '%';
+    fill.className   = 'sync-bar-fill' + (state === 'done' ? ' done' : state === 'error' ? ' error' : '');
+  }
+  if (spin)   spin.style.display = state === 'done' || state === 'error' ? 'none' : '';
+}
+
+function _syncSetCount(text) {
+  var el = document.getElementById('sync-count');
+  if (el) el.textContent = text || '';
+}
+
+function _syncHide() {
+  var bar = document.getElementById('sheets-load-bar');
+  if (bar) bar.classList.remove('visible');
+}
+
+/* ── Individual call operations (used during live logging) ──────────────── */
+/* ── Per-call sync with toast feedback ───────────────────────────────────── */
+var _toastTimer = null;
+
+function _showToast(msg, state, duration) {
+  var toast = document.getElementById('sync-toast');
+  var dot   = document.getElementById('toast-dot');
+  var label = document.getElementById('toast-msg');
+  if (!toast) return;
+  if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null; }
+  if (label) label.textContent = msg;
+  if (dot)   dot.className = 'toast-dot ' + (state || 'syncing');
+  toast.classList.add('visible');
+  if (duration) {
+    _toastTimer = setTimeout(function() {
+      toast.classList.remove('visible');
+      _toastTimer = null;
+    }, duration);
+  }
+}
+
+function _hideToast() {
+  var toast = document.getElementById('sync-toast');
+  if (toast) toast.classList.remove('visible');
+  if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null; }
+}
+
+function upsertCallToSheets(call) {
+  if (!getSheetsUrl()) return;
+  // Serialize the call — convert Date to ISO string for JSON transport
+  var payload = {};
+  for (var k in call) payload[k] = call[k];
+  payload.ts = call.ts instanceof Date ? call.ts.toISOString() : call.ts;
+
+  _showToast('Saving to sheet…', 'syncing');
+
+  sheetsPost({ action: 'upsert', call: payload })
+    .then(function() {
+      _showToast('✓ Saved to sheet', 'ok', 2500);
+    })
+    .catch(function(err) {
+      _showToast('✗ Sheet save failed — ' + (err.message || 'check connection'), 'err', 5000);
+    });
+}
+
+function deleteCallFromSheets(id) {
+  if (!getSheetsUrl()) return;
+  _showToast('Deleting from sheet…', 'syncing');
+  sheetsPost({ action: 'delete', id: id })
+    .then(function() {
+      _showToast('✓ Deleted from sheet', 'ok', 2000);
+    })
+    .catch(function(err) {
+      _showToast('✗ Delete failed — ' + (err.message || ''), 'err', 4000);
+    });
+}
+
+/* ── Batch push: sends all local calls to sheet in chunks ───────────────── *
+ * Apps Script has a 6-minute execution limit and URL Fetch quotas.          *
+ * We chunk into groups of CHUNK_SIZE, await each, then verify.              */
+var SYNC_CHUNK = 25; // calls per batch request
+var _syncAborted = false;
+
+function syncAllToSheets() {
+  var url = getSheetsUrl();
+  if (!url) { setSheetsStatus('No URL configured', 'var(--red)'); return; }
+  _syncAborted = false;
+  _syncRunPush(calls.slice()); // pass a copy so in-flight edits don't interfere
+}
+
+function _syncRunPush(allCalls) {
+  var total   = allCalls.length;
+  var chunks  = [];
+  for (var i = 0; i < total; i += SYNC_CHUNK) {
+    chunks.push(allCalls.slice(i, i + SYNC_CHUNK));
+  }
+  var totalChunks = chunks.length;
+  var done = 0;
+  var failed = 0;
+
+  _syncShow('Pushing to Google Sheets…', 'Starting — ' + total + ' calls in ' + totalChunks + ' batches', 0);
+  setSheetsStatus('Pushing ' + total + ' calls…', 'var(--amber)');
+
+  function pushNext() {
+    if (_syncAborted) {
+      _syncShow('Sync cancelled', '', 0, 'error');
+      setSheetsStatus('✗ Cancelled', 'var(--red)');
+      setTimeout(_syncHide, 3000);
+      return;
+    }
+    if (done + failed >= totalChunks) {
+      // All chunks sent — now verify
+      _syncVerify(total, failed);
+      return;
+    }
+
+    var chunkIdx  = done + failed;
+    var chunk     = chunks[chunkIdx];
+    var pushed    = chunkIdx * SYNC_CHUNK;
+    var pct       = Math.round((chunkIdx / totalChunks) * 80); // push = 0–80%
+    var detail    = 'Batch ' + (chunkIdx + 1) + ' of ' + totalChunks +
+                    ' (' + pushed + '–' + Math.min(pushed + chunk.length, total) + ' of ' + total + ')';
+
+    _syncShow('Pushing to Google Sheets…', detail, pct);
+    _syncSetCount(pushed + ' / ' + total);
+
+    // Serialize dates for JSON transport
+    var serialized = chunk.map(function(c) {
+      var copy = {};
+      for (var k in c) copy[k] = c[k];
+      copy.ts = c.ts instanceof Date ? c.ts.toISOString() : c.ts;
+      return copy;
+    });
+
+    sheetsPost({ action: 'upsertBatch', calls: serialized })
+      .then(function() {
+        done++;
+        pushNext();
+      })
+      .catch(function(err) {
+        failed++;
+        console.warn('[Sync] Chunk ' + chunkIdx + ' failed:', err);
+        pushNext(); // continue despite error
+      });
+  }
+
+  pushNext();
+}
+
+function _syncVerify(expectedTotal, pushFailed) {
+  _syncShow('Verifying sync…', 'Pulling sheet to confirm all ' + expectedTotal + ' calls landed', 82);
+  setSheetsStatus('Verifying…', 'var(--amber)');
+
+  sheetsGet({ action: 'load' })
+    .then(function(d) {
+      if (d.status !== 'ok') {
+        _syncShow('Verification failed', d.message || 'Sheet returned an error', 100, 'error');
+        setSheetsStatus('✗ Verify failed: ' + (d.message || 'error'), 'var(--red)');
+        setTimeout(_syncHide, 5000);
+        return;
+      }
+
+      var sheetCalls = (d.calls || []).map(normalizeCall);
+      var sheetIds   = new Set(sheetCalls.map(function(c) { return String(c.id); }));
+      var localIds   = calls.map(function(c) { return String(c.id); });
+
+      var missing = localIds.filter(function(id) { return !sheetIds.has(id); });
+      var sheetCount = sheetCalls.length;
+
+      _syncShow('Verifying sync…', 'Checking ' + sheetCount + ' sheet rows vs ' + localIds.length + ' local calls…', 95);
+
+      if (missing.length === 0) {
+        var summary = '\u2713 All ' + expectedTotal + ' calls confirmed in sheet';
+        if (pushFailed > 0) summary += ' (\u26a0 ' + pushFailed + ' batch errors — data still landed)';
+        _syncShow('Sync complete', summary, 100, 'done');
+        setSheetsStatus('\u2713 ' + expectedTotal + ' calls synced \u00b7 ' + sheetCount + ' in sheet', 'var(--green)');
+        // Merge any sheet-only calls back into local
+        sheetCalls.forEach(function(sc) {
+          var exists = calls.some(function(c) { return String(c.id) === String(sc.id); });
+          if (!exists) calls.push(sc);
+        });
+        calls.sort(function(a, b) { return new Date(b.ts) - new Date(a.ts); });
+        render(); updateStats(); buildFilterOptions();
+        setTimeout(_syncHide, 4000);
+      } else {
+        // Some calls didn't land — retry the missing ones
+        _syncShow(
+          'Retrying missing calls\u2026',
+          missing.length + ' call' + (missing.length !== 1 ? 's' : '') + ' missing from sheet — retrying',
+          95
+        );
+        setSheetsStatus('\u26a0 Retrying ' + missing.length + ' missing\u2026', 'var(--amber)');
+        var missingSet  = new Set(missing);
+        var toRetry     = calls.filter(function(c) { return missingSet.has(String(c.id)); });
+        _syncRetry(toRetry, expectedTotal, sheetCount);
+      }
+    })
+    .catch(function(err) {
+      _syncShow('Verification error', err.message, 100, 'error');
+      setSheetsStatus('\u2717 Verify error: ' + err.message, 'var(--red)');
+      setTimeout(_syncHide, 5000);
+    });
+}
+
+function _syncRetry(missing, originalTotal, sheetCount) {
+  var retried = 0;
+  var total   = missing.length;
+
+  function next() {
+    if (retried >= total) {
+      // Final check
+      setTimeout(function() {
+        sheetsGet({ action: 'load' })
+          .then(function(d) {
+            var sheetIds   = new Set((d.calls || []).map(function(c) { return String(c.id); }));
+            var stillMiss  = missing.filter(function(c) { return !sheetIds.has(String(c.id)); });
+            var nowInSheet = total - stillMiss.length;
+            if (stillMiss.length === 0) {
+              _syncShow('Sync complete', '\u2713 All ' + originalTotal + ' calls confirmed in sheet', 100, 'done');
+              setSheetsStatus('\u2713 All ' + originalTotal + ' calls synced', 'var(--green)');
+            } else {
+              _syncShow(
+                'Sync finished with gaps',
+                '\u26a0 ' + stillMiss.length + ' call' + (stillMiss.length !== 1 ? 's' : '') +
+                  ' could not be pushed — check Apps Script logs',
+                100, 'error'
+              );
+              setSheetsStatus(
+                '\u26a0 ' + stillMiss.length + ' missing after retry',
+                'var(--amber)'
+              );
+            }
+            setTimeout(_syncHide, 5000);
+          })
+          .catch(function() { setTimeout(_syncHide, 3000); });
+      }, 2000);
+      return;
+    }
+    var c    = missing[retried];
+    var copy = {};
+    for (var k in c) copy[k] = c[k];
+    copy.ts = c.ts instanceof Date ? c.ts.toISOString() : c.ts;
+    sheetsPost({ action: 'upsert', call: copy })
+      .then(function() { retried++; next(); })
+      .catch(function() { retried++; next(); });
+    var pct = 95 + Math.round((retried / total) * 5);
+    _syncShow('Retrying missing calls\u2026', 'Retrying ' + retried + ' of ' + total, pct);
+  }
+  next();
+}
+
+/* ── loadFromSheets: pull-only on startup ───────────────────────────────── */
+function normalizeCall(sc){
+  if(!(sc.ts instanceof Date)) sc.ts = sc.ts ? new Date(sc.ts) : new Date();
+  const ie = (sc.callOutcome||sc.reason||'') === 'IE (.75)';
+  sc.chsiRgu = !sc.chsi ? 0 : ie ? 0.75 : 1;
+  sc.rgus = (sc.xm>0?1:0)+(sc.tv?1:0)+sc.chsiRgu+(sc.cdv?1:0)+(sc.xh?1:0);
+  sc.hasSale = sc.rgus > 0 || sc.rev > 0;
+  const svcs=[];
+  if(sc.xm>0)svcs.push('XM');if(sc.tv)svcs.push('TV');
+  if(sc.chsi)svcs.push('CHSI');if(sc.cdv)svcs.push('CDV');if(sc.xh)svcs.push('XH');
+  const pnames=['','Single Play','Double Play','Triple Play','Quad Play','5-Play'];
+  sc.playName = sc.playName||(svcs.length?pnames[Math.min(svcs.length,5)]:'');
+  sc.callOutcome = sc.callOutcome||(sc.hasSale?sc.playName:(sc.reason||''));
+  return sc;
+}
+
+function loadFromSheets(){
+  const url = getSheetsUrl();
+  if(!url) return;
+  _syncShow('Loading from Google Sheets\u2026', '', 0);
+
+  sheetsGet({action:'load'})
+  .then(d => {
+    if(d.status !== 'ok'){
+      _syncHide();
+      setSheetsStatus('✗ '+(d.message||'Sync failed'), 'var(--red)');
+      return;
+    }
+    _syncShow('Merging calls\u2026', '', 60);
+    const sheetCalls = (d.calls||[]).map(normalizeCall);
+    const sheetMap   = new Map(sheetCalls.map(c => [String(c.id), c]));
+    const localMap   = new Map(calls.map(c  => [String(c.id),  c]));
+
+    const parts = [];
+    let pulled = 0;
+    sheetMap.forEach((sc, id) => {
+      if(!localMap.has(id)){ localMap.set(id, sc); pulled++; }
+    });
+    let pushed = 0;
+    localMap.forEach((lc, id) => {
+      if(!sheetMap.has(id)){ upsertCallToSheets(lc); pushed++; }
+    });
+
+    calls = [...localMap.values()].sort((a,b) => new Date(b.ts) - new Date(a.ts));
+    render(); updateStats(); buildFilterOptions();
+
+    _syncShow('Sync complete',
+      '\u2713 ' + calls.length + ' calls loaded' +
+      (pulled ? ' \u00b7 \u2193 ' + pulled + ' pulled' : '') +
+      (pushed ? ' \u00b7 \u2191 ' + pushed + ' pushed' : ''),
+      100, 'done');
+    if(pulled) parts.push('\u2193 '+pulled+' pulled');
+    if(pushed) parts.push('\u2191 '+pushed+' pushed');
+    setSheetsStatus('\u2713 ' + calls.length + ' calls' + (parts.length ? ' \u00b7 ' + parts.join(' \u00b7 ') : ''), 'var(--green)');
+    setTimeout(_syncHide, 3000);
+  })
+  .catch(err => {
+    _syncHide();
+    setSheetsStatus('✗ '+err.message, 'var(--red)');
+    console.error('[Sync] fetch error:', err);
+  });
+}
+
+/* ── Theme color system ── */
+
+/* ── Revenue currency formatting ── */
+function fmtRevInput(el){let v=el.value.replace(/[^0-9.]/g,'');const parts=v.split('.');if(parts.length>2)v=parts[0]+'.'+parts.slice(1).join('');if(parts[1]&&parts[1].length>2)v=parts[0]+'.'+parts[1].slice(0,2);el.value=v?'$'+v:'';}
+function fmtRevBlur(el){const raw=parseFloat(el.value.replace(/[^0-9.]/g,''));if(!isNaN(raw)&&raw>0)el.value='$'+raw.toFixed(2);else el.value='';}
+function fmtRevFocus(el){el.value=el.value.replace(/[^0-9.]/g,'');}
+function getRevVal(){const raw=parseFloat(document.getElementById('f-rev').value.replace(/[^0-9.]/g,''));return isNaN(raw)?0:raw;}
+
+/* ── Fiscal month pace ── */
+function getFiscalInfo(){
+  const now = new Date();
+  const day = now.getDate();
+  let fiscalStart, fiscalEnd;
+  if(day >= 22){
+    fiscalStart = new Date(now.getFullYear(), now.getMonth(), 22);
+    fiscalEnd   = new Date(now.getFullYear(), now.getMonth()+1, 22);
+  } else {
+    fiscalStart = new Date(now.getFullYear(), now.getMonth()-1, 22);
+    fiscalEnd   = new Date(now.getFullYear(), now.getMonth(), 22);
+  }
+  const totalDays = Math.round((fiscalEnd - fiscalStart) / 86400000);
+  const elapsedDays = Math.round((now - fiscalStart) / 86400000);
+  const progress = Math.min(1, Math.max(0, elapsedDays / totalDays));
+  return {fiscalStart, fiscalEnd, totalDays, elapsedDays, progress};
+}
+
+// Alias for backward compat
+function getFiscalProgress(){ return getFiscalInfo().progress; }
+
+function buildCalendar(fiscalStart, totalDays, elapsedDays){
+  const cal = document.getElementById('pace-cal');
+  if(!cal) return;
+  cal.innerHTML = '';
+  const DOWS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  for(let d=0; d<totalDays; d++){
+    const date = new Date(fiscalStart.getTime() + d*86400000);
+    date.setHours(0,0,0,0);
+    const dow = date.getDay();
+    const isToday   = date.getTime() === today.getTime();
+    const isPast    = date < today;
+    const isWeekend = dow===0||dow===6;
+    const isFirst   = d === 0;
+    const isLast    = d === totalDays - 1;
+    const div = document.createElement('div');
+    let cls = 'cal-day';
+    if(isToday)     cls += ' today';
+    else if(isPast) cls += ' past';
+    if(isWeekend)   cls += ' weekend';
+    if(isFirst)     cls += ' fiscal-start';
+    if(isLast)      cls += ' fiscal-end';
+    div.className = cls;
+    div.title = date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+    div.innerHTML =
+      '<div class="cal-day-strip"><div class="cal-day-dow">' + DOWS[dow] + '</div></div>' +
+      '<div class="cal-day-body">' +
+        '<div class="cal-day-token">' + (isToday ? calToken : '') + '</div>' +
+        '<div class="cal-day-num">' + date.getDate() + '</div>' +
+      '</div>';
+    cal.appendChild(div);
+  }
+  setTimeout(()=>{
+    const todayEl = cal.querySelector('.cal-day.today');
+    if(todayEl) todayEl.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+  }, 100);
+}
+
+const TOKEN_LABELS={'🎩':'Top Hat','🚂':'Train','🐶':'Dog','🐱':'Cat','⚓':'Anchor','👞':'Boot','🚗':'Car','💎':'Diamond','🎲':'Dice','⭐':'Star','🔥':'Fire','⚡':'Lightning','🏆':'Trophy','👑':'Crown','🦊':'Fox','🐸':'Frog','🍀':'Clover','🌟':'Glitter','🪙':'Coin','🎯':'Bullseye'};
+
+function renderTokenGrid(){
+  const grid = document.getElementById('token-grid');
+  if(!grid) return;
+  grid.innerHTML = TOKENS.map(t =>
+    `<div class="token-opt${t===calToken?' selected':''}" onclick="selectToken('${t}')" title="${TOKEN_LABELS[t]||t}">${t}</div>`
+  ).join('');
+}
+
+function selectToken(t){
+  calToken = t;
+  localStorage.setItem('xcl_token', t);
+  renderTokenGrid();
+  updatePace();
+}
+
+function updatePace(){
+  const {fiscalStart, totalDays, elapsedDays} = getFiscalInfo();
+  buildCalendar(fiscalStart, totalDays, elapsedDays);
+}
+
+/* ── Tab switching ── */
+let _activeTab = 'tracker';
+function switchTab(tab){
+  _activeTab = tab;
+  ['tracker','trends','jobaid','disputes'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('panel-'+t).classList.toggle('active', t===tab);
+  });
+  if(tab==='trends') renderTrends();
+  if(tab==='jobaid') renderJobAidOutcomes();
+  if(tab==='disputes') buildReconFiscalOptions();
+}
+
+/* ── Trends charts ── */
+let _charts = {};
+function renderTrends(){
+  if(typeof Chart==='undefined') return;
+  const fi = getFiscalInfo();
+  const now = new Date();
+
+  // Group calls by date string
+  const byDate = {};
+  calls.forEach(c=>{
+    const d = c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});
+    if(!byDate[d]) byDate[d]={total:0,sales:0,rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0};
+    byDate[d].total++;
+    if(c.hasSale){ byDate[d].sales++; byDate[d].rev+=c.rev; byDate[d].xm+=c.xm; if(c.tv)byDate[d].tv++; byDate[d].chsi+=c.chsiRgu; if(c.cdv)byDate[d].cdv++; if(c.xh)byDate[d].xh++; }
+  });
+  const days = Object.keys(byDate).sort((a,b)=>new Date(a)-new Date(b)).slice(-14);
+  const labels = days;
+  const cs = s=>'rgba('+s+',';
+  const chartDefaults = {responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}}}};
+
+  // 1. Volume
+  makeChart('chart-volume','bar',labels,
+    [{label:'Total',data:days.map(d=>byDate[d].total),backgroundColor:'rgba(59,130,246,.5)',borderColor:'#3b82f6',borderWidth:1},
+     {label:'Sales',data:days.map(d=>byDate[d].sales),backgroundColor:'rgba(34,197,94,.5)',borderColor:'#22c55e',borderWidth:1}],
+    chartDefaults);
+
+  // 2. Close rate
+  makeChart('chart-closerate','line',labels,
+    [{label:'Close %',data:days.map(d=>byDate[d].total?+(byDate[d].sales/byDate[d].total*100).toFixed(1):0),borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.1)',tension:.4,fill:true,pointRadius:3}],
+    {...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+'%'}}}});
+
+  // 3. Cumulative revenue vs goal line
+  let cumRev = 0;
+  const revData = days.map(d=>{cumRev+=byDate[d].rev;return+cumRev.toFixed(0);});
+  const daysFiscal = Math.round((now-fi.fiscalStart)/86400000)+1;
+  const totalFiscal = fi.totalDays;
+  const goalLine = days.map((_,i)=>+((GOALS.rev/totalFiscal)*Math.min(i+1,daysFiscal)).toFixed(0));
+  makeChart('chart-revenue','line',labels,
+    [{label:'Revenue',data:revData,borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,.08)',tension:.3,fill:true,pointRadius:2},
+     {label:'Goal Pace',data:goalLine,borderColor:'#f59e0b',borderDash:[4,4],tension:0,pointRadius:0,fill:false}],
+    chartDefaults);
+
+  // 4. RGU mix doughnut-style bar
+  const totals = {XM:0,TV:0,CHSI:0,CDV:0,XH:0};
+  calls.filter(c=>c.hasSale).forEach(c=>{totals.XM+=c.xm;if(c.tv)totals.TV++;totals.CHSI+=c.chsiRgu;if(c.cdv)totals.CDV++;if(c.xh)totals.XH++;});
+  makeChart('chart-rgumix','bar',Object.keys(totals),
+    [{data:Object.values(totals),backgroundColor:['rgba(20,184,166,.7)','rgba(59,130,246,.7)','rgba(59,130,246,.5)','rgba(59,130,246,.4)','rgba(59,130,246,.3)'],borderWidth:0}],
+    {...chartDefaults,indexAxis:'y'});
+
+  // 5. Outcome pie
+  const outcomeCounts = {};
+  calls.forEach(c=>{ const k=c.callOutcome||'Unknown'; outcomeCounts[k]=(outcomeCounts[k]||0)+1; });
+  const sorted = Object.entries(outcomeCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const pieColors = ['#3b82f6','#22c55e','#f59e0b','#a78bfa','#14b8a6','#f87171','#64748b','#94a3b8'];
+  makeChart('chart-outcomes','doughnut',sorted.map(e=>e[0]),
+    [{data:sorted.map(e=>e[1]),backgroundColor:pieColors,borderWidth:2,borderColor:'#161e30'}],
+    {responsive:true,plugins:{legend:{display:false}}});
+
+  // Legend for outcomes
+  const legend = document.getElementById('outcome-legend');
+  if(legend) legend.innerHTML = sorted.map((e,i)=>`<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:2px;background:${pieColors[i]};flex-shrink:0"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e[0]}</span><span style="color:var(--text3)">${e[1]}</span></div>`).join('');
+}
+
+function makeChart(id, type, labels, datasets, options){
+  if(_charts[id]) _charts[id].destroy();
+  const ctx = document.getElementById(id);
+  if(!ctx) return;
+  _charts[id] = new Chart(ctx, {type, data:{labels, datasets}, options:{...options, animation:{duration:400}}});
+}
+
+/* ── Job Aids ── */
+function renderJobAidOutcomes(){
+  const tb = document.getElementById('jobaid-outcomes-table');
+  if(!tb) return;
+  const descs = {
+    'NO SALE MADE':'Customer declined — no services added',
+    'IE (.75)':'Internet Eligible — CHSI counts as 0.75 RGU',
+    'BULK':'Bulk account — does not count toward individual goals',
+    'BILLING':'Customer called in for billing support only',
+    'TECH SUPPORT':'Technical issue, no sale opportunity',
+    'TECH (SAME DAY)':'Same-day tech appointment — no sale',
+    'DROP ISSUES':'Service drop / infrastructure issue',
+    'DISCONNECTED':'Call dropped before completion',
+    'NOT SERVICEABLE':'Address not in serviceable area',
+    'HAS ALL SERVICES':'Customer already has all available services',
+    'INVALID XFER':'Call transferred incorrectly to wrong queue',
+    'HS TICKET':'Home Solutions ticket created — not a direct sale',
+    'DEAD AIR':'No customer audio detected',
+    'XM PORT OUT':'Customer porting out Xfinity Mobile number',
+    'OTHER':'None of the above categories apply',
+  };
+  tb.innerHTML = OUTCOMES.map(o=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap">${o}</td><td style="padding:8px 14px;font-size:11px;color:var(--text3)">${descs[o]||'—'}</td></tr>`).join('');
+}
+
+/* ── Disputes / Reconciliation ── */
+let _reconRows=[], _reconCols=[], _reconResults=[], _reconTabFilter='all';
+
+function buildReconFiscalOptions(){
+  const sel = document.getElementById('recon-fiscal');
+  if(!sel||sel.options.length>1) return;
+  const now = new Date(), seen = new Set();
+  for(let i=0;i<12;i++){
+    let fs,fe;
+    if(i===0&&now.getDate()>=22){fs=new Date(now.getFullYear(),now.getMonth(),22);fe=new Date(now.getFullYear(),now.getMonth()+1,22);}
+    else{const ref=new Date(now.getFullYear(),now.getMonth()-i,1);fs=new Date(ref.getFullYear(),ref.getMonth()-1,22);fe=new Date(ref.getFullYear(),ref.getMonth(),22);}
+    if(fs>now)continue;
+    const key=fs.getTime()+'_'+fe.getTime();
+    if(seen.has(key))continue; seen.add(key);
+    const label=fs.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' – '+new Date(fe.getTime()-86400000).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const opt=document.createElement('option');opt.value=key;opt.dataset.fs=fs.getTime();opt.dataset.fe=fe.getTime();opt.textContent=label;sel.appendChild(opt);
+  }
+}
+
+function onReconFile(input){
+  const file=input.files[0];
+  if(!file){_reconRows=[];_reconCols=[];hideReconMapper();setReconStatus('');checkReconReady();return;}
+  setReconStatus('Reading…');
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      if(file.name.toLowerCase().endsWith('.csv')){
+        const lines=e.target.result.split(/\r?\n/).filter(l=>l.trim());
+        if(!lines.length){setReconStatus('⚠ Empty file');return;}
+        const parse=l=>l.split(',').map(v=>v.replace(/^"|"$/g,'').trim());
+        _reconCols=parse(lines[0]);
+        _reconRows=lines.slice(1).map(l=>{const vals=parse(l);const row={};_reconCols.forEach((c,i)=>row[c]=vals[i]||'');return row;});
+      } else {
+        const wb=XLSX.read(e.target.result,{type:'array'});
+        const data=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+        _reconRows=data;_reconCols=data.length?Object.keys(data[0]):[];
+      }
+      if(!_reconCols.length){setReconStatus('⚠ No columns found');return;}
+      setReconStatus(`✓ ${_reconRows.length.toLocaleString()} rows · ${_reconCols.length} cols`);
+      populateReconMapper();checkReconReady();
+    }catch(err){setReconStatus('✗ '+err.message);_reconRows=[];_reconCols=[];hideReconMapper();checkReconReady();}
+  };
+  file.name.toLowerCase().endsWith('.csv')?reader.readAsText(file):reader.readAsArrayBuffer(file);
+}
+
+function setReconStatus(msg,color='var(--text3)'){const el=document.getElementById('recon-status');if(el){el.textContent=msg;el.style.color=color;}}
+
+function populateReconMapper(){
+  const sec=document.getElementById('recon-col-section');
+  const sel=document.getElementById('recon-acct-col');
+  if(!sec||!sel)return;
+  sec.style.display='flex';
+  sel.innerHTML='<option value="">— select column —</option>'+_reconCols.map(c=>`<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
+  const guess=_reconCols.find(c=>/acct|account|order|cust/i.test(c));
+  if(guess){sel.value=guess;onReconColChange();}
+}
+
+function hideReconMapper(){const sec=document.getElementById('recon-col-section');if(sec)sec.style.display='none';}
+
+function onReconColChange(){
+  const col=document.getElementById('recon-acct-col').value;
+  const preview=document.getElementById('recon-col-preview');
+  if(!col||!_reconRows.length){if(preview)preview.textContent='';checkReconReady();return;}
+  const samples=[...new Set(_reconRows.slice(0,10).map(r=>String(r[col]||'').trim()))].filter(Boolean).slice(0,4);
+  if(preview)preview.textContent=samples.length?'e.g. '+samples.join(', '):'(empty)';
+  checkReconReady();
+}
+
+function checkReconReady(){
+  const btn=document.getElementById('recon-run-btn');
+  if(!btn)return;
+  const ready=_reconRows.length>0&&!!document.getElementById('recon-acct-col')?.value&&!!document.getElementById('recon-fiscal')?.value;
+  btn.disabled=!ready;btn.style.opacity=ready?'1':'.5';btn.style.cursor=ready?'pointer':'not-allowed';
+}
+
+function runReconciliation(){
+  const acctCol=document.getElementById('recon-acct-col').value;
+  const fiscalSel=document.getElementById('recon-fiscal');
+  const opt=fiscalSel.options[fiscalSel.selectedIndex];
+  if(!acctCol||!opt.value)return;
+  const fs=new Date(+opt.dataset.fs),fe=new Date(+opt.dataset.fe);
+  const norm=v=>String(v||'').replace(/\s/g,'').replace(/^0+/,'').toUpperCase();
+  const excelAccts=new Set(_reconRows.map(r=>norm(r[acctCol])).filter(Boolean));
+  const sales=calls.filter(c=>{if(!c.hasSale||!c.sched)return false;const d=new Date(c.sched+'T00:00:00');return d>=fs&&d<fe;});
+  if(!sales.length){setReconStatus('⚠ No logged sales found for that fiscal period','var(--amber)');return;}
+  _reconResults=sales.map(c=>{
+    const acct=norm(c.acctRaw||c.acct);
+    const found=acct&&excelAccts.has(acct);
+    return{ts:c.ts,dateLogged:c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}),time:c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),acct:c.acctRaw||c.acct||'—',play:c.playName||'—',rgus:fmtR(c.rgus),rev:c.rev?'$'+c.rev.toFixed(2):'—',sched:c.sched||'—',found};
+  }).sort((a,b)=>a.found-b.found);
+  renderReconResults(opt.textContent);
+}
+
+function renderReconResults(label){
+  const total=_reconResults.length,missing=_reconResults.filter(r=>!r.found).length,found=total-missing;
+  document.getElementById('recon-summary').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:var(--blue)">${total}</div><div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Total Logged</div></div>
+    <div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:var(--green)">${found}</div><div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Found in Export</div></div>
+    <div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:var(--red)">${missing}</div><div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Missing from Export</div></div>
+    <div style="margin-left:auto;align-self:center;font-size:11px;color:var(--text3);font-family:var(--mono);text-align:right">${label}</div>`;
+  document.getElementById('recon-results-card').style.display='block';
+  renderReconTable();
+}
+
+function renderReconTable(){
+  const body=document.getElementById('recon-table-body');
+  const filtered=_reconTabFilter==='all'?_reconResults:_reconTabFilter==='missing'?_reconResults.filter(r=>!r.found):_reconResults.filter(r=>r.found);
+  if(!filtered.length){body.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3);font-size:13px">No results for this filter</td></tr>`;return;}
+  body.innerHTML=filtered.map(r=>`<tr style="border-bottom:1px solid var(--border);background:${r.found?'rgba(34,197,94,.03)':'rgba(248,113,113,.04)'}">
+    <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text3)">${r.dateLogged} ${r.time}</td>
+    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">${r.acct}</td>
+    <td style="padding:8px 14px;font-size:12px;color:var(--text2)">${r.play}</td>
+    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${r.rgus}</td>
+    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${r.rev}</td>
+    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${r.sched}</td>
+    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;font-weight:600;color:${r.found?'var(--green)':'var(--red)'}">${r.found?'✓ Found':'✗ Missing'}</td>
+  </tr>`).join('');
+}
+
+function setReconTab(t){
+  _reconTabFilter=t;
+  ['all','missing','found'].forEach(v=>document.getElementById('rtab-'+v).classList.toggle('active',v===t));
+  renderReconTable();
+}
+
+function downloadReconCSV(){
+  if(!_reconResults.length)return;
+  const label=document.getElementById('recon-fiscal').options[document.getElementById('recon-fiscal').selectedIndex].textContent;
+  const total=_reconResults.length,missing=_reconResults.filter(r=>!r.found).length;
+  const headers=['Date Logged','Time','Acct #','Play','RGUs','Revenue','Sched Date','Status'];
+  const lines=[`# Order Reconciliation Report`,`# Fiscal Period: ${label}`,`# Generated: ${new Date().toLocaleString()}`,`# Total: ${total} | Found: ${total-missing} | Missing: ${missing}`,`#`,
+    headers.map(h=>`"${h}"`).join(','),
+    ..._reconResults.map(r=>[r.dateLogged,r.time,r.acct,r.play,r.rgus,r.rev,r.sched,r.found?'Found':'MISSING'].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','))];
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'})),download:`disputes_${label.replace(/[^a-z0-9]/gi,'_').toLowerCase()}.csv`});
+  a.click();URL.revokeObjectURL(a.href);
+}
+
+function openCallFromAlert(id){
+  document.getElementById('alert-bar').classList.remove('visible');
+  openEdit(id,true);
+}
+
+
+/* ── Import Previous Tracker (Sheet11 column mapping) ──────────────────────
+ *
+ * Sheet11 column  →  tracker field
+ * ─────────────────────────────────────────────────────────────────────────
+ * DATE                    → ts          (JS Date, full timestamp)
+ * ACCT# | LOC# | TICKET#  → acct/acctRaw
+ * SCHED                   → sched       (YYYY-MM-DD)
+ * REV                     → rev
+ * XM                      → xm
+ * TV / CHSI / CDV / XH    → booleans
+ * NO SALE REASON          → reason / callOutcome  (no-sale rows)
+ * OUTCOME                 → callOutcome / playName (sale rows — formula
+ *                           returns a number, so we always re-derive
+ *                           play name from service booleans)
+ * Notes                   → notes
+ * CALL BACK               → cbDone
+ * EXCEPTION               → ieAdj
+ * ─────────────────────────────────────────────────────────────────────────
+ * Both sale AND no-sale rows are imported as long as DATE is present.
+ * No-sale rows: acct is empty, hasSale=false, reason from NO SALE REASON.
+ */
+
+/* Helper: convert an Excel date serial (float) to a JS Date.
+ * Excel day 1 = 1 Jan 1900.  JS epoch = 1 Jan 1970.
+ * Delta = 25569 days.  Fractional part = time-of-day. */
+function _xlSerialToDate(n) {
+  // Excel wrongly treats 1900 as a leap year; adjust if serial > 59
+  var serial = n > 59 ? n - 1 : n;
+  var ms = Math.round((serial - 25568) * 86400000);
+  return new Date(ms);
+}
+
+/* Helper: parse any date-like value SheetJS might give us.
+ * With cellDates:true SheetJS returns JS Date objects for date cells,
+ * but with raw:true it returns the raw numeric serial. We handle both. */
+function _importParseDate(v) {
+  if (v == null) return null;
+  // Already a JS Date (cellDates:true path)
+  if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
+  // Numeric serial (raw:true path, or text that looks like one)
+  var n = typeof v === 'number' ? v : parseFloat(v);
+  if (!isNaN(n) && n > 1 && n < 200000) return _xlSerialToDate(n);
+  // ISO string or locale string — last resort, only reliable in Chrome
+  var s = String(v).trim();
+  if (!s) return null;
+  var d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+/* Helper: YYYY-MM-DD from a JS Date */
+function _toYMD(d) {
+  if (!d || isNaN(d.getTime())) return '';
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+
+/* Helper: boolean cell — Excel TRUE/FALSE, 1/0, "YES", "Y", "X" */
+function _importBool(v) {
+  if (v === true  || v === 1)  return true;
+  if (v === false || v === 0)  return false;
+  var s = String(v).trim().toUpperCase();
+  return s === 'TRUE' || s === 'YES' || s === 'Y' || s === 'X' || s === '1';
+}
+
+/* Helper: derive play name + RGU counts from service booleans */
+function _importDerive(tv, chsi, cdv, xh, xm, ie) {
+  var chsiRgu  = chsi ? (ie ? 0.75 : 1) : 0;
+  var rgus     = (xm > 0 ? 1 : 0) + (tv ? 1 : 0) + chsiRgu + (cdv ? 1 : 0) + (xh ? 1 : 0);
+  var svcCount = (xm > 0 ? 1 : 0) + (tv ? 1 : 0) + (chsi ? 1 : 0) + (cdv ? 1 : 0) + (xh ? 1 : 0);
+  var NAMES    = ['', 'Single Play', 'Double Play', 'Triple Play', 'Quad Play', '5-Play'];
+  return { playName: NAMES[Math.min(svcCount, 5)] || '', rgus: rgus, chsiRgu: chsiRgu };
+}
+
+function onImportPrevFile(input) {
+  var file = input.files[0];
+  if (!file) { setImportPrevStatus(''); return; }
+  setImportPrevStatus('Reading\u2026');
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var rows = _importReadFile(e.target.result, file.name);
+      if (!rows) return; // status already set
+
+      /* ── Dedup against existing calls ─────────────────────── */
+      var seen = {};
+      for (var ei = 0; ei < calls.length; ei++) {
+        var ec  = calls[ei];
+        var ets = (ec.ts instanceof Date ? ec.ts : new Date(ec.ts)).getTime();
+        seen[ets + '|' + (ec.acctRaw || ec.acct || '')] = true;
+      }
+
+      var imported = 0, skipped = 0, dupes = 0;
+      var newCalls = [];
+      var idBase   = Date.now();
+
+      /* ── Row loop ─────────────────────────────────────────── */
+      for (var ri = 0; ri < rows.length; ri++) {
+        var row = rows[ri];
+
+        /* DATE — required; drives the call timestamp */
+        var ts = _importParseDate(row['DATE']);
+        if (!ts) { skipped++; continue; }
+
+        /* Account number — preserve as string, strip whitespace */
+        var acct = String(row['ACCT# | LOC# | TICKET#'] || '').trim().replace(/\s+/g, '');
+
+        /* Schedule date */
+        var sched = _toYMD(_importParseDate(row['SCHED']));
+
+        /* Revenue */
+        var rev = parseFloat(String(row['REV'] || '').replace(/[$,\s]/g, '')) || 0;
+
+        /* XM lines */
+        var xm = parseInt(String(row['XM'] || ''), 10) || 0;
+
+        /* Service booleans */
+        var tv   = _importBool(row['TV']);
+        var chsi = _importBool(row['CHSI']);
+        var cdv  = _importBool(row['CDV']);
+        var xh   = _importBool(row['XH']);
+
+        /* IE (.75) adjustment */
+        var ieAdj = /\bie\b|\.75/i.test(String(row['EXCEPTION'] || '')) ||
+                    /ie\s*\(?\.?75\)?/i.test(String(row['NO SALE REASON'] || ''));
+
+        /* Sale vs no-sale.
+         * A sale = has an account number AND at least one service OR revenue. */
+        var hasServices = tv || chsi || cdv || xh || xm > 0;
+        var hasSale     = !!(acct && (hasServices || rev > 0));
+
+        /* Reason / outcome.
+         * OUTCOME column is a formula that returns a count integer (1,2…)
+         * for sales — ignore it; always derive play name from services.
+         * For no-sales OUTCOME is a text string like "NO SALE MADE". */
+        var nsReason    = String(row['NO SALE REASON'] || '').trim();
+        var outcomeCell = row['OUTCOME'];
+        /* Only use OUTCOME if it is a non-numeric string */
+        var outcomeStr  = (typeof outcomeCell === 'string' && isNaN(parseFloat(outcomeCell)))
+                          ? outcomeCell.trim() : '';
+
+        var reason, callOutcome, playName, rgus, chsiRgu;
+
+        if (hasSale) {
+          var d    = _importDerive(tv, chsi, cdv, xh, xm, ieAdj);
+          playName = d.playName;
+          rgus     = d.rgus;
+          chsiRgu  = d.chsiRgu;
+          reason      = nsReason || '';
+          callOutcome = playName || 'SALE';
+        } else {
+          playName    = '';
+          rgus        = 0;
+          chsiRgu     = 0;
+          reason      = nsReason || outcomeStr || 'NO SALE MADE';
+          callOutcome = reason;
+        }
+
+        /* Callback done */
+        var cbDone = _importBool(row['CALL BACK']);
+
+        /* Notes */
+        var notes = String(row['Notes'] || row['NOTES'] || '').trim();
+
+        /* Dedup key: timestamp-ms | acct */
+        var key = ts.getTime() + '|' + acct;
+        if (seen[key]) { dupes++; continue; }
+        seen[key] = true;
+
+        newCalls.push({
+          id:          idBase + imported,
+          ts:          ts,
+          acct:        acct,
+          acctRaw:     acct,
+          cbName:      '',
+          cbPhone:     '',
+          cbTime:      '',
+          cbDone:      cbDone,
+          sched:       sched,
+          rev:         rev,
+          xm:          xm,
+          tv:          tv,
+          chsi:        chsi,
+          cdv:         cdv,
+          xh:          xh,
+          reason:      reason,
+          notes:       notes,
+          chsiRgu:     chsiRgu,
+          rgus:        rgus,
+          ieAdj:       ieAdj,
+          hasSale:     hasSale,
+          playName:    playName,
+          callOutcome: callOutcome
+        });
+        imported++;
+      }
+
+      if (!newCalls.length) {
+        setImportPrevStatus(
+          '\u2717 0 imported \u00b7 ' + skipped + ' bad date \u00b7 ' + dupes + ' dupes',
+          'var(--amber)'
+        );
+        return;
+      }
+
+      /* Merge, sort newest first, refresh UI */
+      for (var ni = 0; ni < newCalls.length; ni++) calls.push(newCalls[ni]);
+      calls.sort(function(a, b) {
+        return new Date(b.ts).getTime() - new Date(a.ts).getTime();
+      });
+      render();
+      updateStats();
+      buildFilterOptions();
+
+      /* Push to Google Sheets (fire-and-forget) */
+      for (var pi = 0; pi < newCalls.length; pi++) upsertCallToSheets(newCalls[pi]);
+
+      setImportPrevStatus(
+        '\u2713 ' + imported + ' imported \u00b7 ' + skipped + ' skipped \u00b7 ' + dupes + ' dupes',
+        'var(--green)'
+      );
+
+      input.value = '';
+
+      /* Close settings panel, scroll to log */
+      var panel   = document.getElementById('settings-panel');
+      var overlay = document.getElementById('settings-overlay');
+      if (panel && panel.classList.contains('open')) {
+        panel.classList.remove('open');
+        if (overlay) overlay.style.display = 'none';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch(err) {
+      setImportPrevStatus('\u2717 ' + err.message, 'var(--red)');
+    }
+  };
+
+  if (file.name.toLowerCase().slice(-4) === '.csv') {
+    reader.readAsText(file);
+  } else {
+    reader.readAsArrayBuffer(file);
+  }
+}
+
+/* ── File reader: returns array of row objects or null (sets status) ── */
+function _importReadFile(buffer, filename) {
+  if (filename.toLowerCase().slice(-4) === '.csv') {
+    return _importReadCsv(buffer);
+  }
+  return _importReadXlsx(buffer);
+}
+
+function _importReadCsv(text) {
+  var lines = text.split(/\r?\n/);
+  var data  = [];
+  for (var i = 0; i < lines.length; i++) {
+    if (lines[i].trim()) data.push(lines[i]);
+  }
+  if (!data.length) { setImportPrevStatus('\u26a0 Empty CSV'); return null; }
+
+  function parseLine(line) {
+    var out = [], cur = '', inq = false;
+    for (var j = 0; j < line.length; j++) {
+      var ch = line[j];
+      if (ch === '"') { inq = !inq; }
+      else if (ch === ',' && !inq) { out.push(cur.trim()); cur = ''; }
+      else { cur += ch; }
+    }
+    out.push(cur.trim());
+    return out;
+  }
+
+  var hdrs = parseLine(data[0]);
+  var rows = [];
+  for (var i = 1; i < data.length; i++) {
+    var vals = parseLine(data[i]);
+    var row  = {};
+    for (var j = 0; j < hdrs.length; j++) row[hdrs[j]] = vals[j] !== undefined ? vals[j] : '';
+    rows.push(row);
+  }
+  return rows;
+}
+
+function _importReadXlsx(buffer) {
+  /* Read with raw:true so dates come back as numeric serials — reliable
+   * across Chrome, Firefox, Edge.  We convert serials ourselves via
+   * _xlSerialToDate() which preserves the time-of-day fraction. */
+  var wb = XLSX.read(buffer, { type: 'array', cellDates: false });
+
+  /* Prefer Sheet11; fall back to first sheet with a DATE header */
+  var ws = wb.Sheets['Sheet11'];
+  if (!ws) {
+    for (var si = 0; si < wb.SheetNames.length; si++) {
+      var s    = wb.Sheets[wb.SheetNames[si]];
+      var hrow = XLSX.utils.sheet_to_json(s, { header: 1, range: 0, defval: '' });
+      if (hrow.length && hrow[0]) {
+        for (var hi = 0; hi < hrow[0].length; hi++) {
+          if (String(hrow[0][hi]).trim().toUpperCase() === 'DATE') { ws = s; break; }
+        }
+      }
+      if (ws) break;
+    }
+  }
+  if (!ws) { setImportPrevStatus('\u26a0 Sheet11 not found'); return null; }
+
+  /* raw:true → dates are numeric serials, booleans are 0/1, strings are strings */
+  var rows = XLSX.utils.sheet_to_json(ws, { defval: null, raw: true });
+
+  /* Recover full-precision account numbers.
+   * With raw:true, a 16-digit number like 8535114780581878 becomes a
+   * lossy float.  Pull the formatted cell string ('w') instead. */
+  var ACCT_HDR = 'ACCT# | LOC# | TICKET#';
+  var wsRef    = ws['!ref'];
+  if (wsRef) {
+    var range   = XLSX.utils.decode_range(wsRef);
+    var acctCol = -1;
+    for (var c = range.s.c; c <= range.e.c; c++) {
+      var hCell = ws[XLSX.utils.encode_cell({ r: range.s.r, c: c })];
+      if (hCell && String(hCell.v || '').trim() === ACCT_HDR) { acctCol = c; break; }
+    }
+    if (acctCol >= 0) {
+      for (var ri = 0; ri < rows.length; ri++) {
+        var dCell = ws[XLSX.utils.encode_cell({ r: range.s.r + 1 + ri, c: acctCol })];
+        if (dCell) {
+          /* 'w' is the formatted display string (always a string, exact digits) */
+          rows[ri][ACCT_HDR] = dCell.w ? dCell.w.replace(/[^0-9]/g, '') : String(dCell.v || '');
+        }
+      }
+    }
+  }
+
+  return rows;
+}
+
+function setImportPrevStatus(msg, color) {
+  var el = document.getElementById('import-prev-status');
+  if (el) { el.textContent = msg; el.style.color = color || 'var(--text3)'; }
+}
+/* ── End Import Previous Tracker ── */
+
+
+</script>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
+</body>
+</html>
