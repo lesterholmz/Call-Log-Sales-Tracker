@@ -1432,7 +1432,7 @@ function _nsClose(){
   if(tog)   tog.classList.remove('active');
 }
 
-function toggleNoSale(callerEl){
+function toggleNoSale(callerEl){ console.log("toggleNoSale called, _nsPanelOpen=",_nsPanelOpen,"_nsState=",_nsState);
   // If panel is open → close it. If auto-active but no panel → open panel.
   if(_nsPanelOpen){ _nsClose(); _nsPanelOpen=false; nsAutoSelect(); colorReason(); return; }
   _nsState = 'tier1'; _nsCat = ''; _nsSub = '';
@@ -1453,7 +1453,7 @@ function toggleNoSale(callerEl){
   nsAutoSelect();
 }
 
-function renderNsPanel(){
+function renderNsPanel(){ console.log("renderNsPanel _nsState=",_nsState,"cats=",Object.keys(NO_SALE_CATS).length);
   const panel = document.getElementById('nosale-panel');
   if(!panel) return;
   const frag = document.createDocumentFragment();
