@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080">
-<title>Xfinity Call Logger v0.03.19.87</title>
+<title>Xfinity Call Logger v0.03.19.123</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -79,7 +79,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .form-header-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .form-hint{font-size:11px;color:var(--text3);font-family:var(--mono)}
-.form-body{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.form-body{padding:16px 10px;display:flex;flex-direction:column;gap:10px}
 .frow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
@@ -144,8 +144,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .sale-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .sale-divider-line{flex:1;height:1px;background:var(--border)}
 .sale-divider-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
-.play-indicator{display:flex;flex-direction:column;justify-content:center;gap:3px;align-self:stretch;padding-bottom:0;width:100%}
-.play-name{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--green);opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s}
+.play-indicator{display:flex;flex-direction:row;align-items:center;gap:6px;align-self:stretch;padding-bottom:0;width:100%}
+.play-name{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s}
 .play-services{font-size:10px;color:var(--text3);opacity:0;transition:opacity .2s}
 .play-name.show,.play-services.show{opacity:1;transform:none}
 .v-div{width:1px;background:var(--border2);align-self:stretch}
@@ -426,7 +426,7 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 
 /* ── Form layout: centered rows, notes aligned to row 1 width ── */
 /* Row container — centers each row and constrains width to match row 1 */
-.form-row-center{display:flex;justify-content:center;width:100%}
+.form-row-center{display:flex;justify-content:flex-start;width:100%}
 .frow-top{display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap}
 .frow-notes{display:inline-flex;gap:10px;align-items:stretch}
 /* 720px: notes wraps full width, cb toggle + submit stack below */
@@ -586,8 +586,19 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .ns-toggle:hover{border-color:var(--red);color:var(--red)}
 .ns-toggle.active{background:rgba(248,113,113,.12);border-color:var(--red);color:var(--red)}
 /* ── Floating panel ── */
-#nosale-panel{}
-#ns-back-external:hover{color:var(--amber)!important;border-color:var(--amber)!important;box-shadow:0 2px 8px rgba(245,158,11,.2)!important}
+
+#nosale-panel.open{
+  display:flex!important;
+  flex-direction:column;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  gap:5px;
+  padding:4px;
+  height:150px;
+  width:auto;
+  overflow:visible;
+}
+
 /* ── Category pills — solid floating chips ── */
 .ns-cat-pill{
   padding:5px 12px;border-radius:999px;
@@ -631,16 +642,6 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
   color:var(--blue);font-weight:700
 }
 /* ── Back button — subtle left-anchored link style ── */
-.ns-back-btn{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:3px 8px;border-radius:999px;
-  border:none;background:transparent;
-  font-size:10px;font-weight:700;letter-spacing:.02em;
-  color:var(--text3);cursor:pointer;
-  transition:color .12s;user-select:none;
-  width:100%;margin-bottom:4px
-}
-.ns-back-btn:hover{color:var(--amber)}
 /* ── Panel inner label ── */
 .ns-section-label{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);opacity:.6;margin-bottom:4px;padding-left:2px}
 
@@ -665,13 +666,22 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .ns-ed-add-reason input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;font-family:var(--sans);font-size:11px;color:var(--text);outline:none}
 .ns-ed-add-reason button{background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:2px 8px;font-size:11px;color:var(--text2);cursor:pointer}
 .ns-ed-add-reason button:hover{background:var(--card2)}
+
+/* ── No XM Sales table ── */
+.nxm-table-wrap{overflow-x:auto;margin-top:8px}
+.nxm-table{width:100%;border-collapse:collapse;font-size:12px}
+.nxm-table th{padding:7px 10px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--card2)}
+.nxm-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.nxm-table tr:last-child td{border-bottom:none}
+.nxm-table tr:hover td{background:var(--surface)}
+.nxm-reason{font-size:11px;color:var(--red);font-weight:600}
 </style>
 </head>
 <body>
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.19.87</div>
+    <div class="version-chip">v0.03.19.123</div>
     <div class="clock" id="clock">--:-- --</div>
     <div class="month-chip" id="month-chip-label">…</div>
     <button class="gear-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
@@ -935,6 +945,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
       <!-- ── Row 1: Products · Outcome · Play · Callback — centered ── -->
       <div class="form-row-center">
         <div class="frow-top">
+          <div style="display:inline-flex;gap:10px;align-items:center;width:371px;flex-shrink:0">
           <div class="xm-wrap"><label>XM Lines</label><div class="xm-stepper" id="xm-stepper"><button class="xm-btn" type="button" onclick="setXm(xmVal-1)">−</button><div class="xm-val" id="xm-val">0</div><button class="xm-btn" type="button" onclick="setXm(xmVal+1)">+</button></div></div>
           <div class="checks-group">
             <div class="check-wrap"><label>TV</label><div class="chk" id="chk-tv" onclick="toggleProd('tv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
@@ -952,17 +963,21 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
               </div>
             </div>
           </div>
+          </div>
           <div class="v-div"></div>
-          <div class="field" id="outcome-field-wrap" style="width:160px;flex-shrink:0">
+          <div class="field" id="outcome-field-wrap" style="min-width:160px;flex:1">
             <!-- Play indicator shown when RGU selected, outcome UI shown otherwise -->
             <div id="play-or-outcome">
               <div class="play-indicator" id="play-indicator-wrap" style="display:none">
-                <div class="play-name" id="play-name"></div>
-                <div class="play-services" id="play-svcs"></div>
+                <div style="display:flex;flex-direction:column;gap:3px;flex:1">
+                  <div class="play-name" id="play-name"></div>
+                  <div class="play-services" id="play-svcs"></div>
+                </div>
+                <div class="v-div" id="noxm-divider" style="display:none;align-self:stretch;margin:0 5px"></div>
+                <div class="ns-toggle" id="ns-toggle-noxm" onclick="toggleNoSale(this)" style="display:none;flex-shrink:0">✘ No XM Sale</div>
               </div>
               <div id="outcome-ui-wrap" style="display:flex;align-items:center;gap:6px">
-                <div class="ns-toggle" id="ns-toggle" onclick="toggleNoSale()">✘ No Sale</div>
-                <div id="ns-back-external" style="display:none;align-items:center;gap:4px;margin-left:8px;padding:4px 10px;border-radius:999px;border:1px solid var(--border2);background:var(--surface);font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;user-select:none;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.15)">‹ back</div>
+                <div class="ns-toggle" id="ns-toggle" onclick="toggleNoSale(this)">✘ No Sale</div>
               </div>
             </div>
 
@@ -991,11 +1006,8 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
             <textarea id="f-notes" placeholder="Optional…" style="flex:1;min-height:140px"></textarea>
           </div>
           <div class="frow-notes-actions" style="display:flex;flex-direction:column;align-self:stretch">
-            <!-- Open space wrapper — panel anchors here, fills down then expands right -->
-            <div style="flex:1">
-              <div id="nosale-panel" style="position:absolute;top:-25px;left:390px;width:auto;height:150px;overflow:visible;z-index:50;display:none;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:5px;padding:2px">
-              </div>
-            </div>
+            <!-- Open space wrapper -->
+            <div style="flex:1"></div>
             <!-- Log Call strip — same height as Phone # field -->
             <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
               <div class="cback-toggle" id="cb-toggle" onclick="toggleCb()" title="Call Back">📞</div>
@@ -1403,82 +1415,103 @@ function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-v
 function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();updateSale();}
 function isIE(){const el=document.getElementById('chk-ie');return el&&el.classList.contains('ie-active');}
 function syncProds(){syncIEVisibility();const ie=isIE(),el=document.getElementById('chk-chsi');el.classList.remove('checked','ie-adj');if(prods.chsi)el.classList.add(ie?'ie-adj':'checked');['tv','cdv','xh'].forEach(k=>document.getElementById('chk-'+k).classList.toggle('checked',prods[k]));}
-let _noSaleActive = false;
-let _noSaleCat = '';
-let _noSaleSub = '';
+// No-sale state machine
+// states: 'closed' | 'tier1' | 'tier2' | 'confirmed'
+let _nsState  = 'closed';
+let _nsPanelOpen = false; // true only when pill panel is visible
+let _nsCat    = '';  // selected category
+let _nsSub    = '';  // selected sub-reason
 
-function toggleNoSale(){
-  _noSaleActive = !_noSaleActive;
-  _noSaleCat = '';
-  _noSaleSub = '';
-  const tog = document.getElementById('ns-toggle');
+
+
+function _nsClose(){
+  _nsState = 'closed'; _nsCat = ''; _nsSub = ''; _nsPanelOpen = false;
   const panel = document.getElementById('nosale-panel');
-  tog.classList.toggle('active', _noSaleActive);
-  if(panel) panel.style.display = _noSaleActive ? 'inline-flex' : 'none';
-  const backBtn = document.getElementById('ns-back-external');
-  if(backBtn) backBtn.style.display = 'none';
-  if(_noSaleActive){ renderNsPanel(); setTimeout(sizeNsPanel, 0); }
+  const tog   = document.getElementById('ns-toggle');
+  if(panel) panel.classList.remove('open');
+  if(tog)   tog.classList.remove('active');
+}
+
+function toggleNoSale(callerEl){
+  // If panel is open → close it. If auto-active but no panel → open panel.
+  if(_nsPanelOpen){ _nsClose(); _nsPanelOpen=false; nsAutoSelect(); colorReason(); return; }
+  _nsState = 'tier1'; _nsCat = ''; _nsSub = '';
+  const tog   = document.getElementById('ns-toggle');
+  const togNoxm = document.getElementById('ns-toggle-noxm');
+  const panel = document.getElementById('nosale-panel');
+  if(tog) tog.classList.add('active');
+  if(togNoxm) togNoxm.classList.add('active');
+  if(panel){
+    const anchor = callerEl || tog;
+    const rect = anchor.getBoundingClientRect();
+    panel.style.top  = (rect.bottom + 6) + 'px';
+    panel.style.left = rect.left + 'px';
+    panel.classList.add('open');
+  }
+  renderNsPanel();
   colorReason();
+  nsAutoSelect();
 }
 
 function renderNsPanel(){
   const panel = document.getElementById('nosale-panel');
   if(!panel) return;
-  panel.innerHTML = '';
-  if(!_noSaleCat){
+  const frag = document.createDocumentFragment();
+  if(_nsState === 'tier1'){
+    // Show categories
     Object.keys(NO_SALE_CATS).forEach(cat => {
       const d = document.createElement('div');
-      d.className = 'ns-cat-pill';
+      d.className = 'ns-cat-pill' + (_nsCat === cat ? ' active' : '');
       d.textContent = cat;
-      d.addEventListener('click', function(e){ e.stopPropagation(); selectNsCat(cat); });
-      panel.appendChild(d);
+      d.addEventListener('mousedown', function(e){ e.preventDefault(); selectNsCat(cat); });
+      frag.appendChild(d);
     });
-  } else {
-    (NO_SALE_CATS[_noSaleCat] || []).forEach(s => {
+  } else if(_nsState === 'tier2'){
+    // Show sub-reasons for selected category
+    (NO_SALE_CATS[_nsCat] || []).forEach(s => {
       const d = document.createElement('div');
-      d.className = 'ns-sub-pill' + (_noSaleSub === s ? ' active' : '');
+      d.className = 'ns-sub-pill' + (_nsSub === s ? ' active' : '');
       d.textContent = s;
-      d.addEventListener('click', function(e){ e.stopPropagation(); selectNsSub(s); });
-      panel.appendChild(d);
+      d.addEventListener('mousedown', function(e){ e.preventDefault(); selectNsSub(s); });
+      frag.appendChild(d);
     });
   }
-  sizeNsPanel();
+  panel.innerHTML = '';
+  panel.appendChild(frag);
 }
 
-function renderNsCatPills(){ renderNsPanel(); }
 
-function sizeNsPanel(){
-  // Pills are direct children of nosale-panel — width auto-sizes via inline-flex
-}
 
 function selectNsCat(cat){
-  _noSaleCat = cat;
-  _noSaleSub = '';
+  if(_nsCat !== cat) _nsSub = ''; // clear sub when switching categories
+  _nsCat = cat;
+  _nsState = 'tier2';
   renderNsPanel();
-  setTimeout(sizeNsPanel, 0);
-  const b = document.getElementById('ns-back-external');
-  if(b) b.style.display = 'flex';
 }
 
 function selectNsSub(sub){
-  _noSaleSub = sub;
-  renderNsPanel();
-  setTimeout(sizeNsPanel, 0);
+  if(_nsSub === sub){
+    // Already selected — deselect and go back to tier1
+    _nsSub = ''; _nsCat = '';
+    _nsState = 'tier1';
+    const b = document.getElementById('ns-back-external');
+    if(b) b.style.display = 'none';
+    renderNsPanel();
+  } else {
+    // New selection — stay open, show reason highlighted
+    _nsSub = sub;
+    _nsState = 'tier2';
+    renderNsPanel();
+    colorReason();
+  }
 }
 
-function nsGoBack(){
-  _noSaleCat = '';
-  _noSaleSub = '';
-  renderNsPanel();
-  setTimeout(sizeNsPanel, 0);
-  const b = document.getElementById('ns-back-external');
-  if(b) b.style.display = 'none';
-}
+
 
 function getNoSaleReason(){
-  if(_noSaleSub && _noSaleCat) return _noSaleCat + ' > ' + _noSaleSub;
-  if(_noSaleSub) return _noSaleSub;
-  if(_noSaleCat) return _noSaleCat;
+  if(_nsSub && _nsCat) return _nsCat + ' > ' + _nsSub;
+  if(_nsSub) return _nsSub;
+  if(_nsCat) return _nsCat;
   return 'NO SALE MADE';
 }
 
@@ -1488,56 +1521,95 @@ function onReasonChange(){
 
 function onNosaleCatChange(){}
 function onNosaleSubChange(){}
-function colorReason(){const tog=document.getElementById('ns-toggle');if(tog)tog.classList.toggle('active',_noSaleActive);}
+function colorReason(){
+  const tog=document.getElementById('ns-toggle');
+  const togNoxm=document.getElementById('ns-toggle-noxm');
+  const active=_nsState!=='closed';
+  if(tog) tog.classList.toggle('active',active);
+  if(togNoxm) togNoxm.classList.toggle('active',active);
+}
 function getSvcs(){const s=[];if(xmVal>0)s.push('XM');if(prods.tv)s.push('TV');if(prods.chsi)s.push('CHSI');if(prods.cdv)s.push('CDV');if(prods.xh)s.push('XH');return s;}
 function updatePlay(){
   const s=getSvcs();
+  const hasXm = xmVal > 0;
+  const hasNonXm = prods.tv || prods.chsi || prods.cdv || prods.xh;
   const pn=document.getElementById('play-name');
   const ps=document.getElementById('play-svcs');
   const piWrap=document.getElementById('play-indicator-wrap');
   const outWrap=document.getElementById('outcome-ui-wrap');
+  const noxmTog=document.getElementById('ns-toggle-noxm');
+
   if(s.length){
-    pn.textContent=PLAY_NAMES[Math.min(s.length,5)];
-    ps.textContent=s.join(' · ');
+    pn.textContent=PLAY_NAMES[Math.min(s.length,5)] + (s.length ? ' · ' + s.join(' · ') : '');
     pn.classList.add('show');
-    ps.classList.add('show');
+    ps.classList.remove('show');
     if(piWrap) piWrap.style.display='flex';
     if(outWrap) outWrap.style.display='none';
-    // reset no-sale if switching to sale
-    if(_noSaleActive){ _noSaleActive=false;_noSaleCat='';_noSaleSub='';
-      const nsp=document.getElementById('nosale-panel');if(nsp)nsp.style.display='none';
-      const tog=document.getElementById('ns-toggle');if(tog)tog.classList.remove('active');
-    }
+    // Show "No XM Sale" toggle if non-XM RGUs selected but no XM
+    const noxmDiv=document.getElementById('noxm-divider');
+    const show = !hasXm && hasNonXm;
+    if(noxmTog) noxmTog.style.display = show ? 'flex' : 'none';
+    if(noxmDiv) noxmDiv.style.display = show ? 'block' : 'none';
+    // XM sold — reset no-sale state
+    if(hasXm){ _nsClose(); }
   } else {
     pn.classList.remove('show');
     ps.classList.remove('show');
+    pn.textContent='';
     if(piWrap) piWrap.style.display='none';
     if(outWrap) outWrap.style.display='block';
+    const noxmDiv2=document.getElementById('noxm-divider');
+    if(noxmTog) noxmTog.style.display='none';
+    if(noxmDiv2) noxmDiv2.style.display='none';
   }
 }
 function toggleCb(){cbOpen=!cbOpen;document.getElementById('cb-toggle').classList.toggle('active',cbOpen);const dtf=document.getElementById('cb-dt-field');if(dtf)dtf.style.display=cbOpen?'flex':'none';if(cbOpen){const d=new Date(Date.now()+30*60000),pad=n=>String(n).padStart(2,'0');document.getElementById('f-cb-dt').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}else{document.getElementById('f-cb-dt').value='';}updateDetailsRow();updateNotesState();}
 function updateNotesState(){const b=document.getElementById('notes-badge'),ta=document.getElementById('f-notes');if(cbOpen){b.className='req-badge-p';b.textContent='required';ta.classList.add('cb-req-ta');ta.placeholder='Why is a call back needed?';}else{b.className='opt-badge';b.textContent='optional';ta.classList.remove('cb-req-ta');ta.placeholder='Optional…';}}
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
 function updateSale(){const s=isSale();const sf=document.getElementById('sched-field'),rf=document.getElementById('rev-field');if(sf)sf.style.display=s?'flex':'none';if(rf)rf.style.display=s?'flex':'none';if(!s){['f-sched','f-rev'].forEach(id=>document.getElementById(id).value='');}updateDetailsRow();}
-function compute(c){const ie=c.ie||c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?c.playName:(c.reason||'');return c;}
+function compute(c){const ie=c.ie||c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?(c.noXmReason?c.playName+' · No XM: '+c.noXmReason:c.playName):(c.reason||'');return c;}
 function buildAcct(raw,name,phone){const p=[];if(raw)p.push(raw);if(name)p.push(name);if(phone)p.push('CB:'+phone);return p.join(' | ');}
 function flash(id,rb=''){const el=document.getElementById(id);if(!el)return;el.style.borderColor='var(--red)';el.style.boxShadow='0 0 0 3px rgba(248,113,113,.2)';el.focus();setTimeout(()=>{el.style.borderColor=rb;el.style.boxShadow='';},2500);}
 function logCall(){
   // acct is always visible; no longer required gating here
   if(cbOpen){if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}}
   const cbName=cbOpen?document.getElementById('f-cb-name').value.trim():'';const cbPhone=cbOpen?document.getElementById('f-cb-phone').value.trim():'';const cbTime=cbOpen?document.getElementById('f-cb-dt').value:'';const raw=document.getElementById('f-acct').value.trim();
-  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,rev:getRevVal(),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_noSaleActive?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
+  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,rev:getRevVal(),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
+    noXmReason:(_nsState!=='closed'&&isSale()?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
   const btn=document.getElementById('submit-btn');btn.classList.add('ok');btn.innerHTML='<div class="btn-dot"></div>Logged!';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<div class="btn-dot"></div>Log Call';},800);
 }
-function resetForm(){['f-acct','f-sched','f-rev','f-reason','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>document.getElementById(id).value='');setXm(0);Object.keys(prods).forEach(k=>{prods[k]=false;document.getElementById('chk-'+k).classList.remove('checked','ie-adj');});document.getElementById('f-reason').classList.remove('val-nosale','val-ie','val-bulk');cbOpen=false;document.getElementById('cb-toggle').classList.remove('active');document.getElementById('details-row').classList.remove('open');document.getElementById('sale-row').classList.remove('open');updateNotesState();updatePlay();}
+function resetForm(){
+  ['f-acct','f-sched','f-rev','f-reason','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  setXm(0);
+  Object.keys(prods).forEach(k=>{prods[k]=false;const el=document.getElementById('chk-'+k);if(el)el.classList.remove('checked','ie-adj');});
+  // IE toggle
+  _ieActive=false;
+  const ie=document.getElementById('chk-ie');if(ie){ie.classList.remove('ie-active');ie.style.display='none';}
+  const ieWrap=document.getElementById('ie-wrap');if(ieWrap)ieWrap.style.display='none';
+  // BULK toggle
+  _bulkActive=false;
+  const bk=document.getElementById('chk-bulk');if(bk)bk.classList.remove('bulk-active');
+  // No sale state
+  _nsClose();
+  // Callback
+  cbOpen=false;
+  const cbt=document.getElementById('cb-toggle');if(cbt)cbt.classList.remove('active');
+  const dtf=document.getElementById('cb-dt-field');if(dtf)dtf.style.display='none';
+  // Detail rows
+  const dr=document.getElementById('details-row');if(dr)dr.classList.remove('open');
+  updateNotesState();
+  updatePlay();
+  updateSale();
+  nsAutoSelect();
+}
 function openEdit(id,fromAlert){if(editingId===id)return;editingId=id;window._editFromAlert=!!fromAlert;const c=calls.find(x=>x.id===id);editState={xm:c.xm,tv:c.tv,chsi:c.chsi,cdv:c.cdv,xh:c.xh};document.querySelector('.main').classList.add('editing');render();setTimeout(()=>{const r=document.querySelector('tr.edit-row');if(r){if(!fromAlert){r.scrollIntoView({block:'nearest',behavior:'smooth'});}const f=r.querySelector('input:not([type=checkbox]):not([type=datetime-local]),select');if(f)f.focus();}},50);}
 function closeEdit(){
   editingId=null;editState={};window._editFromAlert=false;
   document.querySelector('.main').classList.remove('editing');
   render();
 }
-function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=document.getElementById('e-acct').value.trim();c.cbName=document.getElementById('e-cb-name').value.trim();c.cbPhone=document.getElementById('e-cb-phone').value.trim();c.acct=buildAcct(c.acctRaw,c.cbName,c.cbPhone);c.sched=document.getElementById('e-sched').value;c.rev=parseFloat(document.getElementById('e-rev').value)||0;c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.cbDone=document.getElementById('e-cb-done').checked;c.ie=c.ie||false;c.bulk=c.bulk||false;c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();}
+function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=document.getElementById('e-acct').value.trim();c.cbName=document.getElementById('e-cb-name').value.trim();c.cbPhone=document.getElementById('e-cb-phone').value.trim();c.acct=buildAcct(c.acctRaw,c.cbName,c.cbPhone);c.sched=document.getElementById('e-sched').value;c.rev=parseFloat(document.getElementById('e-rev').value)||0;c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.cbDone=document.getElementById('e-cb-done').checked;c.ie=c.ie||false;c.bulk=c.bulk||false;c.noXmReason=c.noXmReason||'';c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();}
 function delCall(id){if(editingId===id)closeEdit();deleteCallFromSheets(id);calls=calls.filter(c=>c.id!==id);render();updateStats();}
 function markCbDone(id){const c=calls.find(x=>x.id===id);if(c){c.cbDone=true;const el=document.getElementById('e-cb-done');if(el)el.checked=true;render();checkAlerts();upsertCallToSheets(c);}}
 function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}}
@@ -1547,7 +1619,7 @@ function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
 function fmtCb(iso){if(!iso)return'';const d=new Date(iso);return d.toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}
 function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=new Date(c.cbTime).getTime()-Date.now();if(ms<0)return'overdue';const maxW=Math.max(...(window._alertWindows||[15]));if(ms<maxW*60000)return'due-soon';return'pending';}
 function pillCls(c){if(c.hasSale)return c.bulk?'p-bulk':'p-sale';if(c.callOutcome==='NO SALE MADE')return'p-nosale';if(['BILLING','TECH SUPPORT','TECH (SAME DAY)','DROP ISSUES','DISCONNECTED'].includes(c.callOutcome))return'p-tech';return'p-other';}
-function pillTxt(c){if(c.hasSale)return(c.bulk?'BULK · ':'')+( c.xm>0?`${c.playName} (${c.xm} XM)`:c.playName);return c.callOutcome==='NO SALE MADE'?'NO SALE':(c.callOutcome||'—');}
+function pillTxt(c){if(c.hasSale){const base=(c.bulk?'BULK · ':'')+( c.xm>0?`${c.playName} (${c.xm} XM)`:c.playName);return c.noXmReason?base+' · ✘ XM':base;}return c.callOutcome==='NO SALE MADE'?'NO SALE':(c.callOutcome||'—');}
 function outcomeOpts(sel=''){return`<option value="">— select outcome —</option>`+OUTCOMES.map(v=>`<option${sel===v?' selected':''}>${v}</option>`).join('');}
 function renderReadRow(c){const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(2)}</span>`:`<span class="td-nil">—</span>`;const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;const st=cbStatus(c);let cb='<span class="td-nil">—</span>';if(st==='done')cb=`<span class="cb-badge done">${fmtCb(c.cbTime)}</span>`;else if(st==='overdue')cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;else if(st==='due-soon')cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;else if(st==='pending')cb=`<span class="cb-badge">${fmtCb(c.cbTime)}</span>`;const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'?' has-callback':'');return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}">${c.acct||'—'}</td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;}
 function renderEditRow(c){
@@ -2888,7 +2960,36 @@ function renderTrends(){
     html += `</tbody></table></div></div>`;
   }
 
-  el.innerHTML = `<div style="padding:16px 0">${html}</div>`;
+  // ── No XM Sales section ──────────────────────────────────────────────
+  const nxmCalls = calls.filter(c => c.noXmReason && c.hasSale);
+  let nxmHtml = '';
+  if(nxmCalls.length){
+    nxmHtml = `<div class="tr-section">
+      <div class="tr-section-title">Sales Without XM (${nxmCalls.length})</div>
+      <div class="form-card" style="padding:0;overflow:hidden">
+        <div style="padding:10px 12px 0;display:flex;align-items:center;gap:8px">
+          <select class="filter-select" id="nxm-filter" onchange="renderNxmTable()">
+            <option value="all">All Time</option>
+            <option value="fiscal">This Fiscal Month</option>
+            <option value="today">Today</option>
+            <option value="yesterday">Yesterday</option>
+            <option value="this-week">This Week</option>
+          </select>
+          <span style="font-size:10px;color:var(--text3)" id="nxm-count"></span>
+        </div>
+        <div class="nxm-table-wrap">
+          <table class="nxm-table">
+            <thead><tr>
+              <th>Date</th><th>Acct / Name</th><th>Play</th><th>No XM Reason</th><th>Rev</th><th>Sched</th><th>Notes</th>
+            </tr></thead>
+            <tbody id="nxm-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  }
+  el.innerHTML = `<div style="padding:16px 0">${html}${nxmHtml}</div>`;
+  if(nxmCalls.length) renderNxmTable();
 }
 
 function makeChart(id, type, labels, datasets, options){
@@ -3886,29 +3987,18 @@ function updateDetailsRow(){
 }
 
 document.addEventListener('click', function(e){
-  if(!_noSaleActive) return;
-  const panel = document.getElementById('nosale-panel');
-  const tog   = document.getElementById('ns-toggle');
-  if(panel && tog && !panel.contains(e.target) && !tog.contains(e.target)){
-    _noSaleActive = false; _noSaleCat = ''; _noSaleSub = '';
-    panel.style.display = 'none';
-    tog.classList.remove('active');
-  }
+  if(_nsState==='closed') return;
+  const panel   = document.getElementById('nosale-panel');
+  const tog     = document.getElementById('ns-toggle');
+  const togNoxm = document.getElementById('ns-toggle-noxm');
+  // If click was inside panel or either toggle — do nothing
+  if((panel   && panel.contains(e.target))   ||
+     (tog     && tog.contains(e.target))     ||
+     (togNoxm && togNoxm.contains(e.target))) return;
+  _nsClose();
 });
 
-// Back button — attached once, stopPropagation prevents panel close
-(function(){
-  function initBackBtn(){
-    var btn = document.getElementById('ns-back-external');
-    if(!btn) return;
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      nsGoBack();
-    });
-  }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBackBtn);
-  else initBackBtn();
-})();
+
 
 let _nsDragCat = null;
 let _nsDragReason = null;
@@ -3926,9 +4016,18 @@ function renderNsCatEditor(){
     // Header
     const hdr = document.createElement('div');
     hdr.className = 'ns-ed-cat-hdr';
-    hdr.innerHTML = `<span class="ns-ed-reason-handle">⠿</span>
-      <span class="ns-ed-cat-label"><input value="${cat}" onblur="nsRenameCat('${cat}', this.value)"></span>
-      <button class="ns-ed-cat-del" onclick="nsDelCat('${cat}')">×</button>`;
+  const hhandle = document.createElement('span');
+    hhandle.className = 'ns-ed-reason-handle'; hhandle.textContent = '⠿';
+    const hlabel = document.createElement('span');
+    hlabel.className = 'ns-ed-cat-label';
+    const hinp = document.createElement('input');
+    hinp.value = cat;
+    hinp.addEventListener('blur', () => nsRenameCat(cat, hinp.value));
+    hlabel.appendChild(hinp);
+    const hdel = document.createElement('button');
+    hdel.className = 'ns-ed-cat-del'; hdel.textContent = '×';
+    hdel.addEventListener('click', () => nsDelCat(cat));
+    hdr.appendChild(hhandle); hdr.appendChild(hlabel); hdr.appendChild(hdel);
     catDiv.appendChild(hdr);
 
     // Reasons
@@ -3969,9 +4068,15 @@ function makeReasonRow(cat, reason){
   row.className = 'ns-ed-reason';
   row.draggable = true;
   row.dataset.reason = reason;
-  row.innerHTML = `<span class="ns-ed-reason-handle">⠿</span>
-    <input value="${reason}" onblur="nsRenameReason('${cat}', '${reason}', this.value)">
-    <button class="ns-ed-reason-del" onclick="nsDelReason('${cat}', '${reason}')">×</button>`;
+  const handle = document.createElement('span');
+  handle.className = 'ns-ed-reason-handle'; handle.textContent = '⠿';
+  const inp = document.createElement('input');
+  inp.value = reason;
+  inp.addEventListener('blur', () => nsRenameReason(cat, reason, inp.value));
+  const del = document.createElement('button');
+  del.className = 'ns-ed-reason-del'; del.textContent = '×';
+  del.addEventListener('click', () => nsDelReason(cat, reason));
+  row.appendChild(handle); row.appendChild(inp); row.appendChild(del);
   row.addEventListener('dragstart', e => { _nsDragReason = row; e.stopPropagation(); e.dataTransfer.effectAllowed='move'; setTimeout(()=>row.style.opacity='.4',0); });
   row.addEventListener('dragend', () => { row.style.opacity=''; _nsDragReason=null; nsCommitEditorToCats(); });
   row.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); if(_nsDragReason && _nsDragReason!==row){ const p=row.parentNode; p.insertBefore(_nsDragReason, row); } });
@@ -4112,8 +4217,83 @@ function migrateSettings(old){
   return safe;
 }
 
+window.addEventListener('scroll', function(){
+  if(_nsState === 'closed') return;
+  const panel   = document.getElementById('nosale-panel');
+  const togNoxm = document.getElementById('ns-toggle-noxm');
+  const tog     = document.getElementById('ns-toggle');
+  const anchor  = (togNoxm && togNoxm.style.display !== 'none') ? togNoxm : tog;
+  if(!anchor || !panel) return;
+  const rect = anchor.getBoundingClientRect();
+  // Close if anchor has scrolled behind the sticky header (~104px = header+tabbar)
+  if(rect.top < 104){
+    _nsClose();
+    return;
+  }
+  panel.style.top  = (rect.bottom + 6) + 'px';
+  panel.style.left = rect.left + 'px';
+}, { passive: true });
+
+function renderNxmTable(){
+  const sel = document.getElementById('nxm-filter');
+  const tbody = document.getElementById('nxm-tbody');
+  const countEl = document.getElementById('nxm-count');
+  if(!sel || !tbody) return;
+  const filter = sel.value;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const eod = d => { const e=new Date(d); e.setHours(23,59,59,999); return e; };
+  let filtered = calls.filter(c => c.noXmReason && c.hasSale);
+  if(filter==='fiscal'){ const fi=getFiscalInfo(); filtered=filtered.filter(c=>c.ts>=fi.fiscalStart&&c.ts<fi.fiscalEnd); }
+  else if(filter==='today'){ filtered=filtered.filter(c=>c.ts>=today&&c.ts<=eod(today)); }
+  else if(filter==='yesterday'){ const y=new Date(today);y.setDate(y.getDate()-1);filtered=filtered.filter(c=>c.ts>=y&&c.ts<=eod(y)); }
+  else if(filter==='this-week'){ const ws=new Date(today);ws.setDate(ws.getDate()-ws.getDay());filtered=filtered.filter(c=>c.ts>=ws&&c.ts<=eod(now)); }
+  if(countEl) countEl.textContent = filtered.length+' call'+(filtered.length!==1?'s':'');
+  tbody.innerHTML = filtered.length ? filtered.map(c => {
+    const ts = c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    const sched = c.sched ? new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}) : '—';
+    const acct = [c.acctRaw,c.cbName].filter(Boolean).join(' · ')||'—';
+    return `<tr>
+      <td style="white-space:nowrap;font-family:var(--mono);font-size:11px">${ts}</td>
+      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.acct||''}">${acct}</td>
+      <td style="font-family:var(--mono);font-size:11px">${c.playName||'—'}</td>
+      <td><span class="nxm-reason">${c.noXmReason}</span></td>
+      <td style="font-family:var(--mono)">${c.rev>0?'$'+c.rev.toFixed(2):'—'}</td>
+      <td style="font-family:var(--mono);font-size:11px">${sched}</td>
+      <td style="font-size:11px;color:var(--text3);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.notes||''}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">No results for this period</td></tr>';
+}
+
+function nsAutoSelect(){
+  // Auto-select appropriate no-sale button based on current RGU state
+  // Does NOT open the pill panel — only click does that
+  const hasXm = xmVal > 0;
+  const hasNonXm = prods.tv || prods.chsi || prods.cdv || prods.xh;
+  const tog     = document.getElementById('ns-toggle');
+  const togNoxm = document.getElementById('ns-toggle-noxm');
+  if(hasXm){
+    // XM sold — neither active
+    if(tog)     tog.classList.remove('active');
+    if(togNoxm) togNoxm.classList.remove('active');
+    _nsState = 'closed'; _nsCat = ''; _nsSub = '';
+  } else if(hasNonXm){
+    // Non-XM RGU — activate No XM Sale, deactivate No Sale
+    if(tog)     tog.classList.remove('active');
+    if(togNoxm) togNoxm.classList.add('active');
+    // Keep state active if already set, otherwise treat as closed for pills
+    if(_nsState === 'closed') _nsState = 'tier1';
+  } else {
+    // No RGUs — activate No Sale
+    if(tog)     tog.classList.add('active');
+    if(togNoxm) togNoxm.classList.remove('active');
+    if(_nsState === 'closed') _nsState = 'tier1';
+  }
+}
+
 </script>
 
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
+<div id="nosale-panel" style="position:fixed;z-index:9999;display:none"></div>
 </body>
 </html>
