@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080">
-<title>Xfinity Call Logger v0.03.19.17</title>
+<title>Xfinity Call Logger v0.03.19.87</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -56,10 +56,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .stats-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 .stats-row{display:grid;grid-template-columns:repeat(8,1fr);padding:0 24px}
 .stats-row.monthly{border-bottom:1px solid var(--border2)}
-.stat{padding:10px 8px 6px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
+.stat{padding:10px 8px 6px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
 .stat:first-child{padding-left:0;min-width:90px}.stat:last-child{border-right:none}
 .stat-label{font-size:9px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3)}
-.stats-row.monthly .stat-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text);line-height:1}
+.stats-row.monthly .stat-val{font-family:var(--mono);font-size:clamp(11px,1.4vw,16px);font-weight:500;color:var(--text);line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .stats-row.daily .stat-val{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);line-height:1}
 .stat-val.c-blue{color:var(--blue)}.stat-val.c-green{color:var(--green)}.stat-val.c-amber{color:var(--amber)}.stat-val.c-teal{color:var(--teal)}
 .stat-pct{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px;margin-top:auto;flex-wrap:nowrap;padding-top:4px}
@@ -67,7 +67,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .pct-val.good{color:var(--green)}.pct-val.ok{color:var(--blue)}.pct-val.warn{color:var(--amber)}
 .goal-bar-track{height:4px;background:var(--border2);border-radius:4px;margin-top:2px;overflow:visible;position:relative}
 .goal-bar-fill{height:100%;border-radius:2px;transition:width .5s ease,background .5s ease,box-shadow .5s ease;position:relative;z-index:1}
-.goal-bar-over{position:absolute;top:0;left:0;height:100%;border-radius:2px;background:var(--blue);transition:width .5s ease;z-index:2;pointer-events:none}
+.goal-bar-over{position:absolute;top:-5px;left:0;height:100%;border-radius:2px;background:var(--blue);transition:width .5s ease;z-index:2;pointer-events:none}
 .stat-sub{font-size:10px;color:var(--text3);margin-top:0}
 .stats-row.daily{padding-bottom:4px}
 .stats-row.monthly .stat{padding-top:10px;padding-bottom:6px}
@@ -122,8 +122,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .cback-toggle{width:38px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:16px;filter:grayscale(1) opacity(.5)}
 .cback-toggle:hover{filter:grayscale(.3) opacity(.8);background:var(--card2)}
 .cback-toggle.active{background:var(--purple-lt);border-color:var(--purple);box-shadow:0 0 0 2px rgba(167,139,250,.25),0 0 10px rgba(167,139,250,.15);filter:grayscale(0) opacity(1)}
-#cb-row{overflow:hidden;max-height:0;opacity:0;transform:translateY(-6px);transition:max-height .28s ease,opacity .22s ease,transform .22s ease;margin-top:0}
-#cb-row.open{max-height:120px;opacity:1;transform:translateY(0);margin-top:2px}
+#details-row{overflow:hidden;max-height:0;opacity:0;transform:translateY(-6px);transition:max-height .28s ease,opacity .22s ease,transform .22s ease;margin-top:0}
+#details-row.open{max-height:120px;opacity:1;transform:translateY(0);margin-top:2px}
 .cb-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .cb-divider-line{flex:1;height:1px;background:var(--border)}
 .cb-divider-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);white-space:nowrap}
@@ -140,17 +140,16 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .cb-phone::placeholder{color:var(--text3)}
 .cb-dt{width:235px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
 .cb-dt:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
-#sale-row{overflow:hidden;max-height:0;opacity:0;transform:translateY(-6px);transition:max-height .28s ease,opacity .22s ease,transform .22s ease;margin-top:0}
-#sale-row.open{max-height:120px;opacity:1;transform:translateY(0);margin-top:2px}
+
 .sale-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .sale-divider-line{flex:1;height:1px;background:var(--border)}
 .sale-divider-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
-.play-indicator{display:flex;flex-direction:column;justify-content:center;gap:3px;align-self:stretch;padding-bottom:0;min-width:110px;max-width:140px}
+.play-indicator{display:flex;flex-direction:column;justify-content:center;gap:3px;align-self:stretch;padding-bottom:0;width:100%}
 .play-name{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--green);opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s}
 .play-services{font-size:10px;color:var(--text3);opacity:0;transition:opacity .2s}
 .play-name.show,.play-services.show{opacity:1;transform:none}
 .v-div{width:1px;background:var(--border2);align-self:stretch}
-.submit-btn{height:38px;padding:0 22px;background:var(--blue);border:none;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap;flex-shrink:0;align-self:flex-end}
+.submit-btn{height:38px;padding:0 22px;background:var(--blue);border:none;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap;flex-shrink:0}
 .submit-btn:hover{background:#2563eb;transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,.3)}
 .submit-btn:active{transform:none;box-shadow:none}
 .submit-btn.ok{background:var(--green)}
@@ -429,7 +428,7 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 /* Row container — centers each row and constrains width to match row 1 */
 .form-row-center{display:flex;justify-content:center;width:100%}
 .frow-top{display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap}
-.frow-notes{display:inline-flex;gap:10px;align-items:flex-end;min-width:min(calc(100% - 36px), 700px)}
+.frow-notes{display:inline-flex;gap:10px;align-items:stretch}
 /* 720px: notes wraps full width, cb toggle + submit stack below */
 @media(max-width:780px){
   .frow-notes{flex-wrap:wrap}
@@ -437,10 +436,10 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
   .frow-notes-actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;width:100%}
 }
 @media(min-width:781px){
-  .frow-notes-actions{display:contents}
+  .frow-notes-actions{flex-shrink:0}
 }
 /* Notes wrap fills the same inline width as row 1 */
-.notes-wrap{flex:1;display:flex;flex-direction:column;gap:5px;min-width:200px}
+.notes-wrap{flex:0 0 246px;display:flex;flex-direction:column;gap:5px}
 .notes-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
 .notes-wrap textarea{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:70px;width:100%;transition:border-color .15s,box-shadow .15s}
 .notes-wrap textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
@@ -566,13 +565,113 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .tr-table tr:last-child td{border-bottom:none}
 .tr-table td.td-num{text-align:right;color:var(--text)}
 .tr-table tr:hover td{background:var(--surface)}
+
+/* ── IE / BULK toggles ── */
+#ie-wrap{transition:opacity .15s}
+.chk.ie-active{background:var(--green)!important;border-color:var(--green)!important}
+.chk.bulk-active{background:var(--blue)!important;border-color:var(--blue)!important}
+/* ── No-sale tier-2 ── */
+#nosale-tier2{flex-direction:column;gap:4px}
+
+/* ── IE / BULK stacked modifier toggles ── */
+.cb-modifiers{display:flex;flex-direction:column;gap:3px;margin-left:8px;align-self:flex-end;padding-bottom:1px}
+.cb-mod-wrap{display:flex;align-items:center;gap:4px}
+.cb-mod-lbl{font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+.chk.chk-sm{width:24px;height:20px;border-radius:4px;flex-shrink:0}
+.chk.chk-sm svg{width:11px;height:11px;stroke-width:3}
+
+/* ── No-sale pill UI ── */
+/* ── No-sale toggle button ── */
+.ns-toggle{height:34px;padding:0 14px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;display:flex;align-items:center;transition:all .15s;user-select:none}
+.ns-toggle:hover{border-color:var(--red);color:var(--red)}
+.ns-toggle.active{background:rgba(248,113,113,.12);border-color:var(--red);color:var(--red)}
+/* ── Floating panel ── */
+#nosale-panel{}
+#ns-back-external:hover{color:var(--amber)!important;border-color:var(--amber)!important;box-shadow:0 2px 8px rgba(245,158,11,.2)!important}
+/* ── Category pills — solid floating chips ── */
+.ns-cat-pill{
+  padding:5px 12px;border-radius:999px;
+  border:none;
+  background:var(--surface);
+  box-shadow:0 2px 8px rgba(0,0,0,.18),0 0 0 1px var(--border2);
+  font-size:10px;font-weight:700;letter-spacing:.03em;
+  color:var(--text2);cursor:pointer;
+  transition:transform .1s,box-shadow .1s,background .1s,color .1s;
+  user-select:none;white-space:nowrap;display:inline-flex;align-items:center;gap:5px
+}
+.ns-cat-pill:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 14px rgba(0,0,0,.28),0 0 0 1px var(--amber);
+  color:var(--amber)
+}
+.ns-cat-pill.active{
+  background:rgba(245,158,11,.2);
+  box-shadow:0 2px 10px rgba(245,158,11,.3),0 0 0 1.5px var(--amber);
+  color:var(--amber)
+}
+/* ── Sub-reason pills — lighter, slightly smaller ── */
+.ns-sub-pill{
+  padding:4px 11px;border-radius:999px;
+  border:none;
+  background:var(--card2);
+  box-shadow:0 1px 5px rgba(0,0,0,.14),0 0 0 1px var(--border);
+  font-size:10px;font-weight:500;
+  color:var(--text3);cursor:pointer;
+  transition:transform .1s,box-shadow .1s,background .1s,color .1s;
+  user-select:none;white-space:nowrap;display:inline-flex;align-items:center
+}
+.ns-sub-pill:hover{
+  transform:translateY(-1px);
+  box-shadow:0 3px 10px rgba(59,130,246,.25),0 0 0 1px var(--blue);
+  color:var(--blue)
+}
+.ns-sub-pill.active{
+  background:var(--blue-lt);
+  box-shadow:0 2px 8px rgba(59,130,246,.3),0 0 0 1.5px var(--blue);
+  color:var(--blue);font-weight:700
+}
+/* ── Back button — subtle left-anchored link style ── */
+.ns-back-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;border-radius:999px;
+  border:none;background:transparent;
+  font-size:10px;font-weight:700;letter-spacing:.02em;
+  color:var(--text3);cursor:pointer;
+  transition:color .12s;user-select:none;
+  width:100%;margin-bottom:4px
+}
+.ns-back-btn:hover{color:var(--amber)}
+/* ── Panel inner label ── */
+.ns-section-label{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);opacity:.6;margin-bottom:4px;padding-left:2px}
+
+/* ── No-sale category editor ── */
+.ns-ed-cat{border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.ns-ed-cat-hdr{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--card2);cursor:grab}
+.ns-ed-cat-hdr:active{cursor:grabbing}
+.ns-ed-cat-label{flex:1;font-size:12px;font-weight:600;color:var(--text2)}
+.ns-ed-cat-label input{background:none;border:none;outline:none;font:inherit;color:inherit;width:100%}
+.ns-ed-cat-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
+.ns-ed-cat-del:hover{color:var(--red)}
+.ns-ed-reasons{padding:4px 8px 6px 24px;display:flex;flex-direction:column;gap:3px}
+.ns-ed-reason{display:flex;align-items:center;gap:6px;padding:3px 4px;border-radius:5px;cursor:grab}
+.ns-ed-reason:active{cursor:grabbing}
+.ns-ed-reason:hover{background:var(--surface)}
+.ns-ed-reason-handle{color:var(--text3);font-size:12px;opacity:.5}
+.ns-ed-reason input{flex:1;background:none;border:none;outline:none;font-family:var(--sans);font-size:11px;color:var(--text2)}
+.ns-ed-reason input:focus{background:var(--surface);border-radius:4px;padding:1px 4px}
+.ns-ed-reason-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:0 2px;line-height:1}
+.ns-ed-reason-del:hover{color:var(--red)}
+.ns-ed-add-reason{display:flex;gap:4px;margin-top:3px;padding-left:4px}
+.ns-ed-add-reason input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;font-family:var(--sans);font-size:11px;color:var(--text);outline:none}
+.ns-ed-add-reason button{background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:2px 8px;font-size:11px;color:var(--text2);cursor:pointer}
+.ns-ed-add-reason button:hover{background:var(--card2)}
 </style>
 </head>
 <body>
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.19.17</div>
+    <div class="version-chip">v0.03.19.87</div>
     <div class="clock" id="clock">--:-- --</div>
     <div class="month-chip" id="month-chip-label">…</div>
     <button class="gear-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
@@ -637,6 +736,12 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 
     <!-- ── Goals ── -->
     <div class="stab-panel" id="stabp-goals">
+      <div class="settings-section-label" style="margin-top:14px">Fiscal Month</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Select a month to view or edit its goals, chargebacks, and PTO. Only the current month affects live stats.</div>
+      <select id="s-fiscal-month" onchange="loadGoalsForFiscalMonth(this.value)"
+        style="width:100%;height:34px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;cursor:pointer;margin-bottom:2px">
+      </select>
+      <div id="goals-viewing-notice" style="font-size:10px;color:var(--amber);margin-bottom:8px;display:none">⚠ Viewing a past month — Save will update that month's stored data only.</div>
       <div class="settings-section-label" style="margin-top:14px">PTO Hours Used This Month</div>
       <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Every 8 hrs of PTO adds +5% to your progress toward each goal — reflecting time you weren't on the phones. A ✦ appears on boosted stats.</div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
@@ -647,7 +752,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
         <span id="pto-preview" style="font-size:11px;font-family:var(--mono);color:var(--teal);font-weight:600"></span>
       </div>
       <div id="pto-breakdown" style="font-size:10px;color:var(--text3);line-height:1.8;margin-bottom:4px"></div>
-      <div class="settings-section-label" style="margin-top:14px">Monthly Goals</div>
+      <div class="settings-section-label" style="margin-top:14px">Monthly Goals </div>
       <div class="settings-row">
         <div class="settings-field"><label>Revenue ($)</label><input type="number" id="s-rev" min="0" step="1"></div>
         <div class="settings-field"><label>XM Lines</label><input type="number" id="s-xm" min="0" step="1"></div>
@@ -751,12 +856,12 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 
     <!-- ── Outcomes ── -->
     <div class="stab-panel" id="stabp-outcomes">
-      <div class="settings-section-label" style="margin-top:14px">Call Outcome Options</div>
-      <div style="font-size:10px;color:var(--text3);margin-bottom:8px">Drag to reorder. First 3 are fixed. Click × to remove, or add new options below.</div>
-      <div class="outcome-editor" id="outcome-editor"></div>
-      <div class="outcome-add-row">
-        <input class="outcome-add-input" id="outcome-new-input" placeholder="Add new outcome…" onkeydown="if(event.key==='Enter')addOutcomeItem()">
-        <button class="outcome-add-btn" onclick="addOutcomeItem()">+ Add</button>
+      <div class="settings-section-label" style="margin-top:14px">No Sale Reasons</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:10px">Edit categories and reasons. Drag to reorder. Click × to remove.</div>
+      <div id="ns-cat-editor"></div>
+      <div style="margin-top:8px;display:flex;gap:6px;align-items:center">
+        <input class="outcome-add-input" id="ns-new-cat-input" placeholder="New category…" onkeydown="if(event.key==='Enter')nsAddCat()" style="flex:1">
+        <button class="outcome-add-btn" onclick="nsAddCat()">+ Category</button>
       </div>
     </div>
 
@@ -836,48 +941,85 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
             <div class="check-wrap"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
             <div class="check-wrap"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
             <div class="check-wrap"><label>XH</label><div class="chk" id="chk-xh" onclick="toggleProd('xh')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+            <div class="cb-modifiers">
+              <div class="cb-mod-wrap" id="ie-wrap" style="display:none">
+                <div class="chk chk-sm" id="chk-ie" onclick="toggleIE()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <label class="cb-mod-lbl" style="color:var(--green)">IE</label>
+              </div>
+              <div class="cb-mod-wrap">
+                <div class="chk chk-sm" id="chk-bulk" onclick="toggleBulk()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <label class="cb-mod-lbl" style="color:var(--blue)">BULK</label>
+              </div>
+            </div>
           </div>
           <div class="v-div"></div>
-          <div class="field"><label>Call Outcome</label><select class="outcome-select" id="f-reason" onchange="onReasonChange()"><option value="">— select outcome —</option><option>NO SALE MADE</option><option>IE (.75)</option><option>BULK</option><option>BILLING</option><option>TECH SUPPORT</option><option>NOT SERVICEABLE</option><option>DROP ISSUES</option><option>DISCONNECTED</option><option>INVALID XFER</option><option>DEAD AIR</option><option>HAS ALL SERVICES</option><option>XM PORT OUT</option><option>HS TICKET</option><option>TECH (SAME DAY)</option><option>OTHER</option></select></div>
-          <div class="play-indicator"><div class="play-name" id="play-name"></div><div class="play-services" id="play-svcs"></div></div>
+          <div class="field" id="outcome-field-wrap" style="width:160px;flex-shrink:0">
+            <!-- Play indicator shown when RGU selected, outcome UI shown otherwise -->
+            <div id="play-or-outcome">
+              <div class="play-indicator" id="play-indicator-wrap" style="display:none">
+                <div class="play-name" id="play-name"></div>
+                <div class="play-services" id="play-svcs"></div>
+              </div>
+              <div id="outcome-ui-wrap" style="display:flex;align-items:center;gap:6px">
+                <div class="ns-toggle" id="ns-toggle" onclick="toggleNoSale()">✘ No Sale</div>
+                <div id="ns-back-external" style="display:none;align-items:center;gap:4px;margin-left:8px;padding:4px 10px;border-radius:999px;border:1px solid var(--border2);background:var(--surface);font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;user-select:none;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.15)">‹ back</div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
       <!-- ── Row 2: Notes + Submit — same center width as row 1 ── -->
       <div class="form-row-center">
-        <div class="frow-notes">
-          <div class="notes-wrap">
-            <label id="notes-lbl">Notes <span id="notes-badge" class="opt-badge">optional</span></label>
-            <textarea id="f-notes" placeholder="Optional…"></textarea>
+        <div class="frow-notes" style="position:relative">
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+            <div class="field">
+              <label>Acct / Loc / Ticket #</label>
+              <input class="w-acct" id="f-acct" placeholder="8529114…" autocomplete="off" spellcheck="false" style="width:160px">
+            </div>
+            <div class="field">
+              <label>Name</label>
+              <input class="cb-name" id="f-cb-name" placeholder="First Last" autocomplete="off" style="width:160px">
+            </div>
+            <div class="field">
+              <label>Phone #</label>
+              <input class="cb-phone" id="f-cb-phone" placeholder="(555) 867-5309" maxlength="14" autocomplete="off" style="width:160px">
+            </div>
           </div>
-          <div class="frow-notes-actions">
-            <div class="cback-wrap"><label>Call Back</label><div class="cback-toggle" id="cb-toggle" onclick="toggleCb()">📞</div></div>
-            <button class="submit-btn" id="submit-btn" onclick="logCall()"><div class="btn-dot"></div>Log Call</button>
+          <div class="notes-wrap" style="flex:1;align-self:stretch;display:flex;flex-direction:column">
+            <label id="notes-lbl">Notes <span id="notes-badge" class="opt-badge">optional</span></label>
+            <textarea id="f-notes" placeholder="Optional…" style="flex:1;min-height:140px"></textarea>
+          </div>
+          <div class="frow-notes-actions" style="display:flex;flex-direction:column;align-self:stretch">
+            <!-- Open space wrapper — panel anchors here, fills down then expands right -->
+            <div style="flex:1">
+              <div id="nosale-panel" style="position:absolute;top:-25px;left:390px;width:auto;height:150px;overflow:visible;z-index:50;display:none;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:5px;padding:2px">
+              </div>
+            </div>
+            <!-- Log Call strip — same height as Phone # field -->
+            <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+              <div class="cback-toggle" id="cb-toggle" onclick="toggleCb()" title="Call Back">📞</div>
+              <button class="submit-btn" id="submit-btn" onclick="logCall()"><div class="btn-dot"></div>Log Call</button>
+            </div>
           </div>
         </div>
       </div>
-      <div id="cb-row">
-        <div class="cb-divider"><div class="cb-divider-line"></div><div class="cb-divider-label">Call Back details</div><div class="cb-divider-line"></div></div>
-        <div class="form-row-center"><div class="cb-fields">
-          <div class="cb-field cb-field-name">
-            <label>Name <span class="req-badge-p">required</span></label>
-            <input class="cb-name" id="f-cb-name" placeholder="First Last" autocomplete="off">
+      <div id="details-row">
+        <div class="cb-divider"><div class="cb-divider-line"></div><div class="cb-divider-label" id="details-label">Details</div><div class="cb-divider-line"></div></div>
+        <div class="form-row-center"><div class="frow" style="flex-wrap:nowrap;gap:10px;align-items:flex-end">
+          <div class="field" id="sched-field" style="display:none">
+            <label>Sched Date</label>
+            <input type="date" class="w-sched" id="f-sched">
           </div>
-          <div class="cb-field cb-field-phone">
-            <label>Phone # <span class="req-badge-p">required</span></label>
-            <input class="cb-phone" id="f-cb-phone" placeholder="(555) 867-5309" maxlength="14" autocomplete="off">
+          <div class="field" id="rev-field" style="display:none">
+            <label>Rev ($)</label>
+            <input type="text" class="w-rev" id="f-rev" placeholder="$0.00" style="padding:0 8px;font-family:var(--mono);font-size:13px" oninput="fmtRevInput(this)" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)">
           </div>
-          <div class="cb-field">
+          <div class="v-div" id="details-vdiv" style="display:none;align-self:stretch"></div>
+          <div class="field" id="cb-dt-field" style="display:none">
             <label>Call Back Time <span class="req-badge-p">required</span></label>
             <input type="datetime-local" class="cb-dt" id="f-cb-dt">
           </div>
-        </div></div>
-      </div>
-      <div id="sale-row">
-        <div class="sale-divider"><div class="sale-divider-line"></div><div class="sale-divider-label">Sale details</div><div class="sale-divider-line"></div></div>
-        <div class="form-row-center"><div class="frow">
-          <div class="field"><label>Acct / Loc / Ticket # <span class="req-badge">required</span></label><input class="w-acct" id="f-acct" placeholder="8529114…" autocomplete="off" spellcheck="false"></div>
-          <div class="field"><label>Sched Date</label><input type="date" class="w-sched" id="f-sched"></div>
-          <div class="field"><label>Rev ($)</label><input type="text" class="w-rev" id="f-rev" placeholder="$0.00" style="padding:0 8px;font-family:var(--mono);font-size:13px" oninput="fmtRevInput(this)" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)"></div>
         </div></div>
       </div>
     </div>
@@ -1175,9 +1317,51 @@ function getPtoBonus(){
   return Math.floor(hrs/8) * 0.05;
 }
 const PLAY_NAMES=['','Single Play','Double Play','Triple Play','Quad Play','5-Play'];
-const LOCKED_OUTCOMES=['NO SALE MADE','IE (.75)','BULK'];
+const LOCKED_OUTCOMES=['NO SALE MADE'];
 const DEFAULT_OUTCOMES=[...LOCKED_OUTCOMES,'BILLING','TECH SUPPORT','NOT SERVICEABLE','DROP ISSUES','DISCONNECTED','INVALID XFER','DEAD AIR','HAS ALL SERVICES','XM PORT OUT','HS TICKET','TECH (SAME DAY)','OTHER'];
 let OUTCOMES=[...DEFAULT_OUTCOMES];
+
+const SETTINGS_VERSION = 1;
+let _currentUserEmail = localStorage.getItem('xcl_user_email') || ''; // bump when settings schema changes requiring migration
+const NO_SALE_CATS_VERSION = 1; // bump when adding new default categories/reasons
+const NO_SALE_CATS_DEFAULTS = {
+  'Not Interested': [
+    'Already Has Service',
+    'Happy With Current Provider',
+    'Not Looking to Change',
+    'Price Concern',
+    'Wants to Think About It',
+    'Spouse/Decision Maker Not Available',
+    'Language Barrier',
+  ],
+  'Technical / Service': [
+    'Not Serviceable',
+    'Tech Support Call',
+    'Drop / Call Issues',
+    'Same Day Tech',
+    'HS Ticket Open',
+  ],
+  'Transfer / Routing': [
+    'Invalid Transfer',
+    'Dead Air',
+    'Disconnected',
+    'Wrong Department',
+  ],
+  'Account Restriction': [
+    'Bulk Account',
+    'Has All Services',
+    'Billing Issue',
+    'XM Port Out',
+  ],
+  'Other': [
+    'Customer Hung Up',
+    'Language Barrier',
+    'Do Not Call',
+    'Other',
+  ],
+};
+// Live object — loaded from settings if saved, otherwise seeded from defaults
+const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
 document.getElementById('m-rgus-lbl').textContent='of '+getRguGoal();
 let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all',_logSearch='',_activeTab='tracker';
@@ -1217,51 +1401,159 @@ document.getElementById('f-cb-phone').addEventListener('input',function(){onPhon
 function dismissAlerts(){alertDismissed=Date.now()+5*60000;document.getElementById('alert-bar').classList.remove('visible');}
 function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();updateSale();}
 function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();updateSale();}
-function isIE(){return document.getElementById('f-reason').value==='IE (.75)';}
-function syncProds(){const ie=isIE(),el=document.getElementById('chk-chsi');el.classList.remove('checked','ie-adj');if(prods.chsi)el.classList.add(ie?'ie-adj':'checked');['tv','cdv','xh'].forEach(k=>document.getElementById('chk-'+k).classList.toggle('checked',prods[k]));}
-function onReasonChange(){syncProds();colorReason();updatePlay();updateSale();}
-function colorReason(){const s=document.getElementById('f-reason');s.classList.remove('val-nosale','val-ie','val-bulk');if(s.value==='NO SALE MADE')s.classList.add('val-nosale');else if(s.value==='IE (.75)')s.classList.add('val-ie');else if(s.value==='BULK')s.classList.add('val-bulk');}
+function isIE(){const el=document.getElementById('chk-ie');return el&&el.classList.contains('ie-active');}
+function syncProds(){syncIEVisibility();const ie=isIE(),el=document.getElementById('chk-chsi');el.classList.remove('checked','ie-adj');if(prods.chsi)el.classList.add(ie?'ie-adj':'checked');['tv','cdv','xh'].forEach(k=>document.getElementById('chk-'+k).classList.toggle('checked',prods[k]));}
+let _noSaleActive = false;
+let _noSaleCat = '';
+let _noSaleSub = '';
+
+function toggleNoSale(){
+  _noSaleActive = !_noSaleActive;
+  _noSaleCat = '';
+  _noSaleSub = '';
+  const tog = document.getElementById('ns-toggle');
+  const panel = document.getElementById('nosale-panel');
+  tog.classList.toggle('active', _noSaleActive);
+  if(panel) panel.style.display = _noSaleActive ? 'inline-flex' : 'none';
+  const backBtn = document.getElementById('ns-back-external');
+  if(backBtn) backBtn.style.display = 'none';
+  if(_noSaleActive){ renderNsPanel(); setTimeout(sizeNsPanel, 0); }
+  colorReason();
+}
+
+function renderNsPanel(){
+  const panel = document.getElementById('nosale-panel');
+  if(!panel) return;
+  panel.innerHTML = '';
+  if(!_noSaleCat){
+    Object.keys(NO_SALE_CATS).forEach(cat => {
+      const d = document.createElement('div');
+      d.className = 'ns-cat-pill';
+      d.textContent = cat;
+      d.addEventListener('click', function(e){ e.stopPropagation(); selectNsCat(cat); });
+      panel.appendChild(d);
+    });
+  } else {
+    (NO_SALE_CATS[_noSaleCat] || []).forEach(s => {
+      const d = document.createElement('div');
+      d.className = 'ns-sub-pill' + (_noSaleSub === s ? ' active' : '');
+      d.textContent = s;
+      d.addEventListener('click', function(e){ e.stopPropagation(); selectNsSub(s); });
+      panel.appendChild(d);
+    });
+  }
+  sizeNsPanel();
+}
+
+function renderNsCatPills(){ renderNsPanel(); }
+
+function sizeNsPanel(){
+  // Pills are direct children of nosale-panel — width auto-sizes via inline-flex
+}
+
+function selectNsCat(cat){
+  _noSaleCat = cat;
+  _noSaleSub = '';
+  renderNsPanel();
+  setTimeout(sizeNsPanel, 0);
+  const b = document.getElementById('ns-back-external');
+  if(b) b.style.display = 'flex';
+}
+
+function selectNsSub(sub){
+  _noSaleSub = sub;
+  renderNsPanel();
+  setTimeout(sizeNsPanel, 0);
+}
+
+function nsGoBack(){
+  _noSaleCat = '';
+  _noSaleSub = '';
+  renderNsPanel();
+  setTimeout(sizeNsPanel, 0);
+  const b = document.getElementById('ns-back-external');
+  if(b) b.style.display = 'none';
+}
+
+function getNoSaleReason(){
+  if(_noSaleSub && _noSaleCat) return _noSaleCat + ' > ' + _noSaleSub;
+  if(_noSaleSub) return _noSaleSub;
+  if(_noSaleCat) return _noSaleCat;
+  return 'NO SALE MADE';
+}
+
+function onReasonChange(){
+  syncProds();colorReason();updatePlay();updateSale();
+}
+
+function onNosaleCatChange(){}
+function onNosaleSubChange(){}
+function colorReason(){const tog=document.getElementById('ns-toggle');if(tog)tog.classList.toggle('active',_noSaleActive);}
 function getSvcs(){const s=[];if(xmVal>0)s.push('XM');if(prods.tv)s.push('TV');if(prods.chsi)s.push('CHSI');if(prods.cdv)s.push('CDV');if(prods.xh)s.push('XH');return s;}
-function updatePlay(){const s=getSvcs(),pn=document.getElementById('play-name'),ps=document.getElementById('play-svcs');if(s.length){pn.textContent=PLAY_NAMES[Math.min(s.length,5)];ps.textContent=s.join(' · ');pn.classList.add('show');ps.classList.add('show');}else{pn.classList.remove('show');ps.classList.remove('show');}}
-function toggleCb(){cbOpen=!cbOpen;document.getElementById('cb-toggle').classList.toggle('active',cbOpen);document.getElementById('cb-row').classList.toggle('open',cbOpen);updateNotesState();if(cbOpen){const d=new Date(Date.now()+30*60000),pad=n=>String(n).padStart(2,'0');document.getElementById('f-cb-dt').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;setTimeout(()=>document.getElementById('f-cb-name').focus(),300);}else{['f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>document.getElementById(id).value='');}}
+function updatePlay(){
+  const s=getSvcs();
+  const pn=document.getElementById('play-name');
+  const ps=document.getElementById('play-svcs');
+  const piWrap=document.getElementById('play-indicator-wrap');
+  const outWrap=document.getElementById('outcome-ui-wrap');
+  if(s.length){
+    pn.textContent=PLAY_NAMES[Math.min(s.length,5)];
+    ps.textContent=s.join(' · ');
+    pn.classList.add('show');
+    ps.classList.add('show');
+    if(piWrap) piWrap.style.display='flex';
+    if(outWrap) outWrap.style.display='none';
+    // reset no-sale if switching to sale
+    if(_noSaleActive){ _noSaleActive=false;_noSaleCat='';_noSaleSub='';
+      const nsp=document.getElementById('nosale-panel');if(nsp)nsp.style.display='none';
+      const tog=document.getElementById('ns-toggle');if(tog)tog.classList.remove('active');
+    }
+  } else {
+    pn.classList.remove('show');
+    ps.classList.remove('show');
+    if(piWrap) piWrap.style.display='none';
+    if(outWrap) outWrap.style.display='block';
+  }
+}
+function toggleCb(){cbOpen=!cbOpen;document.getElementById('cb-toggle').classList.toggle('active',cbOpen);const dtf=document.getElementById('cb-dt-field');if(dtf)dtf.style.display=cbOpen?'flex':'none';if(cbOpen){const d=new Date(Date.now()+30*60000),pad=n=>String(n).padStart(2,'0');document.getElementById('f-cb-dt').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}else{document.getElementById('f-cb-dt').value='';}updateDetailsRow();updateNotesState();}
 function updateNotesState(){const b=document.getElementById('notes-badge'),ta=document.getElementById('f-notes');if(cbOpen){b.className='req-badge-p';b.textContent='required';ta.classList.add('cb-req-ta');ta.placeholder='Why is a call back needed?';}else{b.className='opt-badge';b.textContent='optional';ta.classList.remove('cb-req-ta');ta.placeholder='Optional…';}}
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
-function updateSale(){const s=isSale();document.getElementById('sale-row').classList.toggle('open',s);if(!s)['f-acct','f-sched','f-rev'].forEach(id=>document.getElementById(id).value='');else setTimeout(()=>document.getElementById('f-acct').focus(),50);}
-function compute(c){const ie=c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?c.playName:(c.reason||'');return c;}
+function updateSale(){const s=isSale();const sf=document.getElementById('sched-field'),rf=document.getElementById('rev-field');if(sf)sf.style.display=s?'flex':'none';if(rf)rf.style.display=s?'flex':'none';if(!s){['f-sched','f-rev'].forEach(id=>document.getElementById(id).value='');}updateDetailsRow();}
+function compute(c){const ie=c.ie||c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?c.playName:(c.reason||'');return c;}
 function buildAcct(raw,name,phone){const p=[];if(raw)p.push(raw);if(name)p.push(name);if(phone)p.push('CB:'+phone);return p.join(' | ');}
 function flash(id,rb=''){const el=document.getElementById(id);if(!el)return;el.style.borderColor='var(--red)';el.style.boxShadow='0 0 0 3px rgba(248,113,113,.2)';el.focus();setTimeout(()=>{el.style.borderColor=rb;el.style.boxShadow='';},2500);}
 function logCall(){
-  if(isSale()&&!document.getElementById('f-acct').value.trim()){flash('f-acct');return;}
+  // acct is always visible; no longer required gating here
   if(cbOpen){if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}}
   const cbName=cbOpen?document.getElementById('f-cb-name').value.trim():'';const cbPhone=cbOpen?document.getElementById('f-cb-phone').value.trim():'';const cbTime=cbOpen?document.getElementById('f-cb-dt').value:'';const raw=document.getElementById('f-acct').value.trim();
-  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,rev:getRevVal(),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,reason:document.getElementById('f-reason').value,notes:document.getElementById('f-notes').value.trim()});
+  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,rev:getRevVal(),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_noSaleActive?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
   const btn=document.getElementById('submit-btn');btn.classList.add('ok');btn.innerHTML='<div class="btn-dot"></div>Logged!';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<div class="btn-dot"></div>Log Call';},800);
 }
-function resetForm(){['f-acct','f-sched','f-rev','f-reason','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>document.getElementById(id).value='');setXm(0);Object.keys(prods).forEach(k=>{prods[k]=false;document.getElementById('chk-'+k).classList.remove('checked','ie-adj');});document.getElementById('f-reason').classList.remove('val-nosale','val-ie','val-bulk');cbOpen=false;document.getElementById('cb-toggle').classList.remove('active');document.getElementById('cb-row').classList.remove('open');document.getElementById('sale-row').classList.remove('open');updateNotesState();updatePlay();}
+function resetForm(){['f-acct','f-sched','f-rev','f-reason','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>document.getElementById(id).value='');setXm(0);Object.keys(prods).forEach(k=>{prods[k]=false;document.getElementById('chk-'+k).classList.remove('checked','ie-adj');});document.getElementById('f-reason').classList.remove('val-nosale','val-ie','val-bulk');cbOpen=false;document.getElementById('cb-toggle').classList.remove('active');document.getElementById('details-row').classList.remove('open');document.getElementById('sale-row').classList.remove('open');updateNotesState();updatePlay();}
 function openEdit(id,fromAlert){if(editingId===id)return;editingId=id;window._editFromAlert=!!fromAlert;const c=calls.find(x=>x.id===id);editState={xm:c.xm,tv:c.tv,chsi:c.chsi,cdv:c.cdv,xh:c.xh};document.querySelector('.main').classList.add('editing');render();setTimeout(()=>{const r=document.querySelector('tr.edit-row');if(r){if(!fromAlert){r.scrollIntoView({block:'nearest',behavior:'smooth'});}const f=r.querySelector('input:not([type=checkbox]):not([type=datetime-local]),select');if(f)f.focus();}},50);}
 function closeEdit(){
   editingId=null;editState={};window._editFromAlert=false;
   document.querySelector('.main').classList.remove('editing');
   render();
 }
-function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=document.getElementById('e-acct').value.trim();c.cbName=document.getElementById('e-cb-name').value.trim();c.cbPhone=document.getElementById('e-cb-phone').value.trim();c.acct=buildAcct(c.acctRaw,c.cbName,c.cbPhone);c.sched=document.getElementById('e-sched').value;c.rev=parseFloat(document.getElementById('e-rev').value)||0;c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=document.getElementById('e-reason').value;c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.cbDone=document.getElementById('e-cb-done').checked;c.ieAdj=c.chsi&&c.reason==='IE (.75)';compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();}
+function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=document.getElementById('e-acct').value.trim();c.cbName=document.getElementById('e-cb-name').value.trim();c.cbPhone=document.getElementById('e-cb-phone').value.trim();c.acct=buildAcct(c.acctRaw,c.cbName,c.cbPhone);c.sched=document.getElementById('e-sched').value;c.rev=parseFloat(document.getElementById('e-rev').value)||0;c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.cbDone=document.getElementById('e-cb-done').checked;c.ie=c.ie||false;c.bulk=c.bulk||false;c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();}
 function delCall(id){if(editingId===id)closeEdit();deleteCallFromSheets(id);calls=calls.filter(c=>c.id!==id);render();updateStats();}
 function markCbDone(id){const c=calls.find(x=>x.id===id);if(c){c.cbDone=true;const el=document.getElementById('e-cb-done');if(el)el.checked=true;render();checkAlerts();upsertCallToSheets(c);}}
 function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}}
 function eToggleProd(k){editState[k]=!editState[k];const el=document.getElementById('e-chk-'+k);if(!el)return;const ie=k==='chsi'&&(document.getElementById('e-reason')?.value||'')==='IE (.75)';el.className='e-chk'+(k==='chsi'?(editState.chsi?(ie?' ie':' on'):''):(editState[k]?' on':''));}
-function eReasonChange(){const re=document.getElementById('e-reason'),ce=document.getElementById('e-chk-chsi');if(!re||!ce)return;if(editState.chsi)ce.className='e-chk'+(re.value==='IE (.75)'?' ie':' on');}
+function eReasonChange(){const re=document.getElementById('e-reason');if(!re)return;const t2=document.getElementById('e-nosale-tier2');if(!t2)return;if(re.value==='NO SALE MADE'){const cats=document.getElementById('e-nosale-cat');if(cats&&cats.options.length<2){cats.innerHTML='<option value="">— reason category —</option>'+Object.keys(NO_SALE_CATS).map(c=>`<option>${c}</option>`).join('');}t2.style.display='flex';}else{t2.style.display='none';}}
 function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
 function fmtCb(iso){if(!iso)return'';const d=new Date(iso);return d.toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}
 function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=new Date(c.cbTime).getTime()-Date.now();if(ms<0)return'overdue';const maxW=Math.max(...(window._alertWindows||[15]));if(ms<maxW*60000)return'due-soon';return'pending';}
-function pillCls(c){if(c.hasSale)return'p-sale';if(c.callOutcome==='NO SALE MADE')return'p-nosale';if(c.callOutcome==='IE (.75)')return'p-ie';if(c.callOutcome==='BULK')return'p-bulk';if(['BILLING','TECH SUPPORT','TECH (SAME DAY)','DROP ISSUES','DISCONNECTED'].includes(c.callOutcome))return'p-tech';return'p-other';}
-function pillTxt(c){if(c.hasSale)return c.xm>0?`${c.playName} (${c.xm} XM)`:c.playName;return c.callOutcome==='NO SALE MADE'?'NO SALE':(c.callOutcome||'—');}
+function pillCls(c){if(c.hasSale)return c.bulk?'p-bulk':'p-sale';if(c.callOutcome==='NO SALE MADE')return'p-nosale';if(['BILLING','TECH SUPPORT','TECH (SAME DAY)','DROP ISSUES','DISCONNECTED'].includes(c.callOutcome))return'p-tech';return'p-other';}
+function pillTxt(c){if(c.hasSale)return(c.bulk?'BULK · ':'')+( c.xm>0?`${c.playName} (${c.xm} XM)`:c.playName);return c.callOutcome==='NO SALE MADE'?'NO SALE':(c.callOutcome||'—');}
 function outcomeOpts(sel=''){return`<option value="">— select outcome —</option>`+OUTCOMES.map(v=>`<option${sel===v?' selected':''}>${v}</option>`).join('');}
 function renderReadRow(c){const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(2)}</span>`:`<span class="td-nil">—</span>`;const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;const st=cbStatus(c);let cb='<span class="td-nil">—</span>';if(st==='done')cb=`<span class="cb-badge done">${fmtCb(c.cbTime)}</span>`;else if(st==='overdue')cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;else if(st==='due-soon')cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;else if(st==='pending')cb=`<span class="cb-badge">${fmtCb(c.cbTime)}</span>`;const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'?' has-callback':'');return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}">${c.acct||'—'}</td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;}
 function renderEditRow(c){
   const es=editState;
   const pb=(k,l)=>{
-    const on=es[k],ie=k==='chsi'&&es.chsi&&(document.getElementById('e-reason')?.value||c.reason)==='IE (.75)';
+    const on=es[k],ie=k==='chsi'&&es.chsi&&(c.ie||false);
     const cls='e-chk'+(k==='chsi'?(es.chsi?(ie?' ie':' on'):''):(on?' on':''));
     return`<div class="e-prod-check"><div class="e-prod-label">${l}</div><div class="${cls}" id="e-chk-${k}" onclick="eToggleProd('${k}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>`;
   };
@@ -1274,7 +1566,7 @@ function renderEditRow(c){
     <!-- Notes ~232px -->
     <div style="flex:0 0 275px;padding:8px 10px;border-right:1px solid var(--border);box-sizing:border-box;display:flex;flex-direction:column;gap:4px;min-width:0">
       <div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">📝 Notes</div>
-      <textarea id="e-notes" style="flex:1;width:100%;background:var(--surface);border:2px solid rgba(167,139,250,.4);border-radius:6px;padding:5px 7px;font-family:var(--sans);font-size:11px;color:var(--text);outline:none;resize:none;min-height:90px;box-sizing:border-box" onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='rgba(167,139,250,.4)'" placeholder="Notes…">${c.notes||''}</textarea>
+      <textarea id="e-notes" style="flex:1;width:100%;background:var(--surface);border:2px solid rgba(167,139,250,.4);border-radius:6px;padding:5px 7px;font-family:var(--sans);font-size:11px;color:var(--text);outline:none;resize:none;min-height:150px;box-sizing:border-box" onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='rgba(167,139,250,.4)'" placeholder="Notes…">${c.notes||''}</textarea>
     </div>
 
     <!-- Details: remaining width -->
@@ -1284,7 +1576,19 @@ function renderEditRow(c){
       <div style="display:flex;gap:5px;align-items:flex-end">
         <div style="display:flex;flex-direction:column;gap:3px;width:160px;flex-shrink:0">
           <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Outcome</div>
-          <select id="e-reason" class="e-select" onchange="eReasonChange()" style="width:160px;font-size:11px">${outcomeOpts(c.reason)}</select>
+          <select id="e-reason" class="e-select" onchange="eReasonChange()" style="width:160px;font-size:11px">
+            <option value="">— outcome (no sale only) —</option>
+            <option value="NO SALE MADE"${c.reason&&!c.hasSale?'':''}>✘ No Sale</option>
+          </select>
+          <div id="e-nosale-tier2" style="display:${(!c.hasSale&&c.reason)?'flex':'none'};flex-direction:column;gap:3px;margin-top:3px">
+            <select id="e-nosale-cat" class="e-select" onchange="eNosaleCatChange()" style="width:160px;font-size:11px">
+              <option value="">— reason category —</option>
+              ${Object.keys(NO_SALE_CATS).map(cat=>`<option${c.reason&&NO_SALE_CATS[cat]&&NO_SALE_CATS[cat].includes(c.reason)?` selected`:``}>${cat}</option>`).join('')}
+            </select>
+            <select id="e-nosale-sub" class="e-select" style="width:160px;font-size:11px">
+              <option value="">— specific reason —</option>
+            </select>
+          </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:3px;width:190px;flex-shrink:0">
           <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">CB Time</div>
@@ -1316,7 +1620,7 @@ function renderEditRow(c){
                 style="width:90px;font-size:11px;font-family:var(--mono);cursor:pointer;caret-color:transparent"
                 onclick="document.getElementById('e-sched').click()">
               <input id="e-sched" type="date" value="${c.sched||''}"
-                style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer"
+                style="position:absolute;top:-5px;left:0;width:100%;height:100%;opacity:0;cursor:pointer"
                 onchange="(function(v){const d=new Date(v+'T00:00:00');document.getElementById('e-sched-display').value=v?((d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(-2)):'';})(this.value)">
             </div>
         </div>
@@ -1494,7 +1798,7 @@ function setStat(pfx, val, goal){
   const fp = getFiscalProgress();
   const raw = goal > 0 ? val / goal : 0;
   const pc  = Math.min(1, raw);
-  const bonus = getPtoBonus();
+  const bonus = statsView==='pipeline' ? 0 : getPtoBonus();
   const displayRaw = raw + bonus; // PTO bonus added to displayed % only
 
   // Percent label — true value + PTO bonus
@@ -1562,8 +1866,8 @@ function setStatsView(v){
 function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d=new Date(sched+'T00:00:00');const r=d>=fi.fiscalStart&&d<fi.fiscalEnd;return r;}
 function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=fi.fiscalEnd;const ne=new Date(ns.getFullYear(),ns.getMonth()+1,22);return{fiscalStart:ns,fiscalEnd:ne};}
 function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<nf.fiscalEnd;}
-function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls;const _mRev=mc.reduce((s,c)=>s+c.rev,0),_mRgus=mc.reduce((s,c)=>s+c.rgus,0),_mXm=mc.reduce((s,c)=>s+c.xm,0),_mTv=mc.filter(c=>c.tv).length,_mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),_mCdv=mc.filter(c=>c.cdv).length,_mXh=mc.filter(c=>c.xh).length,mN=mc.length,mSales=mc.filter(c=>c.hasSale).length;
-const mRev=_mRev-CB.rev,mXm=_mXm-CB.xm,mTv=_mTv-CB.tv,mChsi=_mChsi-CB.chsi,mCdv=_mCdv-CB.cdv,mXh=_mXh-CB.xh,mRgus=_mRgus-(CB.xm>0?1:0)-(CB.tv)-(CB.chsi)-(CB.cdv)-(CB.xh);document.getElementById('m-rev').textContent=(mRev<0?'-$'+Math.abs(mRev).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+mRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,getRguGoal());document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
+function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls;const _mRev=mc.reduce((s,c)=>s+c.rev,0),_mRgus=mc.reduce((s,c)=>s+c.rgus,0),_mXm=mc.reduce((s,c)=>s+c.xm,0),_mTv=mc.filter(c=>c.tv).length,_mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),_mCdv=mc.filter(c=>c.cdv).length,_mXh=mc.filter(c=>c.xh).length;const _allFiscal=calls.filter(c=>inFiscal(c.ts.toISOString().slice(0,10)));const mN=statsView==='pipeline'?0:_allFiscal.length,mSales=statsView==='pipeline'?0:mc.filter(c=>c.hasSale).length;
+const _apCB=statsView==='installs';const mRev=_mRev-(_apCB?CB.rev:0),mXm=_mXm-(_apCB?CB.xm:0),mTv=_mTv-(_apCB?CB.tv:0),mChsi=_mChsi-(_apCB?CB.chsi:0),mCdv=_mCdv-(_apCB?CB.cdv:0),mXh=_mXh-(_apCB?CB.xh:0),mRgus=_mRgus-(_apCB?((CB.xm>0?1:0)+CB.tv+CB.chsi+CB.cdv+CB.xh):0);document.getElementById('m-rev').textContent=(mRev<0?'-$'+Math.abs(mRev).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+mRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,getRguGoal());document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}if(e.target.tagName!=='BUTTON')logCall();}});
 
 (function(){
@@ -1604,10 +1908,16 @@ function getFiscalMonth(){
   const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
   return names[fiscalMonth]+' '+fiscalYear;
 }
+function getFiscalKey(){
+  // Returns a storage key scoped to the current fiscal month e.g. 'xcl_goals_March2026'
+  return 'xcl_goals_'+getFiscalMonth().replace(' ','');
+}
+
 const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cbTv:0,cbChsi:0,cbCdv:0,cbXh:0,rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbxOwwNu4GuENLqy8NIyLIkn8EPIxKprI8-ZsgrIic_XLscg3Gv_RpFv_YE4fi1e1yFo/exec'};
 function loadSettings(){
   const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
-  return Object.assign({},DEFAULTS,s);
+  const g=JSON.parse(localStorage.getItem(getFiscalKey())||'{}');
+  return Object.assign({},DEFAULTS,s,g);
 }
 function applySettings(s){
   window._schedule = s.schedule||'5x8';
@@ -1622,19 +1932,32 @@ function applySettings(s){
   window._sheetsUrl=s.sheetsUrl||localStorage.getItem('xcl_sheets_url')||'';
   if(window._sheetsUrl)localStorage.setItem('xcl_sheets_url',window._sheetsUrl);
   if(Array.isArray(s.outcomes)&&s.outcomes.length){
-    OUTCOMES=[...new Set([...LOCKED_OUTCOMES,...s.outcomes.filter(o=>o)])];
+    OUTCOMES=[...new Set([...LOCKED_OUTCOMES,...(s.outcomes||[]).filter(o=>o)])];if(s.noSaleCats){
+    // Restore saved structure
+    Object.keys(NO_SALE_CATS).forEach(k=>delete NO_SALE_CATS[k]);
+    Object.assign(NO_SALE_CATS, s.noSaleCats);
+    // Merge: add any new default categories/reasons missing from saved data
+    if((s.noSaleCatsVersion||0) < NO_SALE_CATS_VERSION){
+      Object.keys(NO_SALE_CATS_DEFAULTS).forEach(cat => {
+        if(!NO_SALE_CATS[cat]){
+          NO_SALE_CATS[cat] = [...NO_SALE_CATS_DEFAULTS[cat]];
+        } else {
+          NO_SALE_CATS_DEFAULTS[cat].forEach(r => {
+            if(!NO_SALE_CATS[cat].includes(r)) NO_SALE_CATS[cat].push(r);
+          });
+        }
+      });
+    }
+  }
   }
   // refresh outcome dropdowns in any open edit rows
-  document.querySelectorAll('.e-select').forEach(sel=>{
-    const cur=sel.value;
-    sel.innerHTML=outcomeOpts(cur);
-    sel.value=cur;
-  });
+  // e-reason is now a custom two-tier no-sale selector — skip auto-refresh
   const fReason=document.getElementById('f-reason');
   if(fReason){const cur=fReason.value;fReason.innerHTML='<option value="">— select outcome —</option>'+OUTCOMES.map(v=>`<option${cur===v?' selected':''}>${v}</option>`).join('');fReason.value=cur;}
 }
 
 function toggleSettings(){
+  setTimeout(()=>{ if(document.getElementById('stabp-outcomes').classList.contains('active')) renderNsCatEditor(); }, 50);
   const p=document.getElementById('settings-panel');
   const ov=document.getElementById('settings-overlay');
   const opening=!p.classList.contains('open');
@@ -1665,6 +1988,7 @@ function toggleSettings(){
     renderOutcomeEditor(s.outcomes||[...DEFAULT_OUTCOMES]);
     document.getElementById('s-sheets-url').value=s.sheetsUrl||localStorage.getItem('xcl_sheets_url')||'';
     renderTokenGrid();
+    buildFiscalMonthSelector();
     document.getElementById('s-pto').value = s.ptoHours||0;
     updatePtoPreview();
     // populate schedule
@@ -1694,13 +2018,32 @@ function saveSettings(){
     cbXh:parseFloat(document.getElementById('s-cb-xh').value)||0,
     alertWindows:(()=>{const sel=[5,10,15,20,30,60].filter(v=>{const el=document.getElementById('ao-'+v);return el&&el.checked;});return sel.length?sel:[15];})(),
     outcomes:getOutcomeEditorValues(),
+    noSaleCats:(()=>{ nsCommitEditorToCats(); return JSON.parse(JSON.stringify(NO_SALE_CATS)); })(),
+    noSaleCatsVersion:NO_SALE_CATS_VERSION,
     ptoHours:parseFloat(document.getElementById('s-pto').value)||0,
     schedule:(document.getElementById('sched-4x10').classList.contains('active')?'4x10':'5x8'),
     workDays:[0,1,2,3,4,5,6].filter(function(d){var el=document.getElementById('wd-'+d);return el&&el.checked;}),
     sheetsUrl:(()=>{const u=document.getElementById('s-sheets-url').value.trim();if(u)localStorage.setItem('xcl_sheets_url',u);return u;})(),
   };
-  localStorage.setItem('xcl_settings',JSON.stringify(s));
+  // Split: fiscal-specific fields saved under monthly key
+  const fiscalFields = {
+    rev:s.rev, xm:s.xm, tv:s.tv, chsi:s.chsi, cdv:s.cdv, xh:s.xh,
+    ptoHours:s.ptoHours,
+    cbRev:s.cbRev, cbXm:s.cbXm, cbTv:s.cbTv, cbChsi:s.cbChsi, cbCdv:s.cbCdv, cbXh:s.cbXh
+  };
+  const globalFields = Object.assign({},s);
+  ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh'].forEach(k=>delete globalFields[k]);
+  const selFiscal = document.getElementById('s-fiscal-month');
+  const saveKey = selFiscal ? selFiscal.value : getFiscalKey();
+  localStorage.setItem(saveKey, JSON.stringify(fiscalFields));
+  localStorage.setItem('xcl_settings',JSON.stringify(globalFields));
   saveColorSettings();
+  // Tag with version for migration detection
+  globalFields.settingsVersion = SETTINGS_VERSION;
+  localStorage.setItem('xcl_settings', JSON.stringify(globalFields));
+  localStorage.setItem('xcl_settings_version', String(SETTINGS_VERSION));
+  // Push full merged settings to Sheets for multi-user sharing
+  if(getSheetsUrl()) pushSettingsToSheets(Object.assign({}, fiscalFields, globalFields, {settingsVersion: SETTINGS_VERSION}));
   applySettings(s);
   updateStats();
   buildCalendar && updatePace && updatePace();
@@ -1709,10 +2052,13 @@ function saveSettings(){
   setTimeout(()=>{btn.textContent='✓ Save Settings';btn.classList.remove('saved');},1200);
 }
 function resetSettings(){
-  localStorage.removeItem('xcl_settings');
-  applySettings(DEFAULTS);
-  updateStats();
-  toggleSettings();
+  if(confirm('Reset goals & chargebacks for '+getFiscalMonth()+'? Global settings (theme, schedule, etc.) are kept.')){
+    localStorage.removeItem(getFiscalKey());
+    localStorage.removeItem('xcl_settings');
+    applySettings(DEFAULTS);
+    updateStats();
+    toggleSettings();
+  }
 }
 const PRESETS = {
   dark: {
@@ -3379,6 +3725,7 @@ function switchStab(t){
     document.getElementById('stab-'+id).classList.toggle('active', id===t);
     document.getElementById('stabp-'+id).classList.toggle('active', id===t);
   });
+  if(t==='outcomes') renderNsCatEditor();
 }
 
 function setLogSearch(val){
@@ -3403,6 +3750,366 @@ function clearLogSearch(){
   if(wrap) wrap.classList.remove('active');
   if(clear) clear.classList.remove('visible');
   render();
+}
+
+function getFiscalKeyForMonth(monthLabel){
+  // monthLabel like "March 2026" → "xcl_goals_March2026"
+  return 'xcl_goals_'+monthLabel.replace(' ','');
+}
+
+function buildFiscalMonthSelector(){
+  const sel = document.getElementById('s-fiscal-month');
+  if(!sel) return;
+  const current = getFiscalMonth();
+  const months = [];
+
+  // Always include the current fiscal month
+  months.push(current);
+
+  // Add any past fiscal month that has stored data in localStorage
+  for(let i=0; i<localStorage.length; i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('xcl_goals_')){
+      const label = key.replace('xcl_goals_','').replace(/([A-Z])/g,' $1').trim();
+      // Reconstruct "Month Year" from key like "xcl_goals_March2026"
+      const match = key.match(/xcl_goals_([A-Za-z]+)(\d{4})/);
+      if(match){
+        const fm = match[1]+' '+match[2];
+        if(!months.includes(fm)) months.push(fm);
+      }
+    }
+  }
+
+  // Sort descending by date (most recent first)
+  months.sort((a,b)=>{
+    const da = new Date(a); const db = new Date(b);
+    return db - da;
+  });
+
+  sel.innerHTML = months.map(m=>`<option value="${getFiscalKeyForMonth(m)}"${m===current?' selected':''}>${m}${m===current?' (current)':''}</option>`).join('');
+  updateGoalsViewingNotice();
+}
+
+function getFiscalMonthForDate(date){
+  const day=date.getDate(), month=date.getMonth(), year=date.getFullYear();
+  const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  if(day>=22){
+    const fm=month+1===12?0:month+1;
+    const fy=month+1===12?year+1:year;
+    return names[fm]+' '+fy;
+  }
+  return names[month]+' '+year;
+}
+
+function updateGoalsViewingNotice(){
+  const sel = document.getElementById('s-fiscal-month');
+  const notice = document.getElementById('goals-viewing-notice');
+  if(!sel||!notice) return;
+  const isCurrent = sel.value === getFiscalKey();
+  notice.style.display = isCurrent ? 'none' : 'block';
+}
+
+function loadGoalsForFiscalMonth(storageKey){
+  const stored = JSON.parse(localStorage.getItem(storageKey)||'{}');
+  const merged = Object.assign({}, DEFAULTS, stored);
+  document.getElementById('s-rev').value   = merged.rev;
+  document.getElementById('s-xm').value    = merged.xm;
+  document.getElementById('s-tv').value    = merged.tv;
+  document.getElementById('s-chsi').value  = merged.chsi;
+  document.getElementById('s-cdv').value   = merged.cdv;
+  document.getElementById('s-xh').value    = merged.xh;
+  document.getElementById('s-pto').value   = merged.ptoHours||0;
+  document.getElementById('s-cb-rev').value  = merged.cbRev||0;
+  document.getElementById('s-cb-xm').value   = merged.cbXm||0;
+  document.getElementById('s-cb-tv').value   = merged.cbTv||0;
+  document.getElementById('s-cb-chsi').value = merged.cbChsi||0;
+  document.getElementById('s-cb-cdv').value  = merged.cbCdv||0;
+  document.getElementById('s-cb-xh').value   = merged.cbXh||0;
+  updatePtoPreview();
+  updateGoalsViewingNotice();
+}
+
+let _ieActive = false;
+let _bulkActive = false;
+
+function toggleIE(){
+  _ieActive = !_ieActive;
+  const el = document.getElementById('chk-ie');
+  if(el) el.classList.toggle('ie-active', _ieActive);
+  updatePlay();
+}
+
+function toggleBulk(){
+  _bulkActive = !_bulkActive;
+  const el = document.getElementById('chk-bulk');
+  if(el) el.classList.toggle('bulk-active', _bulkActive);
+}
+
+function syncIEVisibility(){
+  const ieWrap = document.getElementById('ie-wrap');
+  if(ieWrap) ieWrap.style.display = prods.chsi ? 'flex' : 'none';
+  if(!prods.chsi && _ieActive){
+    _ieActive = false;
+    const el = document.getElementById('chk-ie');
+    if(el) el.classList.remove('ie-active');
+  }
+}
+
+function eNosaleCatChange(){
+  const cat = document.getElementById('e-nosale-cat')?.value||'';
+  const sub = document.getElementById('e-nosale-sub');
+  if(!sub) return;
+  const subs = cat ? NO_SALE_CATS[cat]||[] : [];
+  sub.innerHTML = '<option value="">— specific reason —</option>'+subs.map(s=>`<option>${s}</option>`).join('');
+}
+
+function getEditNoSaleReason(){
+  const sub = document.getElementById('e-nosale-sub')?.value||'';
+  const cat = document.getElementById('e-nosale-cat')?.value||'';
+  if(sub) return sub;
+  if(cat) return cat;
+  return 'NO SALE MADE';
+}
+
+function updateDetailsRow(){
+  const hasAnything = cbOpen || isSale();
+  document.getElementById('details-row').classList.toggle('open', hasAnything);
+  const lbl = document.getElementById('details-label');
+  if(lbl){
+    if(cbOpen && isSale()) lbl.textContent = 'Call Back & Sale details';
+    else if(cbOpen)         lbl.textContent = 'Call Back details';
+    else if(isSale())       lbl.textContent = 'Sale details';
+  }
+  // Show divider between sale fields and cb field only when both visible
+  const vd = document.getElementById('details-vdiv');
+  if(vd) vd.style.display = (cbOpen && isSale()) ? 'block' : 'none';
+}
+
+document.addEventListener('click', function(e){
+  if(!_noSaleActive) return;
+  const panel = document.getElementById('nosale-panel');
+  const tog   = document.getElementById('ns-toggle');
+  if(panel && tog && !panel.contains(e.target) && !tog.contains(e.target)){
+    _noSaleActive = false; _noSaleCat = ''; _noSaleSub = '';
+    panel.style.display = 'none';
+    tog.classList.remove('active');
+  }
+});
+
+// Back button — attached once, stopPropagation prevents panel close
+(function(){
+  function initBackBtn(){
+    var btn = document.getElementById('ns-back-external');
+    if(!btn) return;
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      nsGoBack();
+    });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBackBtn);
+  else initBackBtn();
+})();
+
+let _nsDragCat = null;
+let _nsDragReason = null;
+
+function renderNsCatEditor(){
+  const ed = document.getElementById('ns-cat-editor');
+  if(!ed) return;
+  ed.innerHTML = '';
+  Object.keys(NO_SALE_CATS).forEach(cat => {
+    const catDiv = document.createElement('div');
+    catDiv.className = 'ns-ed-cat';
+    catDiv.draggable = true;
+    catDiv.dataset.cat = cat;
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'ns-ed-cat-hdr';
+    hdr.innerHTML = `<span class="ns-ed-reason-handle">⠿</span>
+      <span class="ns-ed-cat-label"><input value="${cat}" onblur="nsRenameCat('${cat}', this.value)"></span>
+      <button class="ns-ed-cat-del" onclick="nsDelCat('${cat}')">×</button>`;
+    catDiv.appendChild(hdr);
+
+    // Reasons
+    const reasonsDiv = document.createElement('div');
+    reasonsDiv.className = 'ns-ed-reasons';
+    reasonsDiv.dataset.cat = cat;
+
+    (NO_SALE_CATS[cat] || []).forEach(reason => {
+      reasonsDiv.appendChild(makeReasonRow(cat, reason));
+    });
+
+    // Add reason row
+    const addRow = document.createElement('div');
+    addRow.className = 'ns-ed-add-reason';
+    const addInp = document.createElement('input');
+    addInp.placeholder = 'Add reason…';
+    addInp.onkeydown = function(e){ if(e.key==='Enter') nsAddReason(cat, this); };
+    const addBtn = document.createElement('button');
+    addBtn.textContent = '+ Add';
+    addBtn.onclick = () => nsAddReason(cat, addInp);
+    addRow.appendChild(addInp);
+    addRow.appendChild(addBtn);
+    reasonsDiv.appendChild(addRow);
+
+    catDiv.appendChild(reasonsDiv);
+
+    // Cat drag
+    catDiv.addEventListener('dragstart', e => { _nsDragCat = catDiv; e.dataTransfer.effectAllowed = 'move'; setTimeout(()=>catDiv.style.opacity='.4', 0); });
+    catDiv.addEventListener('dragend', () => { catDiv.style.opacity=''; _nsDragCat=null; nsCommitEditorToCats(); });
+    catDiv.addEventListener('dragover', e => { e.preventDefault(); if(_nsDragCat && _nsDragCat !== catDiv) ed.insertBefore(_nsDragCat, catDiv); });
+
+    ed.appendChild(catDiv);
+  });
+}
+
+function makeReasonRow(cat, reason){
+  const row = document.createElement('div');
+  row.className = 'ns-ed-reason';
+  row.draggable = true;
+  row.dataset.reason = reason;
+  row.innerHTML = `<span class="ns-ed-reason-handle">⠿</span>
+    <input value="${reason}" onblur="nsRenameReason('${cat}', '${reason}', this.value)">
+    <button class="ns-ed-reason-del" onclick="nsDelReason('${cat}', '${reason}')">×</button>`;
+  row.addEventListener('dragstart', e => { _nsDragReason = row; e.stopPropagation(); e.dataTransfer.effectAllowed='move'; setTimeout(()=>row.style.opacity='.4',0); });
+  row.addEventListener('dragend', () => { row.style.opacity=''; _nsDragReason=null; nsCommitEditorToCats(); });
+  row.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); if(_nsDragReason && _nsDragReason!==row){ const p=row.parentNode; p.insertBefore(_nsDragReason, row); } });
+  return row;
+}
+
+function nsCommitEditorToCats(){
+  const ed = document.getElementById('ns-cat-editor');
+  if(!ed) return;
+  const newCats = {};
+  ed.querySelectorAll('.ns-ed-cat').forEach(catDiv => {
+    const catInp = catDiv.querySelector('.ns-ed-cat-label input');
+    const catName = catInp ? catInp.value.trim() : catDiv.dataset.cat;
+    if(!catName) return;
+    const reasons = [...catDiv.querySelectorAll('.ns-ed-reason')].map(r => {
+      const inp = r.querySelector('input');
+      return inp ? inp.value.trim() : r.dataset.reason;
+    }).filter(Boolean);
+    newCats[catName] = reasons;
+  });
+  // Update NO_SALE_CATS in place
+  Object.keys(NO_SALE_CATS).forEach(k => delete NO_SALE_CATS[k]);
+  Object.assign(NO_SALE_CATS, newCats);
+}
+
+function nsRenameCat(oldName, newName){
+  newName = newName.trim();
+  if(!newName || newName === oldName) return;
+  const reasons = NO_SALE_CATS[oldName] || [];
+  const newCats = {};
+  Object.keys(NO_SALE_CATS).forEach(k => { newCats[k===oldName ? newName : k] = NO_SALE_CATS[k]; });
+  Object.keys(NO_SALE_CATS).forEach(k => delete NO_SALE_CATS[k]);
+  Object.assign(NO_SALE_CATS, newCats);
+}
+
+function nsDelCat(cat){
+  delete NO_SALE_CATS[cat];
+  renderNsCatEditor();
+}
+
+function nsAddCat(){
+  const inp = document.getElementById('ns-new-cat-input');
+  const name = inp.value.trim();
+  if(!name || NO_SALE_CATS[name]) return;
+  NO_SALE_CATS[name] = [];
+  inp.value = '';
+  renderNsCatEditor();
+}
+
+function nsRenameReason(cat, oldR, newR){
+  newR = newR.trim();
+  if(!newR || newR === oldR || !NO_SALE_CATS[cat]) return;
+  NO_SALE_CATS[cat] = NO_SALE_CATS[cat].map(r => r===oldR ? newR : r);
+}
+
+function nsDelReason(cat, reason){
+  if(!NO_SALE_CATS[cat]) return;
+  NO_SALE_CATS[cat] = NO_SALE_CATS[cat].filter(r => r !== reason);
+  renderNsCatEditor();
+}
+
+function nsAddReason(cat, inp){
+  const val = inp.value.trim();
+  if(!val || !NO_SALE_CATS[cat]) return;
+  NO_SALE_CATS[cat].push(val);
+  inp.value = '';
+  renderNsCatEditor();
+}
+
+
+const SHARED_SETTINGS_KEYS  = ['noSaleCats','noSaleCatsVersion','outcomes','settingsVersion'];
+const PERSONAL_SETTINGS_KEYS = ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh','schedule','workDays','alertWindows','sheetsUrl'];
+
+/* ── Settings sync to Google Sheets ─────────────────────────────────────
+ * _settings_shared tab  — org-wide: categories, outcomes
+ * _settings_[email] tab — personal: goals, schedule, PTO, alerts
+ * Identity via Session.getActiveUser().getEmail() in Apps Script
+ */
+
+function pushSettingsToSheets(allSettings){
+  if(!getSheetsUrl()) return Promise.resolve();
+  const shared   = {};
+  const personal = {};
+  SHARED_SETTINGS_KEYS.forEach(k  => { if(allSettings[k]!==undefined) shared[k]   = allSettings[k]; });
+  PERSONAL_SETTINGS_KEYS.forEach(k => { if(allSettings[k]!==undefined) personal[k] = allSettings[k]; });
+  shared.settingsVersion   = SETTINGS_VERSION;
+  personal.settingsVersion = SETTINGS_VERSION;
+  return sheetsPost({ action:'saveSettings', shared:JSON.stringify(shared), personal:JSON.stringify(personal) })
+    .then(()  => _showToast('✓ Settings saved to sheet', 'ok', 2500))
+    .catch(err => _showToast('⚠ Settings not synced — ' + (err.message||''), 'err', 4000));
+}
+
+async function connectAndLoadSettings(){
+  if(!getSheetsUrl()){ _showToast('No Sheets URL configured', 'err', 3000); return; }
+  _showToast('Loading settings from sheet…', 'syncing');
+  try {
+    const data = await sheetsGet({ action:'loadAllSettings' });
+    if(!data){ _showToast('No settings found in sheet', 'ok', 2500); return; }
+
+    // Store identity
+    if(data.email){
+      _currentUserEmail = data.email;
+      localStorage.setItem('xcl_user_email', data.email);
+      const el = document.getElementById('s-user-email');
+      if(el) el.textContent = data.email;
+    }
+
+    const shared   = data.shared   ? JSON.parse(data.shared)   : {};
+    const personal = data.personal ? JSON.parse(data.personal) : {};
+    const merged   = Object.assign({}, shared, personal);
+    const remoteVersion = merged.settingsVersion || 0;
+
+    if(remoteVersion < SETTINGS_VERSION){
+      // Schema upgrade — backup both before migrating
+      localStorage.setItem('xcl_settings_backup_shared_'   + Date.now(), JSON.stringify(shared));
+      localStorage.setItem('xcl_settings_backup_personal_' + Date.now(), JSON.stringify(personal));
+      _showToast('⚠ Settings upgraded — backups saved locally', 'ok', 4000);
+      const migrated = migrateSettings(merged);
+      applySettings(migrated);
+      saveSettings();
+    } else {
+      applySettings(merged);
+      localStorage.setItem('xcl_settings', JSON.stringify(merged));
+      localStorage.setItem('xcl_settings_version', String(SETTINGS_VERSION));
+      _showToast('✓ Settings loaded' + (data.email ? ' for ' + data.email : ''), 'ok', 2500);
+    }
+  } catch(err){
+    _showToast('✗ Could not load settings — ' + (err.message||''), 'err', 5000);
+  }
+}
+
+function migrateSettings(old){
+  const safe = {};
+  [...SHARED_SETTINGS_KEYS, ...PERSONAL_SETTINGS_KEYS].forEach(k => {
+    if(old[k] !== undefined) safe[k] = old[k];
+  });
+  safe.settingsVersion = SETTINGS_VERSION;
+  return safe;
 }
 
 </script>
