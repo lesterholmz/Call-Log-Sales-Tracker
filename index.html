@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080">
-<title>Xfinity Call Logger v0.03.19.123</title>
+<title>Xfinity Call Logger v0.03.19.124</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -681,7 +681,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.19.123</div>
+    <div class="version-chip">v0.03.19.124</div>
     <div class="clock" id="clock">--:-- --</div>
     <div class="month-chip" id="month-chip-label">…</div>
     <button class="gear-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
@@ -1463,7 +1463,7 @@ function renderNsPanel(){
       const d = document.createElement('div');
       d.className = 'ns-cat-pill' + (_nsCat === cat ? ' active' : '');
       d.textContent = cat;
-      d.addEventListener('mousedown', function(e){ e.preventDefault(); selectNsCat(cat); });
+      d.addEventListener('click', function(e){ e.stopPropagation(); selectNsCat(cat); });
       frag.appendChild(d);
     });
   } else if(_nsState === 'tier2'){
@@ -1472,7 +1472,7 @@ function renderNsPanel(){
       const d = document.createElement('div');
       d.className = 'ns-sub-pill' + (_nsSub === s ? ' active' : '');
       d.textContent = s;
-      d.addEventListener('mousedown', function(e){ e.preventDefault(); selectNsSub(s); });
+      d.addEventListener('click', function(e){ e.stopPropagation(); selectNsSub(s); });
       frag.appendChild(d);
     });
   }
