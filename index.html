@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080">
-<title>Xfinity Call Logger v0.03.20.0</title>
+<title>Xfinity Call Logger v0.03.20.21</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -101,12 +101,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .w-acct{width:100%}.w-sched{width:100%}.w-rev{width:100%}
 .xm-wrap{display:flex;flex-direction:column;gap:5px}
 .xm-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
-.xm-stepper{display:flex;align-items:center;height:38px;width:110px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;overflow:hidden;transition:border-color .15s}
+.xm-stepper{display:flex;align-items:center;height:38px;width:70px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;overflow:hidden;transition:border-color .15s}
 .xm-stepper.has-val{border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.12);background:var(--teal-lt)}
 .xm-stepper.has-val .xm-val{color:var(--teal)}
-.xm-btn{width:34px;height:100%;border:none;background:none;cursor:pointer;color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .1s;flex-shrink:0;user-select:none}
+.xm-btn{width:26px;height:100%;border:none;background:none;cursor:pointer;color:var(--text2);font-size:13px;display:flex;align-items:center;justify-content:center;transition:background .1s;flex-shrink:0;user-select:none}
 .xm-btn:hover{background:rgba(255,255,255,.06);color:var(--blue)}
-.xm-val{flex:1;text-align:center;font-family:var(--mono);font-size:18px;font-weight:500;color:var(--text2);pointer-events:none;user-select:none}
+.xm-val{flex:1;text-align:center;font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text2);pointer-events:none;user-select:none}
 .checks-group{display:flex;gap:6px;align-items:flex-end}
 .check-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}
 .check-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
@@ -422,7 +422,7 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 /* ── Form layout: centered rows, notes aligned to row 1 width ── */
 /* Row container — centers each row and constrains width to match row 1 */
 .form-row-center{display:flex;justify-content:flex-start;width:100%}
-.frow-top{display:flex;gap:8px;align-items:center;width:100%}
+.frow-top{display:flex;gap:8px;align-items:flex-end;width:100%}
 .frow-notes{display:flex;gap:8px;align-items:stretch;width:100%}
 /* 720px: notes wraps full width, cb toggle + submit stack below */
 @media(max-width:780px){
@@ -577,7 +577,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 
 /* ── No-sale pill UI ── */
 /* ── No-sale toggle button ── */
-.ns-toggle{height:34px;padding:0 14px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;display:flex;align-items:center;transition:all .15s;user-select:none}
+.ns-toggle{height:38px;padding:0 14px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;display:flex;align-items:center;transition:all .15s;user-select:none}
 .ns-toggle:hover{border-color:var(--red);color:var(--red)}
 .ns-toggle.active{background:rgba(248,113,113,.12);border-color:var(--red);color:var(--red)}
 /* ── Floating panel ── */
@@ -761,7 +761,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.20.0</div>
+    <div class="version-chip">v0.03.20.21</div>
     <div class="clock" id="clock">--:-- --</div>
     <div class="month-chip" id="month-chip-label">…</div>
     <button class="gear-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
@@ -863,7 +863,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
         <div class="disp-section-body">
           <div class="width-toggle">
             <button class="width-btn" id="wb-regular" onclick="applyWidth('regular')">◫ Regular (720px)</button>
-            <button class="width-btn" id="wb-wide" onclick="applyWidth('wide')">⬛ Wide (1080px)</button>
+            <button class="width-btn" id="wb-wide" onclick="applyWidth('wide')" disabled style="opacity:0.35;cursor:not-allowed" title="Coming soon">⬛ Wide (1080px)</button>
           </div>
         </div>
       </div>
@@ -1117,16 +1117,16 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
           <!-- Left: XM + IE/BULK stacked + checks -->
           <div style="display:flex;gap:3px;align-items:flex-end;flex-shrink:0">
             <div class="field" style="flex-shrink:0">
-              <label>Rev ($)</label>
-              <input type="text" id="f-rev" placeholder="0.00" oninput="fmtRevInput(this)" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)" style="width:72px;font-family:var(--mono);font-size:13px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);transition:border-color .15s">
+              <label>Base Rev</label>
+              <input type="text" id="f-rev" placeholder="0.00" oninput="fmtRevInput(this);updateRevTotal()" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)" style="width:64px;font-family:var(--mono);font-size:13px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);transition:border-color .15s">
             </div>
-            <div class="xm-wrap">
-              <label>XM</label>
-              <div class="xm-stepper" id="xm-stepper">
-                <button class="xm-btn" type="button" onclick="setXm(xmVal-1)">−</button>
-                <div class="xm-val" id="xm-val">0</div>
-                <button class="xm-btn" type="button" onclick="setXm(xmVal+1)">+</button>
-              </div>
+            <div class="field" style="flex-shrink:0">
+              <label>XM Rev</label>
+              <div id="f-xm-rev" style="width:52px;height:38px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text3);display:flex;align-items:center;font-weight:600">$0</div>
+            </div>
+            <div class="field" style="flex-shrink:0">
+              <label>Total</label>
+              <div id="f-rev-total" style="width:60px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text2);display:flex;align-items:center;font-weight:700">$0</div>
             </div>
             <div class="cb-modifiers">
               <div class="cb-mod-wrap" id="ie-wrap">
@@ -1143,16 +1143,22 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
               <div class="check-wrap"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
               <div class="check-wrap"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
               <div class="check-wrap"><label>XH</label><div class="chk" id="chk-xh" onclick="toggleProd('xh')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="xm-wrap" style="margin-left:12px">
+                <label>XM</label>
+                <div class="xm-stepper" id="xm-stepper">
+                  <button class="xm-btn" type="button" onclick="setXm(xmVal-1)">−</button>
+                  <div class="xm-val" id="xm-val">0</div>
+                  <button class="xm-btn" type="button" onclick="setXm(xmVal+1)">+</button>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- Divider -->
-          <div class="v-div" id="main-vdiv" style="align-self:stretch"></div>
           <!-- Right: No Sale / Play name / No XM Sale -->
           <div id="outcome-field-wrap" style="flex:1;display:flex;align-items:center;justify-content:center">
             <!-- Single no-sale button, width fixed to fit longest label -->
             <div class="ns-toggle" id="ns-toggle" onclick="event.stopPropagation();toggleNoSale(this)" style="width:120px;justify-content:center;display:flex">✘ No Sale</div>
             <!-- XM celebration — shown when XM sold -->
-            <div id="xm-celebration" style="display:none;font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-align:center;white-space:nowrap"></div>
+            <div id="xm-celebration" style="display:none;font-size:16px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-align:center;white-space:nowrap"></div>
           </div>
         </div>
       </div>
@@ -1557,6 +1563,7 @@ const NO_SALE_CATS_DEFAULTS = {
 // Live object — loaded from settings if saved, otherwise seeded from defaults
 const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
+const XM_LINE_REV = 45;
 document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL;
 let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all',_logSearch='',_activeTab='tracker';
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});},1000);
@@ -1610,7 +1617,7 @@ function rawPhone(v){return v.replace(/\D/g,'');}
 document.getElementById('f-cb-phone').addEventListener('input',function(){onPhoneInput(this);});
 
 function dismissAlerts(){alertDismissed=Date.now()+5*60000;document.getElementById('alert-bar').classList.remove('visible');}
-function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();}
+function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();updateRevTotal();}
 function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();}
 function isIE(){const el=document.getElementById('chk-ie');return el&&el.classList.contains('ie-active');}
 function syncProds(){syncIEVisibility();const ie=isIE(),el=document.getElementById('chk-chsi');el.classList.remove('checked','ie-adj');if(prods.chsi)el.classList.add(ie?'ie-adj':'checked');['tv','cdv','xh'].forEach(k=>document.getElementById('chk-'+k).classList.toggle('checked',prods[k]));}
@@ -1642,14 +1649,7 @@ function toggleNoSale(callerEl){
   if(tog) tog.classList.add('active');
   if(togNoxm) togNoxm.classList.add('active');
   if(panel){
-    const anchor = callerEl || tog;
-    // Anchor panel to sale-display area (right col)
-    const saleDisp = document.getElementById('sale-display');
-    const anchorEl = saleDisp || anchor;
-    const rect = anchorEl.getBoundingClientRect();
-    panel.style.top  = rect.top + 'px';
-    panel.style.left = rect.left + 'px';
-    panel.style.minWidth = rect.width + 'px';
+    positionNsPanel(callerEl || tog);
     panel.classList.add('open');
     _nsPanelOpen = true;
   }
@@ -1764,7 +1764,6 @@ function updatePlay(){
   const hasXm = xmVal > 0;
   const hasNonXm = prods.tv || prods.chsi || prods.cdv || prods.xh;
   const noxmTog = document.getElementById('ns-toggle-noxm');
-  const noxmDiv = document.getElementById('noxm-divider');
   const playDisp = document.getElementById('play-display');
   const playName = document.getElementById('play-display-name');
   const playSvcs = document.getElementById('play-display-svcs');
@@ -1789,7 +1788,6 @@ function updatePlay(){
     }
   }
   if(noxmTog){ noxmTog.style.display = 'none'; }
-  if(noxmDiv){ noxmDiv.style.display = 'none'; }
 
   if(s.length){
     // Show big play display in right col
@@ -1843,7 +1841,9 @@ function toggleCb(){
 }
 function updateNotesState(){const b=document.getElementById('notes-badge'),ta=document.getElementById('f-notes');if(cbOpen){b.className='req-badge-p';b.textContent='required';ta.classList.add('cb-req-ta');ta.placeholder='Why is a call back needed?';}else{b.className='opt-badge';b.textContent='optional';ta.classList.remove('cb-req-ta');ta.placeholder='Optional…';}}
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
-function compute(c){const ie=c.ie||c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?(c.noXmReason?c.playName+' · No XM: '+c.noXmReason:c.playName):(c.reason||'');return c;}
+function compute(c){
+  if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:c.sched||'',activated:false}));
+  if(c.xm>0&&c.baseRev===undefined) c.baseRev=Math.max(0,c.rev-(c.xm*XM_LINE_REV));const ie=c.ie||c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?(c.noXmReason?c.playName+' · No XM: '+c.noXmReason:c.playName):(c.reason||'');return c;}
 function updateSale(){}
 function buildAcct(raw,name,phone){const p=[];if(raw)p.push(raw);if(name)p.push(name);if(phone)p.push('CB:'+phone);return p.join(' | ');}
 function flash(id,rb=''){const el=document.getElementById(id);if(!el)return;el.style.borderColor='var(--red)';el.style.boxShadow='0 0 0 3px rgba(248,113,113,.2)';el.focus();setTimeout(()=>{el.style.borderColor=rb;el.style.boxShadow='';},2500);}
@@ -1854,7 +1854,7 @@ function isBlankCall(){
   const phone = document.getElementById('f-cb-phone').value.trim();
   const notes = document.getElementById('f-notes').value.trim();
   const sched = document.getElementById('f-sched').value;
-  const rev   = getRevVal();
+  const rev   = getRevVal() + (xmVal * XM_LINE_REV);
   return !acct && !name && !phone && !notes && !sched && !rev &&
          xmVal === 0 && !prods.tv && !prods.chsi && !prods.cdv && !prods.xh &&
          _nsState === 'closed' && !cbOpen;
@@ -1888,8 +1888,8 @@ function logCall(){
 
 function doLogCall(){
   if(cbOpen){if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}}
-  const cbName=cbOpen?document.getElementById('f-cb-name').value.trim():'';const cbPhone=cbOpen?document.getElementById('f-cb-phone').value.trim():'';const cbTime=cbOpen?document.getElementById('f-cb-dt').value:'';const raw=document.getElementById('f-acct').value.trim();
-  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,rev:getRevVal(),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
+  const cbName=document.getElementById('f-cb-name').value.trim();const cbPhone=document.getElementById('f-cb-phone').value.trim();const cbTime=cbOpen?document.getElementById('f-cb-dt').value:'';const raw=document.getElementById('f-acct').value.trim();
+  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
   const btn=document.getElementById('submit-btn');btn.classList.add('ok');btn.innerHTML='<div class="btn-dot"></div>Logged!';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<div class="btn-dot"></div>Log Call';},800);
@@ -1897,6 +1897,7 @@ function doLogCall(){
 function resetForm(){
   ['f-acct','f-sched','f-rev','f-reason','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   setXm(0);
+  updateRevTotal();
   Object.keys(prods).forEach(k=>{prods[k]=false;const el=document.getElementById('chk-'+k);if(el)el.classList.remove('checked','ie-adj');});
   // IE — deactivate but let syncIEVisibility handle visibility
   _ieActive=false;
@@ -1929,10 +1930,19 @@ function closeEdit(){
   document.querySelector('.main').classList.remove('editing');
   render();
 }
-function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=document.getElementById('e-acct').value.trim();c.cbName=document.getElementById('e-cb-name').value.trim();c.cbPhone=document.getElementById('e-cb-phone').value.trim();c.acct=buildAcct(c.acctRaw,c.cbName,c.cbPhone);c.sched=document.getElementById('e-sched').value;c.rev=parseFloat(document.getElementById('e-rev').value)||0;c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.cbDone=document.getElementById('e-cb-done').checked;c.ie=c.ie||false;c.bulk=c.bulk||false;c.noXmReason=c.noXmReason||'';c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();}
+function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=document.getElementById('e-acct').value.trim();c.cbName=document.getElementById('e-cb-name').value.trim();c.cbPhone=document.getElementById('e-cb-phone').value.trim();c.acct=buildAcct(c.acctRaw,c.cbName,c.cbPhone);c.sched=document.getElementById('e-sched').value;const eBaseRev = parseFloat(document.getElementById('e-rev').value)||0;
+  c.baseRev = eBaseRev;
+  if(!c.xmLines && c.xm > 0) c.xmLines = Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:c.sched||'',activated:false}));
+  if(c.xmLines) c.xmLines.forEach(line => {
+    const de=document.getElementById('e-xm-date-'+line.id);
+    const ae=document.getElementById('e-xm-act-'+line.id);
+    if(de) line.schedDate=de.value;
+    if(ae) line.activated=ae.checked;
+  });
+  c.rev = eBaseRev + (c.xm * XM_LINE_REV);c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.cbDone=document.getElementById('e-cb-done').checked;c.ie=c.ie||false;c.bulk=c.bulk||false;c.noXmReason=c.noXmReason||'';c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();}
 function delCall(id){if(editingId===id)closeEdit();deleteCallFromSheets(id);calls=calls.filter(c=>c.id!==id);render();updateStats();}
 function markCbDone(id){const c=calls.find(x=>x.id===id);if(c){c.cbDone=true;const el=document.getElementById('e-cb-done');if(el)el.checked=true;render();checkAlerts();upsertCallToSheets(c);}}
-function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}}
+function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}if(editingId)updateEditRevTotal(editingId);}
 function eToggleProd(k){editState[k]=!editState[k];const el=document.getElementById('e-chk-'+k);if(!el)return;const ie=k==='chsi'&&(document.getElementById('e-reason')?.value||'')==='IE (.75)';el.className='e-chk'+(k==='chsi'?(editState.chsi?(ie?' ie':' on'):''):(editState[k]?' on':''));}
 function eReasonChange(){const re=document.getElementById('e-reason');if(!re)return;const t2=document.getElementById('e-nosale-tier2');if(!t2)return;if(re.value==='NO SALE MADE'){const cats=document.getElementById('e-nosale-cat');if(cats&&cats.options.length<2){cats.innerHTML='<option value="">— reason category —</option>'+Object.keys(NO_SALE_CATS).map(c=>`<option>${c}</option>`).join('');}t2.style.display='flex';}else{t2.style.display='none';}}
 function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
@@ -1958,7 +1968,22 @@ function renderEditRow(c){
     <!-- Notes ~232px -->
     <div style="flex:0 0 275px;padding:8px 10px;border-right:1px solid var(--border);box-sizing:border-box;display:flex;flex-direction:column;gap:4px;min-width:0">
       <div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">📝 Notes</div>
-      <textarea id="e-notes" style="flex:1;width:100%;background:var(--surface);border:2px solid rgba(167,139,250,.4);border-radius:6px;padding:5px 7px;font-family:var(--sans);font-size:11px;color:var(--text);outline:none;resize:none;min-height:150px;box-sizing:border-box" onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='rgba(167,139,250,.4)'" placeholder="Notes…">${c.notes||''}</textarea>
+      <textarea id="e-notes" style="flex:1;width:100%;background:var(--surface);border:2px solid rgba(167,139,250,.4);border-radius:6px;padding:5px 7px;font-family:var(--sans);font-size:11px;color:var(--text);outline:none;resize:none;min-height:70px;box-sizing:border-box" onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='rgba(167,139,250,.4)'" placeholder="Notes…">${c.notes||''}</textarea>
+
+      <div style="display:flex;gap:3px;align-items:flex-end;margin-top:6px">
+        <div class="field" style="flex-shrink:0">
+          <label>Base Rev</label>
+          <input id="e-rev" type="text" placeholder="0.00" value="${c.baseRev||''}" oninput="updateEditRevTotal(${c.id})" style="width:64px;font-family:var(--mono);font-size:13px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);transition:border-color .15s;box-sizing:border-box">
+        </div>
+        <div class="field" style="flex-shrink:0">
+          <label>XM Rev</label>
+          <div id="e-xm-rev-${c.id}" style="width:52px;height:38px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--teal);display:flex;align-items:center;font-weight:600">$${(es.xm*XM_LINE_REV).toFixed(0)}</div>
+        </div>
+        <div class="field" style="flex-shrink:0">
+          <label>Total</label>
+          <div id="e-rev-total-${c.id}" style="width:60px;height:38px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--green);display:flex;align-items:center;font-weight:700">$${((c.baseRev||0)+(es.xm*XM_LINE_REV)).toFixed(2)}</div>
+        </div>
+      </div>
     </div>
 
     <!-- Details: remaining width -->
@@ -1969,7 +1994,7 @@ function renderEditRow(c){
         <div style="display:flex;flex-direction:column;gap:3px;width:160px;flex-shrink:0">
           <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Outcome</div>
           <select id="e-reason" class="e-select" onchange="eReasonChange()" style="width:160px;font-size:11px">
-            <option value="">— outcome (no sale only) —</option>
+            <option value="">— no sale reason —</option>
             <option value="NO SALE MADE"${c.reason&&!c.hasSale?'':''}>✘ No Sale</option>
           </select>
           <div id="e-nosale-tier2" style="display:${(!c.hasSale&&c.reason)?'flex':'none'};flex-direction:column;gap:3px;margin-top:3px">
@@ -2016,30 +2041,41 @@ function renderEditRow(c){
                 onchange="(function(v){const d=new Date(v+'T00:00:00');document.getElementById('e-sched-display').value=v?((d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(-2)):'';})(this.value)">
             </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;width:75px">
-          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Revenue ($)</div>
-          <input id="e-rev" class="e-input" type="number" min="0" step="1" value="${c.rev||''}" style="width:75px;padding:5px 6px;font-family:var(--mono);font-size:11px" placeholder="0">
-        </div>
+
       </div>
 
-      <!-- Row 3: CB fields -->
-      <div style="display:flex;gap:5px;align-items:flex-end;padding-top:3px;border-top:1px solid var(--border)">
-        <div style="font-size:12px;align-self:center;flex-shrink:0;padding-bottom:2px">📞</div>
-        <div style="display:flex;flex-direction:column;gap:3px;width:70px;flex-shrink:0">
-          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">Name</div>
-          <input id="e-cb-name" class="e-input e-text" value="${c.cbName||''}" placeholder="Name" style="width:70px;font-size:11px;height:28px;border-color:rgba(167,139,250,.35)">
+      <!-- XM Lines activation row -->
+      ${c.xm > 0 ? `<div style="display:flex;flex-direction:column;gap:6px;padding:8px 0 4px;border-top:1px solid var(--border)">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)">XM Line Activation Dates</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${(c.xmLines||Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:c.sched||'',activated:false}))).map(line => `
+            <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
+              <div style="font-size:9px;color:var(--text3);font-weight:600">Line ${line.id}</div>
+              <div style="display:flex;gap:4px;align-items:center">
+                <input type="date" id="e-xm-date-${line.id}" value="${line.schedDate||''}" class="e-input" style="width:120px;padding:4px 6px;font-size:11px">
+                <label style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--teal);cursor:pointer;white-space:nowrap">
+                  <input type="checkbox" id="e-xm-act-${line.id}" ${line.activated?'checked':''} style="accent-color:var(--teal)" onchange="updateEditXmRev(${c.id})"> Activated
+                </label>
+              </div>
+            </div>
+          `).join('')}
         </div>
-        <div style="display:flex;flex-direction:column;gap:3px;width:96px;flex-shrink:0">
-          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">Phone</div>
-          <input id="e-cb-phone" class="e-input" value="${c.cbPhone||''}" placeholder="(555) 000-0000" maxlength="14" style="width:96px;height:28px;padding:0 5px;font-family:var(--mono);font-size:10px;text-align:center;border-color:rgba(167,139,250,.35);box-sizing:border-box" oninput="onPhoneInput(this)">
+        <div id="e-xm-summary-${c.id}" style="font-size:10px;color:var(--text3)">XM Rev: <span style="color:var(--teal);font-weight:600;font-family:var(--mono)">$${(c.xm * XM_LINE_REV).toFixed(0)}</span> · Base: <span style="font-family:var(--mono)">$${(c.baseRev||0).toFixed(2)}</span> · Total: <span style="color:var(--green);font-weight:700;font-family:var(--mono)">$${c.rev.toFixed(2)}</span></div>
+      </div>` : ''}
+      <!-- Row 3: Acct / Phone / Name -->
+      <div style="display:flex;gap:6px;align-items:flex-end;margin-top:4px">
+        <div class="field" style="flex-shrink:0">
+          <label>Acct / Ticket</label>
+          <input id="e-acct" type="text" value="${c.acctRaw||''}" placeholder="Acct#" style="width:130px;height:38px;font-family:var(--mono);font-size:12px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);box-sizing:border-box">
         </div>
-        <div style="display:flex;flex-direction:column;gap:3px;width:130px;flex-shrink:0">
-          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Acct / Ticket</div>
-          <input id="e-acct" class="e-input" value="${c.acctRaw||''}" placeholder="Acct#" style="width:130px;font-size:11px;font-family:var(--mono)">
+        <div class="field" style="flex-shrink:0">
+          <label>Phone #</label>
+          <input id="e-cb-phone" type="text" value="${c.cbPhone||''}" placeholder="(555) 867-5309" maxlength="14" style="width:130px;height:38px;font-family:var(--mono);font-size:12px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);box-sizing:border-box;text-align:left" oninput="onPhoneInput(this)">
         </div>
-        <label style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);cursor:pointer;padding-bottom:3px;flex-shrink:0;white-space:nowrap">
-          <input type="checkbox" id="e-cb-done" ${c.cbDone?'checked':''} style="accent-color:var(--green);width:13px;height:13px"> Done
-        </label>
+        <div class="field" style="flex-shrink:0">
+          <label>Name</label>
+          <input id="e-cb-name" type="text" value="${c.cbName||''}" placeholder="First Last" style="width:130px;height:38px;font-family:var(--sans);font-size:12px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);box-sizing:border-box">
+        </div>
         ${doneBtn}
       </div>
 
@@ -2520,10 +2556,8 @@ function applyWidth(w){
       const panel = document.getElementById('nosale-panel');
       const saleDisp = document.getElementById('sale-display');
       if(panel && saleDisp){
-        const rect = saleDisp.getBoundingClientRect();
-        panel.style.top  = rect.top + 'px';
-        panel.style.left = rect.left + 'px';
-        panel.style.width = rect.width + 'px';
+        const tog3 = document.getElementById('ns-toggle');
+        if(tog3) positionNsPanel(tog3);
         renderNsPanel();
       }
     }
@@ -4934,6 +4968,71 @@ function toggleDispSection(hdr){
   var isOpen = body.classList.contains('open');
   body.classList.toggle('open', !isOpen);
   if(chevron) chevron.classList.toggle('open', !isOpen);
+}
+
+function positionNsPanel(anchorEl){
+  const panel = document.getElementById('nosale-panel');
+  if(!panel || !anchorEl) return;
+  // Anchor to XM stepper if available, else use callerEl
+  const xmStepper = document.getElementById('xm-stepper');
+  const anchor = xmStepper || anchorEl;
+  const rect = anchor.getBoundingClientRect();
+  const vv = window.visualViewport;
+  const offsetX = vv ? vv.offsetLeft : 0;
+  const offsetY = vv ? vv.offsetTop  : 0;
+  panel.style.top  = (rect.bottom + offsetY + 6) + 'px';
+  panel.style.left = (rect.left   + offsetX)     + 'px';
+  panel.style.minWidth = '280px';
+}
+
+function updateRevTotal(){
+  const base  = getRevVal();
+  const xmRev = xmVal * XM_LINE_REV;
+  const total = base + xmRev;
+  const xmEl  = document.getElementById('f-xm-rev');
+  const totEl = document.getElementById('f-rev-total');
+  if(xmEl){
+    xmEl.textContent = '$' + xmRev.toFixed(0);
+    xmEl.style.color = xmRev > 0 ? 'var(--teal)' : 'var(--text3)';
+    xmEl.style.borderColor = xmRev > 0 ? 'rgba(20,184,166,.3)' : 'var(--border2)';
+    xmEl.style.background  = xmRev > 0 ? 'var(--teal-lt)' : 'var(--surface)';
+  }
+  if(totEl){
+    totEl.textContent = '$' + total.toFixed(2);
+    totEl.style.color = total > 0 ? 'var(--green)' : 'var(--text2)';
+    totEl.style.borderColor = total > 0 ? 'rgba(34,197,94,.3)' : 'var(--border2)';
+    totEl.style.background  = total > 0 ? 'var(--green-lt)' : 'var(--surface)';
+  }
+}
+
+function updateEditXmRev(callId){
+  const c = calls.find(x=>x.id===callId);
+  if(!c || !c.xmLines) return;
+  // Count activated lines from current checkboxes
+  const activated = c.xmLines.filter(line => {
+    const el = document.getElementById('e-xm-act-'+line.id);
+    return el ? el.checked : line.activated;
+  }).length;
+  const xmRev   = c.xm * XM_LINE_REV;
+  const baseRev = parseFloat(document.getElementById('e-rev').value)||0;
+  const total   = baseRev + xmRev;
+  // Update the summary line in the edit row
+  const summaryEl = document.getElementById('e-xm-summary-'+callId);
+  if(summaryEl){
+    summaryEl.innerHTML = 'XM Rev: <span style="color:var(--teal);font-weight:600;font-family:var(--mono)">$'+(xmRev.toFixed(0))+'</span> · Base: <span style="font-family:var(--mono)">$'+(baseRev.toFixed(2))+'</span> · Total: <span style="color:var(--green);font-weight:700;font-family:var(--mono)">$'+(total.toFixed(2))+'</span> · <span style="color:var(--teal)">'+(activated)+'/'+c.xm+' activated</span>';
+  }
+}
+
+function updateEditRevTotal(callId){
+  const baseEl  = document.getElementById('e-rev');
+  const xmRevEl = document.getElementById('e-xm-rev-'+callId);
+  const totEl   = document.getElementById('e-rev-total-'+callId);
+  if(!baseEl) return;
+  const base   = parseFloat(baseEl.value.replace(/[^0-9.]/g,''))||0;
+  const xmRev  = (editState.xm||0) * XM_LINE_REV;
+  const total  = base + xmRev;
+  if(xmRevEl) xmRevEl.textContent = '$'+xmRev.toFixed(0);
+  if(totEl)   totEl.textContent   = '$'+total.toFixed(2);
 }
 
 </script>
