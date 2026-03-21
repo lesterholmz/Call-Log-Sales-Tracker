@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080">
-<title>Xfinity Call Logger v0.03.19.124</title>
+<title>Xfinity Call Logger v0.03.20.0</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -79,9 +79,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .form-header-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .form-hint{font-size:11px;color:var(--text3);font-family:var(--mono)}
-.form-body{padding:16px 10px;display:flex;flex-direction:column;gap:10px}
+.form-body{padding:14px 12px;display:flex;flex-direction:column;gap:8px}
 .frow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-.field{display:flex;flex-direction:column;gap:5px}
+.field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
 .field input,.field select{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);height:38px;outline:none;transition:border-color .15s,box-shadow .15s}
 .field input::placeholder,.field textarea::placeholder{color:var(--text3)}
@@ -98,7 +98,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .req-badge{font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);background:var(--amber-lt);border:1px solid rgba(245,158,11,.2);padding:1px 6px;border-radius:4px}
 .req-badge-p{font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--purple);background:var(--purple-lt);border:1px solid rgba(167,139,250,.2);padding:1px 6px;border-radius:4px;flex-shrink:0}
 .opt-badge{font-size:9px;color:var(--text3);font-weight:400;font-style:italic}
-.w-acct{width:220px}.w-sched{width:140px}.w-rev{width:90px}
+.w-acct{width:100%}.w-sched{width:100%}.w-rev{width:100%}
 .xm-wrap{display:flex;flex-direction:column;gap:5px}
 .xm-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
 .xm-stepper{display:flex;align-items:center;height:38px;width:110px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;overflow:hidden;transition:border-color .15s}
@@ -122,8 +122,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .cback-toggle{width:38px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:16px;filter:grayscale(1) opacity(.5)}
 .cback-toggle:hover{filter:grayscale(.3) opacity(.8);background:var(--card2)}
 .cback-toggle.active{background:var(--purple-lt);border-color:var(--purple);box-shadow:0 0 0 2px rgba(167,139,250,.25),0 0 10px rgba(167,139,250,.15);filter:grayscale(0) opacity(1)}
-#details-row{overflow:hidden;max-height:0;opacity:0;transform:translateY(-6px);transition:max-height .28s ease,opacity .22s ease,transform .22s ease;margin-top:0}
-#details-row.open{max-height:120px;opacity:1;transform:translateY(0);margin-top:2px}
 .cb-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .cb-divider-line{flex:1;height:1px;background:var(--border)}
 .cb-divider-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);white-space:nowrap}
@@ -135,7 +133,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .cb-name:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
 .cb-name::placeholder{color:var(--text3)}
 .cb-field-phone{width:153px}
-.cb-phone{width:153px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;text-align:center;transition:border-color .15s,box-shadow .15s}
+.cb-phone{width:153px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;text-align:left;transition:border-color .15s,box-shadow .15s}
 .cb-phone:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
 .cb-phone::placeholder{color:var(--text3)}
 .cb-dt{width:235px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
@@ -145,9 +143,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .sale-divider-line{flex:1;height:1px;background:var(--border)}
 .sale-divider-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
 .play-indicator{display:flex;flex-direction:row;align-items:center;gap:6px;align-self:stretch;padding-bottom:0;width:100%}
-.play-name{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s}
-.play-services{font-size:10px;color:var(--text3);opacity:0;transition:opacity .2s}
-.play-name.show,.play-services.show{opacity:1;transform:none}
 .v-div{width:1px;background:var(--border2);align-self:stretch}
 .submit-btn{height:38px;padding:0 22px;background:var(--blue);border:none;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap;flex-shrink:0}
 .submit-btn:hover{background:#2563eb;transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,.3)}
@@ -427,19 +422,19 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 /* ── Form layout: centered rows, notes aligned to row 1 width ── */
 /* Row container — centers each row and constrains width to match row 1 */
 .form-row-center{display:flex;justify-content:flex-start;width:100%}
-.frow-top{display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap}
-.frow-notes{display:inline-flex;gap:10px;align-items:stretch}
+.frow-top{display:flex;gap:8px;align-items:center;width:100%}
+.frow-notes{display:flex;gap:8px;align-items:stretch;width:100%}
 /* 720px: notes wraps full width, cb toggle + submit stack below */
 @media(max-width:780px){
   .frow-notes{flex-wrap:wrap}
   .frow-notes .notes-wrap{min-width:100%}
-  .frow-notes-actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;width:100%}
+  .frow-notes-actions{display:flex;gap:8px;align-items:center;justify-content:flex-end;width:100%}
 }
 @media(min-width:781px){
-  .frow-notes-actions{flex-shrink:0}
+  .frow-notes-actions{flex-shrink:0;display:flex;flex-direction:column;align-self:stretch}
 }
 /* Notes wrap fills the same inline width as row 1 */
-.notes-wrap{flex:0 0 246px;display:flex;flex-direction:column;gap:5px}
+.notes-wrap{flex:0 0 250px;display:flex;flex-direction:column;gap:5px}
 .notes-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
 .notes-wrap textarea{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:70px;width:100%;transition:border-color .15s,box-shadow .15s}
 .notes-wrap textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
@@ -586,17 +581,22 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .ns-toggle:hover{border-color:var(--red);color:var(--red)}
 .ns-toggle.active{background:rgba(248,113,113,.12);border-color:var(--red);color:var(--red)}
 /* ── Floating panel ── */
-
+#nosale-panel{
+  position:fixed;z-index:9999;display:none;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
+  width:280px;padding:14px 16px 12px;
+}
 #nosale-panel.open{
   display:flex!important;
   flex-direction:column;
-  flex-wrap:wrap;
-  align-content:flex-start;
-  gap:5px;
-  padding:4px;
-  height:150px;
-  width:auto;
-  overflow:visible;
+  gap:8px;
+}
+#nosale-panel .ns-panel-title{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);
+}
+#nosale-panel .ns-pill-grid{
+  display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;
 }
 
 /* ── Category pills — solid floating chips ── */
@@ -605,7 +605,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
   border:none;
   background:var(--surface);
   box-shadow:0 2px 8px rgba(0,0,0,.18),0 0 0 1px var(--border2);
-  font-size:10px;font-weight:700;letter-spacing:.03em;
+  font-size:11px;font-weight:600;letter-spacing:.03em;
   color:var(--text2);cursor:pointer;
   transition:transform .1s,box-shadow .1s,background .1s,color .1s;
   user-select:none;white-space:nowrap;display:inline-flex;align-items:center;gap:5px
@@ -620,13 +620,12 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
   box-shadow:0 2px 10px rgba(245,158,11,.3),0 0 0 1.5px var(--amber);
   color:var(--amber)
 }
-/* ── Sub-reason pills — lighter, slightly smaller ── */
 .ns-sub-pill{
   padding:4px 11px;border-radius:999px;
   border:none;
   background:var(--card2);
   box-shadow:0 1px 5px rgba(0,0,0,.14),0 0 0 1px var(--border);
-  font-size:10px;font-weight:500;
+  font-size:11px;font-weight:500;
   color:var(--text3);cursor:pointer;
   transition:transform .1s,box-shadow .1s,background .1s,color .1s;
   user-select:none;white-space:nowrap;display:inline-flex;align-items:center
@@ -675,13 +674,94 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .nxm-table tr:last-child td{border-bottom:none}
 .nxm-table tr:hover td{background:var(--surface)}
 .nxm-reason{font-size:11px;color:var(--red);font-weight:600}
+
+/* ── Responsive form layout ── */
+.form-left-col{display:flex;flex-direction:column;gap:3px;flex-shrink:0;width:170px}
+.form-left-col .field input{width:100%;box-sizing:border-box}
+.notes-wrap textarea{min-height:165px;resize:vertical}
+@media(max-width:700px){
+  .frow-top{flex-wrap:wrap}
+  .frow-notes{flex-wrap:wrap}
+  .form-left-col{width:100%}
+  .notes-wrap{min-width:100%}
+}
+
+.form-left-col .field{gap:2px}
+.form-left-col .field label{font-size:9px}
+.form-left-col .field input{height:30px;font-size:12px;padding:0 8px}
+
+/* ── Callback floating panel ── */
+#cb-panel{position:fixed;z-index:9999;display:none;flex-direction:column;gap:10px;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px 10px;box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
+  min-width:280px}
+.cb-panel-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+.cb-quick-btns{display:flex;gap:6px;flex-wrap:wrap}
+.cb-quick-btn{padding:5px 12px;border-radius:999px;border:1px solid var(--border2);
+  background:var(--surface);font-size:11px;font-weight:600;color:var(--text2);
+  cursor:pointer;transition:all .12s;white-space:nowrap;user-select:none}
+.cb-quick-btn:hover{border-color:var(--purple);color:var(--purple)}
+.cb-quick-btn.active{background:var(--purple-lt);border-color:var(--purple);color:var(--purple)}
+.cb-tz-row{display:flex;align-items:center;gap:8px}
+.cb-tz-row label{font-size:10px;color:var(--text3);white-space:nowrap;flex-shrink:0}
+.cb-tz-row select{width:130px;flex-shrink:0;height:30px;font-size:11px;padding:0 6px;background:var(--surface);
+  border:1px solid var(--border2);border-radius:6px;color:var(--text);outline:none}
+.cb-mytime{font-size:11px;color:var(--purple);font-family:var(--mono);margin-top:2px;min-height:16px}
+.cb-dt-row{display:flex;flex-direction:column;gap:4px}
+.cb-dt-row label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+
+.font-selector{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.font-option{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--border2);border-radius:8px;cursor:pointer;transition:all .15s;background:var(--surface)}
+.font-option:hover{border-color:var(--blue);background:var(--card2)}
+.font-option.selected{border-color:var(--green);background:var(--green-lt)}
+.font-option-check{width:16px;height:16px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.font-option.selected .font-option-check{border-color:var(--green);background:var(--green)}
+.font-option.selected .font-option-check::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+.font-option-preview{flex:1;display:flex;flex-direction:column;gap:2px}
+.font-option-label{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.font-option-sample{font-size:16px;color:var(--green);line-height:1.2}
+
+.bug-item{display:flex;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface)}
+.bug-known{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05)}
+.bug-user{border-color:rgba(59,130,246,.25);background:rgba(59,130,246,.04)}
+.bug-num{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text3);flex-shrink:0;padding-top:1px}
+.bug-body{display:flex;flex-direction:column;gap:3px;flex:1}
+.bug-title{font-size:12px;font-weight:600;color:var(--text)}
+.bug-desc{font-size:11px;color:var(--text3);line-height:1.5}
+.bug-date{font-size:10px;color:var(--text3);opacity:.6;margin-top:2px}
+
+.disp-section{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:8px}
+.disp-section-hdr{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;background:var(--card2);user-select:none;transition:background .15s}
+.disp-section-hdr:hover{background:var(--surface)}
+.disp-section-hdr-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text2)}
+.disp-section-chevron{font-size:10px;color:var(--text3);transition:transform .2s}
+.disp-section-chevron.open{transform:rotate(180deg)}
+.disp-section-body{overflow:hidden;max-height:0;transition:max-height .25s ease,padding .25s ease;padding:0 12px}
+.disp-section-body.open{max-height:600px;padding:10px 12px 12px}
+
+#blank-call-confirm{
+  position:fixed;z-index:9999;display:none;
+  flex-direction:column;gap:12px;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:18px 20px;
+  box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
+  width:280px;text-align:center;
+  transform:translateX(-50%);
+}
+#blank-call-confirm .bcc-title{font-size:13px;font-weight:700;color:var(--text)}
+#blank-call-confirm .bcc-desc{font-size:11px;color:var(--text3);line-height:1.5}
+#blank-call-confirm .bcc-btns{display:flex;gap:8px;justify-content:center}
+#blank-call-confirm .bcc-yes{height:32px;padding:0 20px;background:var(--red);border:none;border-radius:7px;font-size:12px;font-weight:700;color:#fff;cursor:pointer}
+#blank-call-confirm .bcc-no{height:32px;padding:0 20px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Russo+One&family=Rajdhani:wght@700&family=Exo+2:wght@700&family=Bebas+Neue&family=Righteous&family=Boogaloo&family=Black+Ops+One&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.19.124</div>
+    <div class="version-chip">v0.03.20.0</div>
     <div class="clock" id="clock">--:-- --</div>
     <div class="month-chip" id="month-chip-label">…</div>
     <button class="gear-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
@@ -707,137 +787,208 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
     <div class="stab-bar">
       <button class="stab-btn active" id="stab-display"  onclick="switchStab('display')" >🎨 Display</button>
       <button class="stab-btn"        id="stab-goals"    onclick="switchStab('goals')"   >🎯 Goals</button>
-      <button class="stab-btn"        id="stab-schedule" onclick="switchStab('schedule')">📅 Schedule</button>
       <button class="stab-btn"        id="stab-data"     onclick="switchStab('data')"    >🗄 Data</button>
       <button class="stab-btn"        id="stab-outcomes" onclick="switchStab('outcomes')">📋 Outcomes</button>
-      <button class="stab-btn"        id="stab-alerts"   onclick="switchStab('alerts')"  >🔔 Alerts</button>
+      <button class="stab-btn"        id="stab-bugs"     onclick="switchStab('bugs')">🐛 Bugs</button>
     </div>
 
     <!-- ── Display ── -->
     <div class="stab-panel active" id="stabp-display">
-      <div class="settings-section-label" style="margin-top:14px">Theme</div>
-      <div class="theme-presets">
-        <button class="theme-preset" id="tp-dark" onclick="applyPreset('dark')">
-          <div class="tp-swatch"><div class="tp-dot" style="background:#0a0f1e;border:1px solid #263147"></div><div class="tp-dot" style="background:#3b82f6"></div><div class="tp-dot" style="background:#22c55e"></div></div>
-          🌙 Dark
-        </button>
-        <button class="theme-preset" id="tp-light" onclick="applyPreset('light')">
-          <div class="tp-swatch"><div class="tp-dot" style="background:#f1f5f9;border:1px solid #cbd5e1"></div><div class="tp-dot" style="background:#2563eb"></div><div class="tp-dot" style="background:#16a34a"></div></div>
-          ☀️ Light
-        </button>
-        <button class="theme-preset" id="tp-xfinity" onclick="applyPreset('xfinity')">
-          <div class="tp-swatch"><div class="tp-dot" style="background:#ffffff;border:1px solid #c4b5fd"></div><div class="tp-dot" style="background:#7b2fff"></div><div class="tp-dot" style="background:#a78bfa"></div></div>
-          ✦ Xfinity
-        </button>
-        <button class="theme-preset" id="tp-xfinity-dark" onclick="applyPreset('xfinity-dark')">
-          <div class="tp-swatch"><div class="tp-dot" style="background:#0c1a2e;border:1px solid #1e4070"></div><div class="tp-dot" style="background:#38bdf8"></div><div class="tp-dot" style="background:#4ade80"></div></div>
-          ✦ Xfinity Dark
-        </button>
+      <!-- Theme -->
+      <div class="disp-section" style="margin-top:10px">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">🎨 Theme</span>
+          <span class="disp-section-chevron open">▼</span>
+        </div>
+        <div class="disp-section-body open">
+          <div class="theme-presets">
+            <button class="theme-preset" id="tp-dark" onclick="applyPreset('dark')">
+              <div class="tp-swatch"><div class="tp-dot" style="background:#0a0f1e;border:1px solid #263147"></div><div class="tp-dot" style="background:#3b82f6"></div><div class="tp-dot" style="background:#22c55e"></div></div>
+              🌙 Dark
+            </button>
+            <button class="theme-preset" id="tp-light" onclick="applyPreset('light')">
+              <div class="tp-swatch"><div class="tp-dot" style="background:#f1f5f9;border:1px solid #cbd5e1"></div><div class="tp-dot" style="background:#2563eb"></div><div class="tp-dot" style="background:#16a34a"></div></div>
+              ☀️ Light
+            </button>
+            <button class="theme-preset" id="tp-xfinity" onclick="applyPreset('xfinity')">
+              <div class="tp-swatch"><div class="tp-dot" style="background:#ffffff;border:1px solid #c4b5fd"></div><div class="tp-dot" style="background:#7b2fff"></div><div class="tp-dot" style="background:#a78bfa"></div></div>
+              ✦ Xfinity
+            </button>
+            <button class="theme-preset" id="tp-xfinity-dark" onclick="applyPreset('xfinity-dark')">
+              <div class="tp-swatch"><div class="tp-dot" style="background:#0c1a2e;border:1px solid #1e4070"></div><div class="tp-dot" style="background:#38bdf8"></div><div class="tp-dot" style="background:#4ade80"></div></div>
+              ✦ Xfinity Dark
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="settings-section-label" style="margin-top:14px">Layout Width</div>
-      <div class="width-toggle">
-        <button class="width-btn" id="wb-regular" onclick="applyWidth('regular')">◫ Regular (720px)</button>
-        <button class="width-btn" id="wb-wide" onclick="applyWidth('wide')">⬛ Wide (1080px)</button>
+
+      <!-- Play Display Font -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">✦ Play Display Font</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:0">
+        <!-- Dropdown -->
+        <select id="font-dropdown" onchange="selectPlayFont(this.value)" style="height:34px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-size:12px;color:var(--text);outline:none;cursor:pointer;width:100%">
+          <option value="Orbitron">Orbitron — techy</option>
+          <option value="Russo One">Russo One — bold sporty</option>
+          <option value="Bebas Neue">Bebas Neue — tall impact</option>
+          <option value="Rajdhani">Rajdhani — condensed sporty</option>
+          <option value="Righteous">Righteous — arcade fun</option>
+          <option value="Boogaloo">Boogaloo — playful</option>
+          <option value="Black Ops One">Black Ops One — military bold</option>
+          <option value="Press Start 2P">Press Start 2P — retro pixel</option>
+          <option value="VT323">VT323 — terminal retro</option>
+        </select>
+        <!-- Toggle -->
+        <div style="display:flex;gap:4px;background:var(--surface);border-radius:8px;padding:3px;border:1px solid var(--border2)">
+          <button id="fp-tog-sale" onclick="setFpMode('sale')" style="flex:1;height:26px;border:none;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;background:var(--card);color:var(--text);transition:all .15s">RGUs</button>
+          <button id="fp-tog-cb" onclick="setFpMode('cb')" style="flex:1;height:26px;border:none;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Call Back</button>
+          <button id="fp-tog-both" onclick="setFpMode('both')" style="flex:1;height:26px;border:none;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Both</button>
+        </div>
+        <!-- Preview — full width -->
+        <div id="fp-preview" style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;height:192px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;text-align:center;width:100%;box-sizing:border-box;overflow:hidden"></div>
       </div>
-      <div class="settings-section-label" style="margin-top:14px">Calendar Token</div>
-      <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Your piece on the board — shown on today's space.</div>
-      <div class="token-grid" id="token-grid"></div>
+        </div>
+      </div>
+
+      <!-- Layout Width -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">↔ Layout Width</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+          <div class="width-toggle">
+            <button class="width-btn" id="wb-regular" onclick="applyWidth('regular')">◫ Regular (720px)</button>
+            <button class="width-btn" id="wb-wide" onclick="applyWidth('wide')">⬛ Wide (1080px)</button>
+          </div>
+        </div>
+      </div>
+      <!-- Calendar Token -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">🎯 Calendar Token</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:6px">Your piece on the board — shown on today's space.</div>
+          <div class="token-grid" id="token-grid"></div>
+        </div>
+      </div>
+      <!-- Schedule -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">📅 Schedule</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Sets which days appear as work days on the calendar.</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button class="sched-btn active" id="sched-5x8" onclick="setSchedType('5x8',this)">5×8 hrs</button>
+            <button class="sched-btn" id="sched-4x10" onclick="setSchedType('4x10',this)">4×10 hrs</button>
+          </div>
+          <div class="settings-section-label" style="margin-top:0">Work Days</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px" id="workday-grid">
+            <label class="workday-lbl"><input type="checkbox" id="wd-0" value="0"><span>Sun</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-1" value="1" checked><span>Mon</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-2" value="2" checked><span>Tue</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-3" value="3" checked><span>Wed</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-4" value="4" checked><span>Thu</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-5" value="5" checked><span>Fri</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-6" value="6"><span>Sat</span></label>
+          </div>
+        </div>
+      </div>
+      <!-- Alerts -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">🔔 Call Back Alerts</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:10px;line-height:1.5">Alerts fire when a callback is within that many minutes of its scheduled time.</div>
+          <div class="alert-options">
+            <label class="alert-opt"><input type="checkbox" value="5" id="ao-5"><span>5 min</span></label>
+            <label class="alert-opt"><input type="checkbox" value="10" id="ao-10"><span>10 min</span></label>
+            <label class="alert-opt"><input type="checkbox" value="15" id="ao-15"><span>15 min</span></label>
+            <label class="alert-opt"><input type="checkbox" value="20" id="ao-20"><span>20 min</span></label>
+            <label class="alert-opt"><input type="checkbox" value="30" id="ao-30"><span>30 min</span></label>
+            <label class="alert-opt"><input type="checkbox" value="60" id="ao-60"><span>60 min</span></label>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ── Goals ── -->
     <div class="stab-panel" id="stabp-goals">
+      <!-- Fiscal month picker always visible -->
       <div class="settings-section-label" style="margin-top:14px">Fiscal Month</div>
       <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Select a month to view or edit its goals, chargebacks, and PTO. Only the current month affects live stats.</div>
       <select id="s-fiscal-month" onchange="loadGoalsForFiscalMonth(this.value)"
         style="width:100%;height:34px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;cursor:pointer;margin-bottom:2px">
       </select>
       <div id="goals-viewing-notice" style="font-size:10px;color:var(--amber);margin-bottom:8px;display:none">⚠ Viewing a past month — Save will update that month's stored data only.</div>
-      <div class="settings-section-label" style="margin-top:14px">PTO Hours Used This Month</div>
-      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Every 8 hrs of PTO adds +5% to your progress toward each goal — reflecting time you weren't on the phones. A ✦ appears on boosted stats.</div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-        <input type="number" id="s-pto" min="0" max="160" step="8" value="0"
-          style="width:80px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;height:34px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none"
-          oninput="updatePtoPreview()">
-        <span style="font-size:11px;color:var(--text3)">hours</span>
-        <span id="pto-preview" style="font-size:11px;font-family:var(--mono);color:var(--teal);font-weight:600"></span>
+
+      <!-- PTO -->
+      <div class="disp-section" style="margin-top:8px">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">✦ PTO Hours</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Every 8 hrs of PTO adds +5% to your progress toward each goal — reflecting time you weren't on the phones. A ✦ appears on boosted stats.</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+            <input type="number" id="s-pto" min="0" max="160" step="8" value="0"
+              style="width:80px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;height:34px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none"
+              oninput="updatePtoPreview()">
+            <span style="font-size:11px;color:var(--text3)">hours</span>
+            <span id="pto-preview" style="font-size:11px;font-family:var(--mono);color:var(--teal);font-weight:600"></span>
+          </div>
+          <div id="pto-breakdown" style="font-size:10px;color:var(--text3);line-height:1.8;margin-bottom:4px"></div>
+        </div>
       </div>
-      <div id="pto-breakdown" style="font-size:10px;color:var(--text3);line-height:1.8;margin-bottom:4px"></div>
-      <div class="settings-section-label" style="margin-top:14px">Monthly Goals </div>
-      <div class="settings-row">
-        <div class="settings-field"><label>Revenue ($)</label><input type="number" id="s-rev" min="0" step="1"></div>
-        <div class="settings-field"><label>XM Lines</label><input type="number" id="s-xm" min="0" step="1"></div>
-        <div class="settings-field"><label>TV</label><input type="number" id="s-tv" min="0" step="1"></div>
-        <div class="settings-field"><label>CHSI</label><input type="number" id="s-chsi" min="0" step="1"></div>
-        <div class="settings-field"><label>CDV</label><input type="number" id="s-cdv" min="0" step="1"></div>
-        <div class="settings-field"><label>XH</label><input type="number" id="s-xh" min="0" step="1"></div>
+
+      <!-- Monthly Goals -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">🎯 Monthly Goals</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+          <div class="settings-row">
+            <div class="settings-field"><label>Revenue ($)</label><input type="number" id="s-rev" min="0" step="1"></div>
+            <div class="settings-field"><label>XM Lines</label><input type="number" id="s-xm" min="0" step="1"></div>
+            <div class="settings-field"><label>TV</label><input type="number" id="s-tv" min="0" step="1"></div>
+            <div class="settings-field"><label>CHSI</label><input type="number" id="s-chsi" min="0" step="1"></div>
+            <div class="settings-field"><label>CDV</label><input type="number" id="s-cdv" min="0" step="1"></div>
+            <div class="settings-field"><label>XH</label><input type="number" id="s-xh" min="0" step="1"></div>
+          </div>
+        </div>
       </div>
-      <div class="settings-section-label" style="margin-top:14px;color:var(--red)">⬇ Charge Backs</div>
-      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Units lost to disconnects this month. These are subtracted directly from your monthly totals — revenue can go negative.</div>
-      <div class="settings-row">
-        <div class="settings-field cb-field">
-          <label style="color:var(--red)">Revenue ($)</label>
-          <div style="display:flex;align-items:center;gap:0">
-            <span class="cb-prefix">−</span>
-            <input type="number" id="s-cb-rev" min="0" step="1" value="0" class="cb-input">
-          </div>
+
+      <!-- Charge Backs -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title" style="color:var(--red)">⬇ Charge Backs</span>
+          <span class="disp-section-chevron">▼</span>
         </div>
-        <div class="settings-field cb-field">
-          <label style="color:var(--red)">XM Lines</label>
-          <div style="display:flex;align-items:center;gap:0">
-            <span class="cb-prefix">−</span>
-            <input type="number" id="s-cb-xm" min="0" step="1" value="0" class="cb-input">
-          </div>
-        </div>
-        <div class="settings-field cb-field">
-          <label style="color:var(--red)">TV</label>
-          <div style="display:flex;align-items:center;gap:0">
-            <span class="cb-prefix">−</span>
-            <input type="number" id="s-cb-tv" min="0" step="1" value="0" class="cb-input">
-          </div>
-        </div>
-        <div class="settings-field cb-field">
-          <label style="color:var(--red)">CHSI</label>
-          <div style="display:flex;align-items:center;gap:0">
-            <span class="cb-prefix">−</span>
-            <input type="number" id="s-cb-chsi" min="0" step="1" value="0" class="cb-input">
-          </div>
-        </div>
-        <div class="settings-field cb-field">
-          <label style="color:var(--red)">CDV</label>
-          <div style="display:flex;align-items:center;gap:0">
-            <span class="cb-prefix">−</span>
-            <input type="number" id="s-cb-cdv" min="0" step="1" value="0" class="cb-input">
-          </div>
-        </div>
-        <div class="settings-field cb-field">
-          <label style="color:var(--red)">XH</label>
-          <div style="display:flex;align-items:center;gap:0">
-            <span class="cb-prefix">−</span>
-            <input type="number" id="s-cb-xh" min="0" step="1" value="0" class="cb-input">
+        <div class="disp-section-body">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Units lost to disconnects this month. These are subtracted directly from your monthly totals — revenue can go negative.</div>
+          <div class="settings-row">
+            <div class="settings-field cb-field"><label style="color:var(--red)">Revenue ($)</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-rev" min="0" step="1" value="0" class="cb-input"></div></div>
+            <div class="settings-field cb-field"><label style="color:var(--red)">XM Lines</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-xm" min="0" step="1" value="0" class="cb-input"></div></div>
+            <div class="settings-field cb-field"><label style="color:var(--red)">TV</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-tv" min="0" step="1" value="0" class="cb-input"></div></div>
+            <div class="settings-field cb-field"><label style="color:var(--red)">CHSI</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-chsi" min="0" step="1" value="0" class="cb-input"></div></div>
+            <div class="settings-field cb-field"><label style="color:var(--red)">CDV</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-cdv" min="0" step="1" value="0" class="cb-input"></div></div>
+            <div class="settings-field cb-field"><label style="color:var(--red)">XH</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-xh" min="0" step="1" value="0" class="cb-input"></div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── Schedule ── -->
-    <div class="stab-panel" id="stabp-schedule">
-      <div class="settings-section-label" style="margin-top:14px">Shift Type</div>
-      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Sets which days appear as work days on the calendar.</div>
-      <div style="display:flex;gap:8px;margin-bottom:14px">
-        <button class="sched-btn active" id="sched-5x8" onclick="setSchedType('5x8',this)">5×8 hrs</button>
-        <button class="sched-btn" id="sched-4x10" onclick="setSchedType('4x10',this)">4×10 hrs</button>
-      </div>
-      <div class="settings-section-label">Work Days</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px" id="workday-grid">
-        <label class="workday-lbl"><input type="checkbox" id="wd-0" value="0"><span>Sun</span></label>
-        <label class="workday-lbl"><input type="checkbox" id="wd-1" value="1" checked><span>Mon</span></label>
-        <label class="workday-lbl"><input type="checkbox" id="wd-2" value="2" checked><span>Tue</span></label>
-        <label class="workday-lbl"><input type="checkbox" id="wd-3" value="3" checked><span>Wed</span></label>
-        <label class="workday-lbl"><input type="checkbox" id="wd-4" value="4" checked><span>Thu</span></label>
-        <label class="workday-lbl"><input type="checkbox" id="wd-5" value="5" checked><span>Fri</span></label>
-        <label class="workday-lbl"><input type="checkbox" id="wd-6" value="6"><span>Sat</span></label>
-      </div>
-    </div>
 
     <!-- ── Data ── -->
     <div class="stab-panel" id="stabp-data">
@@ -875,19 +1026,37 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
       </div>
     </div>
 
-    <!-- ── Alerts ── -->
-    <div class="stab-panel" id="stabp-alerts">
-      <div class="settings-section-label" style="margin-top:14px">Call Back Alert Windows</div>
-      <div style="font-size:10px;color:var(--text3);margin-bottom:10px;line-height:1.5">Alerts fire when a callback is within that many minutes of its scheduled time.</div>
-      <div class="alert-options">
-        <label class="alert-opt"><input type="checkbox" value="5" id="ao-5"><span>5 min</span></label>
-        <label class="alert-opt"><input type="checkbox" value="10" id="ao-10"><span>10 min</span></label>
-        <label class="alert-opt"><input type="checkbox" value="15" id="ao-15"><span>15 min</span></label>
-        <label class="alert-opt"><input type="checkbox" value="20" id="ao-20"><span>20 min</span></label>
-        <label class="alert-opt"><input type="checkbox" value="30" id="ao-30"><span>30 min</span></label>
-        <label class="alert-opt"><input type="checkbox" value="60" id="ao-60"><span>60 min</span></label>
+
+    <!-- Bug Reports -->
+    <div class="stab-panel" id="stabp-bugs">
+      <div class="settings-section-label" style="margin-top:14px">Known Bugs</div>
+      <div id="bug-known-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+        <div class="bug-item bug-known">
+          <div class="bug-num">#1</div>
+          <div class="bug-body">
+            <div class="bug-title">Layout width toggle breaks pill panel</div>
+            <div class="bug-desc">When toggling Regular/Wide layout with the no-sale pill panel open, pills disappear and the panel renders empty. Workaround: close the pill panel before switching layout.</div>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section-label">Submit a Bug</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+        <div class="field">
+          <label>Title</label>
+          <input type="text" id="bug-title-input" placeholder="Short description of the issue" autocomplete="off" style="width:100%;box-sizing:border-box">
+        </div>
+        <div class="field">
+          <label>Steps / What happened</label>
+          <textarea id="bug-desc-input" placeholder="What were you doing? What did you expect vs what happened?" style="width:100%;box-sizing:border-box;min-height:80px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none;resize:vertical"></textarea>
+        </div>
+        <button onclick="submitBugReport()" style="height:34px;padding:0 18px;background:var(--blue);border:none;border-radius:7px;font-family:var(--sans);font-size:12px;font-weight:600;color:#fff;cursor:pointer;align-self:flex-end">Submit Report</button>
+      </div>
+      <div class="settings-section-label" style="margin-top:14px">User Reports</div>
+      <div id="bug-user-list" style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+        <div style="font-size:11px;color:var(--text3);padding:8px 0" id="bug-empty-msg">No user reports yet.</div>
       </div>
     </div>
+
 
   </div>
   <!-- Sticky footer -->
@@ -942,98 +1111,112 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
   <div class="form-card">
     <div class="form-header"><div class="form-header-title">Log New Call</div><div class="form-hint">Enter ↵ to submit</div></div>
     <div class="form-body">
-      <!-- ── Row 1: Products · Outcome · Play · Callback — centered ── -->
+      <!-- ── Row 1: XM · IE/BULK · TV/CHSI/CDV/XH │ No Sale / Play ── -->
       <div class="form-row-center">
         <div class="frow-top">
-          <div style="display:inline-flex;gap:10px;align-items:center;width:371px;flex-shrink:0">
-          <div class="xm-wrap"><label>XM Lines</label><div class="xm-stepper" id="xm-stepper"><button class="xm-btn" type="button" onclick="setXm(xmVal-1)">−</button><div class="xm-val" id="xm-val">0</div><button class="xm-btn" type="button" onclick="setXm(xmVal+1)">+</button></div></div>
-          <div class="checks-group">
-            <div class="check-wrap"><label>TV</label><div class="chk" id="chk-tv" onclick="toggleProd('tv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-            <div class="check-wrap"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-            <div class="check-wrap"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-            <div class="check-wrap"><label>XH</label><div class="chk" id="chk-xh" onclick="toggleProd('xh')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+          <!-- Left: XM + IE/BULK stacked + checks -->
+          <div style="display:flex;gap:3px;align-items:flex-end;flex-shrink:0">
+            <div class="field" style="flex-shrink:0">
+              <label>Rev ($)</label>
+              <input type="text" id="f-rev" placeholder="0.00" oninput="fmtRevInput(this)" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)" style="width:72px;font-family:var(--mono);font-size:13px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);transition:border-color .15s">
+            </div>
+            <div class="xm-wrap">
+              <label>XM</label>
+              <div class="xm-stepper" id="xm-stepper">
+                <button class="xm-btn" type="button" onclick="setXm(xmVal-1)">−</button>
+                <div class="xm-val" id="xm-val">0</div>
+                <button class="xm-btn" type="button" onclick="setXm(xmVal+1)">+</button>
+              </div>
+            </div>
             <div class="cb-modifiers">
-              <div class="cb-mod-wrap" id="ie-wrap" style="display:none">
+              <div class="cb-mod-wrap" id="ie-wrap">
                 <div class="chk chk-sm" id="chk-ie" onclick="toggleIE()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <label class="cb-mod-lbl" style="color:var(--green)">IE</label>
+                <label class="cb-mod-lbl" id="ie-lbl">IE (.75)</label>
               </div>
               <div class="cb-mod-wrap">
                 <div class="chk chk-sm" id="chk-bulk" onclick="toggleBulk()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <label class="cb-mod-lbl" style="color:var(--blue)">BULK</label>
+                <label class="cb-mod-lbl" id="bulk-lbl">BULK</label>
               </div>
             </div>
-          </div>
-          </div>
-          <div class="v-div"></div>
-          <div class="field" id="outcome-field-wrap" style="min-width:160px;flex:1">
-            <!-- Play indicator shown when RGU selected, outcome UI shown otherwise -->
-            <div id="play-or-outcome">
-              <div class="play-indicator" id="play-indicator-wrap" style="display:none">
-                <div style="display:flex;flex-direction:column;gap:3px;flex:1">
-                  <div class="play-name" id="play-name"></div>
-                  <div class="play-services" id="play-svcs"></div>
-                </div>
-                <div class="v-div" id="noxm-divider" style="display:none;align-self:stretch;margin:0 5px"></div>
-                <div class="ns-toggle" id="ns-toggle-noxm" onclick="toggleNoSale(this)" style="display:none;flex-shrink:0">✘ No XM Sale</div>
-              </div>
-              <div id="outcome-ui-wrap" style="display:flex;align-items:center;gap:6px">
-                <div class="ns-toggle" id="ns-toggle" onclick="toggleNoSale(this)">✘ No Sale</div>
-              </div>
+            <div class="checks-group">
+              <div class="check-wrap"><label>TV</label><div class="chk" id="chk-tv" onclick="toggleProd('tv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="check-wrap"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="check-wrap"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="check-wrap"><label>XH</label><div class="chk" id="chk-xh" onclick="toggleProd('xh')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
             </div>
-
+          </div>
+          <!-- Divider -->
+          <div class="v-div" id="main-vdiv" style="align-self:stretch"></div>
+          <!-- Right: No Sale / Play name / No XM Sale -->
+          <div id="outcome-field-wrap" style="flex:1;display:flex;align-items:center;justify-content:center">
+            <!-- Single no-sale button, width fixed to fit longest label -->
+            <div class="ns-toggle" id="ns-toggle" onclick="event.stopPropagation();toggleNoSale(this)" style="width:120px;justify-content:center;display:flex">✘ No Sale</div>
+            <!-- XM celebration — shown when XM sold -->
+            <div id="xm-celebration" style="display:none;font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-align:center;white-space:nowrap"></div>
           </div>
         </div>
       </div>
-      <!-- ── Row 2: Notes + Submit — same center width as row 1 ── -->
+      <!-- ── Row 2: Left col (Rev/Sched/Acct/Phone/Name) · Notes · Pills+Actions ── -->
       <div class="form-row-center">
         <div class="frow-notes" style="position:relative">
-          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+          <!-- Left column: all always-visible fields -->
+          <div class="form-left-col">
             <div class="field">
-              <label>Acct / Loc / Ticket #</label>
-              <input class="w-acct" id="f-acct" placeholder="8529114…" autocomplete="off" spellcheck="false" style="width:160px">
+              <label>Sched</label>
+              <input type="date" class="w-sched" id="f-sched">
             </div>
             <div class="field">
-              <label>Name</label>
-              <input class="cb-name" id="f-cb-name" placeholder="First Last" autocomplete="off" style="width:160px">
+              <label>Acct / Loc / Ticket #</label>
+              <input class="w-acct" id="f-acct" placeholder="8529114…" autocomplete="off" spellcheck="false">
             </div>
             <div class="field">
               <label>Phone #</label>
-              <input class="cb-phone" id="f-cb-phone" placeholder="(555) 867-5309" maxlength="14" autocomplete="off" style="width:160px">
+              <input class="cb-phone" id="f-cb-phone" placeholder="(555) 867-5309" maxlength="14" autocomplete="off">
+            </div>
+            <div class="field">
+              <label>Name</label>
+              <input class="cb-name" id="f-cb-name" placeholder="First Last" autocomplete="off">
             </div>
           </div>
-          <div class="notes-wrap" style="flex:1;align-self:stretch;display:flex;flex-direction:column">
+          <!-- Notes -->
+          <div class="notes-wrap">
             <label id="notes-lbl">Notes <span id="notes-badge" class="opt-badge">optional</span></label>
-            <textarea id="f-notes" placeholder="Optional…" style="flex:1;min-height:140px"></textarea>
+            <textarea id="f-notes" placeholder="Optional…"></textarea>
           </div>
-          <div class="frow-notes-actions" style="display:flex;flex-direction:column;align-self:stretch">
-            <!-- Open space wrapper -->
-            <div style="flex:1"></div>
-            <!-- Log Call strip — same height as Phone # field -->
-            <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+          <!-- Divider extending from row 1 -->
+          <div class="v-div" style="align-self:stretch"></div>
+          <!-- Right: sale display / pill space + actions -->
+          <div class="frow-notes-actions" style="display:flex;flex-direction:column;align-self:stretch;gap:6px;flex:1;min-width:0;overflow:hidden">
+            <!-- Sale/outcome display area -->
+            <div id="sale-display" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:60px;text-align:center;overflow:hidden">
+              <!-- Sale: big play name -->
+              <div id="play-display" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;text-align:center">
+                <div id="play-display-name" style="font-family:'Orbitron',var(--mono);font-size:16px;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;opacity:.9;white-space:nowrap"></div>
+                <div id="play-display-svcs" style="font-family:'Russo One',var(--mono);font-size:10px;font-weight:400;color:var(--green);letter-spacing:.04em"></div>
+                <div id="play-display-sub" style="font-family:'Orbitron',var(--mono);font-size:9px;font-weight:700;color:var(--green);letter-spacing:.1em;opacity:.55"></div>
+              </div>
+
+              <!-- No-sale reason display -->
+              <div id="nosale-display" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;text-align:center">
+                <div id="nosale-display-reason" style="font-family:'Orbitron',var(--mono);font-size:10px;font-weight:500;color:var(--red);letter-spacing:.1em;text-transform:uppercase;opacity:.6;white-space:nowrap"></div>
+                <div id="nosale-display-sub" style="font-family:'Orbitron',var(--mono);font-size:16px;font-weight:700;color:var(--red);letter-spacing:.04em;white-space:nowrap"></div>
+              </div>
+              <!-- CB details shown when callback is set -->
+              <div id="cb-display" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:100%;text-align:center">
+                <div style="font-family:'Orbitron',var(--mono);font-size:9px;font-weight:700;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;opacity:.8">Call Back</div>
+                <div id="cb-display-time" style="font-family:'Orbitron',var(--mono);font-size:16px;font-weight:700;color:var(--purple);letter-spacing:.06em;white-space:nowrap"></div>
+                <div id="cb-display-sub" style="font-family:'Orbitron',var(--mono);font-size:9px;color:var(--purple);letter-spacing:.08em;opacity:.55"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;align-items:center;flex-shrink:0;justify-content:center;width:100%">
               <div class="cback-toggle" id="cb-toggle" onclick="toggleCb()" title="Call Back">📞</div>
               <button class="submit-btn" id="submit-btn" onclick="logCall()"><div class="btn-dot"></div>Log Call</button>
             </div>
           </div>
         </div>
       </div>
-      <div id="details-row">
-        <div class="cb-divider"><div class="cb-divider-line"></div><div class="cb-divider-label" id="details-label">Details</div><div class="cb-divider-line"></div></div>
-        <div class="form-row-center"><div class="frow" style="flex-wrap:nowrap;gap:10px;align-items:flex-end">
-          <div class="field" id="sched-field" style="display:none">
-            <label>Sched Date</label>
-            <input type="date" class="w-sched" id="f-sched">
-          </div>
-          <div class="field" id="rev-field" style="display:none">
-            <label>Rev ($)</label>
-            <input type="text" class="w-rev" id="f-rev" placeholder="$0.00" style="padding:0 8px;font-family:var(--mono);font-size:13px" oninput="fmtRevInput(this)" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)">
-          </div>
-          <div class="v-div" id="details-vdiv" style="display:none;align-self:stretch"></div>
-          <div class="field" id="cb-dt-field" style="display:none">
-            <label>Call Back Time <span class="req-badge-p">required</span></label>
-            <input type="datetime-local" class="cb-dt" id="f-cb-dt">
-          </div>
-        </div></div>
-      </div>
+      <!-- ── CB row: expands when 📞 toggled ── -->
+
     </div>
   </div>
   <div class="table-card">
@@ -1322,7 +1505,6 @@ const CB={rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0};
 const TOKENS = ['🎩','🚂','🐶','🐱','⚓','👞','🚗','💎','🎲','⭐','🔥','⚡','🏆','👑','🦊','🐸','🍀','🌟','🪙','🎯'];
 let calToken = localStorage.getItem('xcl_token') || '🎩';
 const RGU_GOAL=GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;
-function getRguGoal(){return GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;}
 function getPtoBonus(){
   // Each 8 hrs PTO = +5% added to percent-to-goal display
   var hrs = window._ptoHours||0;
@@ -1375,7 +1557,7 @@ const NO_SALE_CATS_DEFAULTS = {
 // Live object — loaded from settings if saved, otherwise seeded from defaults
 const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
-document.getElementById('m-rgus-lbl').textContent='of '+getRguGoal();
+document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL;
 let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all',_logSearch='',_activeTab='tracker';
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});},1000);
 function checkAlerts(){
@@ -1401,18 +1583,35 @@ function checkAlerts(){
       `<span style="margin-left:auto;font-size:10px;opacity:.5">↗ open</span>` +
       `</div>`;
   }).join('');
-  document.getElementById('alert-bar').classList.add('visible');render();
+  document.getElementById('alert-bar').classList.add('visible');
+  // Only re-render table if user isn't actively typing in a form field
+  const active = document.activeElement;
+  const isTyping = active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT' || active.tagName === 'SELECT');
+  if(!isTyping) render();
 }
 setInterval(checkAlerts,10000);
 document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});
-function fmtPhone(raw){const d=raw.replace(/\D/g,'').slice(0,10);if(d.length<4)return d;if(d.length<7)return`(${d.slice(0,3)}) ${d.slice(3)}`;return`(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;}
-function onPhoneInput(el){const pos=el.selectionStart,old=el.value,fmt=fmtPhone(old);el.value=fmt;const diff=fmt.length-old.length;el.setSelectionRange(pos+diff,pos+diff);}
+function fmtPhone(raw){
+  // Strip country code: +1 or leading 1 before a 10-digit number
+  let d = raw.replace(/\D/g,'');
+  if(d.length === 11 && d[0] === '1') d = d.slice(1);
+  d = d.slice(0,10);
+  if(d.length<4) return d;
+  if(d.length<7) return`(${d.slice(0,3)}) ${d.slice(3)}`;
+  return`(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+}
+function onPhoneInput(el){
+  const pos=el.selectionStart, old=el.value, fmt=fmtPhone(old);
+  el.value=fmt;
+  const diff=fmt.length-old.length;
+  el.setSelectionRange(Math.max(0,pos+diff),Math.max(0,pos+diff));
+}
 function rawPhone(v){return v.replace(/\D/g,'');}
 document.getElementById('f-cb-phone').addEventListener('input',function(){onPhoneInput(this);});
 
 function dismissAlerts(){alertDismissed=Date.now()+5*60000;document.getElementById('alert-bar').classList.remove('visible');}
-function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();updateSale();}
-function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();updateSale();}
+function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();}
+function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();}
 function isIE(){const el=document.getElementById('chk-ie');return el&&el.classList.contains('ie-active');}
 function syncProds(){syncIEVisibility();const ie=isIE(),el=document.getElementById('chk-chsi');el.classList.remove('checked','ie-adj');if(prods.chsi)el.classList.add(ie?'ie-adj':'checked');['tv','cdv','xh'].forEach(k=>document.getElementById('chk-'+k).classList.toggle('checked',prods[k]));}
 // No-sale state machine
@@ -1430,9 +1629,10 @@ function _nsClose(){
   const tog   = document.getElementById('ns-toggle');
   if(panel) panel.classList.remove('open');
   if(tog)   tog.classList.remove('active');
+
 }
 
-function toggleNoSale(callerEl){ console.log("toggleNoSale called, _nsPanelOpen=",_nsPanelOpen,"_nsState=",_nsState);
+function toggleNoSale(callerEl){
   // If panel is open → close it. If auto-active but no panel → open panel.
   if(_nsPanelOpen){ _nsClose(); _nsPanelOpen=false; nsAutoSelect(); colorReason(); return; }
   _nsState = 'tier1'; _nsCat = ''; _nsSub = '';
@@ -1443,41 +1643,76 @@ function toggleNoSale(callerEl){ console.log("toggleNoSale called, _nsPanelOpen=
   if(togNoxm) togNoxm.classList.add('active');
   if(panel){
     const anchor = callerEl || tog;
-    const rect = anchor.getBoundingClientRect();
-    panel.style.top  = (rect.bottom + 6) + 'px';
+    // Anchor panel to sale-display area (right col)
+    const saleDisp = document.getElementById('sale-display');
+    const anchorEl = saleDisp || anchor;
+    const rect = anchorEl.getBoundingClientRect();
+    panel.style.top  = rect.top + 'px';
     panel.style.left = rect.left + 'px';
+    panel.style.minWidth = rect.width + 'px';
     panel.classList.add('open');
+    _nsPanelOpen = true;
   }
   renderNsPanel();
   colorReason();
   nsAutoSelect();
 }
 
-function renderNsPanel(){ console.log("renderNsPanel _nsState=",_nsState,"cats=",Object.keys(NO_SALE_CATS).length);
+function renderNsPanel(){
   const panel = document.getElementById('nosale-panel');
   if(!panel) return;
-  const frag = document.createDocumentFragment();
+
+  // Title
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'ns-panel-title';
+
+  // Pill grid
+  const grid = document.createElement('div');
+  grid.className = 'ns-pill-grid';
+
   if(_nsState === 'tier1'){
-    // Show categories
+    titleDiv.textContent = 'Reason Category';
     Object.keys(NO_SALE_CATS).forEach(cat => {
       const d = document.createElement('div');
       d.className = 'ns-cat-pill' + (_nsCat === cat ? ' active' : '');
       d.textContent = cat;
       d.addEventListener('click', function(e){ e.stopPropagation(); selectNsCat(cat); });
-      frag.appendChild(d);
+      grid.appendChild(d);
     });
   } else if(_nsState === 'tier2'){
-    // Show sub-reasons for selected category
+    titleDiv.textContent = _nsCat;
     (NO_SALE_CATS[_nsCat] || []).forEach(s => {
       const d = document.createElement('div');
       d.className = 'ns-sub-pill' + (_nsSub === s ? ' active' : '');
       d.textContent = s;
       d.addEventListener('click', function(e){ e.stopPropagation(); selectNsSub(s); });
-      frag.appendChild(d);
+      grid.appendChild(d);
     });
   }
+
+  // SET button row
+  const setRow = document.createElement('div');
+  setRow.style.cssText = 'display:flex;justify-content:flex-end;margin-top:4px';
+  const setBtn = document.createElement('button');
+  setBtn.textContent = 'SET';
+  setBtn.style.cssText = 'height:28px;padding:0 14px;background:var(--red);border:none;border-radius:6px;font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.05em;opacity:' + (_nsSub || _nsCat ? '1' : '0.4') + ';pointer-events:' + (_nsSub || _nsCat ? 'auto' : 'none');
+  setBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    // Don't fully close — keep cat/sub but close panel
+    _nsPanelOpen = false;
+    const panel = document.getElementById('nosale-panel');
+    if(panel) panel.classList.remove('open');
+    const tog = document.getElementById('ns-toggle');
+    if(tog) tog.classList.add('active');
+    updateNosaleDisplay();
+    colorReason();
+  });
+  setRow.appendChild(setBtn);
+
   panel.innerHTML = '';
-  panel.appendChild(frag);
+  panel.appendChild(titleDiv);
+  panel.appendChild(grid);
+  panel.appendChild(setRow);
 }
 
 
@@ -1516,66 +1751,146 @@ function getNoSaleReason(){
 }
 
 function onReasonChange(){
-  syncProds();colorReason();updatePlay();updateSale();
+  syncProds();colorReason();updatePlay();
 }
 
-function onNosaleCatChange(){}
-function onNosaleSubChange(){}
 function colorReason(){
   const tog=document.getElementById('ns-toggle');
-  const togNoxm=document.getElementById('ns-toggle-noxm');
-  const active=_nsState!=='closed';
-  if(tog) tog.classList.toggle('active',active);
-  if(togNoxm) togNoxm.classList.toggle('active',active);
+  if(tog) tog.classList.toggle('active',_nsState!=='closed');
 }
 function getSvcs(){const s=[];if(xmVal>0)s.push('XM');if(prods.tv)s.push('TV');if(prods.chsi)s.push('CHSI');if(prods.cdv)s.push('CDV');if(prods.xh)s.push('XH');return s;}
 function updatePlay(){
   const s=getSvcs();
   const hasXm = xmVal > 0;
   const hasNonXm = prods.tv || prods.chsi || prods.cdv || prods.xh;
-  const pn=document.getElementById('play-name');
-  const ps=document.getElementById('play-svcs');
-  const piWrap=document.getElementById('play-indicator-wrap');
-  const outWrap=document.getElementById('outcome-ui-wrap');
-  const noxmTog=document.getElementById('ns-toggle-noxm');
+  const noxmTog = document.getElementById('ns-toggle-noxm');
+  const noxmDiv = document.getElementById('noxm-divider');
+  const playDisp = document.getElementById('play-display');
+  const playName = document.getElementById('play-display-name');
+  const playSvcs = document.getElementById('play-display-svcs');
+  const playSub  = document.getElementById('play-display-sub');
+
+  // Update single button label based on RGU state
+  const noSaleBtn = document.getElementById('ns-toggle');
+  const xmCeleb   = document.getElementById('xm-celebration');
+  if(hasXm){
+    // XM sold — hide no-sale button, show celebration
+    if(noSaleBtn) noSaleBtn.style.display = 'none';
+    if(xmCeleb){
+      const msgs = ['📱 Mobile Sold!','📱 XM Sale!','📱 Mobile Win!','📱 XM Secured!'];
+      xmCeleb.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+      xmCeleb.style.display = 'block';
+    }
+  } else {
+    if(xmCeleb) xmCeleb.style.display = 'none';
+    if(noSaleBtn){
+      noSaleBtn.style.display = 'flex';
+      noSaleBtn.textContent = hasNonXm ? '✘ No XM Sale' : '✘ No Sale';
+    }
+  }
+  if(noxmTog){ noxmTog.style.display = 'none'; }
+  if(noxmDiv){ noxmDiv.style.display = 'none'; }
 
   if(s.length){
-    pn.textContent=PLAY_NAMES[Math.min(s.length,5)] + (s.length ? ' · ' + s.join(' · ') : '');
-    pn.classList.add('show');
-    ps.classList.remove('show');
-    if(piWrap) piWrap.style.display='flex';
-    if(outWrap) outWrap.style.display='none';
-    // Show "No XM Sale" toggle if non-XM RGUs selected but no XM
-    const noxmDiv=document.getElementById('noxm-divider');
-    const show = !hasXm && hasNonXm;
-    if(noxmTog) noxmTog.style.display = show ? 'flex' : 'none';
-    if(noxmDiv) noxmDiv.style.display = show ? 'block' : 'none';
-    // XM sold — reset no-sale state
-    if(hasXm){ _nsClose(); }
+    // Show big play display in right col
+    if(playDisp){ playDisp.style.display='flex'; }
+    // IE reduces CHSI to 0.75 RGU
+    const ie = _ieActive && prods.chsi;
+    const chsiRgu = prods.chsi ? (ie ? 0.75 : 1) : 0;
+    const rgus = (xmVal>0?1:0)+(prods.tv?1:0)+chsiRgu+(prods.cdv?1:0)+(prods.xh?1:0);
+    // Play name based on service count (not RGU total)
+    if(playName){
+      playName.textContent = PLAY_NAMES[Math.min(s.length,5)];
+      setTimeout(fitPlayDisplay, 0);
+    }
+    // Services line — mark CHSI as IE if active
+    if(playSvcs){
+      const svcLabels = s.map(svc => svc === 'CHSI' && ie ? 'CHSI (IE)' : svc);
+      playSvcs.textContent = svcLabels.join(' · ');
+    }
+    if(playSub){
+      const rguStr = Number.isInteger(rgus) ? rgus : rgus.toFixed(2);
+      const xmStr = xmVal > 0 ? ' · ' + xmVal + ' Mobile' + (xmVal!==1?'s':'') : '';
+      playSub.textContent = rguStr + ' RGU' + (rgus!==1?'s':'') + xmStr;
+    }
+    // XM sold — reset no-sale
+    if(hasXm && _nsState!=='closed'){ _nsClose(); }
   } else {
-    pn.classList.remove('show');
-    ps.classList.remove('show');
-    pn.textContent='';
-    if(piWrap) piWrap.style.display='none';
-    if(outWrap) outWrap.style.display='block';
-    const noxmDiv2=document.getElementById('noxm-divider');
-    if(noxmTog) noxmTog.style.display='none';
-    if(noxmDiv2) noxmDiv2.style.display='none';
+    if(playDisp){ playDisp.style.display='none'; }
   }
 }
-function toggleCb(){cbOpen=!cbOpen;document.getElementById('cb-toggle').classList.toggle('active',cbOpen);const dtf=document.getElementById('cb-dt-field');if(dtf)dtf.style.display=cbOpen?'flex':'none';if(cbOpen){const d=new Date(Date.now()+30*60000),pad=n=>String(n).padStart(2,'0');document.getElementById('f-cb-dt').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}else{document.getElementById('f-cb-dt').value='';}updateDetailsRow();updateNotesState();}
+function toggleCb(){
+  cbOpen = !cbOpen;
+  document.getElementById('cb-toggle').classList.toggle('active', cbOpen);
+  const panel = document.getElementById('cb-panel');
+  if(cbOpen){
+    // Position panel above the 📞 button
+    const btn = document.getElementById('cb-toggle');
+    const rect = btn.getBoundingClientRect();
+    panel.style.display = 'flex';
+    panel.style.left = rect.left + 'px';
+    panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+    panel.style.top = 'auto';
+    // Default to +30 min
+    cbSetOffset(30);
+  } else {
+    panel.style.display = 'none';
+    document.getElementById('f-cb-dt').value = '';
+    document.getElementById('cb-mytime').textContent = '';
+    updateCbDisplay();
+  }
+  updateNotesState();
+}
 function updateNotesState(){const b=document.getElementById('notes-badge'),ta=document.getElementById('f-notes');if(cbOpen){b.className='req-badge-p';b.textContent='required';ta.classList.add('cb-req-ta');ta.placeholder='Why is a call back needed?';}else{b.className='opt-badge';b.textContent='optional';ta.classList.remove('cb-req-ta');ta.placeholder='Optional…';}}
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
-function updateSale(){const s=isSale();const sf=document.getElementById('sched-field'),rf=document.getElementById('rev-field');if(sf)sf.style.display=s?'flex':'none';if(rf)rf.style.display=s?'flex':'none';if(!s){['f-sched','f-rev'].forEach(id=>document.getElementById(id).value='');}updateDetailsRow();}
 function compute(c){const ie=c.ie||c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?(c.noXmReason?c.playName+' · No XM: '+c.noXmReason:c.playName):(c.reason||'');return c;}
+function updateSale(){}
 function buildAcct(raw,name,phone){const p=[];if(raw)p.push(raw);if(name)p.push(name);if(phone)p.push('CB:'+phone);return p.join(' | ');}
 function flash(id,rb=''){const el=document.getElementById(id);if(!el)return;el.style.borderColor='var(--red)';el.style.boxShadow='0 0 0 3px rgba(248,113,113,.2)';el.focus();setTimeout(()=>{el.style.borderColor=rb;el.style.boxShadow='';},2500);}
+function isBlankCall(){
+  // Check if nothing meaningful has been entered
+  const acct  = document.getElementById('f-acct').value.trim();
+  const name  = document.getElementById('f-cb-name').value.trim();
+  const phone = document.getElementById('f-cb-phone').value.trim();
+  const notes = document.getElementById('f-notes').value.trim();
+  const sched = document.getElementById('f-sched').value;
+  const rev   = getRevVal();
+  return !acct && !name && !phone && !notes && !sched && !rev &&
+         xmVal === 0 && !prods.tv && !prods.chsi && !prods.cdv && !prods.xh &&
+         _nsState === 'closed' && !cbOpen;
+}
+
+function showBlankCallConfirm(){
+  const tile   = document.getElementById('blank-call-confirm');
+  const form   = document.querySelector('.form-card');
+  if(!tile || !form) return;
+  const rect   = form.getBoundingClientRect();
+  tile.style.display = 'flex';
+  tile.style.top  = (rect.top + rect.height/2 - 80) + 'px';
+  tile.style.left = (rect.left + rect.width/2) + 'px';
+}
+
+function dismissBlankConfirm(){
+  document.getElementById('blank-call-confirm').style.display = 'none';
+}
+
+function confirmBlankNoSale(){
+  dismissBlankConfirm();
+  _nsState = 'tier1';
+  doLogCall();
+}
+
 function logCall(){
   // acct is always visible; no longer required gating here
+  if(isBlankCall()){ showBlankCallConfirm(); return; }
+  doLogCall();
+}
+
+function doLogCall(){
   if(cbOpen){if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}}
   const cbName=cbOpen?document.getElementById('f-cb-name').value.trim():'';const cbPhone=cbOpen?document.getElementById('f-cb-phone').value.trim():'';const cbTime=cbOpen?document.getElementById('f-cb-dt').value:'';const raw=document.getElementById('f-acct').value.trim();
   const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,rev:getRevVal(),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
-    noXmReason:(_nsState!=='closed'&&isSale()?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
+    noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
   const btn=document.getElementById('submit-btn');btn.classList.add('ok');btn.innerHTML='<div class="btn-dot"></div>Logged!';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<div class="btn-dot"></div>Log Call';},800);
 }
@@ -1583,25 +1898,30 @@ function resetForm(){
   ['f-acct','f-sched','f-rev','f-reason','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   setXm(0);
   Object.keys(prods).forEach(k=>{prods[k]=false;const el=document.getElementById('chk-'+k);if(el)el.classList.remove('checked','ie-adj');});
-  // IE toggle
+  // IE — deactivate but let syncIEVisibility handle visibility
   _ieActive=false;
-  const ie=document.getElementById('chk-ie');if(ie){ie.classList.remove('ie-active');ie.style.display='none';}
-  const ieWrap=document.getElementById('ie-wrap');if(ieWrap)ieWrap.style.display='none';
-  // BULK toggle
+  const ie=document.getElementById('chk-ie');if(ie)ie.classList.remove('ie-active');
+  // BULK
   _bulkActive=false;
   const bk=document.getElementById('chk-bulk');if(bk)bk.classList.remove('bulk-active');
-  // No sale state
+  const blbl=document.getElementById('bulk-lbl');if(blbl)blbl.style.color='var(--text3)';
+  const ilbl=document.getElementById('ie-lbl');if(ilbl)ilbl.style.color='var(--text3)';
+  // No sale
   _nsClose();
+  const nsd=document.getElementById('nosale-display');if(nsd)nsd.style.display='none';
+  // Play/CB display
+  const pd=document.getElementById('play-display');if(pd)pd.style.display='none';
+  const cd=document.getElementById('cb-display');if(cd)cd.style.display='none';
+  const xc=document.getElementById('xm-celebration');if(xc)xc.style.display='none';
   // Callback
   cbOpen=false;
   const cbt=document.getElementById('cb-toggle');if(cbt)cbt.classList.remove('active');
-  const dtf=document.getElementById('cb-dt-field');if(dtf)dtf.style.display='none';
-  // Detail rows
-  const dr=document.getElementById('details-row');if(dr)dr.classList.remove('open');
+  const cbp=document.getElementById('cb-panel');if(cbp)cbp.style.display='none';
   updateNotesState();
   updatePlay();
-  updateSale();
+  
   nsAutoSelect();
+  syncIEVisibility();
 }
 function openEdit(id,fromAlert){if(editingId===id)return;editingId=id;window._editFromAlert=!!fromAlert;const c=calls.find(x=>x.id===id);editState={xm:c.xm,tv:c.tv,chsi:c.chsi,cdv:c.cdv,xh:c.xh};document.querySelector('.main').classList.add('editing');render();setTimeout(()=>{const r=document.querySelector('tr.edit-row');if(r){if(!fromAlert){r.scrollIntoView({block:'nearest',behavior:'smooth'});}const f=r.querySelector('input:not([type=checkbox]):not([type=datetime-local]),select');if(f)f.focus();}},50);}
 function closeEdit(){
@@ -1939,8 +2259,8 @@ function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d
 function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=fi.fiscalEnd;const ne=new Date(ns.getFullYear(),ns.getMonth()+1,22);return{fiscalStart:ns,fiscalEnd:ne};}
 function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<nf.fiscalEnd;}
 function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls;const _mRev=mc.reduce((s,c)=>s+c.rev,0),_mRgus=mc.reduce((s,c)=>s+c.rgus,0),_mXm=mc.reduce((s,c)=>s+c.xm,0),_mTv=mc.filter(c=>c.tv).length,_mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),_mCdv=mc.filter(c=>c.cdv).length,_mXh=mc.filter(c=>c.xh).length;const _allFiscal=calls.filter(c=>inFiscal(c.ts.toISOString().slice(0,10)));const mN=statsView==='pipeline'?0:_allFiscal.length,mSales=statsView==='pipeline'?0:mc.filter(c=>c.hasSale).length;
-const _apCB=statsView==='installs';const mRev=_mRev-(_apCB?CB.rev:0),mXm=_mXm-(_apCB?CB.xm:0),mTv=_mTv-(_apCB?CB.tv:0),mChsi=_mChsi-(_apCB?CB.chsi:0),mCdv=_mCdv-(_apCB?CB.cdv:0),mXh=_mXh-(_apCB?CB.xh:0),mRgus=_mRgus-(_apCB?((CB.xm>0?1:0)+CB.tv+CB.chsi+CB.cdv+CB.xh):0);document.getElementById('m-rev').textContent=(mRev<0?'-$'+Math.abs(mRev).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+mRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,getRguGoal());document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}if(e.target.tagName!=='BUTTON')logCall();}});
+const _apCB=statsView==='installs';const mRev=_mRev-(_apCB?CB.rev:0),mXm=_mXm-(_apCB?CB.xm:0),mTv=_mTv-(_apCB?CB.tv:0),mChsi=_mChsi-(_apCB?CB.chsi:0),mCdv=_mCdv-(_apCB?CB.cdv:0),mXh=_mXh-(_apCB?CB.xh:0),mRgus=_mRgus-(_apCB?((CB.xm>0?1:0)+CB.tv+CB.chsi+CB.cdv+CB.xh):0);document.getElementById('m-rev').textContent=(mRev<0?'-$'+Math.abs(mRev).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+mRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,RGU_GOAL);document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}if(document.getElementById('blank-call-confirm').style.display!=='none')return;if(e.target.tagName!=='BUTTON')logCall();}});
 
 (function(){
   var W=720, H=900;
@@ -2006,8 +2326,10 @@ function applySettings(s){
   if(Array.isArray(s.outcomes)&&s.outcomes.length){
     OUTCOMES=[...new Set([...LOCKED_OUTCOMES,...(s.outcomes||[]).filter(o=>o)])];if(s.noSaleCats){
     // Restore saved structure
-    Object.keys(NO_SALE_CATS).forEach(k=>delete NO_SALE_CATS[k]);
-    Object.assign(NO_SALE_CATS, s.noSaleCats);
+    if(s.noSaleCats && Object.keys(s.noSaleCats).length > 0){
+      Object.keys(NO_SALE_CATS).forEach(k=>delete NO_SALE_CATS[k]);
+      Object.assign(NO_SALE_CATS, s.noSaleCats);
+    }
     // Merge: add any new default categories/reasons missing from saved data
     if((s.noSaleCatsVersion||0) < NO_SALE_CATS_VERSION){
       Object.keys(NO_SALE_CATS_DEFAULTS).forEach(cat => {
@@ -2188,6 +2510,34 @@ function applyWidth(w){
   localStorage.setItem('xcl_width',w);
   document.getElementById('wb-regular').classList.toggle('active',!wide);
   document.getElementById('wb-wide').classList.toggle('active',wide);
+  // Refit text and reposition panels after layout reflow
+  setTimeout(() => {
+    fitPlayDisplay();
+    fitNosaleDisplay();
+    if(typeof updateCbDisplay === 'function') updateCbDisplay();
+    // Close and reopen nosale panel if open so pills re-render fresh
+    if(_nsPanelOpen){
+      const panel = document.getElementById('nosale-panel');
+      const saleDisp = document.getElementById('sale-display');
+      if(panel && saleDisp){
+        const rect = saleDisp.getBoundingClientRect();
+        panel.style.top  = rect.top + 'px';
+        panel.style.left = rect.left + 'px';
+        panel.style.width = rect.width + 'px';
+        renderNsPanel();
+      }
+    }
+    // Reposition CB panel if open
+    if(cbOpen){
+      const cbPanel = document.getElementById('cb-panel');
+      const cbBtn   = document.getElementById('cb-toggle');
+      if(cbPanel && cbBtn){
+        const rect = cbBtn.getBoundingClientRect();
+        cbPanel.style.left   = rect.left + 'px';
+        cbPanel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+      }
+    }
+  }, 50);
 }
 (function(){applyWidth(localStorage.getItem('xcl_width')||'wide');})();
 
@@ -2843,7 +3193,7 @@ function renderTrends(){
   const fiscalCdv = fiscalSales.filter(c=>c.cdv).length;
   const fiscalXh = fiscalSales.filter(c=>c.xh).length;
   const pctRev = GOALS.rev ? Math.round(fiscalRev/GOALS.rev*100) : 0;
-  const pctRgu = getRguGoal() ? Math.round(fiscalRgus/getRguGoal()*100) : 0;
+  const pctRgu = RGU_GOAL ? Math.round(fiscalRgus/RGU_GOAL*100) : 0;
 
   // ── Outcome counts ────────────────────────────────────────────────────
   const outcomes = {};
@@ -3598,8 +3948,8 @@ function switchJaTab(t){
   }
 
   // init after DOM ready
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ init(); syncIEVisibility(); });
+  else { init(); syncIEVisibility(); }
 })();
 
 /* ── Compass Navigator ── */
@@ -3822,7 +4172,7 @@ function updatePtoPreview(){
 }
 
 function switchStab(t){
-  ['display','goals','schedule','data','outcomes','alerts'].forEach(function(id){
+  ['display','goals','data','outcomes','bugs'].forEach(function(id){
     document.getElementById('stab-'+id).classList.toggle('active', id===t);
     document.getElementById('stabp-'+id).classList.toggle('active', id===t);
   });
@@ -3937,23 +4287,30 @@ function toggleIE(){
   _ieActive = !_ieActive;
   const el = document.getElementById('chk-ie');
   if(el) el.classList.toggle('ie-active', _ieActive);
+  const lbl = document.getElementById('ie-lbl');
+  if(lbl) lbl.style.color = _ieActive ? 'var(--green)' : 'var(--text3)';
   updatePlay();
 }
 
 function toggleBulk(){
   _bulkActive = !_bulkActive;
+  const blbl = document.getElementById('bulk-lbl');
+  if(blbl) blbl.style.color = _bulkActive ? 'var(--blue)' : 'var(--text3)';
   const el = document.getElementById('chk-bulk');
   if(el) el.classList.toggle('bulk-active', _bulkActive);
 }
 
 function syncIEVisibility(){
   const ieWrap = document.getElementById('ie-wrap');
-  if(ieWrap) ieWrap.style.display = prods.chsi ? 'flex' : 'none';
-  if(!prods.chsi && _ieActive){
-    _ieActive = false;
-    const el = document.getElementById('chk-ie');
-    if(el) el.classList.remove('ie-active');
+  const active = !!prods.chsi;
+  if(ieWrap){ ieWrap.style.opacity = active ? '1' : '0.3'; ieWrap.style.pointerEvents = active ? '' : 'none'; }
+  if(!active && _ieActive){
+    _ieActive=false;
+    const el=document.getElementById('chk-ie'); if(el)el.classList.remove('ie-active');
   }
+  // Update IE label color
+  const lbl = document.getElementById('ie-lbl');
+  if(lbl) lbl.style.color = _ieActive ? 'var(--green)' : 'var(--text3)';
 }
 
 function eNosaleCatChange(){
@@ -3972,30 +4329,18 @@ function getEditNoSaleReason(){
   return 'NO SALE MADE';
 }
 
-function updateDetailsRow(){
-  const hasAnything = cbOpen || isSale();
-  document.getElementById('details-row').classList.toggle('open', hasAnything);
-  const lbl = document.getElementById('details-label');
-  if(lbl){
-    if(cbOpen && isSale()) lbl.textContent = 'Call Back & Sale details';
-    else if(cbOpen)         lbl.textContent = 'Call Back details';
-    else if(isSale())       lbl.textContent = 'Sale details';
-  }
-  // Show divider between sale fields and cb field only when both visible
-  const vd = document.getElementById('details-vdiv');
-  if(vd) vd.style.display = (cbOpen && isSale()) ? 'block' : 'none';
-}
 
 document.addEventListener('click', function(e){
-  if(_nsState==='closed') return;
-  const panel   = document.getElementById('nosale-panel');
-  const tog     = document.getElementById('ns-toggle');
-  const togNoxm = document.getElementById('ns-toggle-noxm');
-  // If click was inside panel or either toggle — do nothing
-  if((panel   && panel.contains(e.target))   ||
-     (tog     && tog.contains(e.target))     ||
-     (togNoxm && togNoxm.contains(e.target))) return;
+  if(!_nsPanelOpen) return;
+  const panel = document.getElementById('nosale-panel');
+  // Walk up the DOM from target to check if click was inside panel or toggle
+  let node = e.target;
+  while(node){
+    if(node.id === 'nosale-panel' || node.id === 'ns-toggle') return;
+    node = node.parentElement;
+  }
   _nsClose();
+  nsAutoSelect();
 });
 
 
@@ -4222,7 +4567,7 @@ window.addEventListener('scroll', function(){
   const panel   = document.getElementById('nosale-panel');
   const togNoxm = document.getElementById('ns-toggle-noxm');
   const tog     = document.getElementById('ns-toggle');
-  const anchor  = (togNoxm && togNoxm.style.display !== 'none') ? togNoxm : tog;
+  const anchor = tog;
   if(!anchor || !panel) return;
   const rect = anchor.getBoundingClientRect();
   // Close if anchor has scrolled behind the sticky header (~104px = header+tabbar)
@@ -4266,34 +4611,360 @@ function renderNxmTable(){
 }
 
 function nsAutoSelect(){
-  // Auto-select appropriate no-sale button based on current RGU state
-  // Does NOT open the pill panel — only click does that
   const hasXm = xmVal > 0;
-  const hasNonXm = prods.tv || prods.chsi || prods.cdv || prods.xh;
-  const tog     = document.getElementById('ns-toggle');
-  const togNoxm = document.getElementById('ns-toggle-noxm');
+  const tog   = document.getElementById('ns-toggle');
   if(hasXm){
-    // XM sold — neither active
-    if(tog)     tog.classList.remove('active');
-    if(togNoxm) togNoxm.classList.remove('active');
+    if(tog) tog.classList.remove('active');
     _nsState = 'closed'; _nsCat = ''; _nsSub = '';
-  } else if(hasNonXm){
-    // Non-XM RGU — activate No XM Sale, deactivate No Sale
-    if(tog)     tog.classList.remove('active');
-    if(togNoxm) togNoxm.classList.add('active');
-    // Keep state active if already set, otherwise treat as closed for pills
-    if(_nsState === 'closed') _nsState = 'tier1';
   } else {
-    // No RGUs — activate No Sale
-    if(tog)     tog.classList.add('active');
-    if(togNoxm) togNoxm.classList.remove('active');
-    if(_nsState === 'closed') _nsState = 'tier1';
+    // Style button as active but DON'T set _nsState to tier1
+    // _nsState only becomes tier1 when user explicitly clicks the button
+    if(tog) tog.classList.add('active');
   }
+}
+
+function cbSetOffset(mins){
+  const d = new Date(Date.now() + mins * 60000);
+  const pad = n => String(n).padStart(2,'0');
+  const val = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  document.getElementById('f-cb-dt').value = val;
+  // Mark active quick btn
+  document.querySelectorAll('.cb-quick-btn').forEach(b => b.classList.remove('active'));
+  const offsets = {30:0,60:1,120:2,240:3,1440:4};
+  const idx = offsets[mins];
+  if(idx !== undefined){
+    const btns = document.querySelectorAll('.cb-quick-btn');
+    if(btns[idx]) btns[idx].classList.add('active');
+  }
+  cbUpdateMyTime();
+}
+
+function cbUpdateMyTime(){
+  const val = document.getElementById('f-cb-dt').value;
+  const tzSel = document.getElementById('cb-tz');
+  const myTimeEl = document.getElementById('cb-mytime');
+  if(!val || !tzSel || !myTimeEl) return;
+
+  const custTz = tzSel.value;
+  const myTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  // If same timezone, no "my time" needed
+  if(custTz === myTz){ myTimeEl.textContent = ''; return; }
+
+  try {
+    // Parse the datetime-local value as customer's timezone
+    const [datePart, timePart] = val.split('T');
+    const [yr, mo, dy] = datePart.split('-').map(Number);
+    const [hr, mn] = timePart.split(':').map(Number);
+
+    // Create date in customer's timezone using a workaround
+    const custStr = `${datePart}T${timePart}:00`;
+    // Format in customer tz to get UTC offset
+    const custFmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: custTz, year:'numeric', month:'2-digit', day:'2-digit',
+      hour:'2-digit', minute:'2-digit', hour12:false
+    });
+    // Build a UTC date by interpreting the input as customer local time
+    const tempDate = new Date(custStr); // treated as local, adjust below
+    const localOffset = tempDate.getTimezoneOffset(); // local offset in mins
+    // Get customer offset
+    const custDate = new Date(tempDate.toLocaleString('en-US', {timeZone: custTz}));
+    const utcDate  = new Date(tempDate.toLocaleString('en-US', {timeZone: 'UTC'}));
+    const custOffset = (utcDate - custDate) / 60000; // minutes
+    // Adjust to get true UTC
+    const trueUtc = new Date(tempDate.getTime() - localOffset * 60000 + custOffset * 60000);
+
+    // Format in my timezone
+    const myFmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: myTz,
+      weekday:'short', month:'short', day:'numeric',
+      hour:'numeric', minute:'2-digit', hour12:true
+    });
+    myTimeEl.textContent = 'My time: ' + myFmt.format(trueUtc);
+  } catch(e) {
+    myTimeEl.textContent = '';
+  }
+}
+
+// Close CB panel on outside click
+document.addEventListener('click', function(e){
+  if(!cbOpen) return;
+  const panel = document.getElementById('cb-panel');
+  const tog   = document.getElementById('cb-toggle');
+  if((panel && panel.contains(e.target)) || (tog && tog.contains(e.target))) return;
+  cbOpen = false;
+  document.getElementById('cb-toggle').classList.remove('active');
+  panel.style.display = 'none';
+  updateNotesState();
+});
+
+// Scroll: reposition CB panel
+window.addEventListener('scroll', function(){
+  if(!cbOpen) return;
+  const panel = document.getElementById('cb-panel');
+  const btn   = document.getElementById('cb-toggle');
+  if(!panel || !btn) return;
+  const rect = btn.getBoundingClientRect();
+  if(rect.top < 104){ cbOpen=false; panel.style.display='none'; document.getElementById('cb-toggle').classList.remove('active'); updateNotesState(); return; }
+  panel.style.left   = rect.left + 'px';
+  panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+}, { passive: true });
+
+function cbSetAndClose(){
+  const dt = document.getElementById('f-cb-dt').value;
+  if(!dt){ flash('f-cb-dt'); return; }
+  cbOpen = true; // keep cbOpen true so call logs with CB time
+  const panel = document.getElementById('cb-panel');
+  if(panel) panel.style.display = 'none';
+  document.getElementById('cb-toggle').classList.add('active');
+  updateNotesState();
+  updateCbDisplay();
+}
+
+function updateCbDisplay(){
+  const disp = document.getElementById('cb-display');
+  const timeEl = document.getElementById('cb-display-time');
+  const subEl = document.getElementById('cb-display-sub');
+  if(!disp) return;
+  if(!cbOpen){
+    disp.style.display = 'none';
+    return;
+  }
+  const dt = document.getElementById('f-cb-dt').value;
+  if(!dt){ disp.style.display='none'; return; }
+  const d = new Date(dt);
+  const timeStr = d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  const dateStr = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  if(timeEl) timeEl.textContent = timeStr;
+  if(subEl)  subEl.textContent  = dateStr;
+  disp.style.display = 'flex';
+  setTimeout(fitPlayDisplay, 0);
+  // Show cb-display alongside play or alone
+  const playDisp = document.getElementById('play-display');
+  const saleDisp = document.getElementById('sale-display');
+  if(saleDisp) saleDisp.style.flexDirection = 'column';
+}
+
+let _playFont = localStorage.getItem('xcl_play_font') || 'Orbitron';
+let _fpMode   = 'sale'; // 'sale' | 'cb' | 'both'
+
+function selectPlayFont(font){
+  _playFont = font;
+  localStorage.setItem('xcl_play_font', font);
+  const dd = document.getElementById('font-dropdown');
+  if(dd) dd.value = font;
+  applyPlayFont();
+  renderFpPreview();
+}
+
+function applyPlayFont(){
+  const ff = `'${_playFont}',var(--mono)`;
+  ['play-display-name','play-display-sub','cb-display-time','cb-display-sub','nosale-display-reason','nosale-display-sub'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.fontFamily = ff;
+  });
+  setTimeout(fitPlayDisplay, 50);
+  setTimeout(fitNosaleDisplay, 50);
+}
+
+function setFpMode(mode){
+  _fpMode = mode;
+  ['sale','cb','both'].forEach(m => {
+    const btn = document.getElementById('fp-tog-'+m);
+    if(!btn) return;
+    const active = m === mode;
+    btn.style.background = active ? 'var(--card)' : 'transparent';
+    btn.style.color = active ? 'var(--text)' : 'var(--text3)';
+  });
+  renderFpPreview();
+}
+
+function renderFpPreview(){
+  const el = document.getElementById('fp-preview');
+  if(!el) return;
+  const f  = _playFont;
+  const ff = `'${f}',monospace`;
+  const green  = 'var(--green)';
+  const purple = 'var(--purple)';
+
+  const saleHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:100%">
+      <div id="fp-prev-name" style="font-family:${ff};font-size:16px;font-weight:700;color:${green};letter-spacing:.08em;text-transform:uppercase;opacity:.9;white-space:nowrap">5-Play</div>
+      <div style="font-family:'Russo One',monospace;font-size:10px;color:${green};letter-spacing:.04em">XM · TV · CHSI · CDV · XH</div>
+      <div style="font-family:${ff};font-size:9px;font-weight:700;color:${green};letter-spacing:.1em;opacity:.55">5 RGUs</div>
+    </div>`;
+
+  const cbHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:100%">
+      <div style="font-family:${ff};font-size:9px;font-weight:700;color:${purple};letter-spacing:.12em;text-transform:uppercase;opacity:.8">Call Back</div>
+      <div id="fp-prev-time" style="font-family:${ff};font-size:16px;font-weight:700;color:${purple};letter-spacing:.06em;white-space:nowrap">2:30 PM</div>
+      <div style="font-family:${ff};font-size:9px;color:${purple};letter-spacing:.08em;opacity:.55">Thu, Mar 21</div>
+    </div>`;
+
+  if(_fpMode === 'sale')       el.innerHTML = saleHTML;
+  else if(_fpMode === 'cb')    el.innerHTML = cbHTML;
+  else                         el.innerHTML = saleHTML + `<div style="width:80%;height:1px;background:var(--border2);margin:2px 0"></div>` + cbHTML;
+  // Fit preview text to container
+  setTimeout(() => {
+    const pw = el.offsetWidth - 32;
+    ['fp-prev-name','fp-prev-time'].forEach(id => {
+      const t = document.getElementById(id);
+      if(!t || !pw) return;
+      let sz = 36;
+      t.style.fontSize = sz + 'px';
+      while(t.scrollWidth > pw && sz > 12){ sz--; t.style.fontSize = sz + 'px'; }
+    });
+  }, 0);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  applyPlayFont();
+  const dd = document.getElementById('font-dropdown');
+  if(dd) dd.value = _playFont;
+  renderFpPreview();
+});
+
+function fitTextToContainer(elId, containerId, minPx, maxPx){
+  const el = document.getElementById(elId);
+  const container = document.getElementById(containerId);
+  if(!el || !container) return;
+  const availW = container.offsetWidth - 16;
+  if(!availW) return;
+  // Count visible display blocks to divide height fairly
+  const blocks = ['play-display','nosale-display','cb-display'].filter(id => {
+    const b = document.getElementById(id);
+    return b && b.style.display !== 'none';
+  });
+  const visibleCount = Math.max(blocks.length, 1);
+  // Each block gets its share of container height minus gaps
+  const availH = Math.floor((container.offsetHeight - (visibleCount - 1) * 8) / visibleCount);
+  // Headline element gets ~50% of block height, secondary gets ~20%
+  const isHeadline = ['play-display-name','cb-display-time','nosale-display-reason'].includes(elId);
+  const heightCap = isHeadline ? Math.floor(availH * 0.55) : Math.floor(availH * 0.25);
+  const effectiveMax = Math.min(maxPx, Math.max(heightCap, minPx));
+  let size = effectiveMax;
+  el.style.fontSize = size + 'px';
+  while((el.scrollWidth > availW || el.offsetHeight > heightCap) && size > minPx){
+    size--;
+    el.style.fontSize = size + 'px';
+  }
+}
+
+function fitPlayDisplay(){
+  const s = getSvcs();
+  const rgus = Math.min(s.length, 5);
+  // Max scales with RGU count: 1=20, 2=24, 3=28, 4=32, 5=36
+  const maxSize = 16 + (rgus * 4);
+  fitTextToContainer('play-display-name', 'sale-display', 12, maxSize);
+  fitTextToContainer('cb-display-time',   'sale-display', 12, 36);
+}
+
+function fitNosaleDisplay(){
+  fitTextToContainer('nosale-display-sub', 'sale-display', 10, 28);
+}
+
+
+function updateNosaleDisplay(){
+  const disp     = document.getElementById('nosale-display');
+  const reasonEl = document.getElementById('nosale-display-reason');
+  const subEl    = document.getElementById('nosale-display-sub');
+  if(!disp) return;
+  const active = !_nsPanelOpen && _nsState !== 'closed' && (_nsCat || _nsSub);
+  if(!active){ disp.style.display='none'; return; }
+  if(_nsSub){
+    // Tier 1 (category) on top, tier 2 (sub-reason) below
+    if(reasonEl) reasonEl.textContent = _nsCat;
+    if(subEl)    subEl.textContent    = _nsSub;
+  } else {
+    if(reasonEl) reasonEl.textContent = _nsCat;
+    if(subEl)    subEl.textContent    = '';
+  }
+  disp.style.display = 'flex';
+  setTimeout(fitNosaleDisplay, 0);
+}
+
+function submitBugReport(){
+  var title = document.getElementById('bug-title-input').value.trim();
+  var desc  = document.getElementById('bug-desc-input').value.trim();
+  if(!title){ flash('bug-title-input'); return; }
+  var bugs = JSON.parse(localStorage.getItem('xcl_bug_reports') || '[]');
+  var bug  = { id: Date.now(), title: title, desc: desc, date: new Date().toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}) };
+  bugs.push(bug);
+  localStorage.setItem('xcl_bug_reports', JSON.stringify(bugs));
+  document.getElementById('bug-title-input').value = '';
+  document.getElementById('bug-desc-input').value  = '';
+  renderUserBugs();
+}
+
+function renderUserBugs(){
+  var list    = document.getElementById('bug-user-list');
+  var emptyEl = document.getElementById('bug-empty-msg');
+  if(!list) return;
+  var bugs = JSON.parse(localStorage.getItem('xcl_bug_reports') || '[]');
+  if(!bugs.length){ if(emptyEl) emptyEl.style.display='block'; return; }
+  if(emptyEl) emptyEl.style.display='none';
+  var existing = list.querySelectorAll('.bug-user');
+  existing.forEach(function(el){ el.remove(); });
+  bugs.slice().reverse().forEach(function(bug, i){
+    var div = document.createElement('div');
+    div.className = 'bug-item bug-user';
+    var descHtml = bug.desc ? '<div class="bug-desc">' + bug.desc + '</div>' : '';
+    div.innerHTML = '<div class="bug-num">#' + (bugs.length - i) + '</div>' +
+      '<div class="bug-body">' +
+        '<div class="bug-title">' + bug.title + '</div>' +
+        descHtml +
+        '<div class="bug-date">' + bug.date + '</div>' +
+      '</div>' +
+      '<button onclick="deleteUserBug(' + bug.id + ')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 2px;flex-shrink:0;align-self:flex-start" title="Delete">×</button>';
+    list.appendChild(div);
+  });
+}
+
+function deleteUserBug(id){
+  var bugs = JSON.parse(localStorage.getItem('xcl_bug_reports') || '[]').filter(function(b){ return b.id !== id; });
+  localStorage.setItem('xcl_bug_reports', JSON.stringify(bugs));
+  renderUserBugs();
+}
+
+document.addEventListener('DOMContentLoaded', renderUserBugs);
+
+function toggleDispSection(hdr){
+  var body = hdr.nextElementSibling;
+  var chevron = hdr.querySelector('.disp-section-chevron');
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if(chevron) chevron.classList.toggle('open', !isOpen);
 }
 
 </script>
 
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
-<div id="nosale-panel" style="position:fixed;z-index:9999;display:none"></div>
+<div id="cb-panel">
+  <div class="cb-panel-title">Schedule Call Back</div>
+  <div class="cb-quick-btns">
+    <div class="cb-quick-btn" onclick="cbSetOffset(30)">+30 min</div>
+    <div class="cb-quick-btn" onclick="cbSetOffset(60)">+1 hr</div>
+    <div class="cb-quick-btn" onclick="cbSetOffset(120)">+2 hr</div>
+    <div class="cb-quick-btn" onclick="cbSetOffset(1440)">Tomorrow</div>
+  </div>
+  <div class="cb-dt-row">
+    <label>Date &amp; Time</label>
+    <input type="datetime-local" class="cb-dt" id="f-cb-dt" oninput="cbUpdateMyTime()">
+  </div>
+  <div class="cb-tz-row">
+    <label style="line-height:1.3">Customer<br>Timezone</label>
+    <select id="cb-tz" onchange="cbUpdateMyTime()" style="width:130px;flex-shrink:0">
+
+      <option value="America/New_York">Eastern (ET)</option>
+      <option value="America/Chicago">Central (CT)</option>
+      <option value="America/Denver">Mountain (MT)</option>
+      <option value="America/Los_Angeles">Pacific (PT)</option>
+    </select>
+    <button onclick="cbSetAndClose()" style="height:30px;padding:0 12px;background:var(--purple);border:none;border-radius:6px;font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;cursor:pointer;flex-shrink:0;letter-spacing:.05em">SET</button>
+  </div>
+  <div class="cb-mytime" id="cb-mytime"></div>
+</div>
+<div id="nosale-panel"></div>
+<div id="blank-call-confirm"><div class="bcc-title">Log Blank No Sale?</div><div class="bcc-desc">No selections were made. Log this as a No Sale call with no reason given?</div><div class="bcc-btns"><button class="bcc-yes" onclick="confirmBlankNoSale()">Yes, Log It</button><button class="bcc-no" onclick="dismissBlankConfirm()">Cancel</button></div></div>
 </body>
 </html>
