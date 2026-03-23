@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1080">
-<title>Xfinity Call Logger v0.03.20.21</title>
+<meta name="viewport" content="width=720">
+<title>Xfinity Call Logger v0.03.22.16</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -19,7 +19,7 @@
   --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
   --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;min-width:1080px;max-width:1080px;margin:0 auto;position:relative}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;min-width:720px;max-width:720px;margin:0 auto;position:relative}
 .header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-logo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--blue) 0%,#6366f1 100%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;font-family:var(--mono)}
@@ -117,22 +117,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .chk svg{width:18px;height:18px;stroke:var(--text3);stroke-width:2.5;fill:none;transition:stroke .15s}
 .chk.checked svg{stroke:var(--green)}
 .chk.ie-adj svg{stroke:var(--amber)}
-.cback-wrap{display:flex;flex-direction:column;gap:5px;align-items:center}
 .cback-wrap label{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
 .cback-toggle{width:38px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:16px;filter:grayscale(1) opacity(.5)}
 .cback-toggle:hover{filter:grayscale(.3) opacity(.8);background:var(--card2)}
 .cback-toggle.active{background:var(--purple-lt);border-color:var(--purple);box-shadow:0 0 0 2px rgba(167,139,250,.25),0 0 10px rgba(167,139,250,.15);filter:grayscale(0) opacity(1)}
-.cb-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.cb-divider-line{flex:1;height:1px;background:var(--border)}
-.cb-divider-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);white-space:nowrap}
-.cb-fields{display:flex;flex-direction:row;flex-wrap:nowrap;gap:10px;align-items:flex-end}
 .cb-field{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
 .cb-field label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple);display:flex;align-items:center;gap:5px;overflow:hidden;white-space:nowrap}
-.cb-field-name{width:180px}
 .cb-name{width:180px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
 .cb-name:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
 .cb-name::placeholder{color:var(--text3)}
-.cb-field-phone{width:153px}
 .cb-phone{width:153px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;text-align:left;transition:border-color .15s,box-shadow .15s}
 .cb-phone:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
 .cb-phone::placeholder{color:var(--text3)}
@@ -191,8 +184,7 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 .p-other{background:rgba(255,255,255,.04);color:var(--text3);border:1px solid var(--border2)}
 .e-input{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 9px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;width:100%}
 .e-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
-.e-input.e-text{font-family:var(--sans)}
-.e-select{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none;width:100%;cursor:pointer}
+.e-input.e-select{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none;width:100%;cursor:pointer}
 .e-select:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
 .e-select option{background:var(--card)}
 .edit-action-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(59,130,246,.08);border-top:1px solid var(--blue);flex-wrap:wrap}
@@ -454,7 +446,6 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 .cn-stage-btn{flex:1;height:34px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;border-right:1px solid rgba(255,255,255,.1);letter-spacing:.03em}
 .cn-stage-btn:last-child{border-right:none}
 .cn-stage-btn.active{filter:brightness(1.15)}
-.cn-panel{display:none;padding:20px 24px;display:none}
 .cn-panel.active{display:block}
 .cn-speech{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:13px;color:var(--text2);line-height:1.6}
 .cn-speech strong{color:var(--text);font-weight:600}
@@ -753,6 +744,37 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 #blank-call-confirm .bcc-btns{display:flex;gap:8px;justify-content:center}
 #blank-call-confirm .bcc-yes{height:32px;padding:0 20px;background:var(--red);border:none;border-radius:7px;font-size:12px;font-weight:700;color:#fff;cursor:pointer}
 #blank-call-confirm .bcc-no{height:32px;padding:0 20px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer}
+
+.bug-coming{border-color:rgba(59,130,246,.25);background:rgba(59,130,246,.04)}
+.bug-coming .bug-num{color:var(--blue);opacity:.7}
+.bug-coming .bug-title{color:var(--blue)}
+.bug-coming .bug-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+
+/* ── Tooltips ── */
+[data-tip]{position:relative}
+[data-tip]::after{
+  content:attr(data-tip);
+  position:fixed;z-index:99999;
+  background:#0d1627;color:var(--text);
+  font-family:var(--sans);font-size:11px;font-weight:400;line-height:1.4;
+  padding:6px 10px;border-radius:7px;border:1px solid var(--border2);
+  white-space:pre-line;text-align:center;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  pointer-events:none;
+  opacity:0;transition:opacity .15s;
+  min-width:120px;max-width:240px;
+  /* positioned via JS on hover */
+  top:0;left:0;
+}
+[data-tip]::before{display:none}
+body.tips-on [data-tip]:hover::after{opacity:1}
+
+.role-btn{height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-family:var(--sans);font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.role-btn:hover{border-color:var(--blue);color:var(--blue)}
+.role-btn.active{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+
+.team-rep-card{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s}
+.team-rep-card:hover{border-color:var(--blue)}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Russo+One&family=Rajdhani:wght@700&family=Exo+2:wght@700&family=Bebas+Neue&family=Righteous&family=Boogaloo&family=Black+Ops+One&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -761,10 +783,13 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.20.21</div>
+    <div class="version-chip">v0.03.22.16</div>
     <div class="clock" id="clock">--:-- --</div>
-    <div class="month-chip" id="month-chip-label">…</div>
-    <button class="gear-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
+    <div id="session-badge" style="display:none;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="showLogoutConfirm()"></div>
+    <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
+(resets on the 22nd)
+Goals shown for your type+cap level">…</div>
+    <button class="gear-btn" onclick="toggleSettings()" data-tip="Settings">⚙️</button>
   </div>
 </div>
 <!-- Tab bar -->
@@ -774,6 +799,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
   <button class="tab-btn" id="tab-compass" onclick="switchTab('compass')">🧭 Compass</button>
   <button class="tab-btn" id="tab-jobaid" onclick="switchTab('jobaid')">📖 Job Aids</button>
   <button class="tab-btn" id="tab-disputes" onclick="switchTab('disputes')">⚖ Disputes</button>
+  <button class="tab-btn" id="tab-team" onclick="switchTab('team')" style="display:none">👥 Team</button>
 </div>
 <!-- Settings Panel -->
 <div id="settings-overlay" onclick="toggleSettings()" style="display:none;position:absolute;inset:0;z-index:299;background:rgba(0,0,0,.25);backdrop-filter:blur(1px)"></div>
@@ -790,6 +816,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
       <button class="stab-btn"        id="stab-data"     onclick="switchStab('data')"    >🗄 Data</button>
       <button class="stab-btn"        id="stab-outcomes" onclick="switchStab('outcomes')">📋 Outcomes</button>
       <button class="stab-btn"        id="stab-bugs"     onclick="switchStab('bugs')">🐛 Bugs</button>
+      <button class="stab-btn" id="stab-users" onclick="switchStab('users')" style="display:none">👤 Users</button>
     </div>
 
     <!-- ── Display ── -->
@@ -863,7 +890,6 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
         <div class="disp-section-body">
           <div class="width-toggle">
             <button class="width-btn" id="wb-regular" onclick="applyWidth('regular')">◫ Regular (720px)</button>
-            <button class="width-btn" id="wb-wide" onclick="applyWidth('wide')" disabled style="opacity:0.35;cursor:not-allowed" title="Coming soon">⬛ Wide (1080px)</button>
           </div>
         </div>
       </div>
@@ -902,6 +928,20 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
           </div>
         </div>
       </div>
+      <!-- Tooltips -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">💬 Tooltips</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Hover tooltips on buttons, fields, and stats. Useful for learning and debugging.</div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2)">
+            <input type="checkbox" id="tips-toggle" onchange="setTooltips(this.checked)" style="accent-color:var(--blue);width:14px;height:14px">
+            Show tooltips on hover
+          </label>
+        </div>
+      </div>
       <!-- Alerts -->
       <div class="disp-section">
         <div class="disp-section-hdr" onclick="toggleDispSection(this)">
@@ -924,9 +964,10 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 
     <!-- ── Goals ── -->
     <div class="stab-panel" id="stabp-goals">
-      <!-- Fiscal month picker always visible -->
+      <!-- Fiscal month picker + role selectors -->
       <div class="settings-section-label" style="margin-top:14px">Fiscal Month</div>
       <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Select a month to view or edit its goals, chargebacks, and PTO. Only the current month affects live stats.</div>
+      <!-- Fiscal month picker -->
       <select id="s-fiscal-month" onchange="loadGoalsForFiscalMonth(this.value)"
         style="width:100%;height:34px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;cursor:pointer;margin-bottom:2px">
       </select>
@@ -958,6 +999,21 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
           <span class="disp-section-chevron">▼</span>
         </div>
         <div class="disp-section-body">
+          <!-- Call Type + Cap Level -->
+          <div style="display:flex;gap:6px;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:6px;flex-wrap:wrap">
+            <div style="font-size:10px;font-weight:600;color:var(--text3);flex-shrink:0">Role:</div>
+            <div style="display:flex;gap:0;border:1px solid var(--border2);border-radius:7px;overflow:hidden;height:28px;flex-shrink:0">
+              <button id="role-acq" onclick="setUserRole('acq')" style="padding:0 10px;border:none;border-right:1px solid var(--border2);background:var(--blue-lt);color:var(--blue);font-family:var(--sans);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s">ACQ</button>
+              <button id="role-mov" onclick="setUserRole('mov')" style="padding:0 10px;border:none;background:var(--surface);color:var(--text3);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">MOV</button>
+            </div>
+            <select id="s-cap-level" onchange="setUserCap(parseInt(this.value))"
+              style="height:28px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;font-size:11px;font-weight:600;color:var(--text2);outline:none;cursor:pointer;flex-shrink:0">
+              <option value="1">Cap 1 — New Hire</option>
+              <option value="2">Cap 2 — Associate</option>
+              <option value="3">Cap 3 — Specialist</option>
+              <option value="4">Cap 4 — Professional</option>
+            </select>
+          </div>
           <div class="settings-row">
             <div class="settings-field"><label>Revenue ($)</label><input type="number" id="s-rev" min="0" step="1"></div>
             <div class="settings-field"><label>XM Lines</label><input type="number" id="s-xm" min="0" step="1"></div>
@@ -1027,15 +1083,94 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
     </div>
 
 
+    <!-- User Management (Admin only) -->
+    <div class="stab-panel" id="stabp-users">
+      <div class="settings-section-label" style="margin-top:14px">User Management</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:10px">Create and manage users, assign roles and supervisors, reset PINs.</div>
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <button onclick="loadUserList()" style="height:30px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer">↻ Refresh</button>
+        <button onclick="showAddUserForm()" style="height:30px;padding:0 12px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--green);cursor:pointer">+ Add User</button>
+      </div>
+      <!-- Add/Edit user form -->
+      <div id="user-form" style="display:none;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px" id="user-form-title">Add User</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="field"><label>Agent ID</label><input type="text" id="uf-agent-id" placeholder="A12345" style="width:100%;box-sizing:border-box"></div>
+          <div class="field"><label>Name</label><input type="text" id="uf-name" placeholder="First Last" style="width:100%;box-sizing:border-box"></div>
+          <div class="field"><label>PIN</label><input type="password" id="uf-pin" placeholder="4-6 digits" maxlength="6" style="width:100%;box-sizing:border-box;font-family:var(--mono);letter-spacing:.2em"></div>
+          <div class="field"><label>Role</label>
+            <select id="uf-role" style="width:100%;height:34px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;font-size:12px;color:var(--text);outline:none">
+              <option value="rep">Rep</option>
+              <option value="supervisor">Supervisor</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="field"><label>Call Type</label>
+            <select id="uf-call-type" style="width:100%;height:34px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;font-size:12px;color:var(--text);outline:none">
+              <option value="acq">Acquisition</option>
+              <option value="mov">Movers</option>
+            </select>
+          </div>
+          <div class="field"><label>Cap Level</label>
+            <select id="uf-cap" style="width:100%;height:34px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;font-size:12px;color:var(--text);outline:none">
+              <option value="1">Cap 1 — New Hire</option>
+              <option value="2">Cap 2 — Associate</option>
+              <option value="3">Cap 3 — Specialist</option>
+              <option value="4">Cap 4 — Professional</option>
+            </select>
+          </div>
+          <div class="field" style="grid-column:1/-1"><label>Supervisor Agent ID</label><input type="text" id="uf-supervisor" placeholder="Leave blank if none" style="width:100%;box-sizing:border-box"></div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;justify-content:flex-end">
+          <button onclick="document.getElementById('user-form').style.display='none'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text2);cursor:pointer">Cancel</button>
+          <button onclick="saveUserForm()" style="height:30px;padding:0 14px;background:var(--blue);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Save User</button>
+        </div>
+      </div>
+      <!-- User list -->
+      <div id="user-list-container" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+
     <!-- Bug Reports -->
     <div class="stab-panel" id="stabp-bugs">
+      <div class="settings-section-label" style="margin-top:14px">Debug Tools</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;padding:10px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:8px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2)">
+          <input type="checkbox" id="debug-tips-toggle" onchange="setDebugTips(this.checked)" style="accent-color:var(--amber);width:14px;height:14px">
+          Debug tooltips
+        </label>
+        <div style="font-size:10px;color:var(--text3);line-height:1.5">When enabled, tooltips show the element ID, tag, and debug info alongside the description. Requires tooltips to be on.</div>
+      </div>
       <div class="settings-section-label" style="margin-top:14px">Known Bugs</div>
       <div id="bug-known-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
         <div class="bug-item bug-known">
           <div class="bug-num">#1</div>
           <div class="bug-body">
             <div class="bug-title">Layout width toggle breaks pill panel</div>
-            <div class="bug-desc">When toggling Regular/Wide layout with the no-sale pill panel open, pills disappear and the panel renders empty. Workaround: close the pill panel before switching layout.</div>
+            <div class="bug-desc">When toggling layout width with the no-sale pill panel open, pills disappear and the panel renders empty. This feature has been removed — layout is now fixed at 720px.</div>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section-label" style="margin-top:14px">Coming Soon</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+        <div class="bug-item bug-coming">
+          <div class="bug-num">①</div>
+          <div class="bug-body">
+            <div class="bug-title">Call Back Sales — Correct Credit Date <span class="bug-badge">In Progress</span></div>
+            <div class="bug-desc">Callback sales will be credited to the date the callback was completed, not the original call date. XM line activations and revenue will flow to the correct fiscal month automatically.</div>
+          </div>
+        </div>
+        <div class="bug-item bug-coming">
+          <div class="bug-num">②</div>
+          <div class="bug-body">
+            <div class="bug-title">Resolution Fixes <span class="bug-badge">Planned</span></div>
+            <div class="bug-desc">Tools to log and track resolution calls — linking fixes back to the original sale for chargeback prevention and quality tracking.</div>
+          </div>
+        </div>
+        <div class="bug-item bug-coming">
+          <div class="bug-num">③</div>
+          <div class="bug-body">
+            <div class="bug-title">Dispute Reconciliation <span class="bug-badge">Planned</span></div>
+            <div class="bug-desc">A dedicated tab for reconciling disputed charges and credits against your logged sales, with side-by-side comparison and notes for escalation.</div>
           </div>
         </div>
       </div>
@@ -1081,16 +1216,24 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 <!-- ══ TAB: TRACKER ══ -->
 <div class="tab-panel active" id="panel-tracker">
 <div class="stats-panel">
-  <div class="stats-section-label"><span id="stats-period-label">Month to date</span><div class="stats-view-toggle" id="stats-toggle"><button class="stats-view-btn active" id="btn-orders" onclick="setStatsView('orders')">Entered</button><button class="stats-view-btn" id="btn-installs" onclick="setStatsView('installs')">Complete</button><button class="stats-view-btn" id="btn-pipeline" onclick="setStatsView('pipeline')">Pipeline</button></div></div>
+  <div class="stats-section-label">
+    <select id="fiscal-history-sel" data-tip="View stats for a previous fiscal month
+(22nd to 21st of following month)" onchange="setHistoricalFiscal(this.value)" style="height:22px;font-size:10px;font-weight:600;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 6px;color:var(--text2);outline:none;cursor:pointer;font-family:var(--mono)"></select>
+    <div class="stats-view-toggle" id="stats-toggle"><button class="stats-view-btn active" id="btn-orders" onclick="setStatsView('orders')" data-tip="Calls logged during this fiscal period">Entered</button><button class="stats-view-btn" id="btn-installs" onclick="setStatsView('installs')" data-tip="Sales with install date in this fiscal period
+(what gets credited)">Complete</button><button class="stats-view-btn" id="btn-pipeline" onclick="setStatsView('pipeline')" data-tip="Sales scheduled for the next fiscal period">Pipeline</button></div>
+  </div>
   <div class="stats-row monthly">
-    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-blue" id="m-rev">$0</div><div class="stat-pct"><span class="pct-val warn" id="m-rev-pct">0%</span><span>of $6,870</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rev-bar"></div><div class="goal-bar-over" id="m-rev-over"></div></div><span class="stat-pace" id="m-rev-pace"></span></div>
-    <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-blue" id="m-rgus">0</div><div class="stat-pct"><span class="pct-val warn" id="m-rgus-pct">0%</span><span id="m-rgus-lbl">of 123</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rgus-bar"></div><div class="goal-bar-over" id="m-rgus-over"></div></div><span class="stat-pace" id="m-rgus-pace"></span></div>
-    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span>of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
-    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="m-tv">0</div><div class="stat-pct"><span class="pct-val warn" id="m-tv-pct">0%</span><span>of 23</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-tv-bar"></div><div class="goal-bar-over" id="m-tv-over"></div></div><span class="stat-pace" id="m-tv-pace"></span></div>
-    <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="m-chsi">0</div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span>of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
-    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="m-cdv">0</div><div class="stat-pct"><span class="pct-val warn" id="m-cdv-pct">0%</span><span>of 3</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-cdv-bar"></div><div class="goal-bar-over" id="m-cdv-over"></div></div><span class="stat-pace" id="m-cdv-pace"></span></div>
-    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="m-xh">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xh-pct">0%</span><span>of 2</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xh-bar"></div><div class="goal-bar-over" id="m-xh-over"></div></div><span class="stat-pace" id="m-xh-pace"></span></div>
-    <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="m-calls">0</div><div class="stat-pct"><span class="pct-val" id="m-cr" style="color:var(--text3)">—</span><span>close rate</span></div></div>
+    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-blue" id="m-rev" data-tip="Total revenue this fiscal period
+(Base + XM activations)">$0</div><div class="stat-pct"><span class="pct-val warn" id="m-rev-pct">0%</span><span>of $6,870</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rev-bar"></div><div class="goal-bar-over" id="m-rev-over"></div></div><span class="stat-pace" id="m-rev-pace"></span></div>
+    <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-blue" id="m-rgus" data-tip="Revenue Generating Units
+(XM=1, TV=1, CHSI=1 or 0.75 IE, CDV=1, XH=1)">0</div><div class="stat-pct"><span class="pct-val warn" id="m-rgus-pct">0%</span><span id="m-rgus-lbl">of 123</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rgus-bar"></div><div class="goal-bar-over" id="m-rgus-over"></div></div><span class="stat-pace" id="m-rgus-pace"></span></div>
+    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm" data-tip="XM mobile lines sold this period">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span>of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
+    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="m-tv" data-tip="TV packages sold this period">0</div><div class="stat-pct"><span class="pct-val warn" id="m-tv-pct">0%</span><span>of 23</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-tv-bar"></div><div class="goal-bar-over" id="m-tv-over"></div></div><span class="stat-pace" id="m-tv-pace"></span></div>
+    <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="m-chsi" data-tip="Internet (CHSI) units sold
+(IE accounts = 0.75 RGU)">0</div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span>of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
+    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="m-cdv" data-tip="Digital Voice (home phone) sold">0</div><div class="stat-pct"><span class="pct-val warn" id="m-cdv-pct">0%</span><span>of 3</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-cdv-bar"></div><div class="goal-bar-over" id="m-cdv-over"></div></div><span class="stat-pace" id="m-cdv-pace"></span></div>
+    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="m-xh" data-tip="Xfinity Home security units sold">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xh-pct">0%</span><span>of 2</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xh-bar"></div><div class="goal-bar-over" id="m-xh-over"></div></div><span class="stat-pace" id="m-xh-pace"></span></div>
+    <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="m-calls" data-tip="Total calls logged this fiscal period">0</div><div class="stat-pct"><span class="pct-val" id="m-cr" style="color:var(--text3)">—</span><span>close rate</span></div></div>
   </div>
   <div class="stats-section-label" style="padding-top:6px">Today</div>
   <div class="stats-row daily">
@@ -1108,8 +1251,8 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
   <div id="pace-cal"></div>
 </div>
 <div class="main">
-  <div class="form-card">
-    <div class="form-header"><div class="form-header-title">Log New Call</div><div class="form-hint">Enter ↵ to submit</div></div>
+  <div class="form-card" id="new-call-form-card">
+    <div class="form-header"><div class="form-header-title">Log New Call</div><div class="form-hint">Tab through fields · Enter to advance</div></div>
     <div class="form-body">
       <!-- ── Row 1: XM · IE/BULK · TV/CHSI/CDV/XH │ No Sale / Play ── -->
       <div class="form-row-center">
@@ -1118,32 +1261,35 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
           <div style="display:flex;gap:3px;align-items:flex-end;flex-shrink:0">
             <div class="field" style="flex-shrink:0">
               <label>Base Rev</label>
-              <input type="text" id="f-rev" placeholder="0.00" oninput="fmtRevInput(this);updateRevTotal()" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)" style="width:64px;font-family:var(--mono);font-size:13px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);transition:border-color .15s">
+              <input type="text" id="f-rev" data-tip="Revenue from TV, CHSI, CDV, XH
+(not including XM lines)" placeholder="0.00" oninput="fmtRevInput(this);updateRevTotal()" onblur="fmtRevBlur(this)" onfocus="fmtRevFocus(this)" style="width:64px;font-family:var(--mono);font-size:13px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);transition:border-color .15s">
             </div>
             <div class="field" style="flex-shrink:0">
               <label>XM Rev</label>
-              <div id="f-xm-rev" style="width:52px;height:38px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text3);display:flex;align-items:center;font-weight:600">$0</div>
+              <div id="f-xm-rev" data-tip="Auto-calculated: XM lines × $45" style="width:52px;height:38px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text3);display:flex;align-items:center;font-weight:600">$0</div>
             </div>
             <div class="field" style="flex-shrink:0">
               <label>Total</label>
-              <div id="f-rev-total" style="width:60px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text2);display:flex;align-items:center;font-weight:700">$0</div>
+              <div id="f-rev-total" data-tip="Base Rev + XM Rev" style="width:60px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text2);display:flex;align-items:center;font-weight:700">$0</div>
             </div>
             <div class="cb-modifiers">
               <div class="cb-mod-wrap" id="ie-wrap">
                 <div class="chk chk-sm" id="chk-ie" onclick="toggleIE()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <label class="cb-mod-lbl" id="ie-lbl">IE (.75)</label>
+                <label class="cb-mod-lbl" id="ie-lbl" data-tip="Internet Essentials — counts as 0.75 RGU
+(enabled when CHSI is selected)">IE (.75)</label>
               </div>
               <div class="cb-mod-wrap">
                 <div class="chk chk-sm" id="chk-bulk" onclick="toggleBulk()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <label class="cb-mod-lbl" id="bulk-lbl">BULK</label>
+                <label class="cb-mod-lbl" id="bulk-lbl" data-tip="Bulk account — marks call as bulk sale">BULK</label>
               </div>
             </div>
             <div class="checks-group">
-              <div class="check-wrap"><label>TV</label><div class="chk" id="chk-tv" onclick="toggleProd('tv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-              <div class="check-wrap"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-              <div class="check-wrap"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-              <div class="check-wrap"><label>XH</label><div class="chk" id="chk-xh" onclick="toggleProd('xh')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-              <div class="xm-wrap" style="margin-left:12px">
+              <div class="check-wrap" data-tip="Television service"><label>TV</label><div class="chk" id="chk-tv" onclick="toggleProd('tv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="check-wrap" data-tip="Cable High Speed Internet"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="check-wrap" data-tip="Cable Digital Voice (home phone)"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="check-wrap" data-tip="Xfinity Home security"><label>XH</label><div class="chk" id="chk-xh" onclick="toggleProd('xh')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="xm-wrap" style="margin-left:12px" data-tip="XM mobile lines
+$45 revenue credit per activation">
                 <label>XM</label>
                 <div class="xm-stepper" id="xm-stepper">
                   <button class="xm-btn" type="button" onclick="setXm(xmVal-1)">−</button>
@@ -1156,7 +1302,8 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
           <!-- Right: No Sale / Play name / No XM Sale -->
           <div id="outcome-field-wrap" style="flex:1;display:flex;align-items:center;justify-content:center">
             <!-- Single no-sale button, width fixed to fit longest label -->
-            <div class="ns-toggle" id="ns-toggle" onclick="event.stopPropagation();toggleNoSale(this)" style="width:120px;justify-content:center;display:flex">✘ No Sale</div>
+            <div class="ns-toggle" id="ns-toggle" data-tip="Log a no-sale reason
+Click to select category + sub-reason" onclick="event.stopPropagation();toggleNoSale(this)" style="width:120px;justify-content:center;display:flex">✘ No Sale</div>
             <!-- XM celebration — shown when XM sold -->
             <div id="xm-celebration" style="display:none;font-size:16px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-align:center;white-space:nowrap"></div>
           </div>
@@ -1169,7 +1316,8 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
           <div class="form-left-col">
             <div class="field">
               <label>Sched</label>
-              <input type="date" class="w-sched" id="f-sched">
+              <input type="date" class="w-sched" id="f-sched" data-tip="Install/activation date for TV, CHSI, CDV, XH
+(XM lines have individual dates in edit)">
             </div>
             <div class="field">
               <label>Acct / Loc / Ticket #</label>
@@ -1187,7 +1335,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
           <!-- Notes -->
           <div class="notes-wrap">
             <label id="notes-lbl">Notes <span id="notes-badge" class="opt-badge">optional</span></label>
-            <textarea id="f-notes" placeholder="Optional…"></textarea>
+            <textarea id="f-notes" data-tip="Call notes — saved with the log entry" placeholder="Optional…"></textarea>
           </div>
           <!-- Divider extending from row 1 -->
           <div class="v-div" style="align-self:stretch"></div>
@@ -1215,8 +1363,9 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
               </div>
             </div>
             <div style="display:flex;gap:16px;align-items:center;flex-shrink:0;justify-content:center;width:100%">
-              <div class="cback-toggle" id="cb-toggle" onclick="toggleCb()" title="Call Back">📞</div>
-              <button class="submit-btn" id="submit-btn" onclick="logCall()"><div class="btn-dot"></div>Log Call</button>
+              <div class="cback-toggle" id="cb-toggle" onclick="toggleCb()" data-tip="Schedule a Call Back
+Sets follow-up time and logs CB details">📞</div>
+              <button class="submit-btn" id="submit-btn" data-tip="Log this call" onclick="logCall()"><div class="btn-dot"></div>Log Call</button>
             </div>
           </div>
         </div>
@@ -1563,9 +1712,13 @@ const NO_SALE_CATS_DEFAULTS = {
 // Live object — loaded from settings if saved, otherwise seeded from defaults
 const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
+const XCL_CALLS_KEY = 'xcl_calls_cache';
 const XM_LINE_REV = 45;
 document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL;
-let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all',_logSearch='',_activeTab='tracker';
+let _userCallType='acq',_userCapLevel=1;
+let _session=null; // {agentId, name, role, callType, capLevel, supervisorId}
+let _userList=[]; // cached from sheets
+let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all',_logSearch='',_activeTab='tracker',_historicalFiscal=null;
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});},1000);
 function checkAlerts(){
   const now=Date.now();if(now<alertDismissed)return;
@@ -1644,10 +1797,8 @@ function toggleNoSale(callerEl){
   if(_nsPanelOpen){ _nsClose(); _nsPanelOpen=false; nsAutoSelect(); colorReason(); return; }
   _nsState = 'tier1'; _nsCat = ''; _nsSub = '';
   const tog   = document.getElementById('ns-toggle');
-  const togNoxm = document.getElementById('ns-toggle-noxm');
   const panel = document.getElementById('nosale-panel');
   if(tog) tog.classList.add('active');
-  if(togNoxm) togNoxm.classList.add('active');
   if(panel){
     positionNsPanel(callerEl || tog);
     panel.classList.add('open');
@@ -1763,7 +1914,6 @@ function updatePlay(){
   const s=getSvcs();
   const hasXm = xmVal > 0;
   const hasNonXm = prods.tv || prods.chsi || prods.cdv || prods.xh;
-  const noxmTog = document.getElementById('ns-toggle-noxm');
   const playDisp = document.getElementById('play-display');
   const playName = document.getElementById('play-display-name');
   const playSvcs = document.getElementById('play-display-svcs');
@@ -1787,7 +1937,6 @@ function updatePlay(){
       noSaleBtn.textContent = hasNonXm ? '✘ No XM Sale' : '✘ No Sale';
     }
   }
-  if(noxmTog){ noxmTog.style.display = 'none'; }
 
   if(s.length){
     // Show big play display in right col
@@ -1844,7 +1993,6 @@ function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
 function compute(c){
   if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:c.sched||'',activated:false}));
   if(c.xm>0&&c.baseRev===undefined) c.baseRev=Math.max(0,c.rev-(c.xm*XM_LINE_REV));const ie=c.ie||c.reason==='IE (.75)';c.chsiRgu=!c.chsi?0:ie?.75:1;c.rgus=(c.xm>0?1:0)+(c.tv?1:0)+c.chsiRgu+(c.cdv?1:0)+(c.xh?1:0);c.ieAdj=c.chsi&&ie;c.hasSale=c.rgus>0||c.rev>0;const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';c.callOutcome=c.hasSale?(c.noXmReason?c.playName+' · No XM: '+c.noXmReason:c.playName):(c.reason||'');return c;}
-function updateSale(){}
 function buildAcct(raw,name,phone){const p=[];if(raw)p.push(raw);if(name)p.push(name);if(phone)p.push('CB:'+phone);return p.join(' | ');}
 function flash(id,rb=''){const el=document.getElementById(id);if(!el)return;el.style.borderColor='var(--red)';el.style.boxShadow='0 0 0 3px rgba(248,113,113,.2)';el.focus();setTimeout(()=>{el.style.borderColor=rb;el.style.boxShadow='';},2500);}
 function isBlankCall(){
@@ -1889,13 +2037,17 @@ function logCall(){
 function doLogCall(){
   if(cbOpen){if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}}
   const cbName=document.getElementById('f-cb-name').value.trim();const cbPhone=document.getElementById('f-cb-phone').value.trim();const cbTime=cbOpen?document.getElementById('f-cb-dt').value:'';const raw=document.getElementById('f-acct').value.trim();
-  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
+  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
+  // Register current fiscal month in localStorage so it shows in history even without goals
+  const _fk = 'xcl_goals_' + getFiscalMonth().replace(' ','');
+  if(!localStorage.getItem(_fk)) localStorage.setItem(_fk, JSON.stringify({registeredAt: Date.now()}));
+  buildFiscalHistoryDropdown();
   const btn=document.getElementById('submit-btn');btn.classList.add('ok');btn.innerHTML='<div class="btn-dot"></div>Logged!';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<div class="btn-dot"></div>Log Call';},800);
 }
 function resetForm(){
-  ['f-acct','f-sched','f-rev','f-reason','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   setXm(0);
   updateRevTotal();
   Object.keys(prods).forEach(k=>{prods[k]=false;const el=document.getElementById('chk-'+k);if(el)el.classList.remove('checked','ie-adj');});
@@ -1939,8 +2091,8 @@ function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=do
     if(de) line.schedDate=de.value;
     if(ae) line.activated=ae.checked;
   });
-  c.rev = eBaseRev + (c.xm * XM_LINE_REV);c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.cbDone=document.getElementById('e-cb-done').checked;c.ie=c.ie||false;c.bulk=c.bulk||false;c.noXmReason=c.noXmReason||'';c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();}
-function delCall(id){if(editingId===id)closeEdit();deleteCallFromSheets(id);calls=calls.filter(c=>c.id!==id);render();updateStats();}
+  c.rev = eBaseRev + (c.xm * XM_LINE_REV);c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.ie=c.ie||false;c.bulk=c.bulk||false;c.noXmReason=c.noXmReason||'';c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();saveCallsCache();}
+function delCall(id){if(editingId===id)closeEdit();deleteCallFromSheets(id);calls=calls.filter(c=>c.id!==id);render();updateStats();saveCallsCache();}
 function markCbDone(id){const c=calls.find(x=>x.id===id);if(c){c.cbDone=true;const el=document.getElementById('e-cb-done');if(el)el.checked=true;render();checkAlerts();upsertCallToSheets(c);}}
 function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}if(editingId)updateEditRevTotal(editingId);}
 function eToggleProd(k){editState[k]=!editState[k];const el=document.getElementById('e-chk-'+k);if(!el)return;const ie=k==='chsi'&&(document.getElementById('e-reason')?.value||'')==='IE (.75)';el.className='e-chk'+(k==='chsi'?(editState.chsi?(ie?' ie':' on'):''):(editState[k]?' on':''));}
@@ -2172,7 +2324,7 @@ function setLogFilter(val){
   render();
 }
 
-function render(){const tb=document.getElementById('log-body');const filtered=getFilteredCalls();document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="8" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}if(editingId&&window._editFromAlert){const ec=filtered.find(c=>c.id===editingId);const oc=filtered.filter(c=>c.id!==editingId);tb.innerHTML=(ec?renderEditRow(ec):'')+oc.map(renderReadRow).join('');}else{tb.innerHTML=filtered.map(c=>c.id===editingId?renderEditRow(c):renderReadRow(c)).join('');}}
+function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=_session?allFiltered.filter(function(c){return !c.agentId||c.agentId===_session.agentId;}):allFiltered;document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="8" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}if(editingId&&window._editFromAlert){const ec=filtered.find(c=>c.id===editingId);const oc=filtered.filter(c=>c.id!==editingId);tb.innerHTML=(ec?renderEditRow(ec):'')+oc.map(renderReadRow).join('');}else{tb.innerHTML=filtered.map(c=>c.id===editingId?renderEditRow(c):renderReadRow(c)).join('');}}
 
 function pctCls(p){return p>=1?'good':p>=.7?'ok':'warn';}
 
@@ -2294,9 +2446,9 @@ function setStatsView(v){
 function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d=new Date(sched+'T00:00:00');const r=d>=fi.fiscalStart&&d<fi.fiscalEnd;return r;}
 function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=fi.fiscalEnd;const ne=new Date(ns.getFullYear(),ns.getMonth()+1,22);return{fiscalStart:ns,fiscalEnd:ne};}
 function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<nf.fiscalEnd;}
-function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls;const _mRev=mc.reduce((s,c)=>s+c.rev,0),_mRgus=mc.reduce((s,c)=>s+c.rgus,0),_mXm=mc.reduce((s,c)=>s+c.xm,0),_mTv=mc.filter(c=>c.tv).length,_mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),_mCdv=mc.filter(c=>c.cdv).length,_mXh=mc.filter(c=>c.xh).length;const _allFiscal=calls.filter(c=>inFiscal(c.ts.toISOString().slice(0,10)));const mN=statsView==='pipeline'?0:_allFiscal.length,mSales=statsView==='pipeline'?0:mc.filter(c=>c.hasSale).length;
+function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inActiveFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls.filter(c=>inActiveFiscalTs(c.ts));const _mRev=mc.reduce((s,c)=>s+c.rev,0),_mRgus=mc.reduce((s,c)=>s+c.rgus,0),_mXm=mc.reduce((s,c)=>s+c.xm,0),_mTv=mc.filter(c=>c.tv).length,_mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),_mCdv=mc.filter(c=>c.cdv).length,_mXh=mc.filter(c=>c.xh).length;const _allFiscal=calls.filter(c=>inActiveFiscalTs(c.ts));const mN=statsView==='pipeline'?0:_allFiscal.length,mSales=statsView==='pipeline'?0:mc.filter(c=>c.hasSale).length;
 const _apCB=statsView==='installs';const mRev=_mRev-(_apCB?CB.rev:0),mXm=_mXm-(_apCB?CB.xm:0),mTv=_mTv-(_apCB?CB.tv:0),mChsi=_mChsi-(_apCB?CB.chsi:0),mCdv=_mCdv-(_apCB?CB.cdv:0),mXh=_mXh-(_apCB?CB.xh:0),mRgus=_mRgus-(_apCB?((CB.xm>0?1:0)+CB.tv+CB.chsi+CB.cdv+CB.xh):0);document.getElementById('m-rev').textContent=(mRev<0?'-$'+Math.abs(mRev).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+mRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,RGU_GOAL);document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}if(document.getElementById('blank-call-confirm').style.display!=='none')return;if(e.target.tagName!=='BUTTON')logCall();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}}});
 
 (function(){
   var W=720, H=900;
@@ -2336,16 +2488,35 @@ function getFiscalMonth(){
   const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
   return names[fiscalMonth]+' '+fiscalYear;
 }
-function getFiscalKey(){
-  // Returns a storage key scoped to the current fiscal month e.g. 'xcl_goals_March2026'
-  return 'xcl_goals_'+getFiscalMonth().replace(' ','');
+function getFiscalKey(type, cap, month){
+  const t = type || _userCallType || 'acq';
+  const c = cap   || _userCapLevel || 1;
+  const m = month || getFiscalMonth();
+  return 'xcl_goals_'+t+'_cap'+c+'_'+m.replace(' ','');
 }
 
+
+const CAP_GOAL_DEFAULTS = {
+  acq: {
+    1: {rev:3870, xm:10, tv:20, chsi:79, cdv:0, xh:0},
+    2: {rev:4870, xm:11, tv:21, chsi:80, cdv:1, xh:0},
+    3: {rev:5870, xm:12, tv:22, chsi:81, cdv:2, xh:1},
+    4: {rev:6870, xm:13, tv:23, chsi:82, cdv:3, xh:2},
+  },
+  mov: {
+    1: {rev:3870, xm:10, tv:20, chsi:79, cdv:0, xh:0},
+    2: {rev:4870, xm:11, tv:21, chsi:80, cdv:1, xh:0},
+    3: {rev:5870, xm:12, tv:22, chsi:81, cdv:2, xh:1},
+    4: {rev:6870, xm:13, tv:23, chsi:82, cdv:3, xh:2},
+  }
+};
+function getCapDefaults(){ return (CAP_GOAL_DEFAULTS[_userCallType]||CAP_GOAL_DEFAULTS.acq)[_userCapLevel]||CAP_GOAL_DEFAULTS.acq[4]; }
 const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cbTv:0,cbChsi:0,cbCdv:0,cbXh:0,rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbxOwwNu4GuENLqy8NIyLIkn8EPIxKprI8-ZsgrIic_XLscg3Gv_RpFv_YE4fi1e1yFo/exec'};
 function loadSettings(){
   const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
   const g=JSON.parse(localStorage.getItem(getFiscalKey())||'{}');
-  return Object.assign({},DEFAULTS,s,g);
+  const capDef=getCapDefaults();
+  return Object.assign({},DEFAULTS,capDef,s,g);
 }
 function applySettings(s){
   window._schedule = s.schedule||'5x8';
@@ -2427,10 +2598,7 @@ function toggleSettings(){
     document.getElementById('sched-4x10').classList.toggle('active', sch==='4x10');
     const wd = Array.isArray(s.workDays) ? s.workDays : [1,2,3,4,5];
     [0,1,2,3,4,5,6].forEach(function(d){ const el=document.getElementById('wd-'+d); if(el) el.checked=wd.includes(d); });
-    const cw=localStorage.getItem('xcl_width')||'wide';
-    document.getElementById('wb-regular').classList.toggle('active',cw==='regular');
-    document.getElementById('wb-wide').classList.toggle('active',cw==='wide');
-  }
+    }
 }
 function saveSettings(){
   const s={
@@ -2463,8 +2631,18 @@ function saveSettings(){
   };
   const globalFields = Object.assign({},s);
   ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh'].forEach(k=>delete globalFields[k]);
+  // Build save key using selected fiscal month + current type+cap
   const selFiscal = document.getElementById('s-fiscal-month');
-  const saveKey = selFiscal ? selFiscal.value : getFiscalKey();
+  const selMonth  = selFiscal ? selFiscal.value : null;
+  // Extract month label from the old-style key if needed, then build type+cap key
+  let saveKey;
+  if(selMonth && selMonth !== getFiscalKey()){
+    // selMonth is like xcl_goals_March2026 — extract month portion
+    const monthPart = selMonth.replace(/^xcl_goals_([a-z]+_cap[1-4]_)?/, '');
+    saveKey = 'xcl_goals_' + _userCallType + '_cap' + _userCapLevel + '_' + monthPart;
+  } else {
+    saveKey = getFiscalKey();
+  }
   localStorage.setItem(saveKey, JSON.stringify(fiscalFields));
   localStorage.setItem('xcl_settings',JSON.stringify(globalFields));
   saveColorSettings();
@@ -2478,7 +2656,10 @@ function saveSettings(){
   updateStats();
   buildCalendar && updatePace && updatePace();
   const btn=document.querySelector('.settings-save');
+  const typeLabel = _userCallType === 'acq' ? 'Acquisition' : 'Movers';
+  const capLabels = {1:'New Hire',2:'Associate',3:'Specialist',4:'Professional'};
   btn.textContent='✓ Saved!';btn.classList.add('saved');
+  _showToast('✓ Goals saved for ' + typeLabel + ' · Cap ' + _userCapLevel + ' (' + (capLabels[_userCapLevel]||'') + ')', 'ok', 3000);
   setTimeout(()=>{btn.textContent='✓ Save Settings';btn.classList.remove('saved');},1200);
 }
 function resetSettings(){
@@ -2537,43 +2718,15 @@ function liveColor(varName, value){
 }
 
 function applyWidth(w){
-  const wide=w==='wide';
-  const px=wide?'1080px':'720px';
-  document.body.style.minWidth=px;
-  document.body.style.maxWidth=px;
-  const btn=document.getElementById('back-to-top');
-  if(btn)btn.style.right='calc(50% - '+(wide?524:344)+'px)';
-  localStorage.setItem('xcl_width',w);
-  document.getElementById('wb-regular').classList.toggle('active',!wide);
-  document.getElementById('wb-wide').classList.toggle('active',wide);
-  // Refit text and reposition panels after layout reflow
-  setTimeout(() => {
-    fitPlayDisplay();
-    fitNosaleDisplay();
-    if(typeof updateCbDisplay === 'function') updateCbDisplay();
-    // Close and reopen nosale panel if open so pills re-render fresh
-    if(_nsPanelOpen){
-      const panel = document.getElementById('nosale-panel');
-      const saleDisp = document.getElementById('sale-display');
-      if(panel && saleDisp){
-        const tog3 = document.getElementById('ns-toggle');
-        if(tog3) positionNsPanel(tog3);
-        renderNsPanel();
-      }
-    }
-    // Reposition CB panel if open
-    if(cbOpen){
-      const cbPanel = document.getElementById('cb-panel');
-      const cbBtn   = document.getElementById('cb-toggle');
-      if(cbPanel && cbBtn){
-        const rect = cbBtn.getBoundingClientRect();
-        cbPanel.style.left   = rect.left + 'px';
-        cbPanel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
-      }
-    }
-  }, 50);
+  // Fixed at 720px
+  document.body.style.minWidth = '720px';
+  document.body.style.maxWidth = '720px';
+  const btn = document.getElementById('back-to-top');
+  if(btn) btn.style.right = 'calc(50% - 344px)';
+  const reg = document.getElementById('wb-regular');
+  if(reg) reg.classList.add('active');
 }
-(function(){applyWidth(localStorage.getItem('xcl_width')||'wide');})();
+(function(){applyWidth('regular');})();
 
 function applyPreset(name){
   const p=PRESETS[name];
@@ -2624,10 +2777,21 @@ function markActivePreset(name){
 })();
 
 (function(){
+
   const seed3=[];
   seed3.forEach(function(c){c.ts=new Date(c.ts);calls.push(c);});
-  calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
-  render();updateStats();buildFilterOptions();
+  // Load from local cache first for instant display
+  const cached = loadCallsCache();
+  if(cached.length){
+    calls = cached;
+    calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
+    render();updateStats();buildFilterOptions();
+    setSheetsStatus('\u21bb Loading from Sheets\u2026', 'var(--text3)');
+  } else {
+    render();updateStats();buildFilterOptions();
+  }
+  // Defer dropdown until after sheets sync
+  // buildFiscalHistoryDropdown called after loadFromSheets completes
 })();
 
 /* ── Outcome editor ── */
@@ -2939,7 +3103,7 @@ function _syncVerify(expectedTotal, pushFailed) {
           if (!exists) calls.push(sc);
         });
         calls.sort(function(a, b) { return new Date(b.ts) - new Date(a.ts); });
-        render(); updateStats(); buildFilterOptions();
+        render(); updateStats(); buildFilterOptions(); saveCallsCache(); buildFiscalHistoryDropdown();
         setTimeout(_syncHide, 4000);
       } else {
         // Some calls didn't land — retry the missing ones
@@ -3053,6 +3217,8 @@ function loadFromSheets(){
 
     calls = [...localMap.values()].sort((a,b) => new Date(b.ts) - new Date(a.ts));
     render(); updateStats(); buildFilterOptions();
+    saveCallsCache();
+    buildFiscalHistoryDropdown();
 
     _syncShow('Sync complete',
       '\u2713 ' + calls.length + ' calls loaded' +
@@ -4206,7 +4372,7 @@ function updatePtoPreview(){
 }
 
 function switchStab(t){
-  ['display','goals','data','outcomes','bugs'].forEach(function(id){
+  ['display','goals','data','outcomes','bugs','users'].forEach(function(id){
     document.getElementById('stab-'+id).classList.toggle('active', id===t);
     document.getElementById('stabp-'+id).classList.toggle('active', id===t);
   });
@@ -4295,14 +4461,21 @@ function updateGoalsViewingNotice(){
 }
 
 function loadGoalsForFiscalMonth(storageKey){
+  // Normalize: if old format key passed, remap to type+cap key
+  if(storageKey && !storageKey.includes('_cap')){
+    const monthPart = storageKey.replace('xcl_goals_','');
+    storageKey = 'xcl_goals_'+_userCallType+'_cap'+_userCapLevel+'_'+monthPart;
+  }
   const stored = JSON.parse(localStorage.getItem(storageKey)||'{}');
-  const merged = Object.assign({}, DEFAULTS, stored);
-  document.getElementById('s-rev').value   = merged.rev;
-  document.getElementById('s-xm').value    = merged.xm;
-  document.getElementById('s-tv').value    = merged.tv;
-  document.getElementById('s-chsi').value  = merged.chsi;
-  document.getElementById('s-cdv').value   = merged.cdv;
-  document.getElementById('s-xh').value    = merged.xh;
+  // Use cap defaults as base, fall back to DEFAULTS if cap not set
+  const capDef = getCapDefaults();
+  const merged = Object.assign({}, DEFAULTS, capDef, stored);
+  document.getElementById('s-rev').value   = merged.rev||'';
+  document.getElementById('s-xm').value    = merged.xm||'';
+  document.getElementById('s-tv').value    = merged.tv||'';
+  document.getElementById('s-chsi').value  = merged.chsi||'';
+  document.getElementById('s-cdv').value   = merged.cdv||'';
+  document.getElementById('s-xh').value    = merged.xh||'';
   document.getElementById('s-pto').value   = merged.ptoHours||0;
   document.getElementById('s-cb-rev').value  = merged.cbRev||0;
   document.getElementById('s-cb-xm').value   = merged.cbXm||0;
@@ -4310,6 +4483,14 @@ function loadGoalsForFiscalMonth(storageKey){
   document.getElementById('s-cb-chsi').value = merged.cbChsi||0;
   document.getElementById('s-cb-cdv').value  = merged.cbCdv||0;
   document.getElementById('s-cb-xh').value   = merged.cbXh||0;
+  // Apply to live stats immediately
+  GOALS.rev=merged.rev; GOALS.xm=merged.xm; GOALS.tv=merged.tv;
+  GOALS.chsi=merged.chsi; GOALS.cdv=merged.cdv; GOALS.xh=merged.xh;
+  CB.rev=merged.cbRev||0; CB.xm=merged.cbXm||0; CB.tv=merged.cbTv||0;
+  CB.chsi=merged.cbChsi||0; CB.cdv=merged.cbCdv||0; CB.xh=merged.cbXh||0;
+  const rgu=GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;
+  const lbl=document.getElementById('m-rgus-lbl'); if(lbl) lbl.textContent='of '+rgu;
+  updateStats();
   updatePtoPreview();
   updateGoalsViewingNotice();
 }
@@ -4599,7 +4780,6 @@ function migrateSettings(old){
 window.addEventListener('scroll', function(){
   if(_nsState === 'closed') return;
   const panel   = document.getElementById('nosale-panel');
-  const togNoxm = document.getElementById('ns-toggle-noxm');
   const tog     = document.getElementById('ns-toggle');
   const anchor = tog;
   if(!anchor || !panel) return;
@@ -5035,9 +5215,742 @@ function updateEditRevTotal(callId){
   if(totEl)   totEl.textContent   = '$'+total.toFixed(2);
 }
 
+
+function getFiscalInfoForDate(date){
+  // Get fiscal period containing this date
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  let fStart, fEnd;
+  if(day >= 22){
+    fStart = new Date(year, month, 22);
+    fEnd   = new Date(year, month+1, 22);
+  } else {
+    fStart = new Date(year, month-1, 22);
+    fEnd   = new Date(year, month, 22);
+  }
+  const names = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const label = names[fEnd.getMonth()] + ' ' + fEnd.getFullYear();
+  const key   = 'xcl_goals_' + label.replace(' ','');
+  return { fiscalStart: fStart, fiscalEnd: fEnd, label, key };
+}
+
+function buildFiscalHistoryDropdown(){
+  const sel = document.getElementById('fiscal-history-sel');
+  if(!sel) return;
+  const seen = new Map();
+
+  // 1. Scan localStorage for any xcl_goals_ keys (past months that had goals set)
+  for(let i = 0; i < localStorage.length; i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith('xcl_goals_'+_userCallType+'_cap'+_userCapLevel+'_')){
+      // Parse the month/year from the key e.g. xcl_goals_March2026
+      const label = k.replace('xcl_goals_','').replace(/([A-Z])/,' $1').trim();
+      // Try to reconstruct fiscal start/end from label
+      const parts = k.replace('xcl_goals_','').match(/([A-Za-z]+)(\d{4})/);
+      if(parts){
+        const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const mIdx = names.indexOf(parts[1]);
+        const yr   = parseInt(parts[2]);
+        if(mIdx >= 0){
+          const fEnd   = new Date(yr, mIdx, 22);
+          const fStart = new Date(yr, mIdx-1, 22);
+          seen.set(k, {fiscalStart: fStart, fiscalEnd: fEnd, label: parts[1]+' '+yr, key: k});
+        }
+      }
+    }
+  }
+
+  // 2. Also scan calls for any months not yet in storage
+  calls.forEach(c => {
+    const fi = getFiscalInfoForDate(c.ts instanceof Date ? c.ts : new Date(c.ts));
+    if(!seen.has(fi.key)) seen.set(fi.key, fi);
+  });
+
+  // 3. Always include current month
+  const current = getFiscalInfo();
+  const curKey  = 'xcl_goals_' + getFiscalMonth().replace(' ','');
+  seen.set(curKey, {fiscalStart:current.fiscalStart, fiscalEnd:current.fiscalEnd, label:getFiscalMonth(), key:curKey});
+
+  // Sort descending by fiscal start
+  const sorted = [...seen.values()].sort((a,b) => b.fiscalStart - a.fiscalStart);
+
+  const prevSel = sel.value || curKey;
+  sel.innerHTML = sorted.map(fi =>
+    '<option value="' + fi.key + '">' +
+    (fi.key === curKey ? 'Month To Date' : fi.label) + '</option>'
+  ).join('');
+
+  sel.value = prevSel;
+  if(!sel.value) sel.value = curKey;
+}
+
+function setHistoricalFiscal(key){
+  const curKey = getFiscalKey();
+  const _fc = document.getElementById('new-call-form-card');
+  if(key === curKey){
+    _historicalFiscal = null;
+    if(_fc) _fc.style.display = '';
+    const s = loadSettings();
+    GOALS.rev=s.rev;GOALS.xm=s.xm;GOALS.tv=s.tv;GOALS.chsi=s.chsi;GOALS.cdv=s.cdv;GOALS.xh=s.xh;
+  } else {
+    if(_fc) _fc.style.display = 'none';
+    // Build fiscal info directly from the key (e.g. xcl_goals_March2026)
+    const parts = key.replace('xcl_goals_','').match(/([A-Za-z]+)(\d{4})/);
+    if(parts){
+      const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const mIdx = names.indexOf(parts[1]);
+      const yr   = parseInt(parts[2]);
+      if(mIdx >= 0){
+        const fEnd   = new Date(yr, mIdx, 22);
+        const fStart = new Date(yr, mIdx-1, 22);
+        _historicalFiscal = {fiscalStart: fStart, fiscalEnd: fEnd, label: parts[1]+' '+yr, key};
+      }
+    }
+    // Load goals for this month from storage
+    const storedGoals = JSON.parse(localStorage.getItem(key) || '{}');
+    const s = loadSettings(); // fallback to current defaults
+    GOALS.rev  = storedGoals.rev  || s.rev;
+    GOALS.xm   = storedGoals.xm   || s.xm;
+    GOALS.tv   = storedGoals.tv   || s.tv;
+    GOALS.chsi = storedGoals.chsi || s.chsi;
+    GOALS.cdv  = storedGoals.cdv  || s.cdv;
+    GOALS.xh   = storedGoals.xh   || s.xh;
+  }
+  updateStats();
+}
+
+function getActiveFiscalInfo(){
+  return _historicalFiscal || getFiscalInfo();
+}
+
+function inActiveFiscal(sched){
+  if(!sched) return false;
+  const fi = getActiveFiscalInfo();
+  const d  = new Date(sched+'T00:00:00');
+  return d >= fi.fiscalStart && d < fi.fiscalEnd;
+}
+
+function inActiveFiscalTs(ts){
+  const fi = getActiveFiscalInfo();
+  return ts >= fi.fiscalStart && ts < fi.fiscalEnd;
+}
+
+function saveCallsCache(){
+  try {
+    localStorage.setItem(XCL_CALLS_KEY, JSON.stringify(calls.map(c => Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts}))));
+  } catch(e) { console.warn('Cache save failed:', e); }
+}
+function loadCallsCache(){
+  try {
+    const raw = localStorage.getItem(XCL_CALLS_KEY);
+    if(!raw) return [];
+    return JSON.parse(raw).map(normalizeCall);
+  } catch(e) { console.warn('Cache load failed:', e); return []; }
+}
+
+function setTooltips(on){
+  document.body.classList.toggle('tips-on', on);
+  localStorage.setItem('xcl_tips', on ? '1' : '0');
+  const el = document.getElementById('tips-toggle');
+  if(el) el.checked = on;
+}
+(function(){
+  const on = localStorage.getItem('xcl_tips') !== '0';
+  document.body.classList.toggle('tips-on', on);
+  setTimeout(() => { const el=document.getElementById('tips-toggle'); if(el) el.checked=on; }, 0);
+})();
+
+(function(){
+  const TAB_FIELDS = ['f-acct','f-cb-phone','f-cb-name'];
+  TAB_FIELDS.forEach(function(id, i){
+    document.addEventListener('DOMContentLoaded', function(){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          const next = document.getElementById(TAB_FIELDS[(i+1) % TAB_FIELDS.length]);
+          if(next) next.focus();
+        }
+      });
+    });
+  });
+})();
+
+(function(){
+  var _tip = null;
+  var _tipEl = null;
+  var _tipTimer = null;
+
+  function showTip(el, txt){
+    if(!_tip){
+      _tip = document.createElement('div');
+      _tip.id = 'global-tip';
+      _tip.style.cssText = 'position:fixed;z-index:99999;background:#0d1627;color:var(--text,#e2e8f0);font-family:sans-serif;font-size:11px;line-height:1.4;padding:6px 10px;border-radius:7px;border:1px solid #2e3d56;white-space:pre-line;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.4);pointer-events:none;max-width:260px;min-width:100px;transition:opacity .15s;opacity:0';
+      document.body.appendChild(_tip);
+    }
+    var fullTxt = txt;
+    if(document.body.classList.contains('debug-tips-on')){
+      var dbg = el.getAttribute('data-debug');
+      if(!dbg) dbg = '[' + el.tagName.toLowerCase() + (el.id ? '#'+el.id : '') + ']';
+      fullTxt = txt + '\n\u2014\n[dbg] ' + dbg;
+    }
+    _tip.textContent = fullTxt;
+    var r = el.getBoundingClientRect();
+    var tw = Math.min(260, Math.max(100, fullTxt.length * 5.5));
+    var left = r.left + r.width/2 - tw/2;
+    var top  = r.top - _tip.offsetHeight - 8;
+    if(left < 4) left = 4;
+    if(left + tw > window.innerWidth - 4) left = window.innerWidth - tw - 4;
+    if(top < 4) top = r.bottom + 8;
+    _tip.style.left = left + 'px';
+    _tip.style.top  = top  + 'px';
+    _tip.style.opacity = '1';
+  }
+
+  document.addEventListener('mouseover', function(e){
+    var el = e.target.closest('[data-tip]');
+    if(!el) return;
+    var txt = el.getAttribute('data-tip');
+    if(!txt || !document.body.classList.contains('tips-on')) return;
+    if(_tipEl === el) return;
+    _tipEl = el;
+    clearTimeout(_tipTimer);
+    _tipTimer = setTimeout(function(){ showTip(el, txt); }, 4000);
+  });
+
+  document.addEventListener('mouseout', function(e){
+    var el = e.target.closest('[data-tip]');
+    if(el && !el.contains(e.relatedTarget)){
+      clearTimeout(_tipTimer);
+      _tipEl = null;
+      if(_tip) _tip.style.opacity = '0';
+    }
+  });
+
+  document.addEventListener('click', function(){ clearTimeout(_tipTimer); if(_tip) _tip.style.opacity='0'; });
+  document.addEventListener('scroll', function(){ clearTimeout(_tipTimer); if(_tip) _tip.style.opacity='0'; }, true);
+})();
+
+function setUserRole(type){
+  _userCallType = type;
+  saveUserProfile();
+  updateRoleBtns();
+  reloadGoalsForRole();
+}
+
+function setUserCap(level){
+  _userCapLevel = level;
+  saveUserProfile();
+  updateRoleBtns();
+  reloadGoalsForRole();
+}
+
+function saveUserProfile(){
+  localStorage.setItem('xcl_user_profile', JSON.stringify({callType:_userCallType, capLevel:_userCapLevel}));
+}
+
+function loadUserProfile(){
+  const p = JSON.parse(localStorage.getItem('xcl_user_profile')||'{}');
+  _userCallType = p.callType || 'acq';
+  _userCapLevel = parseInt(p.capLevel) || 1;
+}
+
+function updateRoleBtns(){
+  const acqBtn = document.getElementById('role-acq');
+  const movBtn = document.getElementById('role-mov');
+  if(acqBtn){
+    acqBtn.style.background = _userCallType==='acq' ? 'var(--blue-lt)' : 'var(--surface)';
+    acqBtn.style.color      = _userCallType==='acq' ? 'var(--blue)'    : 'var(--text3)';
+    acqBtn.style.fontWeight = _userCallType==='acq' ? '700' : '600';
+  }
+  if(movBtn){
+    movBtn.style.background = _userCallType==='mov' ? 'var(--teal-lt)' : 'var(--surface)';
+    movBtn.style.color      = _userCallType==='mov' ? 'var(--teal)'    : 'var(--text3)';
+    movBtn.style.fontWeight = _userCallType==='mov' ? '700' : '600';
+  }
+  const capSel = document.getElementById('s-cap-level');
+  if(capSel) capSel.value = String(_userCapLevel);
+}
+
+function reloadGoalsForRole(){
+  const s = loadSettings();
+  applySettings(s);
+  // Update placeholders to cap defaults
+  const cd = getCapDefaults();
+  const plMap = {rev:cd.rev, xm:cd.xm, tv:cd.tv, chsi:cd.chsi, cdv:cd.cdv, xh:cd.xh};
+  Object.entries(plMap).forEach(([k,v]) => {
+    const el = document.getElementById('s-'+k);
+    if(el) el.placeholder = String(v);
+  });
+  loadGoalsForFiscalMonth(getFiscalKey());
+  updateStats();
+  buildFiscalHistoryDropdown();
+}
+
+// Init user profile on load
+(function(){
+  loadUserProfile();
+  setTimeout(updateRoleBtns, 0);
+})();
+
+function setDebugTips(on){
+  document.body.classList.toggle('debug-tips-on', on);
+  localStorage.setItem('xcl_debug_tips', on ? '1' : '0');
+  const el = document.getElementById('debug-tips-toggle');
+  if(el) el.checked = on;
+}
+(function(){
+  const on = localStorage.getItem('xcl_debug_tips') === '1';
+  if(on) document.body.classList.add('debug-tips-on');
+  setTimeout(function(){ const el=document.getElementById('debug-tips-toggle'); if(el) el.checked=on; }, 0);
+})();
+
+// ── Auth ─────────────────────────────────────────────────────────────────
+function showLoginScreen(){
+  const ls = document.getElementById('login-screen');
+  if(ls){ ls.style.display='flex'; }
+  const main = document.querySelector('.main');
+  if(main) main.style.visibility='hidden';
+}
+
+function hideLoginScreen(){
+  const ls = document.getElementById('login-screen');
+  if(ls) ls.style.display='none';
+  const main = document.querySelector('.main');
+  if(main) main.style.visibility='visible';
+}
+
+function doLogin(){
+  const agentId = (document.getElementById('login-agent-id').value||'').trim().toUpperCase();
+  const pin     = (document.getElementById('login-pin').value||'').trim();
+  const errEl   = document.getElementById('login-error');
+  if(!agentId){ showLoginError('Please enter your Agent ID'); return; }
+  if(!pin){     showLoginError('Please enter your PIN');     return; }
+
+  // Check against cached user list first, then try sheets
+  const user = _userList.find(function(u){ return u.agentId.toUpperCase()===agentId; });
+  if(user){
+    if(String(user.pin) !== String(pin)){ showLoginError('Incorrect PIN'); return; }
+    startSession(user);
+  } else {
+    // Try loading from sheets
+    showLoginError('Looking up account...');
+    sheetsGet({action:'getUser', agentId:agentId}).then(function(d){
+      if(d.status==='ok' && d.user){
+        if(String(d.user.pin) !== String(pin)){ showLoginError('Incorrect PIN'); return; }
+        _userList.push(d.user);
+        startSession(d.user);
+      } else {
+        showLoginError('Agent ID not found. Contact your supervisor.');
+      }
+    }).catch(function(){
+      // Offline fallback — check localStorage cache
+      const cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
+      const cu = cached.find(function(u){ return u.agentId.toUpperCase()===agentId; });
+      if(cu && String(cu.pin)===String(pin)){
+        startSession(cu);
+      } else {
+        showLoginError('Cannot verify — check your connection.');
+      }
+    });
+  }
+}
+
+function showLoginError(msg){
+  const el = document.getElementById('login-error');
+  if(el){ el.textContent=msg; el.style.display='block'; }
+}
+
+function startSession(user){
+  _session = user;
+  _userCallType = user.callType || 'acq';
+  _userCapLevel = parseInt(user.capLevel) || 1;
+  localStorage.setItem('xcl_session', JSON.stringify({agentId:user.agentId, ts:Date.now()}));
+  // Cache user locally
+  const cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
+  const idx = cached.findIndex(function(u){ return u.agentId===user.agentId; });
+  if(idx>=0) cached[idx]=user; else cached.push(user);
+  localStorage.setItem('xcl_user_cache', JSON.stringify(cached));
+  hideLoginScreen();
+  applySessionUI();
+  loadFromSheets();
+  saveUserProfile();
+  updateRoleBtns();
+  reloadGoalsForRole();
+}
+
+function applySessionUI(){
+  if(!_session) return;
+  const capLabels={1:'New Hire',2:'Associate',3:'Specialist',4:'Professional'};
+  const typeLabel=_session.callType==='mov'?'MOV':'ACQ';
+  const badge = document.getElementById('session-badge');
+  if(badge){
+    badge.textContent = (_session.name||_session.agentId) + ' · ' + typeLabel + ' Cap' + _session.capLevel;
+    badge.style.display='inline-flex';
+    badge.setAttribute('data-tip', 'Signed in as '+(_session.name||_session.agentId)+' ('+_session.agentId+') | Role: '+_session.role+' | Click to sign out');
+  }
+  // Show/hide team tab and users tab
+  const teamBtn = document.getElementById('tab-team');
+  if(teamBtn) teamBtn.style.display = (_session.role==='supervisor'||_session.role==='admin') ? '' : 'none';
+  const usersBtn = document.getElementById('stab-users');
+  if(usersBtn) usersBtn.style.display = _session.role==='admin' ? '' : 'none';
+}
+
+function showLogoutConfirm(){
+  const el = document.getElementById('logout-confirm');
+  if(el) el.style.display='flex';
+}
+
+function doLogout(){
+  _session = null;
+  localStorage.removeItem('xcl_session');
+  localStorage.removeItem('xcl_calls_cache');
+  calls = [];
+  render();
+  document.getElementById('logout-confirm').style.display='none';
+  const badge = document.getElementById('session-badge');
+  if(badge) badge.style.display='none';
+  document.getElementById('login-agent-id').value='';
+  document.getElementById('login-pin').value='';
+  document.getElementById('login-error').style.display='none';
+  showLoginScreen();
+}
+
+// ── Filter calls by session user ──────────────────────────────────────────
+function getSessionCalls(){
+  if(!_session) return [];
+  return calls.filter(function(c){ return !c.agentId || c.agentId===_session.agentId; });
+}
+
+// ── Team Dashboard ────────────────────────────────────────────────────────
+var _teamData = {}; // {agentId: [calls]}
+
+function loadTeamData(){
+  if(!_session || (_session.role!=='supervisor' && _session.role!=='admin')) return;
+  _showToast('Loading team data...', 'ok', 2000);
+  sheetsGet({action:'loadTeam', supervisorId:_session.agentId, role:_session.role})
+  .then(function(d){
+    if(d.status==='ok' && d.calls){
+      _teamData = {};
+      d.calls.forEach(function(c){
+        c.ts = new Date(c.ts);
+        var aid = c.agentId||'unknown';
+        if(!_teamData[aid]) _teamData[aid]=[];
+        _teamData[aid].push(c);
+      });
+      buildTeamFiscalDropdown();
+      renderTeamDashboard();
+    }
+  })
+  .catch(function(err){ _showToast('Team load failed: '+err.message,'warn',3000); });
+}
+
+function buildTeamFiscalDropdown(){
+  const sel = document.getElementById('team-fiscal-sel');
+  if(!sel) return;
+  const fi = getFiscalInfo();
+  const curKey = getFiscalMonth();
+  const seen = new Set([curKey]);
+  Object.values(_teamData).forEach(function(arr){
+    arr.forEach(function(c){
+      const fm = getFiscalInfoForDate(c.ts).label;
+      seen.add(fm);
+    });
+  });
+  const sorted = [...seen].sort(function(a,b){
+    return new Date(b.replace(' ',' 1, ')) - new Date(a.replace(' ',' 1, '));
+  });
+  sel.innerHTML = sorted.map(function(m){
+    return '<option value="'+m+'">'+(m===curKey?'Month To Date':m)+'</option>';
+  }).join('');
+}
+
+function renderTeamDashboard(){
+  const sel = document.getElementById('team-fiscal-sel');
+  const selectedMonth = sel ? sel.value : getFiscalMonth();
+
+  // Get reps this supervisor manages
+  const myReps = _userList.filter(function(u){
+    return u.supervisorId===_session.agentId || _session.role==='admin';
+  });
+
+  const aggEl = document.getElementById('team-agg-stats');
+  const cardsEl = document.getElementById('team-rep-cards');
+  if(!aggEl || !cardsEl) return;
+
+  // Aggregate across all reps
+  var totCalls=0, totSales=0, totRev=0, totRgus=0, totXm=0;
+
+  var repRows = myReps.map(function(rep){
+    var repCalls = (_teamData[rep.agentId]||[]).filter(function(c){
+      return getFiscalInfoForDate(c.ts).label===selectedMonth;
+    });
+    var sales = repCalls.filter(function(c){ return c.hasSale; });
+    var rev   = repCalls.reduce(function(s,c){ return s+c.rev; },0);
+    var rgus  = repCalls.reduce(function(s,c){ return s+c.rgus; },0);
+    var xm    = repCalls.reduce(function(s,c){ return s+c.xm; },0);
+    totCalls+=repCalls.length; totSales+=sales.length; totRev+=rev; totRgus+=rgus; totXm+=xm;
+    return {rep, repCalls, sales, rev, rgus, xm};
+  });
+
+  // Aggregate bar
+  aggEl.innerHTML = [
+    teamStatCard('Calls', totCalls, ''),
+    teamStatCard('Revenue', '$'+totRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}), ''),
+    teamStatCard('RGUs', totRgus.toFixed(2), ''),
+    teamStatCard('XM Lines', totXm, ''),
+  ].join('');
+
+  // Rep cards
+  cardsEl.innerHTML = repRows.map(function(row){
+    var cr = row.repCalls.length ? (row.sales.length/row.repCalls.length*100).toFixed(0)+'%' : '—';
+    return '<div class="team-rep-card" onclick="(function(e){drillRepDetail(\''+row.rep.agentId+'\');})(event)">' +
+      '<div style="display:flex;align-items:center;gap:10px;flex:1">' +
+        '<div style="width:32px;height:32px;border-radius:8px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue)">'+
+          (row.rep.name||row.rep.agentId).charAt(0).toUpperCase()+
+        '</div>' +
+        '<div>' +
+          '<div style="font-size:12px;font-weight:600;color:var(--text)">'+(row.rep.name||row.rep.agentId)+'</div>' +
+          '<div style="font-size:10px;color:var(--text3)">'+row.rep.agentId+' · '+(row.rep.callType==='mov'?'Movers':'Acquisition')+' Cap'+row.rep.capLevel+'</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:16px;font-family:var(--mono);font-size:11px">' +
+        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">CALLS</div><div style="color:var(--text);font-weight:600">'+row.repCalls.length+'</div></div>' +
+        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">REV</div><div style="color:var(--green);font-weight:600">$'+row.rev.toFixed(0)+'</div></div>' +
+        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">RGUs</div><div style="color:var(--blue);font-weight:600">'+row.rgus.toFixed(2)+'</div></div>' +
+        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">XM</div><div style="color:var(--teal);font-weight:600">'+row.xm+'</div></div>' +
+        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">CR</div><div style="color:var(--amber);font-weight:600">'+cr+'</div></div>' +
+      '</div>' +
+      '<div style="color:var(--text3);font-size:14px;margin-left:8px">›</div>' +
+    '</div>';
+  }).join('') || '<div style="font-size:12px;color:var(--text3);padding:12px 0">No agents assigned. Check team data in settings.</div>';
+}
+
+function teamStatCard(label, val, sub){
+  return '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px">' +
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">'+label+'</div>' +
+    '<div style="font-size:20px;font-weight:700;color:var(--text);margin-top:2px">'+val+'</div>' +
+    (sub?'<div style="font-size:10px;color:var(--text3)">'+sub+'</div>':'') +
+  '</div>';
+}
+
+function drillRepDetail(agentId){
+  const rep = _userList.find(function(u){ return u.agentId===agentId; }) || {agentId};
+  const repCalls = (_teamData[agentId]||[]).sort(function(a,b){ return new Date(b.ts)-new Date(a.ts); });
+  document.getElementById('team-rep-detail-name').textContent = (rep.name||agentId)+' — '+repCalls.length+' calls';
+  const logEl = document.getElementById('team-rep-call-log');
+  logEl.innerHTML = '<table class="log-table" style="width:100%"><thead><tr><th>Time</th><th>Acct</th><th>Sched</th><th>Rev</th><th>RGUs</th><th>Outcome</th><th>Notes</th></tr></thead><tbody>' +
+    repCalls.map(function(c){
+      const ts=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+      const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';
+      return '<tr><td style="font-size:11px">'+ts+'</td><td style="font-size:11px;font-family:var(--mono)">'+((c.acctRaw||c.acct)||'—')+'</td><td style="font-size:11px">'+sc+'</td><td style="font-size:11px;font-family:var(--mono)">'+(c.rev>0?'$'+c.rev.toFixed(2):'—')+'</td><td style="font-size:11px">'+c.rgus+'</td><td><span class="pill '+pillCls(c)+'" style="font-size:10px">'+pillTxt(c)+'</span></td><td style="font-size:11px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis">'+((c.notes||''))+'</td></tr>';
+    }).join('')+'</tbody></table>';
+  document.getElementById('team-rep-detail').style.display='block';
+}
+
+function closeRepDetail(){
+  document.getElementById('team-rep-detail').style.display='none';
+}
+
+// ── User Management ───────────────────────────────────────────────────────
+var _editingUserId = null;
+
+function loadUserList(){
+  sheetsGet({action:'getUsers'}).then(function(d){
+    if(d.status==='ok' && d.users){
+      _userList = d.users;
+      localStorage.setItem('xcl_user_cache', JSON.stringify(_userList));
+      renderUserList();
+    }
+  }).catch(function(err){ _showToast('User load failed: '+err.message,'warn',3000); });
+}
+
+function renderUserList(){
+  var el = document.getElementById('user-list-container');
+  if(!el) return;
+  el.innerHTML='';
+  if(!_userList.length){ el.innerHTML='<div style="font-size:11px;color:var(--text3);padding:8px 0">No users yet. Add one above.</div>'; return; }
+  var roleColors={rep:'var(--text3)',supervisor:'var(--blue)',admin:'var(--amber)'};
+  _userList.forEach(function(u){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;margin-bottom:4px';
+    var info=document.createElement('div'); info.style.flex='1';
+    info.innerHTML='<div style="font-size:12px;font-weight:600;color:var(--text)">'+(u.name||u.agentId)+'<span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:6px">'+u.agentId+'</span></div>'+
+      '<div style="font-size:10px;color:'+(roleColors[u.role]||'var(--text3)')+';margin-top:1px;text-transform:capitalize">'+u.role+' · '+(u.callType==='mov'?'Movers':'Acquisition')+' Cap'+(u.capLevel||1)+(u.supervisorId?' · Sup: '+u.supervisorId:'')+'</div>';
+    var editBtn=document.createElement('button');
+    editBtn.textContent='Edit';
+    editBtn.style.cssText='height:26px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:5px;font-size:10px;color:var(--text2);cursor:pointer';
+    (function(uid){ editBtn.onclick=function(){ editUser(uid); }; })(u.agentId);
+    var delBtn=document.createElement('button');
+    delBtn.textContent='Remove';
+    delBtn.style.cssText='height:26px;padding:0 10px;background:var(--red-lt);border:1px solid rgba(248,113,113,.3);border-radius:5px;font-size:10px;color:var(--red);cursor:pointer;margin-left:4px';
+    (function(uid){ delBtn.onclick=function(){ deleteUser(uid); }; })(u.agentId);
+    row.appendChild(info); row.appendChild(editBtn); row.appendChild(delBtn);
+    el.appendChild(row);
+  });
+}
+
+function showAddUserForm(){
+  _editingUserId = null;
+  document.getElementById('user-form-title').textContent='Add User';
+  ['uf-agent-id','uf-name','uf-pin','uf-supervisor'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('uf-role').value='rep';
+  document.getElementById('uf-call-type').value='acq';
+  document.getElementById('uf-cap').value='1';
+  document.getElementById('uf-agent-id').readOnly=false;
+  document.getElementById('user-form').style.display='block';
+}
+
+function editUser(agentId){
+  const u = _userList.find(function(u){ return u.agentId===agentId; });
+  if(!u) return;
+  _editingUserId = agentId;
+  document.getElementById('user-form-title').textContent='Edit User — '+agentId;
+  document.getElementById('uf-agent-id').value=u.agentId;
+  document.getElementById('uf-agent-id').readOnly=true;
+  document.getElementById('uf-name').value=u.name||'';
+  document.getElementById('uf-pin').value='';
+  document.getElementById('uf-pin').placeholder='Leave blank to keep current PIN';
+  document.getElementById('uf-role').value=u.role||'rep';
+  document.getElementById('uf-call-type').value=u.callType||'acq';
+  document.getElementById('uf-cap').value=String(u.capLevel||1);
+  document.getElementById('uf-supervisor').value=u.supervisorId||'';
+  document.getElementById('user-form').style.display='block';
+}
+
+function saveUserForm(){
+  const agentId=(document.getElementById('uf-agent-id').value||'').trim().toUpperCase();
+  const name=(document.getElementById('uf-name').value||'').trim();
+  const pin=(document.getElementById('uf-pin').value||'').trim();
+  const role=document.getElementById('uf-role').value;
+  const callType=document.getElementById('uf-call-type').value;
+  const capLevel=parseInt(document.getElementById('uf-cap').value);
+  const supervisorId=(document.getElementById('uf-supervisor').value||'').trim().toUpperCase();
+  if(!agentId){ _showToast('Agent ID required','warn',2000); return; }
+  if(!_editingUserId && !pin){ _showToast('PIN required for new users','warn',2000); return; }
+  const user={agentId, name, role, callType, capLevel, supervisorId};
+  if(pin) user.pin=pin;
+  sheetsPost({action:'saveUser', user:JSON.stringify(user)}).then(function(){
+    _showToast('User saved: '+agentId,'ok',2000);
+    document.getElementById('user-form').style.display='none';
+    loadUserList();
+  }).catch(function(err){ _showToast('Save failed: '+err.message,'warn',3000); });
+}
+
+function deleteUser(agentId){
+  if(!confirm('Remove user '+agentId+'? Their call history will remain.')) return;
+  sheetsPost({action:'deleteUser', agentId}).then(function(){
+    _showToast('User removed','ok',2000);
+    loadUserList();
+  }).catch(function(err){ _showToast('Delete failed: '+err.message,'warn',3000); });
+}
+
+// ── Tag calls with agentId on log ─────────────────────────────────────────
+// Patch into doLogCall — agentId added to call object
+
+// ── Init: check session ───────────────────────────────────────────────────
+(function(){
+  const sess = JSON.parse(localStorage.getItem('xcl_session')||'null');
+  const cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
+  _userList = cached;
+  if(sess && sess.agentId){
+    const user = cached.find(function(u){ return u.agentId===sess.agentId; });
+    if(user){
+      _session=user;
+      _userCallType=user.callType||'acq';
+      _userCapLevel=parseInt(user.capLevel)||1;
+      hideLoginScreen();
+      setTimeout(applySessionUI, 50);
+      return;
+    }
+  }
+  checkFirstRun();
+})();
+
+function showSetupWizard(){
+  var wiz = document.getElementById('setup-wizard');
+  var ls  = document.getElementById('login-screen');
+  if(wiz) wiz.style.display='flex';
+  if(ls)  ls.style.display='none';
+}
+
+function hideSetupWizard(){
+  var wiz = document.getElementById('setup-wizard');
+  if(wiz) wiz.style.display='none';
+}
+
+function completeSetup(){
+  var agentId  = (document.getElementById('wiz-agent-id').value||'').trim().toUpperCase();
+  var name     = (document.getElementById('wiz-name').value||'').trim();
+  var pin      = (document.getElementById('wiz-pin').value||'').trim();
+  var pin2     = (document.getElementById('wiz-pin2').value||'').trim();
+  var callType = document.getElementById('wiz-call-type').value;
+  var capLevel = parseInt(document.getElementById('wiz-cap').value);
+  var errEl    = document.getElementById('wiz-error');
+
+  if(!agentId){ showWizError('Agent ID is required'); return; }
+  if(pin.length < 4){ showWizError('PIN must be at least 4 digits'); return; }
+  if(pin !== pin2){ showWizError('PINs do not match'); return; }
+  if(!/^\d+$/.test(pin)){ showWizError('PIN must be numbers only'); return; }
+
+  var adminUser = {
+    agentId:      agentId,
+    name:         name,
+    pin:          pin,
+    role:         'admin',
+    callType:     callType,
+    capLevel:     capLevel,
+    supervisorId: ''
+  };
+
+  // Save locally first
+  var cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
+  cached.push(adminUser);
+  localStorage.setItem('xcl_user_cache', JSON.stringify(cached));
+  _userList = cached;
+
+  // Try to save to Sheets
+  sheetsPost({action:'saveUser', user:JSON.stringify(adminUser)})
+    .catch(function(){ /* Offline OK — saved locally */ });
+
+  hideSetupWizard();
+  startSession(adminUser);
+  _showToast('Admin account created. Add other users in Settings > Users.', 'ok', 4000);
+}
+
+function showWizError(msg){
+  var el = document.getElementById('wiz-error');
+  if(el){ el.textContent=msg; el.style.display='block'; }
+}
+
+// Check on init if we need first-run setup
+// Called after session check fails and no cached users exist
+function checkFirstRun(){
+  var cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
+  if(cached.length === 0){
+    // Try loading from Sheets first
+    sheetsGet({action:'getUsers'}).then(function(d){
+      if(d.status==='ok' && d.users && d.users.length > 0){
+        _userList = d.users;
+        localStorage.setItem('xcl_user_cache', JSON.stringify(_userList));
+        showLoginScreen();
+      } else {
+        showSetupWizard();
+      }
+    }).catch(function(){
+      // No sheets connection — go straight to setup
+      showSetupWizard();
+    });
+  } else {
+    showLoginScreen();
+  }
+}
+
 </script>
 
-<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" data-tip="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
 <div id="cb-panel">
   <div class="cb-panel-title">Schedule Call Back</div>
   <div class="cb-quick-btns">
@@ -5064,6 +5977,113 @@ function updateEditRevTotal(callId){
   <div class="cb-mytime" id="cb-mytime"></div>
 </div>
 <div id="nosale-panel"></div>
+<div id="logout-confirm" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.4);align-items:center;justify-content:center">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;width:260px;text-align:center;display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:14px;font-weight:700;color:var(--text)">Sign Out?</div>
+    <div style="font-size:11px;color:var(--text3)">Your data is saved. You'll need your PIN to sign back in.</div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button onclick="document.getElementById('logout-confirm').style.display='none'" style="height:32px;padding:0 16px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:12px;color:var(--text2);cursor:pointer">Cancel</button>
+      <button onclick="doLogout()" style="height:32px;padding:0 16px;background:var(--red);border:none;border-radius:7px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<div id="login-screen" style="display:none;position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center">
+  <div style="width:320px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:20px">
+    <div style="text-align:center">
+      <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--blue) 0%,#6366f1 100%);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;font-family:var(--mono);margin:0 auto 12px">X</div>
+      <div style="font-size:18px;font-weight:700;color:var(--text)">Xfinity Call Logger</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Sign in to continue</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div>
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Agent ID</label>
+        <input id="login-agent-id" type="text" placeholder="e.g. A12345" autocomplete="off" style="width:100%;height:40px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:14px;color:var(--text);outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'" onkeydown="if(event.key==='Enter')document.getElementById('login-pin').focus()">
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">PIN</label>
+        <input id="login-pin" type="password" placeholder="Enter your PIN" maxlength="6" autocomplete="off" style="width:100%;height:40px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:20px;letter-spacing:.3em;color:var(--text);outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div id="login-error" style="display:none;font-size:11px;color:var(--red);text-align:center;padding:6px;background:var(--red-lt);border-radius:6px"></div>
+      <button onclick="doLogin()" style="height:42px;background:var(--blue);border:none;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;margin-top:2px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Sign In</button>
+    </div>
+    <div style="text-align:center;font-size:10px;color:var(--text3)">Contact your supervisor if you need access</div>
+  </div>
+</div>
+
 <div id="blank-call-confirm"><div class="bcc-title">Log Blank No Sale?</div><div class="bcc-desc">No selections were made. Log this as a No Sale call with no reason given?</div><div class="bcc-btns"><button class="bcc-yes" onclick="confirmBlankNoSale()">Yes, Log It</button><button class="bcc-no" onclick="dismissBlankConfirm()">Cancel</button></div></div>
+
+<div class="tab-panel" id="panel-team" style="display:none">
+  <div style="padding:16px 24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-size:16px;font-weight:700;color:var(--text)">&#x1F465; Team Dashboard</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="team-fiscal-sel" onchange="renderTeamDashboard()" style="height:28px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;color:var(--text2);outline:none;cursor:pointer;font-family:var(--mono)"></select>
+        <button onclick="loadTeamData()" style="height:28px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer">&#x21BB; Refresh</button>
+      </div>
+    </div>
+    <div id="team-agg-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px"></div>
+    <div style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Agents</div>
+    <div id="team-rep-cards" style="display:flex;flex-direction:column;gap:8px"></div>
+    <div id="team-rep-detail" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <button onclick="closeRepDetail()" style="height:28px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text2);cursor:pointer">&#x2190; Back</button>
+        <div id="team-rep-detail-name" style="font-size:14px;font-weight:700;color:var(--text)"></div>
+      </div>
+      <div id="team-rep-call-log" style="overflow-x:auto"></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="setup-wizard" style="display:none;position:fixed;inset:0;z-index:99998;background:var(--bg);align-items:center;justify-content:center">
+  <div style="width:380px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:20px">
+    <div style="text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">&#x2699;&#xFE0F;</div>
+      <div style="font-size:18px;font-weight:700;color:var(--text)">First-Time Setup</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5">No users found. Create your admin account to get started. You can add other users afterwards.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div>
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Agent ID</label>
+        <input id="wiz-agent-id" type="text" placeholder="e.g. A00001" autocomplete="off" style="width:100%;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'">
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Name (optional)</label>
+        <input id="wiz-name" type="text" placeholder="First Last" autocomplete="off" style="width:100%;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'">
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">PIN (4-6 digits)</label>
+        <input id="wiz-pin" type="password" placeholder="Choose a PIN" maxlength="6" style="width:100%;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:20px;letter-spacing:.3em;color:var(--text);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'">
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Confirm PIN</label>
+        <input id="wiz-pin2" type="password" placeholder="Confirm PIN" maxlength="6" style="width:100%;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:20px;letter-spacing:.3em;color:var(--text);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'" onkeydown="if(event.key==='Enter')completeSetup()">
+      </div>
+      <div style="display:flex;gap:8px">
+        <div>
+          <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Call Type</label>
+          <select id="wiz-call-type" style="height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 8px;font-size:12px;color:var(--text);outline:none;cursor:pointer">
+            <option value="acq">Acquisition</option>
+            <option value="mov">Movers</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Cap Level</label>
+          <select id="wiz-cap" style="height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 8px;font-size:12px;color:var(--text);outline:none;cursor:pointer">
+            <option value="1">Cap 1 — New Hire</option>
+            <option value="2">Cap 2 — Associate</option>
+            <option value="3">Cap 3 — Specialist</option>
+            <option value="4">Cap 4 — Professional</option>
+          </select>
+        </div>
+      </div>
+      <div id="wiz-error" style="display:none;font-size:11px;color:var(--red);text-align:center;padding:6px;background:var(--red-lt);border-radius:6px"></div>
+      <button onclick="completeSetup()" style="height:42px;background:var(--blue);border:none;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px">Create Admin Account</button>
+    </div>
+    <div style="text-align:center;font-size:10px;color:var(--text3)">This creates a local admin account. Connect Google Sheets to sync users across devices.</div>
+  </div>
+</div>
+
 </body>
 </html>
