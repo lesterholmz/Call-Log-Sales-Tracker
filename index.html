@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=720">
-<title>Xfinity Call Logger v0.03.22.25</title>
+<title>Xfinity Call Logger v0.03.22.27</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -783,7 +783,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.22.25</div>
+    <div class="version-chip">v0.03.22.27</div>
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="display:none;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="showLogoutConfirm()"></div>
     <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
@@ -2266,8 +2266,8 @@ function buildFilterOptions(){
   sel.innerHTML='';
   opts.forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.textContent=o.label;sel.appendChild(opt);});
   sel.value=activeFilter in Object.fromEntries(opts.map(o=>[o.value,1])) ? activeFilter : 'all';
-  sel.classList.toggle('active',activeFilter!=='all');
 }
+
 
 function getFilteredCalls(){
   if(activeFilter==='all') return _logSearch ? calls.filter(c=>(c.acctRaw||c.acct||'').includes(_logSearch)) : calls;
@@ -2290,7 +2290,6 @@ function getFilteredCalls(){
 function setLogFilter(val){
   activeFilter=val;
   const sel=document.getElementById('log-filter');
-  if(sel)sel.classList.toggle('active',val!=='all');
   render();
 }
 
