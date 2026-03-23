@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=720">
-<title>Xfinity Call Logger v0.03.22.16</title>
+<title>Xfinity Call Logger v0.03.22.25</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -783,7 +783,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.22.16</div>
+    <div class="version-chip">v0.03.22.25</div>
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="display:none;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="showLogoutConfirm()"></div>
     <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
@@ -1171,6 +1171,13 @@ Goals shown for your type+cap level">…</div>
           <div class="bug-body">
             <div class="bug-title">Dispute Reconciliation <span class="bug-badge">Planned</span></div>
             <div class="bug-desc">A dedicated tab for reconciling disputed charges and credits against your logged sales, with side-by-side comparison and notes for escalation.</div>
+          </div>
+        </div>
+        <div class="bug-item bug-coming">
+          <div class="bug-num">④</div>
+          <div class="bug-body">
+            <div class="bug-title">Multi-User Sheets Sync <span class="bug-badge">In Progress</span></div>
+            <div class="bug-desc">User accounts created in the app are not persisting to Google Sheets. Users are saved locally and functional, but do not sync across devices or sessions. Apps Script user management actions (saveUser, deleteUser, getUsers) are implemented but CORS restrictions from local file usage are blocking writes. Resolved once app is hosted on HTTPS (e.g. GitHub Pages).</div>
           </div>
         </div>
       </div>
@@ -1712,7 +1719,8 @@ const NO_SALE_CATS_DEFAULTS = {
 // Live object — loaded from settings if saved, otherwise seeded from defaults
 const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
-const XCL_CALLS_KEY = 'xcl_calls_cache';
+const XCL_CALLS_KEY = 'xcl_calls_cache'; // base key — suffixed with agentId at runtime
+function getCallsCacheKey(){ return XCL_CALLS_KEY + (_session ? '_' + _session.agentId : ''); }
 const XM_LINE_REV = 45;
 document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL;
 let _userCallType='acq',_userCapLevel=1;
@@ -2248,49 +2256,16 @@ function renderEditRow(c){
 function buildFilterOptions(){
   const sel=document.getElementById('log-filter');
   if(!sel)return;
-  // Static options
-  const statics=[
-    {value:'all',label:'All Calls'},
-    {value:'today',label:'Today'},
+  const opts=[
+    {value:'all',      label:'All Calls'},
+    {value:'today',    label:'Today'},
     {value:'yesterday',label:'Yesterday'},
     {value:'this-week',label:'This Week'},
     {value:'last-week',label:'Last Week'},
   ];
-  // Fiscal months: generate up to 6 months back from now
-  const fiscalMonths=[];
-  const now=new Date();
-  for(let i=0;i<6;i++){
-    // fiscal month i months ago
-    let ref=new Date(now.getFullYear(),now.getMonth()-i,1);
-    let fs,fe;
-    // determine the fiscal period containing mid-month of ref
-    let day=i===0?now.getDate():15; // current month use today, past use mid
-    if(i===0&&now.getDate()>=22){
-      fs=new Date(now.getFullYear(),now.getMonth(),22);
-      fe=new Date(now.getFullYear(),now.getMonth()+1,22);
-    } else {
-      let yr=ref.getFullYear(),mo=ref.getMonth();
-      fs=new Date(yr,mo-1,22);
-      fe=new Date(yr,mo,22);
-    }
-    // Skip future fiscal months
-    if(fs>now) continue;
-    const key='fiscal-'+fs.getTime();
-    const label=fs.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+
-      new Date(fe.getTime()-86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    // Avoid duplicates
-    if(!fiscalMonths.find(f=>f.value===key)){
-      fiscalMonths.push({value:key,label:'FM: '+label,fs:fs.getTime(),fe:fe.getTime()});
-    }
-  }
   sel.innerHTML='';
-  statics.forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.textContent=o.label;sel.appendChild(opt);});
-  if(fiscalMonths.length){
-    const grp=document.createElement('optgroup');grp.label='Fiscal Months';
-    fiscalMonths.forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.dataset.fs=o.fs;opt.dataset.fe=o.fe;opt.textContent=o.label;grp.appendChild(opt);});
-    sel.appendChild(grp);
-  }
-  sel.value=activeFilter;
+  opts.forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.textContent=o.label;sel.appendChild(opt);});
+  sel.value=activeFilter in Object.fromEntries(opts.map(o=>[o.value,1])) ? activeFilter : 'all';
   sel.classList.toggle('active',activeFilter!=='all');
 }
 
@@ -2305,12 +2280,7 @@ function getFilteredCalls(){
   else if(activeFilter==='yesterday'){const y=new Date(today);y.setDate(y.getDate()-1);from=y;to=eod(y);}
   else if(activeFilter==='this-week'){from=sod(now);from.setDate(from.getDate()-from.getDay());to=eod(now);}
   else if(activeFilter==='last-week'){const lws=new Date(today);lws.setDate(lws.getDate()-lws.getDay()-7);const lwe=new Date(lws);lwe.setDate(lwe.getDate()+6);from=lws;to=eod(lwe);}
-  else if(activeFilter.startsWith('fiscal-')){
-    const sel=document.getElementById('log-filter');
-    const opt=sel?[...sel.querySelectorAll('option')].find(o=>o.value===activeFilter):null;
-    if(opt&&opt.dataset.fs){from=new Date(+opt.dataset.fs);to=new Date(+opt.dataset.fe);}
-    else return calls;
-  }
+
   else return calls;
   let res = calls.filter(c=>c.ts>=from&&c.ts<=to);
   if(_logSearch) res=res.filter(c=>(c.acctRaw||c.acct||'').includes(_logSearch));
@@ -2781,15 +2751,8 @@ function markActivePreset(name){
   const seed3=[];
   seed3.forEach(function(c){c.ts=new Date(c.ts);calls.push(c);});
   // Load from local cache first for instant display
-  const cached = loadCallsCache();
-  if(cached.length){
-    calls = cached;
-    calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
-    render();updateStats();buildFilterOptions();
-    setSheetsStatus('\u21bb Loading from Sheets\u2026', 'var(--text3)');
-  } else {
-    render();updateStats();buildFilterOptions();
-  }
+  // Cache is loaded after session is restored (see startSession/init auth block)
+  render();updateStats();buildFilterOptions();
   // Defer dropdown until after sheets sync
   // buildFiscalHistoryDropdown called after loadFromSheets completes
 })();
@@ -3193,7 +3156,8 @@ function loadFromSheets(){
   if(!url) return;
   _syncShow('Loading from Google Sheets\u2026', '', 0);
 
-  sheetsGet({action:'load'})
+  const _loadAgentId = _session ? _session.agentId : '';
+  sheetsGet({action:'load', agentId:_loadAgentId})
   .then(d => {
     if(d.status !== 'ok'){
       _syncHide();
@@ -5338,12 +5302,12 @@ function inActiveFiscalTs(ts){
 
 function saveCallsCache(){
   try {
-    localStorage.setItem(XCL_CALLS_KEY, JSON.stringify(calls.map(c => Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts}))));
+    localStorage.setItem(getCallsCacheKey(), JSON.stringify(calls.map(c => Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts}))));
   } catch(e) { console.warn('Cache save failed:', e); }
 }
 function loadCallsCache(){
   try {
-    const raw = localStorage.getItem(XCL_CALLS_KEY);
+    const raw = localStorage.getItem(getCallsCacheKey());
     if(!raw) return [];
     return JSON.parse(raw).map(normalizeCall);
   } catch(e) { console.warn('Cache load failed:', e); return []; }
@@ -5575,6 +5539,14 @@ function startSession(user){
   localStorage.setItem('xcl_user_cache', JSON.stringify(cached));
   hideLoginScreen();
   applySessionUI();
+  // Load per-user cache now that session is known
+  var cachedCalls = loadCallsCache();
+  if(cachedCalls.length){
+    calls = cachedCalls;
+    calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
+    render(); updateStats(); buildFilterOptions();
+    setSheetsStatus('↻ Loading from Sheets…', 'var(--text3)');
+  }
   loadFromSheets();
   saveUserProfile();
   updateRoleBtns();
@@ -5606,8 +5578,11 @@ function showLogoutConfirm(){
 function doLogout(){
   _session = null;
   localStorage.removeItem('xcl_session');
+  // Per-user cache cleared above — also remove any legacy shared cache
   localStorage.removeItem('xcl_calls_cache');
   calls = [];
+  // Clear per-user cache on logout
+  if(localStorage.getItem(getCallsCacheKey())) localStorage.removeItem(getCallsCacheKey());
   render();
   document.getElementById('logout-confirm').style.display='none';
   const badge = document.getElementById('session-badge');
@@ -5758,13 +5733,19 @@ function closeRepDetail(){
 var _editingUserId = null;
 
 function loadUserList(){
+  // Show local immediately
+  renderUserList();
+  // Then refresh from Sheets
   sheetsGet({action:'getUsers'}).then(function(d){
-    if(d.status==='ok' && d.users){
+    if(d.status==='ok' && d.users && d.users.length){
       _userList = d.users;
       localStorage.setItem('xcl_user_cache', JSON.stringify(_userList));
       renderUserList();
+      _showToast('Users loaded from Sheets', 'ok', 1500);
     }
-  }).catch(function(err){ _showToast('User load failed: '+err.message,'warn',3000); });
+  }).catch(function(){
+    _showToast('Using local user list — Sheets unavailable or Apps Script not updated', 'warn', 3000);
+  });
 }
 
 function renderUserList(){
@@ -5830,21 +5811,49 @@ function saveUserForm(){
   const supervisorId=(document.getElementById('uf-supervisor').value||'').trim().toUpperCase();
   if(!agentId){ _showToast('Agent ID required','warn',2000); return; }
   if(!_editingUserId && !pin){ _showToast('PIN required for new users','warn',2000); return; }
-  const user={agentId, name, role, callType, capLevel, supervisorId};
+  const user={agentId, name, role, callType, capLevel, supervisorId, active:true, createdAt:new Date().toISOString()};
   if(pin) user.pin=pin;
-  sheetsPost({action:'saveUser', user:JSON.stringify(user)}).then(function(){
-    _showToast('User saved: '+agentId,'ok',2000);
-    document.getElementById('user-form').style.display='none';
-    loadUserList();
-  }).catch(function(err){ _showToast('Save failed: '+err.message,'warn',3000); });
+  console.log('saveUserForm: sending user to Sheets:', JSON.stringify(user));
+  document.getElementById('user-form').style.display='none';
+  _showToast('Saving user to Sheets...', 'ok', 1500);
+  const params = {
+    action:'saveUser',
+    agentId:user.agentId,
+    name:user.name||'',
+    pin:user.pin||'',
+    role:user.role||'rep',
+    callType:user.callType||'acq',
+    capLevel:String(user.capLevel||1),
+    supervisorId:user.supervisorId||'',
+    active:'true',
+    createdAt:user.createdAt||new Date().toISOString()
+  };
+  console.log('saveUserForm: params:', JSON.stringify(params));
+  sheetsGet(params).then(function(d){
+    console.log('saveUserForm: Sheets response:', JSON.stringify(d));
+    if(d.status==='ok'){
+      _showToast('✓ User saved to Sheets: '+agentId, 'ok', 2500);
+      loadUserList();
+    } else {
+      _showToast('⚠ Sheets error: '+(d.message||'unknown'), 'warn', 4000);
+    }
+  }).catch(function(err){
+    console.error('saveUserForm: Sheets error:', err.message);
+    _showToast('Sheets sync failed: '+err.message, 'warn', 4000);
+  });
 }
 
 function deleteUser(agentId){
   if(!confirm('Remove user '+agentId+'? Their call history will remain.')) return;
-  sheetsPost({action:'deleteUser', agentId}).then(function(){
-    _showToast('User removed','ok',2000);
-    loadUserList();
-  }).catch(function(err){ _showToast('Delete failed: '+err.message,'warn',3000); });
+  // Remove locally first
+  _userList = _userList.filter(function(u){ return u.agentId !== agentId; });
+  localStorage.setItem('xcl_user_cache', JSON.stringify(_userList));
+  renderUserList();
+  _showToast('User removed', 'ok', 2000);
+  // Sync to Sheets via GET
+  sheetsGet({action:'deleteUser', agentId:agentId}).then(function(d){
+    if(d.status==='ok') _showToast('\u2713 User removed from Sheets', 'ok', 2000);
+  }).catch(function(err){ console.warn('deleteUser Sheets error:', err); });
 }
 
 // ── Tag calls with agentId on log ─────────────────────────────────────────
@@ -5862,7 +5871,16 @@ function deleteUser(agentId){
       _userCallType=user.callType||'acq';
       _userCapLevel=parseInt(user.capLevel)||1;
       hideLoginScreen();
-      setTimeout(applySessionUI, 50);
+      setTimeout(function(){
+        applySessionUI();
+        var cachedCalls = loadCallsCache();
+        if(cachedCalls.length){
+          calls = cachedCalls;
+          calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
+          render(); updateStats(); buildFilterOptions();
+          setSheetsStatus('↻ Loading from Sheets…', 'var(--text3)');
+        }
+      }, 50);
       return;
     }
   }
@@ -5948,6 +5966,46 @@ function checkFirstRun(){
   }
 }
 
+function showLoginUrlConfig(){
+  var modal = document.getElementById('login-url-config');
+  var input = document.getElementById('login-url-input');
+  if(input) input.value = getSheetsUrl() || '';
+  if(modal) modal.style.display='flex';
+}
+
+function saveLoginUrl(){
+  var url = (document.getElementById('login-url-input').value||'').trim();
+  if(!url){ showLoginUrlStatus('Please enter a URL', 'var(--red)'); return; }
+  localStorage.setItem('xcl_sheets_url', url);
+  document.getElementById('login-url-config').style.display='none';
+  // Retry loading users with new URL
+  checkFirstRun();
+}
+
+function testLoginUrl(){
+  var url = (document.getElementById('login-url-input').value||'').trim();
+  if(!url){ showLoginUrlStatus('Enter a URL first', 'var(--red)'); return; }
+  showLoginUrlStatus('Testing…', 'var(--amber)');
+  // Temporarily use this URL for the test
+  var orig = getSheetsUrl();
+  localStorage.setItem('xcl_sheets_url', url);
+  sheetsGet({action:'ping'}).then(function(d){
+    if(d.status==='ok'){
+      showLoginUrlStatus('✓ Connected! Click Save to use this URL.', 'var(--green)');
+    } else {
+      showLoginUrlStatus('✗ Connected but got unexpected response', 'var(--amber)');
+    }
+  }).catch(function(err){
+    localStorage.setItem('xcl_sheets_url', orig || '');
+    showLoginUrlStatus('✗ Failed: ' + err.message, 'var(--red)');
+  });
+}
+
+function showLoginUrlStatus(msg, color){
+  var el = document.getElementById('login-url-status');
+  if(el){ el.textContent=msg; el.style.color=color; el.style.background=color.replace(')',',0.1)').replace('var(','rgba('); el.style.display='block'; }
+}
+
 </script>
 
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" data-tip="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
@@ -6008,6 +6066,9 @@ function checkFirstRun(){
       <button onclick="doLogin()" style="height:42px;background:var(--blue);border:none;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;margin-top:2px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Sign In</button>
     </div>
     <div style="text-align:center;font-size:10px;color:var(--text3)">Contact your supervisor if you need access</div>
+    <div style="text-align:center">
+      <button onclick="showLoginUrlConfig()" style="background:none;border:none;font-size:10px;color:var(--text3);cursor:pointer;text-decoration:underline;padding:0">&#x2699; Configure Sheets connection</button>
+    </div>
   </div>
 </div>
 
@@ -6082,6 +6143,26 @@ function checkFirstRun(){
       <button onclick="completeSetup()" style="height:42px;background:var(--blue);border:none;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px">Create Admin Account</button>
     </div>
     <div style="text-align:center;font-size:10px;color:var(--text3)">This creates a local admin account. Connect Google Sheets to sync users across devices.</div>
+  </div>
+</div>
+
+
+<div id="login-url-config" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.5);align-items:center;justify-content:center">
+  <div style="width:340px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px">
+    <div style="font-size:14px;font-weight:700;color:var(--text)">&#x2699; Sheets Connection</div>
+    <div style="font-size:11px;color:var(--text3);line-height:1.5">Enter your Apps Script Web App URL to connect to Google Sheets. Required for user authentication and data sync.</div>
+    <div>
+      <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Apps Script URL</label>
+      <input id="login-url-input" type="url" placeholder="https://script.google.com/macros/s/…/exec"
+        style="width:100%;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 10px;font-size:11px;color:var(--text);outline:none;box-sizing:border-box"
+        onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'">
+    </div>
+    <div id="login-url-status" style="font-size:11px;display:none;padding:6px 10px;border-radius:6px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="document.getElementById('login-url-config').style.display='none'" style="height:32px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:12px;color:var(--text2);cursor:pointer">Cancel</button>
+      <button onclick="testLoginUrl()" style="height:32px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:12px;color:var(--teal);cursor:pointer">&#x26A1; Test</button>
+      <button onclick="saveLoginUrl()" style="height:32px;padding:0 14px;background:var(--blue);border:none;border-radius:7px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">Save</button>
+    </div>
   </div>
 </div>
 
