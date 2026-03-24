@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=720">
-<title>Xfinity Call Logger v0.03.22.27</title>
+<title>Xfinity Call Logger v0.03.22.85</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -437,45 +437,6 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 .ja-panel{display:none}
 .ja-panel.active{display:block}
 
-/* ── Compass Navigator ── */
-.cn-sub-bar{background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;padding:8px 24px;flex-wrap:wrap}
-.cn-type-btn{height:30px;padding:0 14px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap}
-.cn-type-btn:hover{border-color:var(--blue);color:var(--blue)}
-.cn-type-btn.active{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
-.cn-stage-bar{display:flex;overflow:hidden;border-bottom:1px solid var(--border)}
-.cn-stage-btn{flex:1;height:34px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;border-right:1px solid rgba(255,255,255,.1);letter-spacing:.03em}
-.cn-stage-btn:last-child{border-right:none}
-.cn-stage-btn.active{filter:brightness(1.15)}
-.cn-panel.active{display:block}
-.cn-speech{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:13px;color:var(--text2);line-height:1.6}
-.cn-speech strong{color:var(--text);font-weight:600}
-.cn-speech ul{margin:6px 0 0 18px;display:flex;flex-direction:column;gap:3px}
-.cn-speech li{font-size:12px;color:var(--text3)}
-.cn-speech .cn-sub-ul{margin:2px 0 0 16px}
-.cn-tip{background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--amber);line-height:1.5}
-.cn-alert{background:var(--red-lt);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--red);line-height:1.5}
-.cn-section-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:16px 0 8px}
-.cn-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
-.cn-card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px}
-.cn-card-num{width:20px;height:20px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:10px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
-.cn-card-title{font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px}
-.cn-card-body{font-size:11px;color:var(--text3);line-height:1.5}
-.cn-services{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.cn-svc{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px}
-.cn-svc-name{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--blue);margin-bottom:6px}
-.cn-svc-body{font-size:12px;color:var(--text2);line-height:1.5}
-.cn-objections{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.cn-obj-btn{padding:10px;background:var(--surface);border:1px solid rgba(248,113,113,.25);border-radius:8px;font-size:12px;font-weight:600;color:var(--red);cursor:default;text-align:center}
-.cn-close-card{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:10px}
-.cn-close-step{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
-.cn-close-step:last-child{border-bottom:none}
-.cn-close-num{width:24px;height:24px;border-radius:50%;background:var(--blue-lt);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.cn-close-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
-.cn-close-body{font-size:11px;color:var(--text3);line-height:1.5}
-.cn-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
-.cn-tieback-ta{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:8px 10px;font-family:var(--sans);font-size:12px;color:var(--text);resize:vertical;min-height:70px;width:100%;outline:none;transition:border-color .15s,box-shadow .15s}
-.cn-tieback-ta:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
-
 /* ── Key Phrases ── */
 .kp-section{margin-bottom:22px}
 .kp-lob-header{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 0 6px;border-bottom:2px solid var(--border);margin-bottom:10px;display:flex;align-items:center;gap:8px}
@@ -775,6 +736,27 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 
 .team-rep-card{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s}
 .team-rep-card:hover{border-color:var(--blue)}
+
+#calc-panel{position:fixed;z-index:9999;display:none;flex-direction:column;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px 12px;box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
+  width:240px;user-select:none}
+#calc-history{display:none;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;margin-bottom:8px;border-bottom:1px solid var(--border);padding-bottom:8px}
+#calc-history .calc-hist-item{font-size:11px;font-family:var(--mono);color:var(--text3);text-align:right;padding:2px 0;cursor:pointer;border-radius:4px;padding:2px 6px}
+#calc-history .calc-hist-item:hover{background:var(--surface);color:var(--text)}
+#calc-history .calc-hist-empty{font-size:11px;color:var(--text3);text-align:center;padding:8px 0;font-style:italic}
+#calc-panel .calc-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+#calc-display{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;text-align:right;margin-bottom:8px}
+#calc-display .calc-expr{font-size:10px;color:var(--text3);font-family:var(--mono);min-height:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#calc-display .calc-val{font-size:22px;font-weight:700;color:var(--text);font-family:var(--mono);line-height:1.2}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.calc-btn{height:44px;border:1px solid var(--border2);border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:background .1s,transform .08s;background:var(--surface);color:var(--text2);font-family:var(--mono)}
+.calc-btn:active{transform:scale(.94)}
+.calc-btn.op{background:var(--blue-lt);color:var(--blue);border-color:rgba(59,130,246,.3)}
+.calc-btn.eq{background:var(--blue);color:#fff;border-color:var(--blue)}
+.calc-btn.fn{background:var(--surface);color:var(--text3);font-size:12px}
+.calc-btn.span2{grid-column:span 2}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Russo+One&family=Rajdhani:wght@700&family=Exo+2:wght@700&family=Bebas+Neue&family=Righteous&family=Boogaloo&family=Black+Ops+One&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -783,12 +765,13 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.22.27</div>
+    <div class="version-chip">v0.03.22.85</div>
     <div class="clock" id="clock">--:-- --</div>
-    <div id="session-badge" style="display:none;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="showLogoutConfirm()"></div>
+    <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
     <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
 (resets on the 22nd)
 Goals shown for your type+cap level">…</div>
+    <button class="gear-btn" onclick="toggleCalc()" data-tip="Calculator">&#x1F9EE;</button>
     <button class="gear-btn" onclick="toggleSettings()" data-tip="Settings">⚙️</button>
   </div>
 </div>
@@ -796,8 +779,8 @@ Goals shown for your type+cap level">…</div>
 <div class="tab-bar">
   <button class="tab-btn active" id="tab-tracker" onclick="switchTab('tracker')">📞 Tracker</button>
   <button class="tab-btn" id="tab-trends" onclick="switchTab('trends')">📈 Trends</button>
-  <button class="tab-btn" id="tab-compass" onclick="switchTab('compass')">🧭 Compass</button>
   <button class="tab-btn" id="tab-jobaid" onclick="switchTab('jobaid')">📖 Job Aids</button>
+  <button class="tab-btn" id="tab-callbacks" onclick="switchTab('callbacks')">📞 Call Backs</button>
   <button class="tab-btn" id="tab-disputes" onclick="switchTab('disputes')">⚖ Disputes</button>
   <button class="tab-btn" id="tab-team" onclick="switchTab('team')" style="display:none">👥 Team</button>
 </div>
@@ -821,6 +804,15 @@ Goals shown for your type+cap level">…</div>
 
     <!-- ── Display ── -->
     <div class="stab-panel active" id="stabp-display">
+      <!-- Sales ID -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 0 12px;border-bottom:1px solid var(--border);margin-bottom:4px">
+        <label style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap">Sales ID</label>
+        <input id="s-sales-id" type="text" placeholder="e.g. 61294" maxlength="10"
+          style="width:110px;height:30px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none"
+          onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'"
+          onchange="saveSalesId(this.value.trim().toUpperCase())" data-tip="Your Sales Sales ID — tagged on all logged calls">
+        <span id="s-sales-id-status" style="font-size:10px;color:var(--text3)"></span>
+      </div>
       <!-- Theme -->
       <div class="disp-section" style="margin-top:10px">
         <div class="disp-section-hdr" onclick="toggleDispSection(this)">
@@ -1095,7 +1087,7 @@ Goals shown for your type+cap level">…</div>
       <div id="user-form" style="display:none;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:12px">
         <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px" id="user-form-title">Add User</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="field"><label>Agent ID</label><input type="text" id="uf-agent-id" placeholder="A12345" style="width:100%;box-sizing:border-box"></div>
+          <div class="field"><label>Sales ID</label><input type="text" id="uf-agent-id" placeholder="A12345" style="width:100%;box-sizing:border-box"></div>
           <div class="field"><label>Name</label><input type="text" id="uf-name" placeholder="First Last" style="width:100%;box-sizing:border-box"></div>
           <div class="field"><label>PIN</label><input type="password" id="uf-pin" placeholder="4-6 digits" maxlength="6" style="width:100%;box-sizing:border-box;font-family:var(--mono);letter-spacing:.2em"></div>
           <div class="field"><label>Role</label>
@@ -1119,7 +1111,7 @@ Goals shown for your type+cap level">…</div>
               <option value="4">Cap 4 — Professional</option>
             </select>
           </div>
-          <div class="field" style="grid-column:1/-1"><label>Supervisor Agent ID</label><input type="text" id="uf-supervisor" placeholder="Leave blank if none" style="width:100%;box-sizing:border-box"></div>
+          <div class="field" style="grid-column:1/-1"><label>Supervisor Sales ID</label><input type="text" id="uf-supervisor" placeholder="Leave blank if none" style="width:100%;box-sizing:border-box"></div>
         </div>
         <div style="display:flex;gap:6px;margin-top:10px;justify-content:flex-end">
           <button onclick="document.getElementById('user-form').style.display='none'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text2);cursor:pointer">Cancel</button>
@@ -1177,7 +1169,14 @@ Goals shown for your type+cap level">…</div>
           <div class="bug-num">④</div>
           <div class="bug-body">
             <div class="bug-title">Multi-User Sheets Sync <span class="bug-badge">In Progress</span></div>
-            <div class="bug-desc">User accounts created in the app are not persisting to Google Sheets. Users are saved locally and functional, but do not sync across devices or sessions. Apps Script user management actions (saveUser, deleteUser, getUsers) are implemented but CORS restrictions from local file usage are blocking writes. Resolved once app is hosted on HTTPS (e.g. GitHub Pages).</div>
+        </div>
+        <div class="bug-item bug-coming">
+          <div class="bug-num">⑤</div>
+          <div class="bug-body">
+            <div class="bug-title">RGU Calculator <span class="bug-badge">Planned</span></div>
+            <div class="bug-desc">A sales-focused calculator for estimating RGU value and revenue by product mix — XM, TV, CHSI, CDV, XH — with cap level goal comparison built in.</div>
+          </div>
+            <div class="bug-desc">User accounts and data scoping will be handled by Sales ID. Reps enter Sales ID only — no PIN, full access to their own data. Supervisors and Admins enter Sales ID + PIN which gates the Team tab and User Management only. CORS restrictions from local file usage are blocking Sheets user writes — resolved once hosted on HTTPS.</div>
           </div>
         </div>
       </div>
@@ -1231,15 +1230,15 @@ Goals shown for your type+cap level">…</div>
   </div>
   <div class="stats-row monthly">
     <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-blue" id="m-rev" data-tip="Total revenue this fiscal period
-(Base + XM activations)">$0</div><div class="stat-pct"><span class="pct-val warn" id="m-rev-pct">0%</span><span>of $6,870</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rev-bar"></div><div class="goal-bar-over" id="m-rev-over"></div></div><span class="stat-pace" id="m-rev-pace"></span></div>
+(Base + XM activations)">$0</div><div class="stat-pct"><span class="pct-val warn" id="m-rev-pct">0%</span><span id="m-rev-lbl">of $6,870</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rev-bar"></div><div class="goal-bar-over" id="m-rev-over"></div></div><span class="stat-pace" id="m-rev-pace"></span></div>
     <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-blue" id="m-rgus" data-tip="Revenue Generating Units
 (XM=1, TV=1, CHSI=1 or 0.75 IE, CDV=1, XH=1)">0</div><div class="stat-pct"><span class="pct-val warn" id="m-rgus-pct">0%</span><span id="m-rgus-lbl">of 123</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rgus-bar"></div><div class="goal-bar-over" id="m-rgus-over"></div></div><span class="stat-pace" id="m-rgus-pace"></span></div>
-    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm" data-tip="XM mobile lines sold this period">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span>of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
-    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="m-tv" data-tip="TV packages sold this period">0</div><div class="stat-pct"><span class="pct-val warn" id="m-tv-pct">0%</span><span>of 23</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-tv-bar"></div><div class="goal-bar-over" id="m-tv-over"></div></div><span class="stat-pace" id="m-tv-pace"></span></div>
+    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm" data-tip="XM mobile lines sold this period">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span id="m-xm-lbl">of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
+    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="m-tv" data-tip="TV packages sold this period">0</div><div class="stat-pct"><span class="pct-val warn" id="m-tv-pct">0%</span><span id="m-tv-lbl">of 23</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-tv-bar"></div><div class="goal-bar-over" id="m-tv-over"></div></div><span class="stat-pace" id="m-tv-pace"></span></div>
     <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="m-chsi" data-tip="Internet (CHSI) units sold
-(IE accounts = 0.75 RGU)">0</div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span>of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
-    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="m-cdv" data-tip="Digital Voice (home phone) sold">0</div><div class="stat-pct"><span class="pct-val warn" id="m-cdv-pct">0%</span><span>of 3</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-cdv-bar"></div><div class="goal-bar-over" id="m-cdv-over"></div></div><span class="stat-pace" id="m-cdv-pace"></span></div>
-    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="m-xh" data-tip="Xfinity Home security units sold">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xh-pct">0%</span><span>of 2</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xh-bar"></div><div class="goal-bar-over" id="m-xh-over"></div></div><span class="stat-pace" id="m-xh-pace"></span></div>
+(IE accounts = 0.75 RGU)">0</div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span id="m-chsi-lbl">of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
+    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="m-cdv" data-tip="Digital Voice (home phone) sold">0</div><div class="stat-pct"><span class="pct-val warn" id="m-cdv-pct">0%</span><span id="m-cdv-lbl">of 3</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-cdv-bar"></div><div class="goal-bar-over" id="m-cdv-over"></div></div><span class="stat-pace" id="m-cdv-pace"></span></div>
+    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="m-xh" data-tip="Xfinity Home security units sold">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xh-pct">0%</span><span id="m-xh-lbl">of 2</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xh-bar"></div><div class="goal-bar-over" id="m-xh-over"></div></div><span class="stat-pace" id="m-xh-pace"></span></div>
     <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="m-calls" data-tip="Total calls logged this fiscal period">0</div><div class="stat-pct"><span class="pct-val" id="m-cr" style="color:var(--text3)">—</span><span>close rate</span></div></div>
   </div>
   <div class="stats-section-label" style="padding-top:6px">Today</div>
@@ -1259,7 +1258,7 @@ Goals shown for your type+cap level">…</div>
 </div>
 <div class="main">
   <div class="form-card" id="new-call-form-card">
-    <div class="form-header"><div class="form-header-title">Log New Call</div><div class="form-hint">Tab through fields · Enter to advance</div></div>
+    <div class="form-header"><div class="form-header-title">Log New Call</div></div>
     <div class="form-body">
       <!-- ── Row 1: XM · IE/BULK · TV/CHSI/CDV/XH │ No Sale / Play ── -->
       <div class="form-row-center">
@@ -1401,34 +1400,6 @@ Sets follow-up time and logs CB details">📞</div>
 
 <!-- ══ TAB: JOB AIDS ══ -->
 
-<!-- ══ TAB: COMPASS NAVIGATOR ══ -->
-<div class="tab-panel" id="panel-compass">
-
-  <!-- Call type selector -->
-  <div class="cn-sub-bar">
-    <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-right:4px">Call Type:</span>
-    <button class="cn-type-btn active" onclick="cnSetType('new',this)">🆕 New</button>
-    <button class="cn-type-btn" onclick="cnSetType('moves',this)">🚚 Moves+</button>
-    <button class="cn-type-btn" onclick="cnSetType('ie',this)">📶 IE</button>
-    <button class="cn-type-btn" onclick="cnSetType('upgrade',this)">⬆ Upgrade</button>
-    <button class="cn-type-btn" onclick="cnSetType('downgrade',this)">⬇ Downgrade</button>
-    <button class="cn-type-btn" onclick="cnSetType('nontraditional',this)">🔄 Non-Traditional</button>
-    <button class="cn-type-btn" onclick="cnSetType('secondswing',this)">🏌️ 2nd Swing</button>
-  </div>
-
-  <!-- Stage bar -->
-  <div class="cn-stage-bar">
-    <button class="cn-stage-btn active" id="cnstg-connect" onclick="cnSetStage('connect')" style="background:#2563eb;color:#fff">Open / Connect</button>
-    <button class="cn-stage-btn" id="cnstg-explore" onclick="cnSetStage('explore')" style="background:#7c3aed;color:#fff">Discover / Explore</button>
-    <button class="cn-stage-btn" id="cnstg-consult" onclick="cnSetStage('consult')" style="background:#b45309;color:#fff">Present / Consult</button>
-    <button class="cn-stage-btn" id="cnstg-overcome" onclick="cnSetStage('overcome')" style="background:#854d0e;color:#fff">Overcome</button>
-    <button class="cn-stage-btn" id="cnstg-review" onclick="cnSetStage('review')" style="background:#0f766e;color:#fff">Close / Review</button>
-  </div>
-
-  <div style="padding:20px 24px;max-width:900px" id="cn-content"></div>
-
-</div>
-
 <div class="tab-panel" id="panel-jobaid">
   <!-- ── Job Aid sub-tab bar (drag to reorder) ── -->
   <div id="ja-tab-bar" style="background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 24px;gap:2px">
@@ -1567,7 +1538,27 @@ Sets follow-up time and logs CB details">📞</div>
 
 </div>
 
-<!-- ══ TAB: DISPUTES ══ -->
+<!-- ══ TAB: CALL BACKS ══ -->
+<div class="tab-panel" id="panel-callbacks" style="display:none">
+  <div style="padding:16px 24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:16px;font-weight:700;color:var(--text)">&#x1F4DE; Call Backs</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="cb-tab-filter" onchange="renderCallbacksTab()" style="height:28px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;color:var(--text2);outline:none;cursor:pointer;font-family:var(--mono)">
+          <option value="open">Open Only</option>
+          <option value="overdue">Overdue</option>
+          <option value="due-today">Due Today</option>
+          <option value="due-soon">Due Soon</option>
+          <option value="all">All</option>
+        </select>
+        <button onclick="renderCallbacksTab()" style="height:28px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer">&#x21BB; Refresh</button>
+        <button onclick="if(window._lastCbDoneId){undoCbDone(window._lastCbDoneId);window._lastCbDoneId=null;}" style="height:28px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">&#x21A9; Undo Done</button>
+      </div>
+    </div>
+    <div id="cb-tab-summary" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px"></div>
+    <div id="cb-tab-cards" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+</div>
 <div class="tab-panel" id="panel-disputes">
   <div class="main">
 
@@ -1666,7 +1657,7 @@ const GOALS={rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2};
 const CB={rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0};
 const TOKENS = ['🎩','🚂','🐶','🐱','⚓','👞','🚗','💎','🎲','⭐','🔥','⚡','🏆','👑','🦊','🐸','🍀','🌟','🪙','🎯'];
 let calToken = localStorage.getItem('xcl_token') || '🎩';
-const RGU_GOAL=GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;
+function RGU_GOAL(){ return GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh; }
 function getPtoBonus(){
   // Each 8 hrs PTO = +5% added to percent-to-goal display
   var hrs = window._ptoHours||0;
@@ -1720,10 +1711,10 @@ const NO_SALE_CATS_DEFAULTS = {
 const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
 const XCL_CALLS_KEY = 'xcl_calls_cache'; // base key — suffixed with agentId at runtime
-function getCallsCacheKey(){ return XCL_CALLS_KEY + (_session ? '_' + _session.agentId : ''); }
+function getCallsCacheKey(){ return XCL_CALLS_KEY; } // fixed key — auth disabled
 const XM_LINE_REV = 45;
-document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL;
-let _userCallType='acq',_userCapLevel=1;
+document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL();
+let _userCallType='acq',_userCapLevel=2;
 let _session=null; // {agentId, name, role, callType, capLevel, supervisorId}
 let _userList=[]; // cached from sheets
 let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all',_logSearch='',_activeTab='tracker',_historicalFiscal=null;
@@ -1909,9 +1900,7 @@ function getNoSaleReason(){
   return 'NO SALE MADE';
 }
 
-function onReasonChange(){
-  syncProds();colorReason();updatePlay();
-}
+
 
 function colorReason(){
   const tog=document.getElementById('ns-toggle');
@@ -1922,6 +1911,13 @@ function updatePlay(){
   const s=getSvcs();
   const hasXm = xmVal > 0;
   const hasNonXm = prods.tv || prods.chsi || prods.cdv || prods.xh;
+  // Auto-clear no-sale reason when outcome becomes a sale
+  if((hasXm || hasNonXm) && _nsState !== 'closed'){
+    _nsClose();
+    _nsPanelOpen = false;
+    colorReason();
+    updateNosaleDisplay();
+  }
   const playDisp = document.getElementById('play-display');
   const playName = document.getElementById('play-display-name');
   const playSvcs = document.getElementById('play-display-svcs');
@@ -2044,7 +2040,7 @@ function logCall(){
 
 function doLogCall(){
   if(cbOpen){if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}}
-  const cbName=document.getElementById('f-cb-name').value.trim();const cbPhone=document.getElementById('f-cb-phone').value.trim();const cbTime=cbOpen?document.getElementById('f-cb-dt').value:'';const raw=document.getElementById('f-acct').value.trim();
+  const cbName=document.getElementById('f-cb-name').value.trim();const cbPhone=document.getElementById('f-cb-phone').value.trim();const cbTime=(document.getElementById('f-cb-dt')&&document.getElementById('f-cb-dt').value)||'';const raw=document.getElementById('f-acct').value.trim();
   const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
@@ -2101,7 +2097,7 @@ function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=do
   });
   c.rev = eBaseRev + (c.xm * XM_LINE_REV);c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.ie=c.ie||false;c.bulk=c.bulk||false;c.noXmReason=c.noXmReason||'';c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();saveCallsCache();}
 function delCall(id){if(editingId===id)closeEdit();deleteCallFromSheets(id);calls=calls.filter(c=>c.id!==id);render();updateStats();saveCallsCache();}
-function markCbDone(id){const c=calls.find(x=>x.id===id);if(c){c.cbDone=true;const el=document.getElementById('e-cb-done');if(el)el.checked=true;render();checkAlerts();upsertCallToSheets(c);}}
+function markCbDone(id){const c=calls.find(x=>String(x.id)===String(id));if(c){c.cbDone=true;const el=document.getElementById('e-cb-done');if(el)el.checked=true;render();updateStats();checkAlerts();saveCallsCache();upsertCallToSheets(c);}}
 function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}if(editingId)updateEditRevTotal(editingId);}
 function eToggleProd(k){editState[k]=!editState[k];const el=document.getElementById('e-chk-'+k);if(!el)return;const ie=k==='chsi'&&(document.getElementById('e-reason')?.value||'')==='IE (.75)';el.className='e-chk'+(k==='chsi'?(editState.chsi?(ie?' ie':' on'):''):(editState[k]?' on':''));}
 function eReasonChange(){const re=document.getElementById('e-reason');if(!re)return;const t2=document.getElementById('e-nosale-tier2');if(!t2)return;if(re.value==='NO SALE MADE'){const cats=document.getElementById('e-nosale-cat');if(cats&&cats.options.length<2){cats.innerHTML='<option value="">— reason category —</option>'+Object.keys(NO_SALE_CATS).map(c=>`<option>${c}</option>`).join('');}t2.style.display='flex';}else{t2.style.display='none';}}
@@ -2270,7 +2266,9 @@ function buildFilterOptions(){
 
 
 function getFilteredCalls(){
-  if(activeFilter==='all') return _logSearch ? calls.filter(c=>(c.acctRaw||c.acct||'').includes(_logSearch)) : calls;
+  // Filter by active fiscal period (current or historical)
+  let base = calls.filter(c => inActiveFiscalTs(c.ts));
+  if(activeFilter==='all') return _logSearch ? base.filter(c=>(c.acctRaw||c.acct||'').includes(_logSearch)) : base;
   const now=new Date();
   const sod=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
   const eod=d=>{const x=new Date(d);x.setHours(23,59,59,999);return x;};
@@ -2293,7 +2291,7 @@ function setLogFilter(val){
   render();
 }
 
-function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=_session?allFiltered.filter(function(c){return !c.agentId||c.agentId===_session.agentId;}):allFiltered;document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="8" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}if(editingId&&window._editFromAlert){const ec=filtered.find(c=>c.id===editingId);const oc=filtered.filter(c=>c.id!==editingId);tb.innerHTML=(ec?renderEditRow(ec):'')+oc.map(renderReadRow).join('');}else{tb.innerHTML=filtered.map(c=>c.id===editingId?renderEditRow(c):renderReadRow(c)).join('');}}
+function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=allFiltered;document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="8" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}if(editingId&&window._editFromAlert){const ec=filtered.find(c=>c.id===editingId);const oc=filtered.filter(c=>c.id!==editingId);tb.innerHTML=(ec?renderEditRow(ec):'')+oc.map(renderReadRow).join('');}else{tb.innerHTML=filtered.map(c=>c.id===editingId?renderEditRow(c):renderReadRow(c)).join('');}}
 
 function pctCls(p){return p>=1?'good':p>=.7?'ok':'warn';}
 
@@ -2415,8 +2413,119 @@ function setStatsView(v){
 function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d=new Date(sched+'T00:00:00');const r=d>=fi.fiscalStart&&d<fi.fiscalEnd;return r;}
 function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=fi.fiscalEnd;const ne=new Date(ns.getFullYear(),ns.getMonth()+1,22);return{fiscalStart:ns,fiscalEnd:ne};}
 function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<nf.fiscalEnd;}
-function updateStats(){const today=new Date().toDateString(),td=calls.filter(c=>c.ts.toDateString()===today);const mc=statsView==='installs'?calls.filter(c=>c.hasSale&&inActiveFiscal(c.sched)):statsView==='pipeline'?calls.filter(c=>c.hasSale&&inNextFiscal(c.sched)):calls.filter(c=>inActiveFiscalTs(c.ts));const _mRev=mc.reduce((s,c)=>s+c.rev,0),_mRgus=mc.reduce((s,c)=>s+c.rgus,0),_mXm=mc.reduce((s,c)=>s+c.xm,0),_mTv=mc.filter(c=>c.tv).length,_mChsi=mc.reduce((s,c)=>s+c.chsiRgu,0),_mCdv=mc.filter(c=>c.cdv).length,_mXh=mc.filter(c=>c.xh).length;const _allFiscal=calls.filter(c=>inActiveFiscalTs(c.ts));const mN=statsView==='pipeline'?0:_allFiscal.length,mSales=statsView==='pipeline'?0:mc.filter(c=>c.hasSale).length;
-const _apCB=statsView==='installs';const mRev=_mRev-(_apCB?CB.rev:0),mXm=_mXm-(_apCB?CB.xm:0),mTv=_mTv-(_apCB?CB.tv:0),mChsi=_mChsi-(_apCB?CB.chsi:0),mCdv=_mCdv-(_apCB?CB.cdv:0),mXh=_mXh-(_apCB?CB.xh:0),mRgus=_mRgus-(_apCB?((CB.xm>0?1:0)+CB.tv+CB.chsi+CB.cdv+CB.xh):0);document.getElementById('m-rev').textContent=(mRev<0?'-$'+Math.abs(mRev).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+mRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));document.getElementById('m-rev').className='stat-val '+(mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber');setStat('m-rev',mRev,GOALS.rev);setStat('m-rgus',mRgus,RGU_GOAL);document.getElementById('m-rgus').textContent=fmtR(mRgus);document.getElementById('m-xm').textContent=mXm;setStat('m-xm',mXm,GOALS.xm);document.getElementById('m-tv').textContent=mTv;setStat('m-tv',mTv,GOALS.tv);document.getElementById('m-chsi').textContent=fmtR(mChsi);setStat('m-chsi',mChsi,GOALS.chsi);document.getElementById('m-cdv').textContent=mCdv;setStat('m-cdv',mCdv,GOALS.cdv);document.getElementById('m-xh').textContent=mXh;setStat('m-xh',mXh,GOALS.xh);document.getElementById('m-calls').textContent=mN;const crEl=document.getElementById('m-cr');crEl.textContent=mN?(mSales/mN*100).toFixed(0)+'%':'—';crEl.className='pct-val '+(mN&&mSales/mN>=.3?'good':mN?'ok':'');const dRev=td.reduce((s,c)=>s+c.rev,0),dRgus=td.reduce((s,c)=>s+c.rgus,0),dXm=td.reduce((s,c)=>s+c.xm,0),dTv=td.filter(c=>c.tv).length,dChsi=td.reduce((s,c)=>s+c.chsiRgu,0),dCdv=td.filter(c=>c.cdv).length,dXh=td.filter(c=>c.xh).length,dN=td.length,dSales=td.filter(c=>c.hasSale).length;document.getElementById('d-rev').textContent='$'+dRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('d-rev-sub').textContent=dSales?dSales+' sale'+(dSales!==1?'s':''):'no sales yet';document.getElementById('d-rgus').textContent=fmtR(dRgus);document.getElementById('d-rgus-sub').textContent=dRgus?'across '+dSales+' sale'+(dSales!==1?'s':''):'—';document.getElementById('d-xm').textContent=dXm;document.getElementById('d-tv').textContent=dTv;document.getElementById('d-chsi').textContent=fmtR(dChsi);document.getElementById('d-chsi-sub').textContent='today';document.getElementById('d-cdv').textContent=dCdv;document.getElementById('d-xh').textContent=dXh;document.getElementById('d-calls').textContent=dN;document.getElementById('d-calls-sub').textContent=dN?(dSales/dN*100).toFixed(0)+'% close rate':'no calls yet';updatePace();}
+function updateStats(){
+  // ── Load goals for the active fiscal period ─────────────────────────────
+  const activeFi   = getActiveFiscalInfo();
+  const activeKey  = getFiscalKey(_userCallType, _userCapLevel,
+                       activeFi.label || getFiscalMonth());
+  const savedGoals = JSON.parse(localStorage.getItem(activeKey) || '{}');
+  const _capDef    = getCapDefaults();
+  // Saved goals win > cap defaults > hardcoded defaults
+  // Use explicit undefined check so 0 values are preserved
+  GOALS.rev  = savedGoals.rev  !== undefined ? savedGoals.rev  : _capDef.rev;
+  GOALS.xm   = savedGoals.xm   !== undefined ? savedGoals.xm   : _capDef.xm;
+  GOALS.tv   = savedGoals.tv   !== undefined ? savedGoals.tv   : _capDef.tv;
+  GOALS.chsi = savedGoals.chsi !== undefined ? savedGoals.chsi : _capDef.chsi;
+  GOALS.cdv  = savedGoals.cdv  !== undefined ? savedGoals.cdv  : _capDef.cdv;
+  GOALS.xh   = savedGoals.xh   !== undefined ? savedGoals.xh   : _capDef.xh;
+  CB.rev   = savedGoals.cbRev  || 0;
+  CB.xm    = savedGoals.cbXm   || 0;
+  CB.tv    = savedGoals.cbTv   || 0;
+  CB.chsi  = savedGoals.cbChsi || 0;
+  CB.cdv   = savedGoals.cbCdv  || 0;
+  CB.xh    = savedGoals.cbXh   || 0;
+
+  // ── Filter calls for the active fiscal period ────────────────────────────
+  const today = new Date().toDateString();
+  const td    = calls.filter(c => c.ts.toDateString() === today);
+
+  let mc;
+  if (statsView === 'installs') {
+    mc = calls.filter(c => c.hasSale && inActiveFiscal(c.sched));
+  } else if (statsView === 'pipeline') {
+    mc = calls.filter(c => c.hasSale && inNextFiscal(c.sched));
+  } else {
+    mc = calls.filter(c => inActiveFiscalTs(c.ts));
+  }
+
+  const allFiscal = calls.filter(c => inActiveFiscalTs(c.ts));
+  const mN      = statsView === 'pipeline' ? 0 : allFiscal.length;
+  const mSales  = statsView === 'pipeline' ? 0 : mc.filter(c => c.hasSale).length;
+
+  // ── Aggregate fiscal totals ──────────────────────────────────────────────
+  const apCB   = statsView === 'installs';
+  const _mRev  = mc.reduce((s,c) => s + c.rev, 0);
+  const _mRgus = mc.reduce((s,c) => s + c.rgus, 0);
+  const _mXm   = mc.reduce((s,c) => s + c.xm, 0);
+  const _mTv   = mc.filter(c => c.tv).length;
+  const _mChsi = mc.reduce((s,c) => s + c.chsiRgu, 0);
+  const _mCdv  = mc.filter(c => c.cdv).length;
+  const _mXh   = mc.filter(c => c.xh).length;
+
+  const mRev  = _mRev  - (apCB ? CB.rev  : 0);
+  const mXm   = _mXm   - (apCB ? CB.xm   : 0);
+  const mTv   = _mTv   - (apCB ? CB.tv   : 0);
+  const mChsi = _mChsi - (apCB ? CB.chsi : 0);
+  const mCdv  = _mCdv  - (apCB ? CB.cdv  : 0);
+  const mXh   = _mXh   - (apCB ? CB.xh   : 0);
+  const mRgus = _mRgus - (apCB ? ((CB.xm>0?1:0)+CB.tv+CB.chsi+CB.cdv+CB.xh) : 0);
+
+  // ── Update monthly stat cards ────────────────────────────────────────────
+  const fmtMoney = v => (v < 0 ? '-$' + Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})
+                                : '$' + v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+
+  const revEl = document.getElementById('m-rev');
+  if(revEl){ revEl.textContent = fmtMoney(mRev);
+    revEl.className = 'stat-val ' + (mRev/GOALS.rev>=1?'c-green':mRev/GOALS.rev>=.7?'c-blue':'c-amber'); }
+
+  setStat('m-rev',  mRev,  GOALS.rev);
+  setStat('m-rgus', mRgus, RGU_GOAL());
+  document.getElementById('m-rgus').textContent = fmtR(mRgus);
+  document.getElementById('m-xm').textContent = mXm;
+  setStat('m-xm', mXm, GOALS.xm);
+  const _xmLbl=document.getElementById('m-xm-lbl'); if(_xmLbl) _xmLbl.textContent='of '+GOALS.xm;
+  const _tvLbl=document.getElementById('m-tv-lbl'); if(_tvLbl) _tvLbl.textContent='of '+GOALS.tv;
+  const _chsiLbl=document.getElementById('m-chsi-lbl'); if(_chsiLbl) _chsiLbl.textContent='of '+GOALS.chsi;
+  const _cdvLbl=document.getElementById('m-cdv-lbl'); if(_cdvLbl) _cdvLbl.textContent='of '+GOALS.cdv;
+  const _xhLbl=document.getElementById('m-xh-lbl'); if(_xhLbl) _xhLbl.textContent='of '+GOALS.xh;
+  const _revLbl=document.getElementById('m-rev-lbl'); if(_revLbl) _revLbl.textContent='of $'+GOALS.rev.toLocaleString('en-US');
+  document.getElementById('m-tv').textContent  = mTv;   setStat('m-tv',  mTv,  GOALS.tv);
+  document.getElementById('m-chsi').textContent = fmtR(mChsi); setStat('m-chsi', mChsi, GOALS.chsi);
+  document.getElementById('m-cdv').textContent = mCdv;  setStat('m-cdv', mCdv, GOALS.cdv);
+  document.getElementById('m-xh').textContent  = mXh;   setStat('m-xh',  mXh,  GOALS.xh);
+  document.getElementById('m-calls').textContent = mN;
+  document.getElementById('m-rgus-lbl').textContent = 'of ' + RGU_GOAL();
+
+  const crEl = document.getElementById('m-cr');
+  if(crEl){ crEl.textContent = mN ? (mSales/mN*100).toFixed(0)+'%' : '—';
+    crEl.className = 'pct-val ' + (mN && mSales/mN>=.3 ? 'good' : mN ? 'ok' : ''); }
+
+  // ── Today stats ──────────────────────────────────────────────────────────
+  const dRev  = td.reduce((s,c) => s+c.rev, 0);
+  const dRgus = td.reduce((s,c) => s+c.rgus, 0);
+  const dXm   = td.reduce((s,c) => s+c.xm, 0);
+  const dTv   = td.filter(c => c.tv).length;
+  const dChsi = td.reduce((s,c) => s+c.chsiRgu, 0);
+  const dCdv  = td.filter(c => c.cdv).length;
+  const dXh   = td.filter(c => c.xh).length;
+  const dN    = td.length;
+  const dSales= td.filter(c => c.hasSale).length;
+
+  document.getElementById('d-rev').textContent = fmtMoney(dRev);
+  document.getElementById('d-rev-sub').textContent = dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'no sales yet';
+  document.getElementById('d-rgus').textContent = fmtR(dRgus);
+  document.getElementById('d-rgus-sub').textContent = dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—';
+  document.getElementById('d-xm').textContent  = dXm;
+  document.getElementById('d-tv').textContent  = dTv;
+  document.getElementById('d-chsi').textContent = fmtR(dChsi);
+  document.getElementById('d-chsi-sub').textContent = 'today';
+  document.getElementById('d-cdv').textContent = dCdv;
+  document.getElementById('d-xh').textContent  = dXh;
+  document.getElementById('d-calls').textContent = dN;
+  document.getElementById('d-calls-sub').textContent = dN ? (dSales/dN*100).toFixed(0)+'% close rate' : 'no calls yet';
+
+  updatePace();
+}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}}});
 
 (function(){
@@ -2480,12 +2589,17 @@ const CAP_GOAL_DEFAULTS = {
   }
 };
 function getCapDefaults(){ return (CAP_GOAL_DEFAULTS[_userCallType]||CAP_GOAL_DEFAULTS.acq)[_userCapLevel]||CAP_GOAL_DEFAULTS.acq[4]; }
-const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cbTv:0,cbChsi:0,cbCdv:0,cbXh:0,rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbxOwwNu4GuENLqy8NIyLIkn8EPIxKprI8-ZsgrIic_XLscg3Gv_RpFv_YE4fi1e1yFo/exec'};
+const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cbTv:0,cbChsi:0,cbCdv:0,cbXh:0,rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbynl7TiAslXOmFUMg6inZUYmANnGYCN4iPqBWE8AfQGQtgCJ-CvxK_6qcPGVYTpyAuO/exec'};
 function loadSettings(){
   const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
   const g=JSON.parse(localStorage.getItem(getFiscalKey())||'{}');
   const capDef=getCapDefaults();
-  return Object.assign({},DEFAULTS,capDef,s,g);
+  // Strip goal fields from global settings — they belong only in fiscal storage
+  const goalFields=['rev','xm','tv','chsi','cdv','xh'];
+  const sClean=Object.assign({},s);
+  goalFields.forEach(k=>delete sClean[k]);
+  // Priority: saved fiscal goals (g) > cap defaults > global settings
+  return Object.assign({},DEFAULTS,sClean,capDef,g);
 }
 function applySettings(s){
   window._schedule = s.schedule||'5x8';
@@ -2600,18 +2714,9 @@ function saveSettings(){
   };
   const globalFields = Object.assign({},s);
   ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh'].forEach(k=>delete globalFields[k]);
-  // Build save key using selected fiscal month + current type+cap
+  // Save key = selected fiscal month dropdown value (already correct format)
   const selFiscal = document.getElementById('s-fiscal-month');
-  const selMonth  = selFiscal ? selFiscal.value : null;
-  // Extract month label from the old-style key if needed, then build type+cap key
-  let saveKey;
-  if(selMonth && selMonth !== getFiscalKey()){
-    // selMonth is like xcl_goals_March2026 — extract month portion
-    const monthPart = selMonth.replace(/^xcl_goals_([a-z]+_cap[1-4]_)?/, '');
-    saveKey = 'xcl_goals_' + _userCallType + '_cap' + _userCapLevel + '_' + monthPart;
-  } else {
-    saveKey = getFiscalKey();
-  }
+  const saveKey = selFiscal ? selFiscal.value : getFiscalKey();
   localStorage.setItem(saveKey, JSON.stringify(fiscalFields));
   localStorage.setItem('xcl_settings',JSON.stringify(globalFields));
   saveColorSettings();
@@ -2622,6 +2727,7 @@ function saveSettings(){
   // Push full merged settings to Sheets for multi-user sharing
   if(getSheetsUrl()) pushSettingsToSheets(Object.assign({}, fiscalFields, globalFields, {settingsVersion: SETTINGS_VERSION}));
   applySettings(s);
+  saveUserProfile(); // persist cap+type with settings
   updateStats();
   buildCalendar && updatePace && updatePace();
   const btn=document.querySelector('.settings-save');
@@ -2788,23 +2894,7 @@ function dropOutcome(e,target){
   if(tgtIdx<LOCKED_OUTCOMES.length)return; // can't drag before locked
   ed.insertBefore(_dragSrc,tgtIdx>srcIdx?target.nextSibling:target);
 }
-function addOutcomeItem(){
-  const inp=document.getElementById('outcome-new-input');
-  const val=inp.value.trim();
-  if(!val)return;
-  const ed=document.getElementById('outcome-editor');
-  const div=document.createElement('div');
-  div.className='outcome-item';div.draggable=true;div.dataset.val=val;
-  div.innerHTML=`<span class="outcome-item-handle">⠿</span>
-    <input class="outcome-item-text" value="${val}" onblur="this.closest('.outcome-item').dataset.val=this.value">
-    <button class="outcome-item-del" onclick="this.closest('.outcome-item').remove()" title="Remove">×</button>`;
-  div.addEventListener('dragstart',function(){_dragSrc=this;this.style.opacity='.4';});
-  div.addEventListener('dragend',function(){this.style.opacity='';_dragSrc=null;});
-  div.addEventListener('dragover',e=>e.preventDefault());
-  div.addEventListener('drop',e=>dropOutcome(e,div));
-  ed.appendChild(div);
-  inp.value='';inp.focus();
-}
+
 function getOutcomeEditorValues(){
   const ed=document.getElementById('outcome-editor');
   if(!ed)return[...DEFAULT_OUTCOMES];
@@ -3066,6 +3156,7 @@ function _syncVerify(expectedTotal, pushFailed) {
         });
         calls.sort(function(a, b) { return new Date(b.ts) - new Date(a.ts); });
         render(); updateStats(); buildFilterOptions(); saveCallsCache(); buildFiscalHistoryDropdown();
+  if(_activeTab==='callbacks') renderCallbacksTab();
         setTimeout(_syncHide, 4000);
       } else {
         // Some calls didn't land — retry the missing ones
@@ -3137,6 +3228,30 @@ function _syncRetry(missing, originalTotal, sheetCount) {
 /* ── loadFromSheets: pull-only on startup ───────────────────────────────── */
 function normalizeCall(sc){
   if(!(sc.ts instanceof Date)) sc.ts = sc.ts ? new Date(sc.ts) : new Date();
+  // Normalize sched to YYYY-MM-DD — Sheets may return M/D/YYYY or other formats
+  if(sc.sched && typeof sc.sched === 'string' && sc.sched.trim()){
+    const raw = sc.sched.trim();
+    // Already YYYY-MM-DD
+    if(/^\d{4}-\d{2}-\d{2}$/.test(raw)){
+      sc.sched = raw;
+    } else {
+      // Try to parse M/D/YYYY, MM/DD/YYYY, M/D/YY etc.
+      const d = new Date(raw);
+      if(!isNaN(d)){
+        const yr  = d.getFullYear();
+        const mo  = String(d.getMonth()+1).padStart(2,'0');
+        const day = String(d.getDate()).padStart(2,'0');
+        sc.sched = yr+'-'+mo+'-'+day;
+      } else {
+        sc.sched = ''; // clear unparseable date
+      }
+    }
+  } else if(sc.sched && sc.sched instanceof Date){
+    const yr  = sc.sched.getFullYear();
+    const mo  = String(sc.sched.getMonth()+1).padStart(2,'0');
+    const day = String(sc.sched.getDate()).padStart(2,'0');
+    sc.sched = yr+'-'+mo+'-'+day;
+  }
   const ie = (sc.callOutcome||sc.reason||'') === 'IE (.75)';
   sc.chsiRgu = !sc.chsi ? 0 : ie ? 0.75 : 1;
   sc.rgus = (sc.xm>0?1:0)+(sc.tv?1:0)+sc.chsiRgu+(sc.cdv?1:0)+(sc.xh?1:0);
@@ -3155,8 +3270,7 @@ function loadFromSheets(){
   if(!url) return;
   _syncShow('Loading from Google Sheets\u2026', '', 0);
 
-  const _loadAgentId = _session ? _session.agentId : '';
-  sheetsGet({action:'load', agentId:_loadAgentId})
+  sheetsGet({action:'load'})
   .then(d => {
     if(d.status !== 'ok'){
       _syncHide();
@@ -3291,13 +3405,15 @@ function updatePace(){
 /* ── Tab switching ── */
 function switchTab(tab){
   _activeTab = tab;
-  ['tracker','trends','compass','jobaid','disputes'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
-    document.getElementById('panel-'+t).classList.toggle('active', t===tab);
+  ['tracker','trends','jobaid','callbacks','disputes'].forEach(t=>{
+    const btn = document.getElementById('tab-'+t);
+    const panel = document.getElementById('panel-'+t);
+    if(btn) btn.classList.toggle('active', t===tab);
+    if(panel) panel.style.display = (t===tab) ? 'block' : 'none';
   });
   if(tab==='trends') renderTrends();
   if(tab==='disputes') buildReconFiscalOptions();
-  if(tab==='compass') cnRender();
+  if(tab==='callbacks') renderCallbacksTab();
 }
 
 /* ── Trends charts ── */
@@ -4115,191 +4231,6 @@ function switchJaTab(t){
   else { init(); syncIEVisibility(); }
 })();
 
-/* ── Compass Navigator ── */
-var _cnType  = 'new';
-var _cnStage = 'connect';
-
-function cnSetType(t, btn) {
-  _cnType = t;
-  document.querySelectorAll('.cn-type-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  cnRender();
-}
-function cnSetStage(s) {
-  _cnStage = s;
-  ['connect','explore','consult','overcome','review'].forEach(function(id){
-    document.getElementById('cnstg-'+id).classList.toggle('active', id===s);
-  });
-  cnRender();
-}
-
-function cnRender() {
-  var el = document.getElementById('cn-content');
-  if (!el) return;
-  var t = _cnType, s = _cnStage;
-  var html = '';
-
-  /* ── CONNECT ── */
-  if (s === 'connect') {
-    if (t === 'new') {
-      html = '<div class="cn-speech"><strong>Thank you for calling Xfinity. My name is…</strong><br>May I have your name please?<br>Awesome, thank you so much!<br>How may I assist you today?</div>'
-           + '<div class="cn-speech">I\'d be happy to help get you taken care of, may I ask you a few questions to get us started?<br><br>'
-           + 'Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>'
-           + 'May I have the address where you would like service, please?</div>'
-           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
-           + '<div class="cn-speech">In order to find the best deal, would it be ok if I ask a few more questions about how you will be using the service?</div>';
-    } else if (t === 'moves') {
-      html = '<div class="cn-speech">First of all, let me say <strong>thank you for taking us with you to your new home.</strong><br>You\'ve reached the movers department, and I\'d be happy to take care of this for you.<br>May I ask you a few questions to get us started?</div>'
-           + '<div class="cn-speech">Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>Can you please verify the address where you <em>currently</em> have service?<br>And what is the address that you will be <em>moving to</em>?</div>'
-           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
-           + '<div class="cn-speech">One great thing about moving is that you qualify for some specific transfer promotions — would it be ok if I asked a few questions about how you\'ll be using the service to see what you might qualify for?</div>';
-    } else if (t === 'ie') {
-      html = '<div class="cn-speech">Thank you for considering us for your internet!<br>I\'d be happy to help get you taken care of, may I ask you a few questions to get us started?</div>'
-           + '<div class="cn-speech">Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?</div>'
-           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
-           + '<div class="cn-speech">Great! I can absolutely help you find a low-cost internet service. To make sure that we find the best fit for your household, would it be ok if I asked a few more questions about how you\'ll be using it?</div>';
-    } else if (t === 'upgrade') {
-      html = '<div class="cn-speech">I\'d be happy to review your account to help find you the best deal. May I ask you a few questions to get us started?</div>'
-           + '<div class="cn-speech">Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>Can you please verify the address where you have service?</div>'
-           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
-           + '<div class="cn-speech">I see that you\'ve been a customer since _____! <strong>Thank you for your loyalty!</strong><br>To make sure that you get the most out of this change, let\'s do a quick account review. Do you mind if I ask a few more questions about how you\'ll be using the new service?</div>';
-    } else if (t === 'downgrade') {
-      html = '<div class="cn-speech">To make sure that we find the right plan for your household needs, may I ask you a few questions to get us started?</div>'
-           + '<div class="cn-speech">Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>Can you please verify the address where you have service?</div>'
-           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport. Choose one non-business related question to ask.</div>'
-           + '<div class="cn-speech">I see that you\'ve been a customer since _____! <strong>Thank you for your loyalty!</strong><br>To make sure that you get the most out of this change, let\'s do a quick account review. Do you mind if I ask a few more questions about how you\'ll be using the new service?</div>';
-    } else if (t === 'nontraditional') {
-      html = '<div class="cn-speech">I\'d be happy to help get you taken care of, may I ask you a few questions to get us started?<br><br>'
-           + 'Can I get a good number to call you back in case the call drops?<br>Is that your home phone or a mobile phone?<br>Can I please have the address you are calling about?</div>'
-           + '<div class="cn-tip">⭐ Elite Tip: Top agents use this wait time to build rapport.</div>'
-           + '<div class="cn-speech" style="font-style:italic">Choose an option for specific troubleshooting guidance based on the reason for the call.</div>'
-           + '<div class="cn-section-title">Reason for Call</div>'
-           + '<div class="cn-objections" style="grid-template-columns:repeat(4,1fr)">'
-           + ['Internet Outage','Payment','Change Open Order','Down Line / Plant Issue','Business Service','Tech Late / No Show','Activate Modem','Log-in Issue','Activate Peacock','Order Fallout / Collections Block','Unmet Promises','Transfer Equipment','Slow WiFi','Review Bill','Ticket Status','NOW WiFi / Prepaid Issue','Employee Complaint','Pending IE Application'].map(function(o){return '<div class="cn-obj-btn">'+o+'</div>';}).join('')
-           + '</div>';
-    } else if (t === 'secondswing') {
-      html = '<div class="cn-speech"><strong>Set Yourself Up for Success</strong><br><br>'
-           + 'I totally understand that you need some time to make a decision like this — however, I would hate to make you have to start back over from the beginning.<br><br>'
-           + 'What is a good day and time for me to call you back?<br><br>'
-           + 'That should give you enough time to… (check with your significant other / current provider / other)<br><br>'
-           + 'I will just need a little more information to make that conversation easier for us…</div>'
-           + '<div class="cn-section-title">2nd Swing Notes Checklist</div>'
-           + '<div class="cn-card" style="grid-column:span 4">'
-           + ['Preferred Date/Time (EST) for Callback','Name','Phone Number','Email','Account Number / Location Number','Services Ordered','Services Interested In','Notes / IMEI Numbers'].map(function(item){return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)"><span style="color:var(--blue)">☐</span> '+item+'</div>';}).join('')
-           + '</div>';
-    }
-  }
-
-  /* ── EXPLORE / DISCOVER ── */
-  else if (s === 'explore') {
-    var intro = '';
-    if (t === 'new')          intro = 'Ask questions with relevant follow-ups';
-    else if (t === 'moves')   intro = 'Ask questions with relevant follow-ups — moving focus';
-    else if (t === 'ie')      intro = 'Ask questions with relevant follow-ups — IE focus';
-    else if (t === 'upgrade') intro = 'To make sure that you get the most out of this change, let\'s do a quick account review.';
-    else if (t === 'downgrade') intro = 'Let\'s start by making sure the services you have match your current needs.';
-    else if (t === 'nontraditional') intro = 'Existing: Let\'s start by making sure services match current needs. &nbsp;|&nbsp; Non-Existing: Let\'s start with a few questions to understand your needs.';
-
-    html = '<div class="cn-tip">📝 ' + intro + '</div>';
-
-    if (t !== 'upgrade') {
-      html += '<div class="cn-speech"><strong>Great! Besides you, who else will be using the services in the home?</strong>'
-            + '<ul><li>Any kids? How old?</li>'
-            + (t === 'moves' ? '<li>Did you buy this new place or are you renting?</li>' : '<li>Do you own or rent your home?</li>')
-            + '</ul></div>'
-            + '<div class="cn-speech"><strong>And paint me a picture of what a typical day of using our services might look like?</strong>'
-            + '<ul><li>Any gamers?</li><li>Any streaming?<ul class="cn-sub-ul"><li>I\'m looking for suggestions — what are you watching now?</li><li>What service is that on?</li><li>Will you be using any other streaming services?</li></ul></li></ul></div>';
-    } else {
-      html += '<div class="cn-speech"><strong>01 — Start with the product/feature the customer called about</strong><ul>'
-            + '<li>Internet: "What will you be using the faster speed for?"</li>'
-            + '<li>Channel Upgrade: "What will they be watching on this new channel?"</li>'
-            + '<li>Add a product: "Tell me a little about what you need out of this?"</li></ul></div>'
-            + '<div class="cn-speech"><strong>02 — If the customer doesn\'t have TV, how are they accessing Video Content?</strong><ul><li>I am looking for suggestions — what\'s your favorite show on that streaming service?</li></ul></div>'
-            + '<div class="cn-speech"><strong>03 — When everybody is home, who all will be enjoying the services with you?</strong><ul><li>Any kids? How old?</li></ul></div>';
-    }
-
-    html += '<div class="cn-speech"><strong>What devices will you be connecting to the Wi-Fi?</strong>'
-          + '<ul><li>Any cell phones?</li><li>Any smartwatches or tablets?</li><li>Who is your current mobile provider?</li><li>And what does ___ lines of (that provider) cost nowadays?</li></ul></div>';
-
-    if (t === 'ie') {
-      html += '<div class="cn-alert">⚠ If IE is the best option based on discovery, ask if they participate in any qualifying programs.</div>';
-    }
-    if (t === 'nontraditional') {
-      html += '<div class="cn-speech" style="border-color:rgba(59,130,246,.4);color:var(--blue)"><strong>Reviewing your account</strong>, I see that you haven\'t yet taken advantage of the discounted mobile line that comes with your service. Did anyone talk with you about that?</div>';
-    }
-
-    html += '<div class="cn-section-title">Record Your Tie-backs</div>'
-          + '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">'
-          + ['Internet','Video','Mobile','Security','Voice'].map(function(svc){
-              return '<div style="display:flex;flex-direction:column;gap:5px">'
-                   + '<label style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">'+svc+'</label>'
-                   + '<textarea class="cn-tieback-ta" placeholder="Notes…"></textarea>'
-                   + '</div>';
-            }).join('')
-          + '</div>';
-  }
-
-  /* ── CONSULT / PRESENT ── */
-  else if (s === 'consult') {
-    if (t === 'ie') {
-      html = '<div class="cn-tip">💡 Sounds like you might be a perfect candidate for our Internet Essentials program!</div>'
-           + '<div class="cn-row2">'
-           + '<div class="cn-svc"><div class="cn-svc-name">Internet Essentials</div><div class="cn-svc-body">It sounds like you would be a perfect candidate for our Internet Essentials program. With our Internet Essentials (Plus) you will receive our ___ Mbps speed, you can ____ and ____ at the same time.</div></div>'
-           + '<div class="cn-svc"><div class="cn-svc-name">Xfinity/NOW Internet</div><div class="cn-svc-body">Internet Essentials is a great program but given what you\'ve told me I would recommend our ____ Mbps. It\'s quite a bit faster for just a little bit more, and will allow you to ____ and ___ at the same time, while also locking your price for up to 5 years.</div></div>'
-           + '</div>';
-    } else if (t === 'downgrade') {
-      html = '<div class="cn-speech"><strong>I heard you say ________, so based on what you told me I think I found a great solution…</strong></div>';
-    } else if (t === 'upgrade') {
-      html = '<div class="cn-speech"><strong>I know that you called for _______, so based on what you told me I think I have the perfect plan…</strong></div>';
-    } else if (t === 'nontraditional') {
-      html = '<div class="cn-speech"><strong>Based on my review, I do have some ideas about how we might be serving you better.</strong></div>';
-    } else {
-      html = '<div class="cn-speech"><strong>Based on what you told me, I think I have the perfect plan…</strong></div>';
-    }
-
-    html += '<div class="cn-services">'
-          + '<div class="cn-svc"><div class="cn-svc-name">🌐 Internet</div><div class="cn-svc-body">I recommend our ____ Mbps. You will get the fiber-powered speeds you need for all your connected devices in home to ____. You get everything you need with Unlimited Data and Xfinity Gateway included, plus there\'s no contract and your price won\'t change for 5 years.</div></div>'
-          + '<div class="cn-svc"><div class="cn-svc-name">📺 Video</div><div class="cn-svc-body">I know that you are a big fan of <em>(shows)</em> so I set you up with our _____ TV plan to make sure that you can watch all you want!</div></div>'
-          + '<div class="cn-svc"><div class="cn-svc-name">📱 Mobile</div><div class="cn-svc-body">You mentioned that you were paying <em>(your provider)</em> $_____ for your ___ mobile lines. One of the best things about Xfinity is that you get your first line of Unlimited included for 12 months. That means $(x × 12) savings! Cut your bill in half compared to AT&T, T-Mobile, and Verizon.</div></div>'
-          + '<div class="cn-svc"><div class="cn-svc-name">🏠 Xfinity Home</div><div class="cn-svc-body">I also heard you say you <em>(had kids / live alone / have a house full of gadgets)</em> so I included our Xfinity Home system you can <em>(protect or automate)</em> what\'s important.</div></div>'
-          + '<div class="cn-svc"><div class="cn-svc-name">📞 Voice</div><div class="cn-svc-body">And to back up your cell phone I also included our Xfinity Voice service.</div></div>'
-          + '</div>'
-          + '<div class="cn-alert">⚠ <strong>Broadband Facts Required:</strong> When offering Internet or Mobile you MUST say — "Also, before I go into plan details, I wanted to let you know that you can now review a breakdown of pricing and features for Internet and mobile plans online at <strong>Xfinity.com/labels</strong>."</div>';
-  }
-
-  /* ── OVERCOME ── */
-  else if (s === 'overcome') {
-    html = '<div class="cn-section-title">Steps to Overcome</div>'
-         + '<div class="cn-cards">'
-         + '<div class="cn-card"><div class="cn-card-num">1</div><div class="cn-card-title">Understand the Objection</div><div class="cn-card-body">(If the objection is unclear) What about that plan didn\'t you like?</div></div>'
-         + '<div class="cn-card"><div class="cn-card-num">2</div><div class="cn-card-title">Empathize and Overcome</div><div class="cn-card-body">I completely understand that, however, with our services…</div></div>'
-         + '<div class="cn-card"><div class="cn-card-num">3</div><div class="cn-card-title">Restate Key Tie-Backs</div><div class="cn-card-body">I heard you say that ______, so I wanted to make sure…</div></div>'
-         + '<div class="cn-card"><div class="cn-card-num">4</div><div class="cn-card-title">Add Additional Value</div><div class="cn-card-body">One other thing about that product that you might like is…</div></div>'
-         + '</div>'
-         + '<div class="cn-section-title">Top Objections</div>'
-         + '<div class="cn-objections">'
-         + ['Internet','Video','Mobile','Security','Voice','General Objections'].map(function(o){return '<div class="cn-obj-btn">'+o+'</div>';}).join('')
-         + '</div>';
-  }
-
-  /* ── REVIEW / CLOSE ── */
-  else if (s === 'review') {
-    html = '<div class="cn-close-card">'
-         + '<div class="cn-close-step"><div class="cn-close-num">1</div><div><div class="cn-close-title">Summarize the Order</div><div class="cn-close-body">Cover: All Services on the Order · Promotional Pricing &amp; Duration · Roll to Pricing</div></div></div>'
-         + '<div class="cn-close-step"><div class="cn-close-num">2</div><div><div class="cn-close-title">Process Digital Consent</div><div class="cn-close-body">Text Message &nbsp;|&nbsp; Email &nbsp;|&nbsp; Verbal</div></div></div>'
-         + '<div class="cn-close-step"><div class="cn-close-num">3</div><div><div class="cn-close-title">Installation &amp; Activation</div><div class="cn-close-body">Date &amp; Time of Install and On-Time Guarantee · Shipping and Activation Details · Canceling your Provider</div></div></div>'
-         + '<div class="cn-close-step"><div class="cn-close-num">4</div><div><div class="cn-close-title" style="color:var(--blue)">Xfinity App &amp; Membership</div><div class="cn-close-body">Share HOW7002 "Using the Xfinity App" &amp; HOW20303 "What is Xfinity Membership" with customer.</div></div></div>'
-         + '</div>'
-         + '<div class="cn-speech"><strong>Recommended Closing:</strong><br><br>'
-         + '"Thank you so much for your business! You should know that with your purchase you are now enrolled as an <em>(tier)</em> tier Xfinity Member, which will grant you access to special rewards and benefits."<br><br>'
-         + '"I am going to be sending you a link to download our Xfinity App where you can start enjoying some of those benefits as soon as today, get help with any new product activation, and control your Xfinity Account."<br><br>'
-         + 'Share <strong>HOW20203</strong> to help explain membership benefits to the customer.'
-         + '</div>';
-  }
-
-  el.innerHTML = html;
-}
-
 function setSchedType(t, btn){
   document.getElementById('sched-5x8').classList.toggle('active', t==='5x8');
   document.getElementById('sched-4x10').classList.toggle('active', t==='4x10');
@@ -4367,8 +4298,8 @@ function clearLogSearch(){
 }
 
 function getFiscalKeyForMonth(monthLabel){
-  // monthLabel like "March 2026" → "xcl_goals_March2026"
-  return 'xcl_goals_'+monthLabel.replace(' ','');
+  // monthLabel like "April 2026" → "xcl_goals_acq_cap4_April2026"
+  return getFiscalKey(_userCallType, _userCapLevel, monthLabel);
 }
 
 function buildFiscalMonthSelector(){
@@ -4380,13 +4311,13 @@ function buildFiscalMonthSelector(){
   // Always include the current fiscal month
   months.push(current);
 
-  // Add any past fiscal month that has stored data in localStorage
+  // Scan localStorage for saved goals matching current type+cap
+  const keyPrefix = 'xcl_goals_'+(_userCallType||'acq')+'_cap'+(_userCapLevel||1)+'_';
   for(let i=0; i<localStorage.length; i++){
     const key = localStorage.key(i);
-    if(key && key.startsWith('xcl_goals_')){
-      const label = key.replace('xcl_goals_','').replace(/([A-Z])/g,' $1').trim();
-      // Reconstruct "Month Year" from key like "xcl_goals_March2026"
-      const match = key.match(/xcl_goals_([A-Za-z]+)(\d{4})/);
+    if(key && key.startsWith(keyPrefix)){
+      // Extract month label from xcl_goals_acq_cap4_April2026
+      const match = key.replace(keyPrefix,'').match(/^([A-Za-z]+)(\d{4})$/);
       if(match){
         const fm = match[1]+' '+match[2];
         if(!months.includes(fm)) months.push(fm);
@@ -4400,7 +4331,20 @@ function buildFiscalMonthSelector(){
     return db - da;
   });
 
-  sel.innerHTML = months.map(m=>`<option value="${getFiscalKeyForMonth(m)}"${m===current?' selected':''}>${m}${m===current?' (current)':''}</option>`).join('');
+  const _mnG=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const _mfullG=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function fmtGoalRange(m){
+    const p=m.match(/([A-Za-z]+)\s+(\d{4})/);
+    if(!p) return m;
+    const mIdx=_mfullG.indexOf(p[1]), yr=parseInt(p[2]);
+    if(mIdx<0) return m;
+    const s=new Date(yr,mIdx-1,22), e=new Date(yr,mIdx,21);
+    return _mnG[s.getMonth()]+' '+s.getDate()+' – '+_mnG[e.getMonth()]+' '+e.getDate();
+  }
+  sel.innerHTML = months.map(function(m){
+    var lbl = m===current ? 'Current' : fmtGoalRange(m);
+    return '<option value="'+getFiscalKeyForMonth(m)+'"'+(m===current?' selected':'')+'>'+lbl+'</option>';
+  }).join('');
   updateGoalsViewingNotice();
 }
 
@@ -4424,11 +4368,6 @@ function updateGoalsViewingNotice(){
 }
 
 function loadGoalsForFiscalMonth(storageKey){
-  // Normalize: if old format key passed, remap to type+cap key
-  if(storageKey && !storageKey.includes('_cap')){
-    const monthPart = storageKey.replace('xcl_goals_','');
-    storageKey = 'xcl_goals_'+_userCallType+'_cap'+_userCapLevel+'_'+monthPart;
-  }
   const stored = JSON.parse(localStorage.getItem(storageKey)||'{}');
   // Use cap defaults as base, fall back to DEFAULTS if cap not set
   const capDef = getCapDefaults();
@@ -4446,14 +4385,6 @@ function loadGoalsForFiscalMonth(storageKey){
   document.getElementById('s-cb-chsi').value = merged.cbChsi||0;
   document.getElementById('s-cb-cdv').value  = merged.cbCdv||0;
   document.getElementById('s-cb-xh').value   = merged.cbXh||0;
-  // Apply to live stats immediately
-  GOALS.rev=merged.rev; GOALS.xm=merged.xm; GOALS.tv=merged.tv;
-  GOALS.chsi=merged.chsi; GOALS.cdv=merged.cdv; GOALS.xh=merged.xh;
-  CB.rev=merged.cbRev||0; CB.xm=merged.cbXm||0; CB.tv=merged.cbTv||0;
-  CB.chsi=merged.cbChsi||0; CB.cdv=merged.cbCdv||0; CB.xh=merged.cbXh||0;
-  const rgu=GOALS.xm+GOALS.tv+GOALS.chsi+GOALS.cdv+GOALS.xh;
-  const lbl=document.getElementById('m-rgus-lbl'); if(lbl) lbl.textContent='of '+rgu;
-  updateStats();
   updatePtoPreview();
   updateGoalsViewingNotice();
 }
@@ -4670,8 +4601,8 @@ function nsAddReason(cat, inp){
 }
 
 
-const SHARED_SETTINGS_KEYS  = ['noSaleCats','noSaleCatsVersion','outcomes','settingsVersion'];
-const PERSONAL_SETTINGS_KEYS = ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh','schedule','workDays','alertWindows','sheetsUrl'];
+const SHARED_SETTINGS_KEYS  = ['noSaleCats','noSaleCatsVersion','outcomes','settingsVersion','goals'];
+const PERSONAL_SETTINGS_KEYS = ['ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh','schedule','workDays','alertWindows','sheetsUrl','callType','capLevel'];
 
 /* ── Settings sync to Google Sheets ─────────────────────────────────────
  * _settings_shared tab  — org-wide: categories, outcomes
@@ -4687,49 +4618,23 @@ function pushSettingsToSheets(allSettings){
   PERSONAL_SETTINGS_KEYS.forEach(k => { if(allSettings[k]!==undefined) personal[k] = allSettings[k]; });
   shared.settingsVersion   = SETTINGS_VERSION;
   personal.settingsVersion = SETTINGS_VERSION;
-  return sheetsPost({ action:'saveSettings', shared:JSON.stringify(shared), personal:JSON.stringify(personal) })
+  // Always include callType and capLevel in personal
+  personal.callType = _userCallType;
+  personal.capLevel = _userCapLevel;
+  // Bundle all goal keys into shared.goals object
+  const goalsBundle = {};
+  for(let i=0; i<localStorage.length; i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith('xcl_goals_')) goalsBundle[k] = localStorage.getItem(k);
+  }
+  if(Object.keys(goalsBundle).length) shared.goals = goalsBundle;
+  const _agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || '';
+  return sheetsPost({ action:'saveSettings', agentId:_agentId, shared:JSON.stringify(shared), personal:JSON.stringify(personal) })
     .then(()  => _showToast('✓ Settings saved to sheet', 'ok', 2500))
     .catch(err => _showToast('⚠ Settings not synced — ' + (err.message||''), 'err', 4000));
 }
 
-async function connectAndLoadSettings(){
-  if(!getSheetsUrl()){ _showToast('No Sheets URL configured', 'err', 3000); return; }
-  _showToast('Loading settings from sheet…', 'syncing');
-  try {
-    const data = await sheetsGet({ action:'loadAllSettings' });
-    if(!data){ _showToast('No settings found in sheet', 'ok', 2500); return; }
 
-    // Store identity
-    if(data.email){
-      _currentUserEmail = data.email;
-      localStorage.setItem('xcl_user_email', data.email);
-      const el = document.getElementById('s-user-email');
-      if(el) el.textContent = data.email;
-    }
-
-    const shared   = data.shared   ? JSON.parse(data.shared)   : {};
-    const personal = data.personal ? JSON.parse(data.personal) : {};
-    const merged   = Object.assign({}, shared, personal);
-    const remoteVersion = merged.settingsVersion || 0;
-
-    if(remoteVersion < SETTINGS_VERSION){
-      // Schema upgrade — backup both before migrating
-      localStorage.setItem('xcl_settings_backup_shared_'   + Date.now(), JSON.stringify(shared));
-      localStorage.setItem('xcl_settings_backup_personal_' + Date.now(), JSON.stringify(personal));
-      _showToast('⚠ Settings upgraded — backups saved locally', 'ok', 4000);
-      const migrated = migrateSettings(merged);
-      applySettings(migrated);
-      saveSettings();
-    } else {
-      applySettings(merged);
-      localStorage.setItem('xcl_settings', JSON.stringify(merged));
-      localStorage.setItem('xcl_settings_version', String(SETTINGS_VERSION));
-      _showToast('✓ Settings loaded' + (data.email ? ' for ' + data.email : ''), 'ok', 2500);
-    }
-  } catch(err){
-    _showToast('✗ Could not load settings — ' + (err.message||''), 'err', 5000);
-  }
-}
 
 function migrateSettings(old){
   const safe = {};
@@ -5194,7 +5099,7 @@ function getFiscalInfoForDate(date){
   }
   const names = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const label = names[fEnd.getMonth()] + ' ' + fEnd.getFullYear();
-  const key   = 'xcl_goals_' + label.replace(' ','');
+  const key = 'xcl_goals_'+(_userCallType||'acq')+'_cap'+(_userCapLevel||1)+'_'+label.replace(' ','');
   return { fiscalStart: fStart, fiscalEnd: fEnd, label, key };
 }
 
@@ -5224,24 +5129,41 @@ function buildFiscalHistoryDropdown(){
     }
   }
 
-  // 2. Also scan calls for any months not yet in storage
+  // 2. Also scan calls for any months not yet in storage — dedupe by label
   calls.forEach(c => {
     const fi = getFiscalInfoForDate(c.ts instanceof Date ? c.ts : new Date(c.ts));
-    if(!seen.has(fi.key)) seen.set(fi.key, fi);
+    const alreadyHas = [...seen.values()].some(v => v.label === fi.label);
+    if(!alreadyHas) seen.set(fi.key, fi);
   });
 
-  // 3. Always include current month
+  // 3. Always include current + past 5 fiscal months
   const current = getFiscalInfo();
-  const curKey  = 'xcl_goals_' + getFiscalMonth().replace(' ','');
+  const curKey  = getFiscalKey();
   seen.set(curKey, {fiscalStart:current.fiscalStart, fiscalEnd:current.fiscalEnd, label:getFiscalMonth(), key:curKey});
+  // Add past months so they always show even without calls/goals
+  const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  for(var _pm=1; _pm<=5; _pm++){
+    var _pDate = new Date(current.fiscalEnd.getFullYear(), current.fiscalEnd.getMonth()-_pm, 1);
+    var _pMonth = names[_pDate.getMonth()] + ' ' + _pDate.getFullYear();
+    var _pKey = getFiscalKey(_userCallType, _userCapLevel, _pMonth);
+    var _pStart = new Date(_pDate.getFullYear(), _pDate.getMonth()-1, 22);
+    var _pEnd   = new Date(_pDate.getFullYear(), _pDate.getMonth(), 22);
+    if(!seen.has(_pKey)) seen.set(_pKey, {fiscalStart:_pStart, fiscalEnd:_pEnd, label:_pMonth, key:_pKey});
+  }
 
   // Sort descending by fiscal start
   const sorted = [...seen.values()].sort((a,b) => b.fiscalStart - a.fiscalStart);
 
   const prevSel = sel.value || curKey;
+  const _mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtRange(fi){
+    if(!fi.fiscalStart||!fi.fiscalEnd) return fi.label||'';
+    const s=fi.fiscalStart;
+    const e=new Date(fi.fiscalEnd.getTime()-86400000);
+    return _mn[s.getMonth()]+' '+s.getDate()+' – '+_mn[e.getMonth()]+' '+e.getDate();
+  }
   sel.innerHTML = sorted.map(fi =>
-    '<option value="' + fi.key + '">' +
-    (fi.key === curKey ? 'Month To Date' : fi.label) + '</option>'
+    '<option value="' + fi.key + '">' + (fi.key===curKey ? 'Current' : fmtRange(fi)) + '</option>'
   ).join('');
 
   sel.value = prevSel;
@@ -5258,8 +5180,8 @@ function setHistoricalFiscal(key){
     GOALS.rev=s.rev;GOALS.xm=s.xm;GOALS.tv=s.tv;GOALS.chsi=s.chsi;GOALS.cdv=s.cdv;GOALS.xh=s.xh;
   } else {
     if(_fc) _fc.style.display = 'none';
-    // Build fiscal info directly from the key (e.g. xcl_goals_March2026)
-    const parts = key.replace('xcl_goals_','').match(/([A-Za-z]+)(\d{4})/);
+    // Parse month from new key format e.g. xcl_goals_acq_cap4_April2026
+    const parts = key.match(/([A-Za-z]+)(\d{4})$/);
     if(parts){
       const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
       const mIdx = names.indexOf(parts[1]);
@@ -5270,17 +5192,10 @@ function setHistoricalFiscal(key){
         _historicalFiscal = {fiscalStart: fStart, fiscalEnd: fEnd, label: parts[1]+' '+yr, key};
       }
     }
-    // Load goals for this month from storage
-    const storedGoals = JSON.parse(localStorage.getItem(key) || '{}');
-    const s = loadSettings(); // fallback to current defaults
-    GOALS.rev  = storedGoals.rev  || s.rev;
-    GOALS.xm   = storedGoals.xm   || s.xm;
-    GOALS.tv   = storedGoals.tv   || s.tv;
-    GOALS.chsi = storedGoals.chsi || s.chsi;
-    GOALS.cdv  = storedGoals.cdv  || s.cdv;
-    GOALS.xh   = storedGoals.xh   || s.xh;
   }
+  buildFilterOptions();
   updateStats();
+  render();
 }
 
 function getActiveFiscalInfo(){
@@ -5400,6 +5315,7 @@ function setUserRole(type){
   _userCallType = type;
   saveUserProfile();
   updateRoleBtns();
+  updateRoleChip();
   reloadGoalsForRole();
 }
 
@@ -5407,17 +5323,27 @@ function setUserCap(level){
   _userCapLevel = level;
   saveUserProfile();
   updateRoleBtns();
+  updateRoleChip();
   reloadGoalsForRole();
 }
 
 function saveUserProfile(){
   localStorage.setItem('xcl_user_profile', JSON.stringify({callType:_userCallType, capLevel:_userCapLevel}));
+  // Push to Sheets so it persists per Sales ID
+  if(getSheetsUrl()){
+    var agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || '';
+    if(agentId){
+      var personal = {callType:_userCallType, capLevel:_userCapLevel, settingsVersion:SETTINGS_VERSION};
+      sheetsPost({action:'saveSettings', agentId:agentId, personal:JSON.stringify(personal)})
+        .catch(function(){});  // silent fail — localStorage is the fallback
+    }
+  }
 }
 
 function loadUserProfile(){
   const p = JSON.parse(localStorage.getItem('xcl_user_profile')||'{}');
   _userCallType = p.callType || 'acq';
-  _userCapLevel = parseInt(p.capLevel) || 1;
+  _userCapLevel = parseInt(p.capLevel) || 2;
 }
 
 function updateRoleBtns(){
@@ -5447,6 +5373,7 @@ function reloadGoalsForRole(){
     const el = document.getElementById('s-'+k);
     if(el) el.placeholder = String(v);
   });
+  buildFiscalMonthSelector(); // rebuild goals dropdown for new type+cap
   loadGoalsForFiscalMonth(getFiscalKey());
   updateStats();
   buildFiscalHistoryDropdown();
@@ -5489,7 +5416,7 @@ function doLogin(){
   const agentId = (document.getElementById('login-agent-id').value||'').trim().toUpperCase();
   const pin     = (document.getElementById('login-pin').value||'').trim();
   const errEl   = document.getElementById('login-error');
-  if(!agentId){ showLoginError('Please enter your Agent ID'); return; }
+  if(!agentId){ showLoginError('Please enter your Sales ID'); return; }
   if(!pin){     showLoginError('Please enter your PIN');     return; }
 
   // Check against cached user list first, then try sheets
@@ -5506,7 +5433,7 @@ function doLogin(){
         _userList.push(d.user);
         startSession(d.user);
       } else {
-        showLoginError('Agent ID not found. Contact your supervisor.');
+        showLoginError('Sales ID not found. Contact your supervisor.');
       }
     }).catch(function(){
       // Offline fallback — check localStorage cache
@@ -5558,9 +5485,9 @@ function applySessionUI(){
   const typeLabel=_session.callType==='mov'?'MOV':'ACQ';
   const badge = document.getElementById('session-badge');
   if(badge){
-    badge.textContent = (_session.name||_session.agentId) + ' · ' + typeLabel + ' Cap' + _session.capLevel;
+    const capLabels = {1:'Cap 1',2:'Cap 2',3:'Cap 3',4:'Cap 4'};
+    badge.textContent = typeLabel + ' · ' + (capLabels[_userCapLevel]||'Cap '+_userCapLevel);
     badge.style.display='inline-flex';
-    badge.setAttribute('data-tip', 'Signed in as '+(_session.name||_session.agentId)+' ('+_session.agentId+') | Role: '+_session.role+' | Click to sign out');
   }
   // Show/hide team tab and users tab
   const teamBtn = document.getElementById('tab-team');
@@ -5593,10 +5520,7 @@ function doLogout(){
 }
 
 // ── Filter calls by session user ──────────────────────────────────────────
-function getSessionCalls(){
-  if(!_session) return [];
-  return calls.filter(function(c){ return !c.agentId || c.agentId===_session.agentId; });
-}
+
 
 // ── Team Dashboard ────────────────────────────────────────────────────────
 var _teamData = {}; // {agentId: [calls]}
@@ -5808,11 +5732,10 @@ function saveUserForm(){
   const callType=document.getElementById('uf-call-type').value;
   const capLevel=parseInt(document.getElementById('uf-cap').value);
   const supervisorId=(document.getElementById('uf-supervisor').value||'').trim().toUpperCase();
-  if(!agentId){ _showToast('Agent ID required','warn',2000); return; }
+  if(!agentId){ _showToast('Sales ID required','warn',2000); return; }
   if(!_editingUserId && !pin){ _showToast('PIN required for new users','warn',2000); return; }
   const user={agentId, name, role, callType, capLevel, supervisorId, active:true, createdAt:new Date().toISOString()};
   if(pin) user.pin=pin;
-  console.log('saveUserForm: sending user to Sheets:', JSON.stringify(user));
   document.getElementById('user-form').style.display='none';
   _showToast('Saving user to Sheets...', 'ok', 1500);
   const params = {
@@ -5827,9 +5750,7 @@ function saveUserForm(){
     active:'true',
     createdAt:user.createdAt||new Date().toISOString()
   };
-  console.log('saveUserForm: params:', JSON.stringify(params));
   sheetsGet(params).then(function(d){
-    console.log('saveUserForm: Sheets response:', JSON.stringify(d));
     if(d.status==='ok'){
       _showToast('✓ User saved to Sheets: '+agentId, 'ok', 2500);
       loadUserList();
@@ -5858,40 +5779,53 @@ function deleteUser(agentId){
 // ── Tag calls with agentId on log ─────────────────────────────────────────
 // Patch into doLogCall — agentId added to call object
 
-// ── Init: check session ───────────────────────────────────────────────────
+// ── Init: auth disabled — auto-login ─────────────────────────────────────
 (function(){
-  const sess = JSON.parse(localStorage.getItem('xcl_session')||'null');
+  // Load cap/type profile FIRST so all subsequent code uses correct values
+  var _initProfile = JSON.parse(localStorage.getItem('xcl_user_profile')||'{}');
+  _userCallType = _initProfile.callType || 'acq';
+  _userCapLevel = parseInt(_initProfile.capLevel) || 2;
+  // On first load with no profile, flag that cap level needs to be set
+  if(!localStorage.getItem('xcl_user_profile')){
+    localStorage.setItem('xcl_user_profile', JSON.stringify({callType:_userCallType, capLevel:_userCapLevel}));
+    localStorage.setItem('xcl_cap_not_set', '1');
+  }
+
   const cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
   _userList = cached;
-  if(sess && sess.agentId){
-    const user = cached.find(function(u){ return u.agentId===sess.agentId; });
-    if(user){
-      _session=user;
-      _userCallType=user.callType||'acq';
-      _userCapLevel=parseInt(user.capLevel)||1;
-      hideLoginScreen();
-      setTimeout(function(){
-        applySessionUI();
-        var cachedCalls = loadCallsCache();
-        if(cachedCalls.length){
-          calls = cachedCalls;
-          calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
-          render(); updateStats(); buildFilterOptions();
-          setSheetsStatus('↻ Loading from Sheets…', 'var(--text3)');
-        }
-      }, 50);
-      return;
+  const savedId = localStorage.getItem('xcl_sales_id');
+  const savedUser = savedId ? cached.find(function(u){ return u.agentId===savedId; }) : null;
+  _session = savedUser || cached[0] || {agentId: savedId||'guest', name:'', role:'admin', callType:_userCallType, capLevel:_userCapLevel, supervisorId:''};
+  if(savedId) _session.agentId = savedId;
+  hideLoginScreen();
+  setTimeout(function(){
+    loadSalesId();
+    loadUserProfile();
+    applySettings(loadSettings());
+    updateRoleBtns(); // sync cap dropdown + ACQ/MOV buttons
+    updateRoleChip();
+    applySessionUI();
+    var cachedCalls = loadCallsCache();
+    if(cachedCalls.length){
+      calls = cachedCalls;
+      calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
+      render(); updateStats(); buildFilterOptions();
+      setSheetsStatus('↻ Loading from Sheets…', 'var(--text3)');
     }
-  }
-  checkFirstRun();
+    // Prompt for Sales ID if never set
+    if(!savedId){ showSalesIdPrompt(); }
+    else {
+      // Nudge user to set cap level if never configured
+      if(localStorage.getItem('xcl_cap_not_set')){
+        _showToast('\u26a0 Set your Cap Level in Settings \u2192 Goals before logging calls', 'warn', 6000);
+        localStorage.removeItem('xcl_cap_not_set');
+      }
+      loadFromSheets();
+    }
+  }, 50);
 })();
 
-function showSetupWizard(){
-  var wiz = document.getElementById('setup-wizard');
-  var ls  = document.getElementById('login-screen');
-  if(wiz) wiz.style.display='flex';
-  if(ls)  ls.style.display='none';
-}
+
 
 function hideSetupWizard(){
   var wiz = document.getElementById('setup-wizard');
@@ -5899,7 +5833,7 @@ function hideSetupWizard(){
 }
 
 function completeSetup(){
-  var agentId  = (document.getElementById('wiz-agent-id').value||'').trim().toUpperCase();
+  var agentId  = (document.getElementById('wiz-sales-id').value||'').trim().toUpperCase();
   var name     = (document.getElementById('wiz-name').value||'').trim();
   var pin      = (document.getElementById('wiz-pin').value||'').trim();
   var pin2     = (document.getElementById('wiz-pin2').value||'').trim();
@@ -5907,7 +5841,7 @@ function completeSetup(){
   var capLevel = parseInt(document.getElementById('wiz-cap').value);
   var errEl    = document.getElementById('wiz-error');
 
-  if(!agentId){ showWizError('Agent ID is required'); return; }
+  if(!agentId){ showWizError('Sales ID is required'); return; }
   if(pin.length < 4){ showWizError('PIN must be at least 4 digits'); return; }
   if(pin !== pin2){ showWizError('PINs do not match'); return; }
   if(!/^\d+$/.test(pin)){ showWizError('PIN must be numbers only'); return; }
@@ -5945,24 +5879,28 @@ function showWizError(msg){
 // Check on init if we need first-run setup
 // Called after session check fails and no cached users exist
 function checkFirstRun(){
-  var cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
-  if(cached.length === 0){
-    // Try loading from Sheets first
-    sheetsGet({action:'getUsers'}).then(function(d){
-      if(d.status==='ok' && d.users && d.users.length > 0){
-        _userList = d.users;
-        localStorage.setItem('xcl_user_cache', JSON.stringify(_userList));
-        showLoginScreen();
-      } else {
-        showSetupWizard();
-      }
-    }).catch(function(){
-      // No sheets connection — go straight to setup
-      showSetupWizard();
-    });
-  } else {
-    showLoginScreen();
+  // Auth disabled — just ensure Sales ID is set
+  var savedId = localStorage.getItem('xcl_sales_id');
+  if(!savedId){
+    showSalesIdPrompt();
   }
+}
+
+function showSalesIdPrompt(){
+  var modal = document.getElementById('sales-id-prompt');
+  if(modal) modal.style.display='flex';
+}
+
+function hideSalesIdPrompt(){
+  var modal = document.getElementById('sales-id-prompt');
+  if(modal) modal.style.display='none';
+}
+
+function confirmSalesIdPrompt(){
+  var val = (document.getElementById('prompt-sales-id').value||'').trim().toUpperCase();
+  if(!val){ document.getElementById('prompt-sales-id').style.borderColor='var(--red)'; return; }
+  saveSalesId(val);
+  hideSalesIdPrompt();
 }
 
 function showLoginUrlConfig(){
@@ -6005,6 +5943,470 @@ function showLoginUrlStatus(msg, color){
   if(el){ el.textContent=msg; el.style.color=color; el.style.background=color.replace(')',',0.1)').replace('var(','rgba('); el.style.display='block'; }
 }
 
+function saveSalesId(val){
+  if(!val){ _showToast('Enter a Sales ID', 'warn', 2000); return; }
+  if(!_session) _session = {};
+  _session.agentId = val;
+  localStorage.setItem('xcl_sales_id', val);
+  applySessionUI();
+  const st = document.getElementById('s-sales-id-status');
+  if(st){ st.textContent = '\u2713 Saved'; setTimeout(function(){ st.textContent=''; }, 2000); }
+  // Pull settings from Sheets to restore cap level and goals for this Sales ID
+  if(getSheetsUrl()){
+    _showToast('Restoring your settings...', 'syncing');
+    sheetsGet({action:'loadAllSettings', agentId:val}).then(function(d){
+      if(d.status==='ok'){
+        // Restore shared goals bundle
+        if(d.shared){
+          try{
+            var shared = typeof d.shared==='string' ? JSON.parse(d.shared) : d.shared;
+            if(shared.goals){
+              var gb = typeof shared.goals==='string' ? JSON.parse(shared.goals) : shared.goals;
+              Object.entries(gb).forEach(function(kv){ if(kv[0].startsWith('xcl_goals_')) localStorage.setItem(kv[0],kv[1]); });
+            }
+          }catch(e){}
+        }
+        // Restore personal settings (cap level, call type, schedule etc.)
+        if(d.personal){
+          try{
+            var personal = typeof d.personal==='string' ? JSON.parse(d.personal) : d.personal;
+            if(personal.callType) _userCallType = personal.callType||_userCallType;
+            if(personal.capLevel) _userCapLevel = parseInt(personal.capLevel)||_userCapLevel;
+            saveUserProfile(); // persist to localStorage
+            updateRoleBtns();
+            updateRoleChip();
+            reloadGoalsForRole();
+          }catch(e){}
+        }
+        _showToast('\u2713 Settings restored for ' + val, 'ok', 2500);
+      } else {
+        _showToast('Sales ID set to ' + val, 'ok', 2000);
+      }
+    }).catch(function(){
+      _showToast('Sales ID set — no Sheets connection', 'warn', 2000);
+    });
+  } else {
+    _showToast('Sales ID set to ' + val, 'ok', 2000);
+  }
+}
+
+function loadSalesId(){
+  const saved = localStorage.getItem('xcl_sales_id') || (_session && _session.agentId !== 'guest' ? _session.agentId : '');
+  const el = document.getElementById('s-sales-id');
+  if(el && saved) el.value = saved;
+  if(saved && _session) _session.agentId = saved;
+}
+
+function updateRoleChip(){
+  const typeLabel = _userCallType === 'mov' ? 'MOV' : 'ACQ';
+  const capLabels = {1:'Cap 1',2:'Cap 2',3:'Cap 3',4:'Cap 4'};
+  const badge = document.getElementById('session-badge');
+  if(badge) badge.textContent = typeLabel + ' · ' + (capLabels[_userCapLevel]||'Cap '+_userCapLevel);
+}
+
+// ── Calculator ────────────────────────────────────────────────────────────
+var _calc = { val:'0', expr:'', op:null, prev:null, fresh:false };
+var _calcHistory = [];
+
+function toggleCalc(){
+  var p = document.getElementById('calc-panel');
+  if(!p) return;
+  if(p.style.display === 'flex'){
+    p.style.display = 'none';
+    return;
+  }
+  // Position near gear button
+  var btn = document.querySelector('.gear-btn');
+  var r = btn ? btn.getBoundingClientRect() : {right:60, bottom:60};
+  p.style.right  = (window.innerWidth - r.right) + 'px';
+  p.style.top    = (r.bottom + 8) + 'px';
+  p.style.display = 'flex';
+}
+
+function _calcUpdate(){
+  document.getElementById('calc-val').textContent  = _calc.val;
+  document.getElementById('calc-expr').textContent = _calc.expr;
+}
+
+function calcNum(n){
+  if(_calc.fresh){ _calc.val='0'; _calc.fresh=false; }
+  if(n==='.' && _calc.val.includes('.')) return;
+  _calc.val = (_calc.val==='0' && n!=='.') ? n : _calc.val + n;
+  _calcUpdate();
+}
+
+function calcOp(op){
+  _calc.prev = parseFloat(_calc.val);
+  _calc.op   = op;
+  _calc.expr = _calc.val + ' ' + {'+':'+','-':'−','*':'×','/':'÷'}[op];
+  _calc.fresh = true;
+  _calcUpdate();
+}
+
+function calcEquals(){
+  if(_calc.op === null) return;
+  var a = _calc.prev, b = parseFloat(_calc.val), r;
+  if(_calc.op==='+') r=a+b;
+  else if(_calc.op==='-') r=a-b;
+  else if(_calc.op==='*') r=a*b;
+  else if(_calc.op==='/') r = b===0 ? 'Error' : a/b;
+  var fullExpr = _calc.expr + ' ' + _calc.val;
+  _calc.expr = fullExpr + ' =';
+  _calc.val  = r==='Error' ? 'Error' : (Number.isInteger(r) ? String(r) : parseFloat(r.toFixed(10)).toString());
+  _calc.op   = null;
+  _calc.fresh = true;
+  // Save to history
+  _calcHistory.unshift({expr: fullExpr, result: _calc.val});
+  if(_calcHistory.length > 20) _calcHistory.pop();
+  _calcRenderHistory();
+  _calcUpdate();
+}
+
+function toggleCalcHistory(){
+  var h = document.getElementById('calc-history');
+  if(!h) return;
+  var btn = document.getElementById('calc-hist-btn');
+  if(h.style.display === 'flex'){
+    h.style.display = 'none';
+    if(btn) btn.style.color = 'var(--text3)';
+  } else {
+    h.style.display = 'flex';
+    if(btn) btn.style.color = 'var(--blue)';
+    _calcRenderHistory();
+  }
+}
+
+function _calcRenderHistory(){
+  var h = document.getElementById('calc-history');
+  if(!h || h.style.display !== 'flex') return;
+  if(!_calcHistory.length){
+    h.innerHTML = '<div class="calc-hist-empty">No history yet</div>';
+    return;
+  }
+  h.innerHTML = _calcHistory.map(function(e,i){
+    return '<div class="calc-hist-item" onclick="calcUseHistory('+i+')" title="Click to use result">'+
+      '<span style="color:var(--text3)">'+e.expr+' =</span> <span style="color:var(--text);font-weight:600">'+e.result+'</span></div>';
+  }).join('');
+}
+
+function calcUseHistory(idx){
+  var e = _calcHistory[idx];
+  if(!e) return;
+  _calc.val = e.result;
+  _calc.fresh = false;
+  _calcUpdate();
+}
+
+function calcFn(fn){
+  var v = parseFloat(_calc.val);
+  if(fn==='clear'){ _calc={val:'0',expr:'',op:null,prev:null,fresh:false}; _calcHistory=[]; _calcRenderHistory(); }
+  else if(fn==='sign'){ _calc.val = String(v * -1); }
+  else if(fn==='pct'){  _calc.val = String(v / 100); }
+  _calcUpdate();
+}
+
+// ── Numpad input for calculator ───────────────────────────────────────────
+document.addEventListener('keydown', function(e){
+  var panel = document.getElementById('calc-panel');
+  if(!panel || panel.style.display !== 'flex') return;
+  // Don't intercept if user is typing in an input/textarea
+  var tag = document.activeElement && document.activeElement.tagName;
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  switch(e.key){
+    case '0': case 'Numpad0': calcNum('0'); e.preventDefault(); break;
+    case '1': case 'Numpad1': calcNum('1'); e.preventDefault(); break;
+    case '2': case 'Numpad2': calcNum('2'); e.preventDefault(); break;
+    case '3': case 'Numpad3': calcNum('3'); e.preventDefault(); break;
+    case '4': case 'Numpad4': calcNum('4'); e.preventDefault(); break;
+    case '5': case 'Numpad5': calcNum('5'); e.preventDefault(); break;
+    case '6': case 'Numpad6': calcNum('6'); e.preventDefault(); break;
+    case '7': case 'Numpad7': calcNum('7'); e.preventDefault(); break;
+    case '8': case 'Numpad8': calcNum('8'); e.preventDefault(); break;
+    case '9': case 'Numpad9': calcNum('9'); e.preventDefault(); break;
+    case '.': case 'NumpadDecimal': calcNum('.'); e.preventDefault(); break;
+    case '+': case 'NumpadAdd': calcOp('+'); e.preventDefault(); break;
+    case '-': case 'NumpadSubtract': calcOp('-'); e.preventDefault(); break;
+    case '*': case 'NumpadMultiply': calcOp('*'); e.preventDefault(); break;
+    case '/': case 'NumpadDivide': calcOp('/'); e.preventDefault(); break;
+    case 'Enter': case 'NumpadEnter': calcEquals(); e.preventDefault(); break;
+    case 'Backspace': 
+      if(_calc.val.length > 1) _calc.val = _calc.val.slice(0,-1);
+      else _calc.val = '0';
+      _calcUpdate(); e.preventDefault(); break;
+    case 'Escape': toggleCalc(); e.preventDefault(); break;
+    case 'Delete': calcFn('clear'); e.preventDefault(); break;
+    case '%': calcFn('pct'); e.preventDefault(); break;
+  }
+});
+
+function renderCallbacksTab(){
+  var filter = (document.getElementById('cb-tab-filter')||{}).value||'open';
+  var now = new Date();
+  var todayStr = now.toDateString();
+
+  function getCbStatus(c){
+    if(c.cbDone) return 'done';
+    if(!c.cbTime || c.cbTime === '') return 'unknown';
+    var t = new Date(c.cbTime);
+    if(isNaN(t)){
+      // Try parsing as datetime-local format YYYY-MM-DDTHH:MM
+      t = new Date(c.cbTime.replace(' ','T'));
+    }
+    if(isNaN(t)) return 'unknown';
+    var diff = (t - now)/60000;
+    if(diff < 0) return 'overdue';
+    if(diff <= 30) return 'due-soon';
+    if(t.toDateString()===todayStr) return 'due-today';
+    return 'pending';
+  }
+
+  var cbCalls = calls.filter(function(c){
+    return c.cbTime && c.cbTime!=='' && c.cbTime!==null && c.cbTime!==undefined;
+  });
+  // Normalize cbDone — Sheets may return string 'true'/'false'
+  cbCalls.forEach(function(c){
+    if(typeof c.cbDone === 'string') c.cbDone = c.cbDone === 'true';
+  });
+
+  var filtered = cbCalls.filter(function(c){
+    var s = getCbStatus(c);
+    if(filter==='open') return s!=='done';
+    if(filter==='overdue') return s==='overdue';
+    if(filter==='due-today') return s==='due-today'||s==='due-soon';
+    if(filter==='due-soon') return s==='due-soon';
+    return true;
+  });
+
+  filtered.sort(function(a,b){
+    var order={overdue:0,'due-soon':1,'due-today':2,pending:3,done:4,unknown:5};
+    var sa=getCbStatus(a),sb=getCbStatus(b);
+    if(order[sa]!==order[sb]) return order[sa]-order[sb];
+    return new Date(a.cbTime)-new Date(b.cbTime);
+  });
+
+  // Summary
+  var counts={overdue:0,'due-soon':0,'due-today':0,pending:0,done:0};
+  cbCalls.forEach(function(c){ var s=getCbStatus(c); if(counts[s]!==undefined) counts[s]++; });
+  var summEl=document.getElementById('cb-tab-summary');
+  if(summEl){
+    var chips=[
+      {label:'Overdue', key:'overdue', color:'var(--red)'},
+      {label:'Due Soon', key:'due-soon', color:'var(--amber)'},
+      {label:'Due Today', key:'due-today', color:'var(--blue)'},
+      {label:'Pending', key:'pending', color:'var(--text2)'},
+      {label:'Done', key:'done', color:'var(--green)'},
+    ];
+    summEl.innerHTML='';
+    chips.forEach(function(s){
+      var d=document.createElement('div');
+      d.style.cssText='display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid currentColor;color:'+s.color+';opacity:.85';
+      d.innerHTML='<span>'+s.label+'</span><span style="font-family:var(--mono);font-weight:700">'+counts[s.key]+'</span>';
+      d.dataset.key=s.key;
+      d.onclick=function(){
+        var f=document.getElementById('cb-tab-filter');
+        if(f) f.value=this.dataset.key;
+        renderCallbacksTab();
+      };
+      summEl.appendChild(d);
+    });
+  }
+
+  var el=document.getElementById('cb-tab-cards');
+  if(!el) return;
+  if(!filtered.length){
+    el.innerHTML='<div style="text-align:center;padding:32px 0;color:var(--text3);font-size:13px">No call backs match this filter</div>';
+    return;
+  }
+
+  el.innerHTML='';
+  filtered.forEach(function(c){
+    var status=getCbStatus(c);
+    var cbDate=c.cbTime?new Date(c.cbTime):null;
+    var cbFmt=cbDate&&!isNaN(cbDate)?
+      cbDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' '+
+      cbDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
+    var diff=cbDate?(cbDate-now)/60000:null;
+    var timeLeft='';
+    if(status==='overdue'&&diff!==null){ var m=Math.abs(Math.round(diff)); timeLeft=m<60?m+'m overdue':Math.floor(m/60)+'h '+(m%60)+'m overdue'; }
+    else if((status==='due-soon'||status==='due-today')&&diff!==null){ var m=Math.round(diff); timeLeft=m<60?'in '+m+'m':'in '+Math.floor(m/60)+'h '+(m%60)+'m'; }
+
+    var sc={
+      overdue:   {bg:'rgba(248,113,113,.08)',border:'rgba(248,113,113,.4)', badge:'var(--red)',   label:'&#x26A0; Overdue'},
+      'due-soon':{bg:'rgba(245,158,11,.08)', border:'rgba(245,158,11,.4)', badge:'var(--amber)', label:'&#x1F514; Due Soon'},
+      'due-today':{bg:'rgba(59,130,246,.06)',border:'rgba(59,130,246,.3)', badge:'var(--blue)',  label:'&#x1F4C5; Due Today'},
+      pending:   {bg:'var(--card)',          border:'var(--border)',       badge:'var(--text3)', label:'&#x23F3; Pending'},
+      done:      {bg:'rgba(34,197,94,.05)',  border:'rgba(34,197,94,.2)', badge:'var(--green)', label:'&#x2713; Done'},
+      unknown:   {bg:'var(--card)',          border:'var(--border)',       badge:'var(--text3)', label:'&#x2014;'},
+    }[status]||{bg:'var(--card)',border:'var(--border)',badge:'var(--text3)',label:'?'};
+
+    var logDate=c.ts?c.ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
+    var svcs=[];
+    if(c.xm>0)svcs.push('XM x'+c.xm);
+    if(c.tv)svcs.push('TV');if(c.chsi)svcs.push('CHSI');if(c.cdv)svcs.push('CDV');if(c.xh)svcs.push('XH');
+    var svcStr=svcs.length?svcs.join(' \u00b7 '):(c.reason||'No Sale');
+
+    var card=document.createElement('div');
+    card.style.cssText='background:'+sc.bg+';border:1px solid '+sc.border+';border-radius:12px;padding:14px 16px';
+
+    var cbNum = filtered.indexOf(c) + 1;
+    var lbl9 = 'font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px';
+    var inner=
+    '<div style="display:flex;gap:12px;align-items:stretch">'+
+      // LEFT: compact info stack
+      '<div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0">'+
+        // Row 1: # + status + time
+        '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
+          '<span style="font-size:11px;font-weight:800;color:var(--text3);font-family:var(--mono)">#'+cbNum+'</span>'+
+          '<span style="font-size:11px;font-weight:700;color:'+sc.badge+';padding:2px 8px;border-radius:20px;border:1px solid '+sc.border+'">'+sc.label+'</span>'+
+          (timeLeft?'<span style="font-size:11px;font-weight:600;color:'+sc.badge+'">'+timeLeft+'</span>':'')+
+          '<span style="font-size:10px;color:var(--text3);margin-left:auto;font-family:var(--mono)">'+cbFmt+'</span>'+
+        '</div>'+
+        // Row 2: Customer + Phone + Account
+        '<div style="display:flex;gap:14px;flex-wrap:wrap">'+
+          (c.cbName?'<div><div style="'+lbl9+'">Customer</div><div style="font-size:12px;font-weight:600;color:var(--text)">'+c.cbName+'</div></div>':'')+
+          (c.cbPhone?'<div><div style="'+lbl9+'">Phone</div><div style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--text)">'+c.cbPhone+'</div></div>':'')+
+          (c.acctRaw?'<div><div style="'+lbl9+'">Account</div><div style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--text2)">'+c.acctRaw+'</div></div>':'')+
+        '</div>'+
+        // Row 3: buttons
+        '<div style="display:flex;gap:6px;flex-wrap:wrap" id="cbcard-btns-'+c.id+'"></div>'+
+      '</div>'+
+      // RIGHT: notes — spans full height, editable inline
+      '<div style="width:260px;flex-shrink:0;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column">'+
+        '<div style="'+lbl9+';margin-bottom:4px">Notes</div>'+
+        '<textarea id="cb-notes-'+c.id+'" style="flex:1;min-height:70px;background:transparent;border:none;outline:none;resize:none;font-size:11px;color:var(--text2);line-height:1.6;font-family:var(--sans);width:100%;box-sizing:border-box" placeholder="No notes">'+( c.notes||'')+'</textarea>'+
+        '<div style="display:flex;justify-content:flex-end;margin-top:4px">'+
+          '<button id="cb-save-'+c.id+'" style="height:22px;padding:0 10px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:5px;font-size:10px;font-weight:600;color:var(--blue);cursor:pointer;display:none">Save</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+
+    card.innerHTML=inner;
+
+    // Buttons via DOM to avoid quote issues
+    // Wire save button
+    var saveBtn = card.querySelector('#cb-save-'+c.id);
+    if(saveBtn){
+      saveBtn.dataset.cbid = c.id;
+      saveBtn.onclick = function(){ saveCbCard(this.dataset.cbid); };
+    }
+    var btns=card.querySelector('#cbcard-btns-'+c.id);
+    if(status!=='done'){
+      // Mark Done button
+      var doneBtn=document.createElement('button');
+      doneBtn.textContent='\u2713 Done';
+      doneBtn.style.cssText='height:26px;padding:0 12px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--green);cursor:pointer';
+      doneBtn.dataset.cbid = c.id;
+      doneBtn.onclick = function(){
+        var id = this.dataset.cbid;
+        markCbDone(id);
+        setTimeout(renderCallbacksTab, 300);
+        _showToast('\u2713 Marked done — click to undo', 'ok', 5000, function(){ undoCbDone(id); });
+      };
+      btns.appendChild(doneBtn);
+
+      // Sale Made button
+      var saleBtn=document.createElement('button');
+      saleBtn.textContent='\uD83D\uDCB0 Sale Made';
+      saleBtn.style.cssText='height:26px;padding:0 12px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--amber);cursor:pointer';
+      saleBtn.dataset.cbid = c.id;
+      saleBtn.onclick = function(){
+        var p = document.getElementById('cb-sale-'+this.dataset.cbid);
+        if(p) p.style.display = p.style.display==='flex' ? 'none' : 'flex';
+      };
+      btns.appendChild(saleBtn);
+
+      // Reschedule button
+      var reschedBtn=document.createElement('button');
+      reschedBtn.textContent='\uD83D\uDD53 Reschedule';
+      reschedBtn.style.cssText='height:26px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
+      reschedBtn.dataset.cbid = c.id;
+      reschedBtn.onclick = function(){
+        var row = document.getElementById('cb-resched-'+this.dataset.cbid);
+        if(row) row.style.display = row.style.display==='flex' ? 'none' : 'flex';
+      };
+      btns.appendChild(reschedBtn);
+    }
+
+    if(c.cbPhone){
+      var callBtn=document.createElement('button');
+      callBtn.textContent='\u{1F4DE} Call';
+      callBtn.style.cssText='height:26px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer';
+      callBtn.dataset.phone = c.cbPhone;
+      callBtn.onclick = function(){ window.open('tel:'+this.dataset.phone.replace(/\D/g,''),'_self'); };
+      btns.appendChild(callBtn);
+    }
+    el.appendChild(card);
+  });
+}
+
+function undoCbDone(id){
+  var c = calls.find(function(x){ return String(x.id)===String(id); });
+  if(!c) return;
+  c.cbDone = false;
+  saveCallsCache();
+  upsertCallToSheets(c);
+  _showToast('\u21A9 Call back reopened', 'ok', 2000);
+  setTimeout(renderCallbacksTab, 300);
+}
+
+function saveCbResched(id){
+  var inp = document.getElementById('cb-resched-dt-'+id);
+  if(!inp || !inp.value) return;
+  var c = calls.find(function(x){ return String(x.id)===String(id); });
+  if(!c) return;
+  c.cbTime = inp.value;
+  c.cbDone = false; // re-open if it was marked done
+  saveCallsCache();
+  upsertCallToSheets(c);
+  _showToast('\u2713 Call back rescheduled', 'ok', 2000);
+  setTimeout(renderCallbacksTab, 300);
+}
+
+function cbFieldChanged(id){
+  var btn = document.getElementById('cb-save-'+id);
+  if(btn) btn.style.display='block';
+}
+
+function saveCbCard(id){
+  var c = calls.find(function(x){ return String(x.id)===String(id); });
+  if(!c) return;
+  var nameEl  = document.getElementById('cb-name-'+id);
+  var phoneEl = document.getElementById('cb-phone-'+id);
+  var notesEl = document.getElementById('cb-notes-'+id);
+  if(nameEl)  c.cbName  = nameEl.value.trim();
+  if(phoneEl) c.cbPhone = phoneEl.value.trim();
+  if(notesEl) c.notes   = notesEl.value;
+  // Rebuild acct display
+  c.acct = buildAcct(c.acctRaw||'', c.cbName, c.cbPhone);
+  saveCallsCache();
+  upsertCallToSheets(c);
+  var btn = document.getElementById('cb-save-'+id);
+  if(btn) btn.style.display='none';
+  _showToast('\u2713 Saved', 'ok', 1500);
+}
+
+function saveCbSale(id){
+  var c = calls.find(function(x){ return String(x.id)===String(id); });
+  if(!c) return;
+  var rev  = parseFloat((document.getElementById('cb-sale-rev-'+id)||{}).value)||0;
+  var xm   = parseInt((document.getElementById('cb-sale-xm-'+id)||{}).value)||0;
+  var tv   = !!(document.getElementById('cb-sale-tv-'+id)||{}).checked;
+  var chsi = !!(document.getElementById('cb-sale-chsi-'+id)||{}).checked;
+  var cdv  = !!(document.getElementById('cb-sale-cdv-'+id)||{}).checked;
+  var xh   = !!(document.getElementById('cb-sale-xh-'+id)||{}).checked;
+  c.baseRev = rev; c.rev = rev + (xm * 45);
+  c.xm=xm; c.tv=tv; c.chsi=chsi; c.cdv=cdv; c.xh=xh;
+  c.cbDone = true;
+  compute(c);
+  saveCallsCache();
+  upsertCallToSheets(c);
+  updateStats();
+  _showToast('\uD83D\uDCB0 Sale recorded!', 'ok', 2500);
+  setTimeout(renderCallbacksTab, 300);
+}
+
+
+
 </script>
 
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" data-tip="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
@@ -6045,7 +6447,7 @@ function showLoginUrlStatus(msg, color){
   </div>
 </div>
 
-<div id="login-screen" style="display:none;position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center">
+<div id="login-screen" style="display:none !important;position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center">
   <div style="width:320px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:20px">
     <div style="text-align:center">
       <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--blue) 0%,#6366f1 100%);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;font-family:var(--mono);margin:0 auto 12px">X</div>
@@ -6054,8 +6456,8 @@ function showLoginUrlStatus(msg, color){
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <div>
-        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Agent ID</label>
-        <input id="login-agent-id" type="text" placeholder="e.g. A12345" autocomplete="off" style="width:100%;height:40px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:14px;color:var(--text);outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'" onkeydown="if(event.key==='Enter')document.getElementById('login-pin').focus()">
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Sales ID</label>
+        <input id="login-agent-id" type="text" placeholder="e.g. 61294" autocomplete="off" style="width:100%;height:40px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:14px;color:var(--text);outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'" onkeydown="if(event.key==='Enter')document.getElementById('login-pin').focus()">
       </div>
       <div>
         <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">PIN</label>
@@ -6096,7 +6498,7 @@ function showLoginUrlStatus(msg, color){
 </div>
 
 
-<div id="setup-wizard" style="display:none;position:fixed;inset:0;z-index:99998;background:var(--bg);align-items:center;justify-content:center">
+<div id="setup-wizard" style="display:none !important;position:fixed;inset:0;z-index:99998;background:var(--bg);align-items:center;justify-content:center">
   <div style="width:380px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:20px">
     <div style="text-align:center">
       <div style="font-size:28px;margin-bottom:8px">&#x2699;&#xFE0F;</div>
@@ -6105,8 +6507,8 @@ function showLoginUrlStatus(msg, color){
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <div>
-        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Agent ID</label>
-        <input id="wiz-agent-id" type="text" placeholder="e.g. A00001" autocomplete="off" style="width:100%;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'">
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Sales ID</label>
+        <input id="wiz-sales-id" type="text" placeholder="e.g. A00001" autocomplete="off" style="width:100%;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'">
       </div>
       <div>
         <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Name (optional)</label>
@@ -6162,6 +6564,60 @@ function showLoginUrlStatus(msg, color){
       <button onclick="testLoginUrl()" style="height:32px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:12px;color:var(--teal);cursor:pointer">&#x26A1; Test</button>
       <button onclick="saveLoginUrl()" style="height:32px;padding:0 14px;background:var(--blue);border:none;border-radius:7px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">Save</button>
     </div>
+  </div>
+</div>
+
+
+<div id="sales-id-prompt" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.5);align-items:center;justify-content:center">
+  <div style="width:300px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px">
+    <div style="font-size:15px;font-weight:700;color:var(--text)">Enter Your Sales ID</div>
+    <div style="font-size:11px;color:var(--text3);line-height:1.5">Your Sales ID is used to tag your calls. You can change it anytime in Settings.</div>
+    <input id="prompt-sales-id" type="text" placeholder="e.g. 61294" maxlength="10" autocomplete="off"
+      style="height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:16px;color:var(--text);outline:none;box-sizing:border-box;width:100%"
+      onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'"
+      onkeydown="if(event.key==='Enter')confirmSalesIdPrompt()">
+    <button onclick="confirmSalesIdPrompt()" style="height:38px;background:var(--blue);border:none;border-radius:8px;font-size:13px;font-weight:700;color:#fff;cursor:pointer">Continue</button>
+  </div>
+</div>
+
+
+<div id="calc-panel">
+  <div class="calc-title">
+    <span>&#x1F9EE; Calculator</span>
+    <div style="display:flex;gap:4px;align-items:center">
+      <span id="calc-hist-btn" onclick="toggleCalcHistory()" style="cursor:pointer;color:var(--text3);font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;border:1px solid var(--border2);background:var(--surface)" data-tip="Calculation history">&#x1F4CB;</span>
+      <span onclick="toggleCalc()" style="cursor:pointer;color:var(--text3);font-size:14px;padding:2px 6px;border-radius:4px">&#x2715;</span>
+    </div>
+  </div>
+  <div id="calc-history"></div>
+  <div id="calc-display">
+    <div class="calc-expr" id="calc-expr"></div>
+    <div class="calc-val" id="calc-val">0</div>
+  </div>
+  <div class="calc-grid">
+    <button class="calc-btn fn" onclick="calcFn('clear')">AC</button>
+    <button class="calc-btn fn" onclick="calcFn('sign')">+/&#x2212;</button>
+    <button class="calc-btn fn" onclick="calcFn('pct')">%</button>
+    <button class="calc-btn op" onclick="calcOp('/')">&#xF7;</button>
+
+    <button class="calc-btn" onclick="calcNum('7')">7</button>
+    <button class="calc-btn" onclick="calcNum('8')">8</button>
+    <button class="calc-btn" onclick="calcNum('9')">9</button>
+    <button class="calc-btn op" onclick="calcOp('*')">&#xD7;</button>
+
+    <button class="calc-btn" onclick="calcNum('4')">4</button>
+    <button class="calc-btn" onclick="calcNum('5')">5</button>
+    <button class="calc-btn" onclick="calcNum('6')">6</button>
+    <button class="calc-btn op" onclick="calcOp('-')">&#x2212;</button>
+
+    <button class="calc-btn" onclick="calcNum('1')">1</button>
+    <button class="calc-btn" onclick="calcNum('2')">2</button>
+    <button class="calc-btn" onclick="calcNum('3')">3</button>
+    <button class="calc-btn op" onclick="calcOp('+')">+</button>
+
+    <button class="calc-btn span2" onclick="calcNum('0')">0</button>
+    <button class="calc-btn" onclick="calcNum('.')">.</button>
+    <button class="calc-btn eq" onclick="calcEquals()">=</button>
   </div>
 </div>
 
