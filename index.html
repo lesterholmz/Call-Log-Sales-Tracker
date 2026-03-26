@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=720">
-<title>Xfinity Call Logger v0.03.22.85</title>
+<title>Xfinity Call Logger v0.03.22.102</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -403,7 +403,7 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
   opacity:0;pointer-events:none;
   transform:translateY(6px);
   transition:opacity .2s ease,transform .2s ease;
-  z-index:400;max-width:320px;
+  z-index:400;max-width:420px;
 }
 #sync-toast.visible{opacity:1;pointer-events:none;transform:translateY(0)}
 .toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -757,6 +757,43 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 .calc-btn.fn{background:var(--surface);color:var(--text3);font-size:12px}
 .calc-btn.span2{grid-column:span 2}
 
+
+#rgu-panel{position:fixed;z-index:9998;display:none;flex-direction:column;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px 12px;box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
+  width:420px;max-height:80vh;overflow-y:auto;user-select:none}
+#rgu-panel .rp-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+#rgu-panel .rp-section{border:1px solid var(--border2);border-radius:8px;margin-bottom:8px;overflow:hidden}
+#rgu-panel .rp-section-hdr{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--surface);cursor:pointer;font-size:12px;font-weight:600;color:var(--text2)}
+#rgu-panel .rp-section-hdr:hover{background:var(--border)}
+#rgu-panel .rp-section-body{padding:10px;display:none;flex-direction:column;gap:7px}
+#rgu-panel .rp-section-body.open{display:flex}
+#rgu-panel .rp-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#rgu-panel .rp-lbl{font-size:11px;color:var(--text3);font-weight:600;flex-shrink:0}
+#rgu-panel .rp-sel{height:26px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 6px;font-size:11px;color:var(--text);outline:none;flex:1;min-width:0}
+#rgu-panel .rp-chk{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer}
+#rgu-panel .rp-num{height:26px;width:52px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 6px;font-size:11px;color:var(--text);outline:none;text-align:center}
+#rgu-panel .rp-total{background:var(--surface);border-radius:8px;padding:12px 16px;margin-top:6px;display:flex;justify-content:space-between;align-items:center}
+#rgu-panel .rp-total-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+#rgu-panel .rp-total-val{font-size:28px;font-weight:800;color:var(--green);font-family:var(--mono);min-width:170px;text-align:right;letter-spacing:.02em}
+#rgu-panel .rp-subtotal{font-size:10px;color:var(--text3);font-family:var(--mono);text-align:right;margin-top:2px}
+#rgu-panel .rp-appb{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:8px;margin-bottom:8px}
+#rgu-panel .rp-appb-lbl{font-size:12px;font-weight:700;color:var(--blue)}
+.rp-toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.rp-toggle input{opacity:0;width:0;height:0}
+.rp-toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:20px;cursor:pointer;transition:.2s}
+.rp-toggle-slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.rp-toggle input:checked + .rp-toggle-slider{background:var(--blue)}
+.rp-toggle input:checked + .rp-toggle-slider:before{transform:translateX(16px)}
+
+
+#rgu-panel .rp-pills{display:flex;flex-wrap:wrap;gap:5px}
+#rgu-panel .rp-pill{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text3);transition:background .12s,color .12s,border-color .12s;white-space:nowrap}
+#rgu-panel .rp-pill.active{background:var(--blue-lt);color:var(--blue);border-color:rgba(59,130,246,.4)}
+#rgu-panel .rp-pill.active-tv{background:rgba(168,85,247,.12);color:rgb(168,85,247);border-color:rgba(168,85,247,.4)}
+#rgu-panel .rp-pill.active-xh{background:rgba(20,184,166,.12);color:rgb(20,184,166);border-color:rgba(20,184,166,.4)}
+#rgu-panel .rp-section-body{gap:9px}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Russo+One&family=Rajdhani:wght@700&family=Exo+2:wght@700&family=Bebas+Neue&family=Righteous&family=Boogaloo&family=Black+Ops+One&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -765,12 +802,13 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.22.85</div>
+    <div class="version-chip">v0.03.22.102</div>
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
     <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
 (resets on the 22nd)
 Goals shown for your type+cap level">…</div>
+    <button class="gear-btn" onclick="toggleRgu()" data-tip="RGU Calculator" style="font-size:14px">&#x1F4B2;</button>
     <button class="gear-btn" onclick="toggleCalc()" data-tip="Calculator">&#x1F9EE;</button>
     <button class="gear-btn" onclick="toggleSettings()" data-tip="Settings">⚙️</button>
   </div>
@@ -780,7 +818,7 @@ Goals shown for your type+cap level">…</div>
   <button class="tab-btn active" id="tab-tracker" onclick="switchTab('tracker')">📞 Tracker</button>
   <button class="tab-btn" id="tab-trends" onclick="switchTab('trends')">📈 Trends</button>
   <button class="tab-btn" id="tab-jobaid" onclick="switchTab('jobaid')">📖 Job Aids</button>
-  <button class="tab-btn" id="tab-callbacks" onclick="switchTab('callbacks')">📞 Call Backs</button>
+  <button class="tab-btn" id="tab-callbacks" onclick="switchTab('callbacks')">🔔 Follow-Ups</button>
   <button class="tab-btn" id="tab-disputes" onclick="switchTab('disputes')">⚖ Disputes</button>
   <button class="tab-btn" id="tab-team" onclick="switchTab('team')" style="display:none">👥 Team</button>
 </div>
@@ -1542,7 +1580,7 @@ Sets follow-up time and logs CB details">📞</div>
 <div class="tab-panel" id="panel-callbacks" style="display:none">
   <div style="padding:16px 24px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-      <div style="font-size:16px;font-weight:700;color:var(--text)">&#x1F4DE; Call Backs</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text)">🔔 Follow-Ups</div>
       <div style="display:flex;gap:8px;align-items:center">
         <select id="cb-tab-filter" onchange="renderCallbacksTab()" style="height:28px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;color:var(--text2);outline:none;cursor:pointer;font-family:var(--mono)">
           <option value="open">Open Only</option>
@@ -2033,6 +2071,8 @@ function confirmBlankNoSale(){
 }
 
 function logCall(){
+  var rguPanel = document.getElementById('rgu-panel');
+  if(rguPanel && rguPanel.style.display === 'flex'){ _showToast('Close RGU Calculator first', 'warn', 2000); return; }
   // acct is always visible; no longer required gating here
   if(isBlankCall()){ showBlankCallConfirm(); return; }
   doLogCall();
@@ -2044,6 +2084,7 @@ function doLogCall(){
   const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
+  if(typeof rguReset==='function') rguReset();
   // Register current fiscal month in localStorage so it shows in history even without goals
   const _fk = 'xcl_goals_' + getFiscalMonth().replace(' ','');
   if(!localStorage.getItem(_fk)) localStorage.setItem(_fk, JSON.stringify({registeredAt: Date.now()}));
@@ -2589,7 +2630,7 @@ const CAP_GOAL_DEFAULTS = {
   }
 };
 function getCapDefaults(){ return (CAP_GOAL_DEFAULTS[_userCallType]||CAP_GOAL_DEFAULTS.acq)[_userCapLevel]||CAP_GOAL_DEFAULTS.acq[4]; }
-const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cbTv:0,cbChsi:0,cbCdv:0,cbXh:0,rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbynl7TiAslXOmFUMg6inZUYmANnGYCN4iPqBWE8AfQGQtgCJ-CvxK_6qcPGVYTpyAuO/exec'};
+const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cbTv:0,cbChsi:0,cbCdv:0,cbXh:0,rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbzXunD0sW1o_BLXw16r0A3c_ZZ0ltsaq-kBj1rh3VxHDaGsniHG-bGOmmf2PaFAGtwU/exec'};
 function loadSettings(){
   const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
   const g=JSON.parse(localStorage.getItem(getFiscalKey())||'{}');
@@ -6036,6 +6077,10 @@ function calcNum(n){
 }
 
 function calcOp(op){
+  // If mid-chain (op already set and not fresh), auto-evaluate first
+  if(_calc.op && !_calc.fresh){
+    calcEquals();
+  }
   _calc.prev = parseFloat(_calc.val);
   _calc.op   = op;
   _calc.expr = _calc.val + ' ' + {'+':'+','-':'−','*':'×','/':'÷'}[op];
@@ -6112,30 +6157,34 @@ document.addEventListener('keydown', function(e){
   // Don't intercept if user is typing in an input/textarea
   var tag = document.activeElement && document.activeElement.tagName;
   if(tag === 'INPUT' || tag === 'TEXTAREA') return;
-  switch(e.key){
-    case '0': case 'Numpad0': calcNum('0'); e.preventDefault(); break;
-    case '1': case 'Numpad1': calcNum('1'); e.preventDefault(); break;
-    case '2': case 'Numpad2': calcNum('2'); e.preventDefault(); break;
-    case '3': case 'Numpad3': calcNum('3'); e.preventDefault(); break;
-    case '4': case 'Numpad4': calcNum('4'); e.preventDefault(); break;
-    case '5': case 'Numpad5': calcNum('5'); e.preventDefault(); break;
-    case '6': case 'Numpad6': calcNum('6'); e.preventDefault(); break;
-    case '7': case 'Numpad7': calcNum('7'); e.preventDefault(); break;
-    case '8': case 'Numpad8': calcNum('8'); e.preventDefault(); break;
-    case '9': case 'Numpad9': calcNum('9'); e.preventDefault(); break;
-    case '.': case 'NumpadDecimal': calcNum('.'); e.preventDefault(); break;
-    case '+': case 'NumpadAdd': calcOp('+'); e.preventDefault(); break;
-    case '-': case 'NumpadSubtract': calcOp('-'); e.preventDefault(); break;
-    case '*': case 'NumpadMultiply': calcOp('*'); e.preventDefault(); break;
-    case '/': case 'NumpadDivide': calcOp('/'); e.preventDefault(); break;
-    case 'Enter': case 'NumpadEnter': calcEquals(); e.preventDefault(); break;
-    case 'Backspace': 
-      if(_calc.val.length > 1) _calc.val = _calc.val.slice(0,-1);
-      else _calc.val = '0';
-      _calcUpdate(); e.preventDefault(); break;
+  // Only intercept numpad keys — never steal regular keyboard chars like + = from inputs
+  var isNumpad = e.code && e.code.startsWith('Numpad');
+  switch(e.code){
+    case 'Numpad0': calcNum('0'); e.preventDefault(); break;
+    case 'Numpad1': calcNum('1'); e.preventDefault(); break;
+    case 'Numpad2': calcNum('2'); e.preventDefault(); break;
+    case 'Numpad3': calcNum('3'); e.preventDefault(); break;
+    case 'Numpad4': calcNum('4'); e.preventDefault(); break;
+    case 'Numpad5': calcNum('5'); e.preventDefault(); break;
+    case 'Numpad6': calcNum('6'); e.preventDefault(); break;
+    case 'Numpad7': calcNum('7'); e.preventDefault(); break;
+    case 'Numpad8': calcNum('8'); e.preventDefault(); break;
+    case 'Numpad9': calcNum('9'); e.preventDefault(); break;
+    case 'NumpadDecimal': calcNum('.'); e.preventDefault(); break;
+    case 'NumpadAdd': calcOp('+'); e.preventDefault(); break;
+    case 'NumpadSubtract': calcOp('-'); e.preventDefault(); break;
+    case 'NumpadMultiply': calcOp('*'); e.preventDefault(); break;
+    case 'NumpadDivide': calcOp('/'); e.preventDefault(); break;
+    case 'NumpadEnter': calcEquals(); e.preventDefault(); break;
     case 'Escape': toggleCalc(); e.preventDefault(); break;
-    case 'Delete': calcFn('clear'); e.preventDefault(); break;
-    case '%': calcFn('pct'); e.preventDefault(); break;
+    default:
+      // Allow regular keyboard only when calc panel itself is focused (not form inputs)
+      if(isNumpad) break;
+      if(e.key==='Backspace'&&tag!=='INPUT'&&tag!=='TEXTAREA'){
+        if(_calc.val.length>1) _calc.val=_calc.val.slice(0,-1); else _calc.val='0';
+        _calcUpdate(); e.preventDefault();
+      }
+      break;
   }
 });
 
@@ -6407,6 +6456,234 @@ function saveCbSale(id){
 
 
 
+// ── RGU Calculator ────────────────────────────────────────────────────────
+var _rguXm = 0;
+var _rguCdv = false;
+
+function rguSetXm(v){
+  _rguXm = Math.max(0, Math.min(10, v));
+  var el = document.getElementById('rgu-xm-val');
+  var stepper = document.getElementById('rgu-xm-stepper');
+  if(el) el.textContent = _rguXm;
+  if(stepper) stepper.classList.toggle('has-val', _rguXm > 0);
+  calcRgu();
+}
+
+function rguToggleCdv(){
+  _rguCdv = !_rguCdv;
+  var chk = document.getElementById('rgu-cdv-chk');
+  if(chk) chk.classList.toggle('checked', _rguCdv);
+  calcRgu();
+}
+
+function rguPick(product, val, el, activeClass){
+  activeClass = activeClass || 'active';
+  var pills = el.closest('.rp-pills').querySelectorAll('.rp-pill');
+  pills.forEach(function(p){ p.classList.remove('active','active-tv','active-xh'); });
+  el.classList.add(activeClass);
+  var inp = document.getElementById('rgu-'+product);
+  if(inp) inp.value = val;
+  // Auto-enable APPB when any product selected (except None)
+  if(val > 0){
+    var appbChk = document.getElementById('rgu-appb');
+    if(appbChk && !appbChk.checked) appbChk.checked = true;
+  }
+  calcRgu();
+}
+
+function toggleRgu(){
+  var p = document.getElementById('rgu-panel');
+  if(!p) return;
+  if(p.style.display==='flex'){
+    p.style.display='none';
+    _rguSetLogBtn(false);
+    return;
+  }
+  var btn = document.querySelector('[data-tip="RGU Calculator"]');
+  var r = btn ? btn.getBoundingClientRect() : {right:80,bottom:60};
+  p.style.right  = (window.innerWidth - r.right) + 'px';
+  p.style.top    = (r.bottom + 8) + 'px';
+  p.style.display = 'flex';
+  rguUpdateChsiPills();
+  calcRgu();
+  _rguSetLogBtn(true);
+}
+
+function rguToggleSection(hdr){
+  var body = hdr.nextElementSibling;
+  var arrow = hdr.querySelector('.rp-sec-arrow');
+  var open = body.classList.toggle('open');
+  if(arrow) arrow.textContent = open ? '▾' : '▸';
+}
+
+function rguUpdateChsiPills(){
+  var appb = (document.getElementById('rgu-appb')||{}).checked || false;
+  var pills = document.querySelectorAll('#rgu-chsi-pills .rp-pill');
+  var tiers = [
+    {val:0,   label:'None',     price:null},
+    {val:50,  label:'300 Mbps', price:50,  ie:false},
+    {val:60,  label:'500 Mbps', price:60,  ie:false},
+    {val:70,  label:'1 Gig',    price:70,  ie:false},
+    {val:110, label:'1.2/2 Gig',price:110, ie:false},
+    {val:14.95,label:'IE 75',   price:14.95,ie:true},
+    {val:29.95,label:'IE 100',  price:29.95,ie:true},
+  ];
+  pills.forEach(function(pill, i){
+    var t = tiers[i];
+    if(!t || t.price === null){ return; }
+    var displayPrice = (appb && !t.ie) ? t.price - 10 : t.price;
+    pill.innerHTML = t.label + '<br><span style="font-size:10px;opacity:.7">$' + displayPrice.toFixed(0) + (appb&&!t.ie?' ✓':'') + '</span>';
+  });
+}
+
+function calcRgu(){
+  rguUpdateChsiPills();
+  var appb   = (document.getElementById('rgu-appb')||{}).checked || false;
+  var chsiRaw = parseFloat((document.getElementById('rgu-chsi')||{}).value)||0;
+  var chsiIsIE = chsiRaw === 14.95 || chsiRaw === 29.95;
+  var chsi = chsiIsIE ? chsiRaw : (appb ? Math.max(0, chsiRaw - 10) : chsiRaw);
+  var ie     = 0;
+  var tv     = parseFloat((document.getElementById('rgu-tv')||{}).value)||0;
+  var tvAddon= 0;
+  var tvBoxes= parseInt((document.getElementById('rgu-tv-boxes')||{}).value)||0;
+  var ent    = (document.getElementById('rgu-ent')||{}).checked ? 18 : 0;
+  var fam    = (document.getElementById('rgu-fam')||{}).checked ? 10 : 0;
+  var hbo    = (document.getElementById('rgu-hbo')||{}).checked ? 18.5 : 0;
+  var starz  = (document.getElementById('rgu-starz')||{}).checked ? 11 : 0;
+  var para   = (document.getElementById('rgu-para')||{}).checked ? 12 : 0;
+  var anc1   = (document.getElementById('rgu-anc1')||{}).checked ? (parseFloat((document.getElementById('rgu-anc1-val')||{}).value)||0) : 0;
+  var anc2   = (document.getElementById('rgu-anc2')||{}).checked ? (parseFloat((document.getElementById('rgu-anc2-val')||{}).value)||0) : 0;
+  var tvOther= 0;
+  var cdvEl = document.getElementById('rgu-cdv-inp'); _rguCdv = cdvEl ? cdvEl.checked : _rguCdv;
+  var cdv    = _rguCdv ? 40 : 0;
+  var xh = ((document.getElementById('rgu-xh-sp')||{}).checked?10:0) + ((document.getElementById('rgu-xh-sh')||{}).checked?55:0);
+  var xm     = _rguXm * 45;
+
+
+
+  var tvTotal  = tv + tvAddon + ent + fam + (tvBoxes * 14) + hbo + starz + para + anc1 + anc2 + tvOther;
+  var discount = 0; // APPB discount applied directly to CHSI tier
+  var total    = chsi + ie + tvTotal + cdv + xh + xm;
+
+  // Breakdown
+  var parts = [];
+  if(chsiRaw) parts.push('CHSI $'+chsi.toFixed(2)+(appb&&!chsiIsIE?' (APPB)':''));
+
+  if(tvTotal) parts.push('TV $'+tvTotal.toFixed(2));
+  if(cdv)     parts.push('CDV $'+cdv.toFixed(2));
+  if(xh)      parts.push('XH $'+xh.toFixed(2));
+  if(xm)      parts.push('XM $'+xm.toFixed(2));
+  if(appb)    parts.push('APPB -$10.00');
+
+  var xmSub = document.getElementById('rgu-xm-subtotal');
+  if(xmSub) xmSub.textContent = '$'+(xm).toFixed(0);
+  document.getElementById('rgu-total').textContent = '$'+total.toFixed(2);
+  document.getElementById('rgu-breakdown').textContent = parts.join(' + ');
+}
+
+function rguReset(){
+  // Reset hidden inputs
+  ['rgu-chsi','rgu-tv'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='0';
+  });
+  document.getElementById('rgu-tv-boxes').value = '0';
+  _rguXm = 0; rguSetXm(0);
+  _rguCdv = false;
+  var cdvChk = document.getElementById('rgu-cdv-chk');
+  if(cdvChk) cdvChk.classList.remove('checked');
+  // Reset pill active states
+  ['rgu-chsi-pills','rgu-tv-pills'].forEach(function(id){
+    var pills=document.getElementById(id);
+    if(!pills) return;
+    pills.querySelectorAll('.rp-pill').forEach(function(p,i){
+      p.classList.remove('active','active-tv','active-xh');
+      if(i===0) p.classList.add(id.includes('tv')?'active-tv':id.includes('xh')?'active-xh':'active');
+    });
+  });
+  ['rgu-xh-sp','rgu-xh-sh','rgu-cdv-inp','rgu-ent','rgu-fam','rgu-hbo','rgu-starz','rgu-para','rgu-anc1','rgu-anc2','rgu-other','rgu-appb'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.checked=false;
+  });
+  ['rgu-anc1-val','rgu-anc2-val','rgu-tv-other'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  calcRgu();
+}
+
+function _rguSetLogBtn(disabled){
+  var btn = document.getElementById('submit-btn');
+  if(!btn) return;
+  btn.disabled = disabled;
+  btn.style.opacity = disabled ? '0.4' : '';
+  btn.style.cursor = disabled ? 'not-allowed' : '';
+  btn.title = disabled ? 'Close RGU Calculator to log a call' : '';
+}
+
+function rguFillLog(){
+  // ── Pull values from RGU calc ─────────────────────────────────────────
+  var chsiVal  = parseFloat((document.getElementById('rgu-chsi')||{}).value)||0;
+  var tvVal    = parseFloat((document.getElementById('rgu-tv')||{}).value)||0;
+  var cdvOn    = (document.getElementById('rgu-cdv-inp')||{}).checked||false;
+  var xhSp     = (document.getElementById('rgu-xh-sp')||{}).checked||false;
+  var xhSh     = (document.getElementById('rgu-xh-sh')||{}).checked||false;
+  var xmLines  = _rguXm || 0;
+  var ieVal    = chsiVal === 14.95; // IE 75 only; IE 100 is full RGU
+
+  // ── Map to log form products ─────────────────────────────────────────
+  // CHSI
+  if(chsiVal > 0 && !prods.chsi){ toggleProd('chsi'); }
+  else if(chsiVal === 0 && prods.chsi){ toggleProd('chsi'); }
+
+  // IE flag
+  if(ieVal !== _ieActive){
+    _ieActive = ieVal;
+    var ieBtn = document.getElementById('btn-ie');
+    if(ieBtn) ieBtn.classList.toggle('active', _ieActive);
+    syncProds();
+  }
+
+  // TV
+  if(tvVal > 0 && !prods.tv){ toggleProd('tv'); }
+  else if(tvVal === 0 && prods.tv){ toggleProd('tv'); }
+
+  // CDV
+  if(cdvOn && !prods.cdv){ toggleProd('cdv'); }
+  else if(!cdvOn && prods.cdv){ toggleProd('cdv'); }
+
+  // XH
+  if((xhSp||xhSh) && !prods.xh){ toggleProd('xh'); }
+  else if(!xhSp && !xhSh && prods.xh){ toggleProd('xh'); }
+
+  // XM lines
+  setXm(xmLines);
+
+  // Revenue — use the RGU total as base rev
+  var appb    = (document.getElementById('rgu-appb')||{}).checked||false;
+  var chsiIsIE = chsiVal===14.95||chsiVal===29.95;
+  var chsi    = chsiIsIE ? chsiVal : (appb ? Math.max(0,chsiVal-10) : chsiVal);
+  var tvBoxes = parseInt((document.getElementById('rgu-tv-boxes')||{}).value)||0;
+  var hbo     = (document.getElementById('rgu-hbo')||{}).checked?18.5:0;
+  var starz   = (document.getElementById('rgu-starz')||{}).checked?11:0;
+  var para    = (document.getElementById('rgu-para')||{}).checked?12:0;
+  var ent     = (document.getElementById('rgu-ent')||{}).checked?18:0;
+  var fam     = (document.getElementById('rgu-fam')||{}).checked?10:0;
+  var anc1    = (document.getElementById('rgu-anc1')||{}).checked?(parseFloat((document.getElementById('rgu-anc1-val')||{}).value)||0):0;
+  var anc2    = (document.getElementById('rgu-anc2')||{}).checked?(parseFloat((document.getElementById('rgu-anc2-val')||{}).value)||0):0;
+  var tvTotal = tvVal + ent + fam + (tvBoxes*14) + hbo + starz + para + anc1 + anc2;
+  var cdv     = cdvOn ? 40 : 0;
+  var xh      = (xhSp?10:0) + (xhSh?55:0);
+  var baseRev = chsi + (chsiIsIE?0:0) + tvTotal + cdv + xh;
+  // XM revenue not in base rev (tracked separately by line count)
+  var revEl = document.getElementById('f-rev');
+  if(revEl){ revEl.value = baseRev > 0 ? baseRev.toFixed(2) : ''; }
+  updateRevTotal();
+  updatePlay();
+
+  // Close RGU panel, switch to tracker if not already there
+  toggleRgu();
+  if(_activeTab !== 'tracker') switchTab('tracker');
+  _showToast('\u2713 RGU selections applied to log', 'ok', 2500);
+}
+
 </script>
 
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" data-tip="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
@@ -6448,7 +6725,7 @@ function saveCbSale(id){
 </div>
 
 <div id="login-screen" style="display:none !important;position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center">
-  <div style="width:320px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:20px">
+  <div style="width:420px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:20px">
     <div style="text-align:center">
       <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--blue) 0%,#6366f1 100%);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;font-family:var(--mono);margin:0 auto 12px">X</div>
       <div style="font-size:18px;font-weight:700;color:var(--text)">Xfinity Call Logger</div>
@@ -6618,6 +6895,114 @@ function saveCbSale(id){
     <button class="calc-btn span2" onclick="calcNum('0')">0</button>
     <button class="calc-btn" onclick="calcNum('.')">.</button>
     <button class="calc-btn eq" onclick="calcEquals()">=</button>
+  </div>
+</div>
+
+
+<div id="rgu-panel">
+  <div class="rp-title">
+    <span>&#x1F4B2; RGU Price Calculator</span>
+    <span onclick="toggleRgu()" style="cursor:pointer;color:var(--text3);font-size:14px;padding:2px 6px;border-radius:4px">&#x2715;</span>
+  </div>
+
+
+
+  <!-- CHSI inline -->
+  <div style="padding:8px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;margin-bottom:8px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">&#x1F310; Internet (CHSI)</div>
+    <input type="hidden" id="rgu-chsi" value="0">
+    <div class="rp-pills" id="rgu-chsi-pills">
+      <div class="rp-pill" onclick="rguPick('chsi',0,this)">None</div>
+      <div class="rp-pill" onclick="rguPick('chsi',50,this)">300 Mbps<br><span style="font-size:10px;opacity:.7">$50</span></div>
+      <div class="rp-pill" onclick="rguPick('chsi',60,this)">500 Mbps<br><span style="font-size:10px;opacity:.7">$60</span></div>
+      <div class="rp-pill" onclick="rguPick('chsi',70,this)">1 Gig<br><span style="font-size:10px;opacity:.7">$70</span></div>
+      <div class="rp-pill" onclick="rguPick('chsi',110,this)">1.2/2 Gig<br><span style="font-size:10px;opacity:.7">$110</span></div>
+      <div class="rp-pill" onclick="rguPick('chsi',14.95,this)">IE 75<br><span style="font-size:10px;opacity:.7">$14.95</span></div>
+      <div class="rp-pill" onclick="rguPick('chsi',29.95,this)">IE 100<br><span style="font-size:10px;opacity:.7">$29.95</span></div>
+    </div>
+  </div>
+
+  <!-- TV inline -->
+  <div style="padding:8px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;margin-bottom:8px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">&#x1F4FA; TV</div>
+    <input type="hidden" id="rgu-tv" value="0">
+    <div class="rp-pills" id="rgu-tv-pills" style="flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px">
+      <div class="rp-pill" onclick="rguPick('tv',0,this,'active-tv')" style="flex-shrink:0">None</div>
+      <div class="rp-pill" onclick="rguPick('tv',20,this,'active-tv')" style="flex-shrink:0">NOW<br><span style="font-size:10px;opacity:.7">$20</span></div>
+      <div class="rp-pill" onclick="rguPick('tv',65,this,'active-tv')" style="flex-shrink:0">Core<br><span style="font-size:10px;opacity:.7">$65</span></div>
+      <div class="rp-pill" onclick="rguPick('tv',80,this,'active-tv')" style="flex-shrink:0">Sports<br><span style="font-size:10px;opacity:.7">$80</span></div>
+      <div class="rp-pill" onclick="rguPick('tv',95,this,'active-tv')" style="flex-shrink:0">Plus<br><span style="font-size:10px;opacity:.7">$95</span></div>
+      <div class="rp-pill" onclick="rguPick('tv',125,this,'active-tv')" style="flex-shrink:0">Premium<br><span style="font-size:10px;opacity:.7">$125</span></div>
+    </div>
+    <!-- Add-ons collapsible -->
+    <div style="margin-top:6px">
+      <div onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.rp-sec-arrow').textContent=this.nextElementSibling.classList.contains('open')?'▾':'▸'" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:4px 0;border-top:1px solid var(--border2)">
+        <span>Add-ons</span><span class="rp-sec-arrow">▸</span>
+      </div>
+      <div class="rp-section-body" style="padding:6px 0 0 0">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;max-height:160px;overflow-y:auto;padding-right:4px">
+          <div style="display:flex;align-items:center;gap:4px">
+            <input type="number" class="rp-num" id="rgu-tv-boxes" min="0" step="1" value="0" oninput="calcRgu()" style="width:48px;font-size:10px">
+            <span style="font-size:10px;color:var(--text3)">AOs ×$14</span>
+          </div>
+          <div></div>
+          <label class="rp-chk"><input type="checkbox" id="rgu-ent" onchange="calcRgu()"> Entertain. — $18</label>
+          <label class="rp-chk"><input type="checkbox" id="rgu-fam" onchange="calcRgu()"> Family — $10</label>
+          <label class="rp-chk"><input type="checkbox" id="rgu-hbo" onchange="calcRgu()"> HBO Max — $18.50</label>
+          <label class="rp-chk"><input type="checkbox" id="rgu-starz" onchange="calcRgu()"> Starz — $11</label>
+          <label class="rp-chk"><input type="checkbox" id="rgu-para" onchange="calcRgu()"> Param+SHO — $12</label>
+          <div></div>
+          <label class="rp-chk" style="gap:4px"><input type="checkbox" id="rgu-anc1" onchange="calcRgu()"> Other <input type="number" class="rp-num" id="rgu-anc1-val" placeholder="$" min="0" step="1" oninput="calcRgu()" style="width:52px;font-size:10px"></label>
+          <label class="rp-chk" style="gap:4px"><input type="checkbox" id="rgu-anc2" onchange="calcRgu()"> Other <input type="number" class="rp-num" id="rgu-anc2-val" placeholder="$" min="0" step="1" oninput="calcRgu()" style="width:52px;font-size:10px"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- XH + CDV stacked compact -->
+  <div style="padding:7px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;margin-bottom:8px;display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);min-width:28px">&#x1F3E0; XH</span>
+      <label class="rp-chk"><input type="checkbox" id="rgu-xh-sp" onchange="calcRgu()"> Self Protect — $10</label>
+      <label class="rp-chk"><input type="checkbox" id="rgu-xh-sh" onchange="calcRgu()"> Secure Home — $55</label>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;border-top:1px solid var(--border2);padding-top:6px">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);min-width:28px">&#x260E; CDV</span>
+      <label class="rp-chk"><input type="checkbox" id="rgu-cdv-inp" onchange="_rguCdv=this.checked;calcRgu()"> Voice — $40</label>
+    </div>
+  </div>
+
+  <input type='hidden' id='rgu-cdv' value='0'>
+  <!-- XM inline -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;margin-bottom:8px">
+    <span style="font-size:12px;font-weight:600;color:var(--text2)">&#x1F4F1; Mobile Lines</span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="xm-stepper" id="rgu-xm-stepper" style="width:60px;height:30px">
+        <button class="xm-btn" type="button" onclick="rguSetXm(_rguXm-1)">&#x2212;</button>
+        <div class="xm-val" id="rgu-xm-val">0</div>
+        <button class="xm-btn" type="button" onclick="rguSetXm(_rguXm+1)">+</button>
+      </div>
+      <span style="font-size:11px;color:var(--text3);min-width:50px">&#xD7; $45 = <span id="rgu-xm-subtotal" style="font-weight:700;color:var(--teal)">$0</span></span>
+    </div>
+  </div>
+
+  <!-- Total -->
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding:0 2px">
+    <input type="checkbox" id="rgu-appb" onchange="rguUpdateChsiPills();calcRgu()" style="width:14px;height:14px;cursor:pointer;accent-color:var(--blue)">
+    <label for="rgu-appb" style="font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;user-select:none">APPB / Auto Pay &amp; Paperless <span style="color:var(--blue)">&#x2212;$10 on CHSI</span></label>
+  </div>
+  <div class="rp-total">
+    <div>
+      <div class="rp-total-lbl">Monthly Total</div>
+      <div class="rp-subtotal" id="rgu-breakdown"></div>
+    </div>
+    <div class="rp-total-val" id="rgu-total">$0.00</div>
+  </div>
+  <div style="display:flex;gap:6px;margin-top:8px">
+    <button onclick="rguFillLog()" style="flex:1;height:28px;background:var(--blue);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">&#x2192; Use in Log</button>
+    <button onclick="rguReset()" style="height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">↺ Reset</button>
   </div>
 </div>
 
