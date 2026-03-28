@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="XCL">
+<link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
 <title>Xfinity Call Logger v0.03.22.102</title>
 <style>
@@ -808,6 +814,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
     <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
 (resets on the 22nd)
 Goals shown for your type+cap level">…</div>
+    <button id="pwa-install-btn" onclick="pwaInstall()" data-tip="Install App" style="display:none;align-items:center;gap:3px;height:24px;padding:0 8px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">&#x2B07; Install</button>
     <button class="gear-btn" onclick="toggleRgu()" data-tip="RGU Calculator" style="font-size:14px">&#x1F4B2;</button>
     <button class="gear-btn" onclick="toggleCalc()" data-tip="Calculator">&#x1F9EE;</button>
     <button class="gear-btn" onclick="toggleSettings()" data-tip="Settings">⚙️</button>
@@ -2148,7 +2155,7 @@ function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=
 function pillCls(c){if(c.hasSale)return c.bulk?'p-bulk':'p-sale';if(c.callOutcome==='NO SALE MADE')return'p-nosale';if(['BILLING','TECH SUPPORT','TECH (SAME DAY)','DROP ISSUES','DISCONNECTED'].includes(c.callOutcome))return'p-tech';return'p-other';}
 function pillTxt(c){if(c.hasSale){const base=(c.bulk?'BULK · ':'')+( c.xm>0?`${c.playName} (${c.xm} XM)`:c.playName);return c.noXmReason?base+' · ✘ XM':base;}return c.callOutcome==='NO SALE MADE'?'NO SALE':(c.callOutcome||'—');}
 function outcomeOpts(sel=''){return`<option value="">— select outcome —</option>`+OUTCOMES.map(v=>`<option${sel===v?' selected':''}>${v}</option>`).join('');}
-function renderReadRow(c){const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(2)}</span>`:`<span class="td-nil">—</span>`;const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;const st=cbStatus(c);let cb='<span class="td-nil">—</span>';if(st==='done')cb=`<span class="cb-badge done">${fmtCb(c.cbTime)}</span>`;else if(st==='overdue')cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;else if(st==='due-soon')cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;else if(st==='pending')cb=`<span class="cb-badge">${fmtCb(c.cbTime)}</span>`;const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'?' has-callback':'');return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}">${c.acct||'—'}</td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;}
+function renderReadRow(c){const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(2)}</span>`:`<span class="td-nil">—</span>`;const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;const st=cbStatus(c);let cb='<span class="td-nil">—</span>';if(st==='done')cb=`<span class="cb-badge done">${fmtCb(c.cbTime)}</span>`;else if(st==='overdue')cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;else if(st==='due-soon')cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;else if(st==='pending')cb=`<span class="cb-badge">${fmtCb(c.cbTime)}</span>`;const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'?' has-callback':'');return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}"><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;}
 function renderEditRow(c){
   const es=editState;
   const pb=(k,l)=>{
@@ -6682,6 +6689,44 @@ function rguFillLog(){
   toggleRgu();
   if(_activeTab !== 'tracker') switchTab('tracker');
   _showToast('\u2713 RGU selections applied to log', 'ok', 2500);
+}
+
+function maskAcct(acct){
+  if(!acct) return '—';
+  var parts = String(acct).split(/[·|]/);
+  var num = parts[0].trim().replace(/\s+/g,'');
+  var rest = parts.length > 1 ? ' · ' + parts.slice(1).map(function(p){return p.trim();}).join(' · ') : '';
+  if(num.length === 16){
+    return num.slice(0,4) + '••••••••' + num.slice(-4) + rest;
+  }
+  return acct;
+}
+
+// ── PWA Service Worker + Install Prompt ──────────────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+var _pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  _pwaPrompt = e;
+  var btn = document.getElementById('pwa-install-btn');
+  if(btn) btn.style.display = 'flex';
+});
+window.addEventListener('appinstalled', function(){
+  _pwaPrompt = null;
+  var btn = document.getElementById('pwa-install-btn');
+  if(btn) btn.style.display = 'none';
+  _showToast('\u2713 App installed!', 'ok', 3000);
+});
+function pwaInstall(){
+  if(!_pwaPrompt) return;
+  _pwaPrompt.prompt();
+  _pwaPrompt.userChoice.then(function(r){
+    if(r.outcome === 'accepted') _pwaPrompt = null;
+  });
 }
 
 </script>
