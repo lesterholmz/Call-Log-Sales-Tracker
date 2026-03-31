@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Xfinity Call Logger v0.3.31.1</title>
+<title>Xfinity Call Logger v0.3.31.2</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -28,14 +28,14 @@
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;min-width:720px;max-width:900px;margin:0 auto;position:relative}
 .header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
 .brand{display:flex;align-items:center;gap:10px}
-.brand-logo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--blue) 0%,#6366f1 100%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;font-family:var(--mono)}
-.brand-name{font-size:14px;font-weight:600;color:var(--text)}
+.brand-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--blue) 0%,#6366f1 100%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;font-family:var(--mono);box-shadow:0 2px 8px rgba(59,130,246,.3)}
+.brand-name{font-size:14px;font-weight:700;color:var(--text)}
 .brand-name span{color:var(--blue)}
 .header-right{display:flex;align-items:center;gap:12px}
 /* ── Tab navigation ── */
 .tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 24px;gap:2px;position:sticky;top:52px;z-index:190}
 .tab-btn{height:40px;padding:0 18px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s;letter-spacing:.03em;white-space:nowrap;margin-bottom:-1px}
-.tab-btn:hover{color:var(--text)}
+.tab-btn:hover{color:var(--text2)}
 .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
@@ -58,26 +58,26 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .alert-dismiss{background:none;border:1px solid rgba(245,158,11,.3);border-radius:6px;color:var(--amber);font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;white-space:nowrap;font-family:var(--sans)}
 .alert-dismiss:hover{background:rgba(245,158,11,.1)}
 .stats-panel{background:var(--surface);border-bottom:1px solid var(--border)}
-.stats-section-label{padding:8px 24px 6px;font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:10px;position:relative}
+.stats-section-label{padding:8px 24px 6px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:10px;position:relative}
 .stats-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 .stats-row{display:grid;grid-template-columns:repeat(8,1fr);padding:0 24px}
 .stats-row.monthly{border-bottom:1px solid var(--border2)}
-.stat{padding:10px 8px 6px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
+.stat{padding:10px 8px 8px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
 .stat:first-child{padding-left:0;min-width:90px}.stat:last-child{border-right:none}
-.stat-label{font-size:9px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3)}
-.stats-row.monthly .stat-val{font-family:var(--mono);font-size:clamp(11px,1.4vw,16px);font-weight:500;color:var(--text);line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.stats-row.daily .stat-val{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);line-height:1}
+.stat-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
+.stats-row.monthly .stat-val{font-family:var(--mono);font-size:clamp(11px,1.4vw,17px);font-weight:600;color:var(--text);line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.stats-row.daily .stat-val{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--text);line-height:1}
 .stat-val.c-blue{color:var(--blue)}.stat-val.c-green{color:var(--green)}.stat-val.c-amber{color:var(--amber)}.stat-val.c-teal{color:var(--teal)}
 .stat-pct{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px;margin-top:auto;flex-wrap:nowrap;padding-top:4px}
-.pct-val{font-family:var(--mono);font-size:10px;font-weight:600;min-width:32px}
+.pct-val{font-family:var(--mono);font-size:10px;font-weight:700;min-width:32px}
 .pct-val.good{color:var(--green)}.pct-val.ok{color:var(--blue)}.pct-val.warn{color:var(--amber)}
-.goal-bar-track{height:4px;background:var(--border2);border-radius:4px;margin-top:2px;overflow:visible;position:relative}
+.goal-bar-track{height:3px;background:var(--border2);border-radius:4px;margin-top:3px;overflow:visible;position:relative}
 .goal-bar-fill{height:100%;border-radius:2px;transition:width .5s ease,background .5s ease,box-shadow .5s ease;position:relative;z-index:1}
 .goal-bar-over{position:absolute;top:-5px;left:0;height:100%;border-radius:2px;background:var(--blue);transition:width .5s ease;z-index:2;pointer-events:none}
 .stat-sub{font-size:10px;color:var(--text3);margin-top:0}
-.stats-row.daily{padding-bottom:4px}
-.stats-row.monthly .stat{padding-top:10px;padding-bottom:6px}
-.stats-row.daily .stat{padding-top:5px;padding-bottom:4px}
+.stats-row.daily{padding-bottom:6px}
+.stats-row.monthly .stat{padding-top:10px;padding-bottom:8px}
+.stats-row.daily .stat{padding-top:6px;padding-bottom:5px}
 .main{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
 .form-card{background:var(--card);border:1px solid var(--border);border-radius:12px}
 .form-header{padding:11px 18px;background:var(--card2);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between}
@@ -149,28 +149,28 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .submit-btn.ok{background:var(--green)}
 .btn-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.6)}
 .table-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.table-header{padding:11px 18px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.table-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text2)}
+.table-header{padding:12px 18px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.table-title{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text2)}
 .table-actions{display:flex;align-items:center;gap:10px}
-.count-chip{font-family:var(--mono);font-size:11px;color:var(--blue);background:var(--blue-lt);padding:3px 10px;border-radius:20px}
-.export-btn{height:30px;padding:0 14px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--teal);cursor:pointer}
+.count-chip{font-family:var(--mono);font-size:11px;color:var(--blue);background:var(--blue-lt);padding:3px 10px;border-radius:20px;font-weight:600}
+.export-btn{height:30px;padding:0 14px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--teal);cursor:pointer}
 .export-btn:hover{background:rgba(20,184,166,.2)}
 .filter-select{height:30px;padding:0 10px;background:var(--card2);border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text);cursor:pointer;outline:none;transition:border-color .15s,box-shadow .15s}
 .filter-select:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
 .filter-select.active{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);font-weight:600}
 table{width:100%;border-collapse:collapse}
-thead tr{background:var(--card2);border-bottom:1px solid var(--border)}
-thead th{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:10px 14px;text-align:left;white-space:nowrap}
+thead tr{background:var(--card2);border-bottom:2px solid var(--border)}
+thead th{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding:9px 14px;text-align:left;white-space:nowrap}
 tbody tr.read-row{cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s;animation:fadeUp .2s ease}
 tbody tr.read-row:last-child{border-bottom:none}
-tbody tr.read-row:hover{background:rgba(59,130,246,.06)}
+tbody tr.read-row:hover{background:rgba(59,130,246,.07)}
 .edit-hint{opacity:0;transition:opacity .15s;font-size:9px;color:var(--blue);font-family:var(--mono);margin-left:4px}
 tbody tr.read-row:hover .edit-hint{opacity:1}
 tbody tr.edit-row{border-bottom:1px solid var(--border);background:rgba(59,130,246,.06);outline:2px solid var(--blue);outline-offset:-2px}
 tbody tr.has-callback{background:rgba(167,139,250,.04)}
 tbody tr.callback-due{background:rgba(245,158,11,.06)!important;animation:cbPulse 2s ease-in-out infinite}
 @keyframes cbPulse{0%,100%{background:rgba(245,158,11,.06)}50%{background:rgba(245,158,11,.13)}}
-td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
+td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .td-time{font-family:var(--mono);font-size:11px;color:var(--text3)}
 .td-acct{font-family:var(--mono);font-size:12px;color:var(--blue);max-width:160px;overflow:hidden;text-overflow:ellipsis}
 .td-rev-pos{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--green)}
@@ -286,7 +286,21 @@ td{padding:8px 14px;vertical-align:middle;white-space:nowrap}
 .color-swatch{display:flex;align-items:center;gap:6px}
 .color-swatch input[type=color]{width:32px;height:24px;border:none;border-radius:4px;cursor:pointer;padding:0;background:none}
 .color-swatch-val{font-family:var(--mono);font-size:10px;color:var(--text3);width:54px}
-.theme-presets{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+/* ── Follow-Up type filter chips ── */
+.fu-type-chip{height:26px;padding:0 12px;border:1px solid var(--border2);border-radius:20px;background:var(--surface);font-family:var(--sans);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fu-type-chip:hover{border-color:var(--blue);color:var(--blue)}
+.fu-type-chip.active{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.theme-card{border:2px solid var(--border2);border-radius:10px;background:var(--surface);cursor:pointer;padding:0;overflow:hidden;transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column}
+.theme-card:hover{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+.theme-card.active{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+.tc-preview{padding:7px 7px 5px;display:flex;flex-direction:column;gap:4px;flex:1}
+.tc-bar{border:1px solid;border-radius:4px;padding:3px 5px;display:flex;align-items:center;gap:3px}
+.tc-dot{width:5px;height:5px;border-radius:50%}
+.tc-rows{display:flex;flex-direction:column;gap:3px;padding-top:2px}
+.tc-row{height:4px;border-radius:2px;border:1px solid}
+.tc-label{font-size:10px;font-weight:600;color:var(--text2);padding:4px 7px 6px;border-top:1px solid var(--border);text-align:center;letter-spacing:.02em;background:var(--card2)}
+/* legacy theme-preset kept for compat */
 .theme-preset{height:28px;padding:0 12px;border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text2);transition:all .15s}
 .theme-preset:hover{border-color:var(--blue);color:var(--blue)}
 .theme-preset.active{border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
@@ -816,7 +830,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.3.31.1</div>
+    <div class="version-chip">v0.3.31.2</div>
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
     <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
@@ -895,22 +909,104 @@ Goals shown for your type+cap level">…</div>
           <span class="disp-section-chevron open">▼</span>
         </div>
         <div class="disp-section-body open">
-          <div class="theme-presets">
-            <button class="theme-preset" id="tp-dark" onclick="applyPreset('dark')">
-              <div class="tp-swatch"><div class="tp-dot" style="background:#0a0f1e;border:1px solid #263147"></div><div class="tp-dot" style="background:#3b82f6"></div><div class="tp-dot" style="background:#22c55e"></div></div>
-              🌙 Dark
+          <div class="theme-grid">
+            <button class="theme-card" id="tp-dark" onclick="applyPreset('dark')">
+              <div class="tc-preview" style="background:#0a0f1e">
+                <div class="tc-bar" style="background:#111827;border-color:#263147">
+                  <div class="tc-dot" style="background:#3b82f6"></div>
+                  <div class="tc-dot" style="background:#22c55e"></div>
+                  <div class="tc-dot" style="background:#f59e0b"></div>
+                </div>
+                <div class="tc-rows">
+                  <div class="tc-row" style="background:#161e30;border-color:#263147;width:80%"></div>
+                  <div class="tc-row" style="background:#161e30;border-color:#263147;width:60%"></div>
+                </div>
+              </div>
+              <div class="tc-label">🌙 Dark</div>
             </button>
-            <button class="theme-preset" id="tp-light" onclick="applyPreset('light')">
-              <div class="tp-swatch"><div class="tp-dot" style="background:#f1f5f9;border:1px solid #cbd5e1"></div><div class="tp-dot" style="background:#2563eb"></div><div class="tp-dot" style="background:#16a34a"></div></div>
-              ☀️ Light
+            <button class="theme-card" id="tp-light" onclick="applyPreset('light')">
+              <div class="tc-preview" style="background:#f1f5f9">
+                <div class="tc-bar" style="background:#ffffff;border-color:#e2e8f0">
+                  <div class="tc-dot" style="background:#2563eb"></div>
+                  <div class="tc-dot" style="background:#16a34a"></div>
+                  <div class="tc-dot" style="background:#d97706"></div>
+                </div>
+                <div class="tc-rows">
+                  <div class="tc-row" style="background:#ffffff;border-color:#e2e8f0;width:75%"></div>
+                  <div class="tc-row" style="background:#ffffff;border-color:#e2e8f0;width:55%"></div>
+                </div>
+              </div>
+              <div class="tc-label">☀️ Light</div>
             </button>
-            <button class="theme-preset" id="tp-xfinity" onclick="applyPreset('xfinity')">
-              <div class="tp-swatch"><div class="tp-dot" style="background:#ffffff;border:1px solid #c4b5fd"></div><div class="tp-dot" style="background:#7b2fff"></div><div class="tp-dot" style="background:#a78bfa"></div></div>
-              ✦ Xfinity
+            <button class="theme-card" id="tp-xfinity-dark" onclick="applyPreset('xfinity-dark')">
+              <div class="tc-preview" style="background:#0c1a2e">
+                <div class="tc-bar" style="background:#0f2744;border-color:#1e4070">
+                  <div class="tc-dot" style="background:#38bdf8"></div>
+                  <div class="tc-dot" style="background:#4ade80"></div>
+                  <div class="tc-dot" style="background:#fde047"></div>
+                </div>
+                <div class="tc-rows">
+                  <div class="tc-row" style="background:#163354;border-color:#1e4070;width:80%"></div>
+                  <div class="tc-row" style="background:#163354;border-color:#1e4070;width:65%"></div>
+                </div>
+              </div>
+              <div class="tc-label">✦ Xfinity Dark</div>
             </button>
-            <button class="theme-preset" id="tp-xfinity-dark" onclick="applyPreset('xfinity-dark')">
-              <div class="tp-swatch"><div class="tp-dot" style="background:#0c1a2e;border:1px solid #1e4070"></div><div class="tp-dot" style="background:#38bdf8"></div><div class="tp-dot" style="background:#4ade80"></div></div>
-              ✦ Xfinity Dark
+            <button class="theme-card" id="tp-xfinity" onclick="applyPreset('xfinity')">
+              <div class="tc-preview" style="background:#ffffff">
+                <div class="tc-bar" style="background:#f5f3ff;border-color:#c4b5fd">
+                  <div class="tc-dot" style="background:#7b2fff"></div>
+                  <div class="tc-dot" style="background:#6941e0"></div>
+                  <div class="tc-dot" style="background:#a78bfa"></div>
+                </div>
+                <div class="tc-rows">
+                  <div class="tc-row" style="background:#ede9fe;border-color:#c4b5fd;width:80%"></div>
+                  <div class="tc-row" style="background:#ede9fe;border-color:#c4b5fd;width:50%"></div>
+                </div>
+              </div>
+              <div class="tc-label">✦ Xfinity</div>
+            </button>
+            <button class="theme-card" id="tp-midnight" onclick="applyPreset('midnight')">
+              <div class="tc-preview" style="background:#030712">
+                <div class="tc-bar" style="background:#0d1117;border-color:#1f2937">
+                  <div class="tc-dot" style="background:#818cf8"></div>
+                  <div class="tc-dot" style="background:#34d399"></div>
+                  <div class="tc-dot" style="background:#fb923c"></div>
+                </div>
+                <div class="tc-rows">
+                  <div class="tc-row" style="background:#111827;border-color:#1f2937;width:85%"></div>
+                  <div class="tc-row" style="background:#111827;border-color:#1f2937;width:60%"></div>
+                </div>
+              </div>
+              <div class="tc-label">🌌 Midnight</div>
+            </button>
+            <button class="theme-card" id="tp-forest" onclick="applyPreset('forest')">
+              <div class="tc-preview" style="background:#0a130e">
+                <div class="tc-bar" style="background:#111a14;border-color:#1e3a24">
+                  <div class="tc-dot" style="background:#22d3ee"></div>
+                  <div class="tc-dot" style="background:#86efac"></div>
+                  <div class="tc-dot" style="background:#fde047"></div>
+                </div>
+                <div class="tc-rows">
+                  <div class="tc-row" style="background:#162119;border-color:#1e3a24;width:80%"></div>
+                  <div class="tc-row" style="background:#162119;border-color:#1e3a24;width:55%"></div>
+                </div>
+              </div>
+              <div class="tc-label">🌿 Forest</div>
+            </button>
+            <button class="theme-card" id="tp-slate" onclick="applyPreset('slate')">
+              <div class="tc-preview" style="background:#0f172a">
+                <div class="tc-bar" style="background:#1e293b;border-color:#334155">
+                  <div class="tc-dot" style="background:#60a5fa"></div>
+                  <div class="tc-dot" style="background:#4ade80"></div>
+                  <div class="tc-dot" style="background:#fbbf24"></div>
+                </div>
+                <div class="tc-rows">
+                  <div class="tc-row" style="background:#253347;border-color:#334155;width:75%"></div>
+                  <div class="tc-row" style="background:#253347;border-color:#334155;width:55%"></div>
+                </div>
+              </div>
+              <div class="tc-label">🪨 Slate</div>
             </button>
           </div>
         </div>
@@ -939,7 +1035,7 @@ Goals shown for your type+cap level">…</div>
         <!-- Toggle -->
         <div style="display:flex;gap:4px;background:var(--surface);border-radius:8px;padding:3px;border:1px solid var(--border2)">
           <button id="fp-tog-sale" onclick="setFpMode('sale')" style="flex:1;height:26px;border:none;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;background:var(--card);color:var(--text);transition:all .15s">RGUs</button>
-          <button id="fp-tog-cb" onclick="setFpMode('cb')" style="flex:1;height:26px;border:none;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Call Back</button>
+          <button id="fp-tog-cb" onclick="setFpMode('cb')" style="flex:1;height:26px;border:none;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Follow-Up</button>
           <button id="fp-tog-both" onclick="setFpMode('both')" style="flex:1;height:26px;border:none;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Both</button>
         </div>
         <!-- Preview — full width -->
@@ -1012,7 +1108,7 @@ Goals shown for your type+cap level">…</div>
       <!-- Alerts -->
       <div class="disp-section">
         <div class="disp-section-hdr" onclick="toggleDispSection(this)">
-          <span class="disp-section-hdr-title">🔔 Call Back Alerts</span>
+          <span class="disp-section-hdr-title">🔔 Follow-Up Alerts</span>
           <span class="disp-section-chevron">▼</span>
         </div>
         <div class="disp-section-body">
@@ -1222,7 +1318,7 @@ Goals shown for your type+cap level">…</div>
         <div class="bug-item bug-coming">
           <div class="bug-num">①</div>
           <div class="bug-body">
-            <div class="bug-title">Call Back Sales — Correct Credit Date <span class="bug-badge">In Progress</span></div>
+            <div class="bug-title">Follow-Up Sales — Correct Credit Date <span class="bug-badge">In Progress</span></div>
             <div class="bug-desc">Callback sales will be credited to the date the callback was completed, not the original call date. XM line activations and revenue will flow to the correct fiscal month automatically.</div>
           </div>
         </div>
@@ -1293,7 +1389,7 @@ Goals shown for your type+cap level">…</div>
 </div>
 
 <div id="sync-toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
-<div id="alert-bar"><div class="alert-inner"><div class="alert-icon">🔔</div><div class="alert-content"><div class="alert-title">Call Back Alert</div><div class="alert-items" id="alert-items"></div></div><button class="alert-dismiss" onclick="dismissAlerts()">Dismiss</button></div></div>
+<div id="alert-bar"><div class="alert-inner"><div class="alert-icon">🔔</div><div class="alert-content"><div class="alert-title">Follow-Up Alert</div><div class="alert-items" id="alert-items"></div></div><button class="alert-dismiss" onclick="dismissAlerts()">Dismiss</button></div></div>
 <!-- ══ TAB: TRACKER ══ -->
 <div class="tab-panel active" id="panel-tracker">
 <div class="stats-panel">
@@ -1438,14 +1534,14 @@ Click to select category + sub-reason" onclick="event.stopPropagation();toggleNo
               </div>
               <!-- CB details shown when callback is set -->
               <div id="cb-display" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:100%;text-align:center">
-                <div style="font-family:'Orbitron',var(--mono);font-size:9px;font-weight:700;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;opacity:.8">Call Back</div>
+                <div style="font-family:'Orbitron',var(--mono);font-size:9px;font-weight:700;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;opacity:.8" id="cb-display-type">Follow-Up</div>
                 <div id="cb-display-time" style="font-family:'Orbitron',var(--mono);font-size:16px;font-weight:700;color:var(--purple);letter-spacing:.06em;white-space:nowrap"></div>
                 <div id="cb-display-sub" style="font-family:'Orbitron',var(--mono);font-size:9px;color:var(--purple);letter-spacing:.08em;opacity:.55"></div>
               </div>
             </div>
             <div style="display:flex;gap:16px;align-items:center;flex-shrink:0;justify-content:center;width:100%">
-              <div class="cback-toggle" id="cb-toggle" onclick="toggleCb()" data-tip="Schedule a Call Back
-Sets follow-up time and logs CB details">📞</div>
+              <div class="cback-toggle" id="cb-toggle" onclick="toggleCb()" data-tip="Add a Follow-Up
+Flag this call for callback, collections, construction, or exception">🔔</div>
               <button class="submit-btn" id="submit-btn" data-tip="Log this call" onclick="logCall()"><div class="btn-dot"></div>Log Call</button>
             </div>
           </div>
@@ -1461,7 +1557,7 @@ Sets follow-up time and logs CB details">📞</div>
       <div class="table-actions"><div class="log-search-wrap"><span class="log-search-icon">🔍</span><input class="log-search-input" id="log-search" type="text" placeholder="Search acct #…" oninput="setLogSearch(this.value)" autocomplete="off" spellcheck="false"><button class="log-search-clear" id="log-search-clear" onclick="clearLogSearch()" title="Clear">✕</button></div><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
     </div>
     <table>
-      <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Sched</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th><th>Call Back</th><th>Notes</th></tr></thead>
+      <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Sched</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th><th>Follow-Up</th><th>Notes</th></tr></thead>
       <tbody id="log-body"><tr><td colspan="8" class="empty">No calls logged yet — fill in the form above to get started</td></tr></tbody>
     </table>
   </div>
@@ -1615,23 +1711,35 @@ Sets follow-up time and logs CB details">📞</div>
 
 <!-- ══ TAB: CALL BACKS ══ -->
 <div class="tab-panel" id="panel-callbacks" style="display:none">
-  <div style="padding:16px 24px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-      <div style="font-size:16px;font-weight:700;color:var(--text)">🔔 Follow-Ups</div>
+  <div style="padding:0">
+    <!-- Follow-Ups header bar -->
+    <div style="padding:14px 24px 12px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:92px;z-index:100">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:28px;height:28px;border-radius:8px;background:var(--purple-lt);border:1px solid rgba(167,139,250,.3);display:flex;align-items:center;justify-content:center;font-size:14px">🔔</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);line-height:1">Follow-Ups</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px" id="cb-tab-subtitle">Scheduled callbacks</div>
+        </div>
+      </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="cb-tab-filter" onchange="renderCallbacksTab()" style="height:28px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;color:var(--text2);outline:none;cursor:pointer;font-family:var(--mono)">
-          <option value="open">Open Only</option>
-          <option value="overdue">Overdue</option>
-          <option value="due-today">Due Today</option>
-          <option value="due-soon">Due Soon</option>
-          <option value="all">All</option>
-        </select>
-        <button onclick="renderCallbacksTab()" style="height:28px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer">&#x21BB; Refresh</button>
-        <button onclick="if(window._lastCbDoneId){undoCbDone(window._lastCbDoneId);window._lastCbDoneId=null;}" style="height:28px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">&#x21A9; Undo Done</button>
+        <div style="display:flex;gap:0;background:var(--card2);border:1px solid var(--border2);border-radius:7px;overflow:hidden;height:30px">
+          <button onclick="setCbTabFilter('open')" id="cbtf-open" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff;transition:all .15s">Open</button>
+          <button onclick="setCbTabFilter('overdue')" id="cbtf-overdue" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Overdue</button>
+          <button onclick="setCbTabFilter('due-today')" id="cbtf-due-today" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Today</button>
+          <button onclick="setCbTabFilter('all')" id="cbtf-all" style="padding:0 11px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">All</button>
+        </div>
+        <button onclick="renderCallbacksTab()" style="height:30px;width:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:14px;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center" title="Refresh">↻</button>
+        <button onclick="if(window._lastCbDoneId){undoCbDone(window._lastCbDoneId);window._lastCbDoneId=null;}" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">↩ Undo</button>
       </div>
     </div>
-    <div id="cb-tab-summary" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px"></div>
-    <div id="cb-tab-cards" style="display:flex;flex-direction:column;gap:10px"></div>
+    <!-- Summary strip -->
+    <div id="cb-tab-summary" style="display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--card2)"></div>
+    <!-- Type filter chips -->
+    <div id="cb-type-filter-row" style="display:flex;gap:6px;padding:10px 24px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap"></div>
+    <!-- Cards -->
+    <div style="padding:16px 24px">
+      <div id="cb-tab-cards" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
   </div>
 </div>
 <div class="tab-panel" id="panel-disputes">
@@ -1845,7 +1953,7 @@ function checkAlerts(){
     const thresh=ov?null:windows.filter(w=>ms<=w*60000).sort((x,y)=>x-y)[0];
     const label=ov?m+'m overdue':(thresh?'in '+m+'m ('+thresh+'m alert)':'in '+m+'m');
     const name=c.cbName||c.cbPhone||c.acct||'Unknown';
-    return`<div class="alert-item" onclick="openCallFromAlert(${c.id})" title="Click to open call log">` +
+    return`<div class="alert-item" onclick="openCallFromAlert(${c.id})" title="Click to go to Follow-Up">` +
       `<span class="alert-item-time">${label}</span>` +
       `<span>${name}${c.notes?' — '+c.notes:''}</span>` +
       `<span style="margin-left:auto;font-size:10px;opacity:.5">↗ open</span>` +
@@ -2079,19 +2187,43 @@ function updatePlay(){
     if(playDisp){ playDisp.style.display='none'; }
   }
 }
+function onFuTypeChange(){
+  var type = (document.getElementById('f-fu-type')||{}).value || 'Callback';
+  var isCallback = type === 'Callback';
+  var quickWrap = document.getElementById('cb-quick-wrap');
+  var dtWrap    = document.getElementById('cb-dt-wrap');
+  var tzWrap    = document.getElementById('cb-tz-wrap');
+  var req       = document.getElementById('cb-dt-req');
+  if(quickWrap) quickWrap.style.display = isCallback ? 'flex' : 'none';
+  if(dtWrap)    dtWrap.style.display    = 'flex'; // always show date, just mark optional
+  if(req)       req.textContent = isCallback ? '(required)' : '(optional)';
+  if(tzWrap)    tzWrap.style.display    = isCallback ? 'flex' : 'none';
+  // Update panel title
+  var titles = {Callback:'📞 Callback',Collections:'💰 Collections',Construction:'🏗 Construction',Exception:'⚠ Exception'};
+  var titleEl = document.querySelector('#cb-panel .cb-panel-title');
+  if(titleEl) titleEl.textContent = 'Follow-Up: ' + (titles[type]||type);
+  // If switching away from Callback, clear the quick-set time
+  if(!isCallback){
+    document.getElementById('cb-mytime').textContent = '';
+  }
+  updateCbDisplay();
+}
+
 function toggleCb(){
   cbOpen = !cbOpen;
   document.getElementById('cb-toggle').classList.toggle('active', cbOpen);
   const panel = document.getElementById('cb-panel');
   if(cbOpen){
-    // Position panel above the 📞 button
     const btn = document.getElementById('cb-toggle');
     const rect = btn.getBoundingClientRect();
     panel.style.display = 'flex';
     panel.style.left = rect.left + 'px';
     panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
     panel.style.top = 'auto';
-    // Default to +30 min
+    // Reset type to Callback and update UI
+    var typeSel = document.getElementById('f-fu-type');
+    if(typeSel) typeSel.value = 'Callback';
+    onFuTypeChange();
     cbSetOffset(30);
   } else {
     panel.style.display = 'none';
@@ -2150,14 +2282,23 @@ function logCall(){
 }
 
 function doLogCall(){
-  if(cbOpen){if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}}
-  const cbName=document.getElementById('f-cb-name').value.trim();const cbPhone=document.getElementById('f-cb-phone').value.trim();const cbTime=(document.getElementById('f-cb-dt')&&document.getElementById('f-cb-dt').value)||'';const raw=document.getElementById('f-acct').value.trim();
-  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
+  const fuType = (document.getElementById('f-fu-type')&&document.getElementById('f-fu-type').value)||'Callback';
+  const isCallback = fuType === 'Callback';
+  if(cbOpen){
+    if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}
+    if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}
+    if(isCallback && !document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}
+    if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}
+  }
+  const cbName=document.getElementById('f-cb-name').value.trim();
+  const cbPhone=document.getElementById('f-cb-phone').value.trim();
+  const cbTime=(document.getElementById('f-cb-dt')&&document.getElementById('f-cb-dt').value)||'';
+  const raw=document.getElementById('f-acct').value.trim();
+  const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();checkAlerts();upsertCallToSheets(c);
   if(typeof rguReset==='function') rguReset();
   var _wasSale=isSale(); var _wasXm=xmVal>0;
-  // Register current fiscal month in localStorage so it shows in history even without goals
   const _fk = 'xcl_goals_' + getFiscalMonth().replace(' ','');
   if(!localStorage.getItem(_fk)) localStorage.setItem(_fk, JSON.stringify({registeredAt: Date.now()}));
   buildFiscalHistoryDropdown();
@@ -2167,6 +2308,7 @@ function doLogCall(){
 }
 function resetForm(){
   ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  var fuTypeSel=document.getElementById('f-fu-type');if(fuTypeSel)fuTypeSel.value='Callback';
   setXm(0);
   updateRevTotal();
   Object.keys(prods).forEach(k=>{prods[k]=false;const el=document.getElementById('chk-'+k);if(el)el.classList.remove('checked','ie-adj');});
@@ -2222,7 +2364,31 @@ function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=
 function pillCls(c){if(c.hasSale)return c.bulk?'p-bulk':'p-sale';if(c.callOutcome==='NO SALE MADE')return'p-nosale';if(['BILLING','TECH SUPPORT','TECH (SAME DAY)','DROP ISSUES','DISCONNECTED'].includes(c.callOutcome))return'p-tech';return'p-other';}
 function pillTxt(c){if(c.hasSale){const base=(c.bulk?'BULK · ':'')+( c.xm>0?`${c.playName} (${c.xm} XM)`:c.playName);return c.noXmReason?base+' · ✘ XM':base;}return c.callOutcome==='NO SALE MADE'?'NO SALE':(c.callOutcome||'—');}
 function outcomeOpts(sel=''){return`<option value="">— select outcome —</option>`+OUTCOMES.map(v=>`<option${sel===v?' selected':''}>${v}</option>`).join('');}
-function renderReadRow(c){const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(2)}</span>`:`<span class="td-nil">—</span>`;const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;const st=cbStatus(c);let cb='<span class="td-nil">—</span>';if(st==='done')cb=`<span class="cb-badge done">${fmtCb(c.cbTime)}</span>`;else if(st==='overdue')cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;else if(st==='due-soon')cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;else if(st==='pending')cb=`<span class="cb-badge">${fmtCb(c.cbTime)}</span>`;const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'?' has-callback':'');return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}"><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;}
+function renderReadRow(c){
+  const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});
+  const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';
+  const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(2)}</span>`:`<span class="td-nil">—</span>`;
+  const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;
+  const st=cbStatus(c);
+  const fuTypeIcons={Callback:'📞',Collections:'💰',Construction:'🏗',Exception:'⚠'};
+  const fuIcon=fuTypeIcons[c.fuType]||'';
+  const fuLabel=c.fuType&&c.fuType!=='Callback'?c.fuType:'';
+  let cb='<span class="td-nil">—</span>';
+  if(c.fuType&&!c.cbTime&&!c.cbDone){
+    // Non-callback follow-up with no time — show type badge only
+    cb=`<span class="cb-badge">${fuIcon} ${fuLabel}</span>`;
+  } else if(st==='done'){
+    cb=`<span class="cb-badge done">${fuIcon||'✓'} ${fmtCb(c.cbTime)}</span>`;
+  } else if(st==='overdue'){
+    cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;
+  } else if(st==='due-soon'){
+    cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;
+  } else if(st==='pending'){
+    cb=`<span class="cb-badge">${fuIcon} ${fmtCb(c.cbTime)}</span>`;
+  }
+  const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'||(c.fuType&&!c.cbDone)?' has-callback':'');
+  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}"><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;
+}
 function renderEditRow(c){
   const es=editState;
   const pb=(k,l)=>{
@@ -2913,6 +3079,27 @@ const PRESETS = {
     '--bg':'#0c1a2e','--surface':'#0f2744','--card':'#163354','--card2':'#1a3d63',
     '--border':'#1e4070','--border2':'#2a5490',
     '--text':'#e0f2fe','--text2':'#7dd3fc','--text3':'#38bdf8'
+  },
+  midnight: {
+    '--blue':'#818cf8','--green':'#34d399','--amber':'#fb923c','--purple':'#e879f9',
+    '--teal':'#22d3ee','--red':'#f87171',
+    '--bg':'#030712','--surface':'#0d1117','--card':'#111827','--card2':'#161d2e',
+    '--border':'#1f2937','--border2':'#263147',
+    '--text':'#f9fafb','--text2':'#9ca3af','--text3':'#4b5563'
+  },
+  forest: {
+    '--blue':'#22d3ee','--green':'#86efac','--amber':'#fde047','--purple':'#c4b5fd',
+    '--teal':'#6ee7b7','--red':'#fca5a5',
+    '--bg':'#0a130e','--surface':'#111a14','--card':'#162119','--card2':'#1b2a1e',
+    '--border':'#1e3a24','--border2':'#264d2e',
+    '--text':'#ecfdf5','--text2':'#86efac','--text3':'#4ade80'
+  },
+  slate: {
+    '--blue':'#60a5fa','--green':'#4ade80','--amber':'#fbbf24','--purple':'#c084fc',
+    '--teal':'#34d399','--red':'#f87171',
+    '--bg':'#0f172a','--surface':'#1e293b','--card':'#253347','--card2':'#2d3f55',
+    '--border':'#334155','--border2':'#475569',
+    '--text':'#f1f5f9','--text2':'#cbd5e1','--text3':'#94a3b8'
   }
 };
 
@@ -2945,13 +3132,10 @@ function applyWidth(w){
 function applyPreset(name){
   const p=PRESETS[name];
   if(!p) return;
-  // Apply all vars in preset
   Object.entries(p).forEach(([v,val])=>liveColor(v,val));
-  // Mark active preset button
-  document.querySelectorAll('.theme-preset').forEach(b=>b.style.outline='none');
+  document.querySelectorAll('.theme-preset,.theme-card').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById('tp-'+name);
-  if(btn) btn.style.outline='2px solid var(--blue)';
-  // Update accent pickers
+  if(btn) btn.classList.add('active');
   saveColorSettings(name);
 }
 
@@ -2969,9 +3153,9 @@ function loadColorSettings(){
 }
 
 function markActivePreset(name){
-  document.querySelectorAll('.theme-preset').forEach(b=>b.classList.remove('tp-active'));
+  document.querySelectorAll('.theme-preset,.theme-card').forEach(b=>b.classList.remove('active','tp-active'));
   const btn=document.getElementById('tp-'+name);
-  if(btn) btn.classList.add('tp-active');
+  if(btn) btn.classList.add('active');
 }
 
 // Init on load
@@ -3368,6 +3552,10 @@ function _syncRetry(missing, originalTotal, sheetCount) {
 /* ── loadFromSheets: pull-only on startup ───────────────────────────────── */
 function normalizeCall(sc){
   if(!(sc.ts instanceof Date)) sc.ts = sc.ts ? new Date(sc.ts) : new Date();
+  // Backfill fuType — legacy calls with a cbTime are Callbacks
+  if(!sc.fuType && sc.cbTime) sc.fuType = 'Callback';
+  // Normalize cbDone — Sheets may return string 'true'/'false'
+  if(typeof sc.cbDone === 'string') sc.cbDone = sc.cbDone === 'true';
   // Normalize sched to YYYY-MM-DD — Sheets may return M/D/YYYY or other formats
   if(sc.sched && typeof sc.sched === 'string' && sc.sched.trim()){
     const raw = sc.sched.trim();
@@ -3553,7 +3741,11 @@ function switchTab(tab){
   });
   if(tab==='trends') renderTrends();
   if(tab==='disputes') buildReconFiscalOptions();
-  if(tab==='callbacks') renderCallbacksTab();
+  if(tab==='callbacks'){
+    var tr=document.getElementById('cb-type-filter-row');
+    if(tr) delete tr.dataset.rendered;
+    renderCallbacksTab();
+  }
 }
 
 /* ── Trends charts ── */
@@ -3907,7 +4099,15 @@ function downloadReconCSV(){
 
 function openCallFromAlert(id){
   document.getElementById('alert-bar').classList.remove('visible');
-  openEdit(id,true);
+  switchTab('callbacks');
+  // After tab renders, scroll to the card for this call
+  setTimeout(function(){
+    var card = document.getElementById('cbcard-btns-'+id);
+    if(card){
+      var el = card.closest('[style*="border-radius:12px"]');
+      if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.outline='2px solid var(--amber)'; setTimeout(function(){ el.style.outline=''; },2000); }
+    }
+  }, 150);
 }
 
 /* ── Import Previous Tracker (Sheet11 column mapping) ──────────────────────
@@ -4945,6 +5145,7 @@ function cbSetAndClose(){
 
 function updateCbDisplay(){
   const disp = document.getElementById('cb-display');
+  const typeEl = document.getElementById('cb-display-type');
   const timeEl = document.getElementById('cb-display-time');
   const subEl = document.getElementById('cb-display-sub');
   if(!disp) return;
@@ -4952,8 +5153,22 @@ function updateCbDisplay(){
     disp.style.display = 'none';
     return;
   }
+  const fuType = (document.getElementById('f-fu-type')&&document.getElementById('f-fu-type').value)||'Callback';
+  const fuTypeIcons={Callback:'📞',Collections:'💰',Construction:'🏗',Exception:'⚠'};
+  if(typeEl) typeEl.textContent = (fuTypeIcons[fuType]||'') + ' ' + fuType;
   const dt = document.getElementById('f-cb-dt').value;
-  if(!dt){ disp.style.display='none'; return; }
+  if(!dt){
+    // For non-Callback types with no time, still show the type
+    if(fuType !== 'Callback'){
+      if(timeEl) timeEl.textContent = fuType;
+      if(subEl)  subEl.textContent  = 'Follow-Up flagged';
+      disp.style.display = 'flex';
+      setTimeout(fitPlayDisplay, 0);
+    } else {
+      disp.style.display='none';
+    }
+    return;
+  }
   const d = new Date(dt);
   const timeStr = d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
   const dateStr = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
@@ -4961,7 +5176,6 @@ function updateCbDisplay(){
   if(subEl)  subEl.textContent  = dateStr;
   disp.style.display = 'flex';
   setTimeout(fitPlayDisplay, 0);
-  // Show cb-display alongside play or alone
   const playDisp = document.getElementById('play-display');
   const saleDisp = document.getElementById('sale-display');
   if(saleDisp) saleDisp.style.flexDirection = 'column';
@@ -5018,7 +5232,7 @@ function renderFpPreview(){
 
   const cbHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:100%">
-      <div style="font-family:${ff};font-size:9px;font-weight:700;color:${purple};letter-spacing:.12em;text-transform:uppercase;opacity:.8">Call Back</div>
+      <div style="font-family:${ff};font-size:9px;font-weight:700;color:${purple};letter-spacing:.12em;text-transform:uppercase;opacity:.8">Follow-Up</div>
       <div id="fp-prev-time" style="font-family:${ff};font-size:16px;font-weight:700;color:${purple};letter-spacing:.06em;white-space:nowrap">2:30 PM</div>
       <div style="font-family:${ff};font-size:9px;color:${purple};letter-spacing:.08em;opacity:.55">Thu, Mar 21</div>
     </div>`;
@@ -6287,19 +6501,40 @@ document.addEventListener('keydown', function(e){
   }
 });
 
+// ── Follow-Ups filter state ───────────────────────────────────────────────
+var _cbTabFilter = 'open';
+var _cbTypeFilter = 'all'; // 'all' | 'Callback' | 'Collections' | 'Construction' | 'Exception'
+
+function setCbTabFilter(f){
+  _cbTabFilter = f;
+  ['open','overdue','due-today','all'].forEach(function(k){
+    var b = document.getElementById('cbtf-'+k);
+    if(!b) return;
+    if(k===f){ b.style.background='var(--blue)'; b.style.color='#fff'; }
+    else { b.style.background='transparent'; b.style.color='var(--text3)'; }
+  });
+  renderCallbacksTab();
+}
+
+function setCbTypeFilter(t){
+  _cbTypeFilter = t;
+  document.querySelectorAll('.fu-type-chip').forEach(function(el){
+    el.classList.toggle('active', el.dataset.type===t);
+  });
+  renderCallbacksTab();
+}
+
 function renderCallbacksTab(){
-  var filter = (document.getElementById('cb-tab-filter')||{}).value||'open';
+  var filter = _cbTabFilter || 'open';
   var now = new Date();
   var todayStr = now.toDateString();
 
   function getCbStatus(c){
     if(c.cbDone) return 'done';
-    if(!c.cbTime || c.cbTime === '') return 'unknown';
+    // Non-timed follow-ups are always 'pending'
+    if(!c.cbTime || c.cbTime === '') return c.fuType ? 'pending' : 'unknown';
     var t = new Date(c.cbTime);
-    if(isNaN(t)){
-      // Try parsing as datetime-local format YYYY-MM-DDTHH:MM
-      t = new Date(c.cbTime.replace(' ','T'));
-    }
+    if(isNaN(t)) t = new Date(c.cbTime.replace(' ','T'));
     if(isNaN(t)) return 'unknown';
     var diff = (t - now)/60000;
     if(diff < 0) return 'overdue';
@@ -6308,17 +6543,17 @@ function renderCallbacksTab(){
     return 'pending';
   }
 
+  // Include any call that has a fuType set OR has a cbTime
   var cbCalls = calls.filter(function(c){
-    return c.cbTime && c.cbTime!=='' && c.cbTime!==null && c.cbTime!==undefined;
-  });
-  // Normalize cbDone — Sheets may return string 'true'/'false'
-  cbCalls.forEach(function(c){
-    if(typeof c.cbDone === 'string') c.cbDone = c.cbDone === 'true';
+    return (c.fuType && c.fuType !== '') || (c.cbTime && c.cbTime !== '');
   });
 
-  var filtered = cbCalls.filter(function(c){
+  // Apply type filter
+  var typeFiltered = _cbTypeFilter === 'all' ? cbCalls : cbCalls.filter(function(c){ return c.fuType === _cbTypeFilter; });
+
+  var filtered = typeFiltered.filter(function(c){
     var s = getCbStatus(c);
-    if(filter==='open') return s!=='done';
+    if(filter==='open') return s!=='done' && s!=='unknown';
     if(filter==='overdue') return s==='overdue';
     if(filter==='due-today') return s==='due-today'||s==='due-soon';
     if(filter==='due-soon') return s==='due-soon';
@@ -6329,49 +6564,73 @@ function renderCallbacksTab(){
     var order={overdue:0,'due-soon':1,'due-today':2,pending:3,done:4,unknown:5};
     var sa=getCbStatus(a),sb=getCbStatus(b);
     if(order[sa]!==order[sb]) return order[sa]-order[sb];
-    return new Date(a.cbTime)-new Date(b.cbTime);
+    return new Date(a.cbTime||0)-new Date(b.cbTime||0);
   });
 
-  // Summary
+  // Summary strip
   var counts={overdue:0,'due-soon':0,'due-today':0,pending:0,done:0};
-  cbCalls.forEach(function(c){ var s=getCbStatus(c); if(counts[s]!==undefined) counts[s]++; });
+  typeFiltered.forEach(function(c){ var s=getCbStatus(c); if(counts[s]!==undefined) counts[s]++; });
   var summEl=document.getElementById('cb-tab-summary');
   if(summEl){
-    var chips=[
-      {label:'Overdue', key:'overdue', color:'var(--red)'},
-      {label:'Due Soon', key:'due-soon', color:'var(--amber)'},
-      {label:'Due Today', key:'due-today', color:'var(--blue)'},
-      {label:'Pending', key:'pending', color:'var(--text2)'},
-      {label:'Done', key:'done', color:'var(--green)'},
+    var strips=[
+      {label:'Overdue', key:'overdue', color:'#f87171', bg:'rgba(248,113,113,.12)'},
+      {label:'Due Soon', key:'due-soon', color:'#f59e0b', bg:'rgba(245,158,11,.1)'},
+      {label:'Due Today', key:'due-today', color:'#38bdf8', bg:'rgba(56,189,248,.1)'},
+      {label:'Pending', key:'pending', color:'var(--text3)', bg:'transparent'},
+      {label:'Done', key:'done', color:'#22c55e', bg:'rgba(34,197,94,.1)'},
     ];
-    summEl.innerHTML='';
-    chips.forEach(function(s){
-      var d=document.createElement('div');
-      d.style.cssText='display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid currentColor;color:'+s.color+';opacity:.85';
-      d.innerHTML='<span>'+s.label+'</span><span style="font-family:var(--mono);font-weight:700">'+counts[s.key]+'</span>';
-      d.dataset.key=s.key;
-      d.onclick=function(){
-        var f=document.getElementById('cb-tab-filter');
-        if(f) f.value=this.dataset.key;
-        renderCallbacksTab();
-      };
-      summEl.appendChild(d);
+    summEl.innerHTML = strips.map(function(s){
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-right:1px solid var(--border);cursor:pointer;background:'+s.bg+';transition:filter .15s" onclick="setCbTabFilter(\''+s.key+'\')" title="Filter: '+s.label+'">'+
+        '<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:'+s.color+';line-height:1">'+counts[s.key]+'</div>'+
+        '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-top:2px">'+s.label+'</div>'+
+      '</div>';
+    }).join('')+'<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;cursor:pointer" onclick="setCbTabFilter(\'all\')" title="Show all">'+
+      '<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text2);line-height:1">'+typeFiltered.length+'</div>'+
+      '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-top:2px">Total</div>'+
+    '</div>';
+  }
+
+  // Type filter chips — render into cb-type-filter-row
+  var typeRow = document.getElementById('cb-type-filter-row');
+  if(typeRow && !typeRow.dataset.rendered){
+    typeRow.dataset.rendered = '1';
+    var types = [{key:'all',label:'All Types',icon:''},{key:'Callback',label:'Callback',icon:'📞'},{key:'Collections',label:'Collections',icon:'💰'},{key:'Construction',label:'Construction',icon:'🏗'},{key:'Exception',label:'Exception',icon:'⚠'}];
+    typeRow.innerHTML = types.map(function(t){
+      return '<button class="fu-type-chip'+((_cbTypeFilter===t.key)?' active':'')+'" data-type="'+t.key+'" onclick="setCbTypeFilter(\''+t.key+'\')">'+
+        (t.icon?t.icon+' ':'')+t.label+
+      '</button>';
+    }).join('');
+  } else if(typeRow) {
+    typeRow.querySelectorAll('.fu-type-chip').forEach(function(el){
+      el.classList.toggle('active', el.dataset.type===_cbTypeFilter);
     });
   }
+
+  // Subtitle
+  var sub = document.getElementById('cb-tab-subtitle');
+  if(sub) sub.textContent = filtered.length + ' follow-up' + (filtered.length!==1?'s':'') + (_cbTypeFilter!=='all'?' · '+_cbTypeFilter:'');
 
   var el=document.getElementById('cb-tab-cards');
   if(!el) return;
   if(!filtered.length){
-    el.innerHTML='<div style="text-align:center;padding:32px 0;color:var(--text3);font-size:13px">No call backs match this filter</div>';
+    el.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🔔</div><div>No follow-ups match this filter</div></div>';
     return;
   }
+
+  var fuTypeIcons={Callback:'📞',Collections:'💰',Construction:'🏗',Exception:'⚠'};
+  var fuTypeColors={
+    Callback: {color:'var(--purple)', bg:'var(--purple-lt)', border:'rgba(167,139,250,.3)'},
+    Collections: {color:'var(--green)', bg:'var(--green-lt)', border:'rgba(34,197,94,.3)'},
+    Construction: {color:'var(--amber)', bg:'var(--amber-lt)', border:'rgba(245,158,11,.3)'},
+    Exception: {color:'var(--red)', bg:'var(--red-lt)', border:'rgba(248,113,113,.3)'},
+  };
 
   el.innerHTML='';
   filtered.forEach(function(c){
     var status=getCbStatus(c);
     var cbDate=c.cbTime?new Date(c.cbTime):null;
     var cbFmt=cbDate&&!isNaN(cbDate)?
-      cbDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' '+
+      cbDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' at '+
       cbDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
     var diff=cbDate?(cbDate-now)/60000:null;
     var timeLeft='';
@@ -6379,113 +6638,177 @@ function renderCallbacksTab(){
     else if((status==='due-soon'||status==='due-today')&&diff!==null){ var m=Math.round(diff); timeLeft=m<60?'in '+m+'m':'in '+Math.floor(m/60)+'h '+(m%60)+'m'; }
 
     var sc={
-      overdue:   {bg:'rgba(248,113,113,.08)',border:'rgba(248,113,113,.4)', badge:'var(--red)',   label:'&#x26A0; Overdue'},
-      'due-soon':{bg:'rgba(245,158,11,.08)', border:'rgba(245,158,11,.4)', badge:'var(--amber)', label:'&#x1F514; Due Soon'},
-      'due-today':{bg:'rgba(59,130,246,.06)',border:'rgba(59,130,246,.3)', badge:'var(--blue)',  label:'&#x1F4C5; Due Today'},
-      pending:   {bg:'var(--card)',          border:'var(--border)',       badge:'var(--text3)', label:'&#x23F3; Pending'},
-      done:      {bg:'rgba(34,197,94,.05)',  border:'rgba(34,197,94,.2)', badge:'var(--green)', label:'&#x2713; Done'},
-      unknown:   {bg:'var(--card)',          border:'var(--border)',       badge:'var(--text3)', label:'&#x2014;'},
-    }[status]||{bg:'var(--card)',border:'var(--border)',badge:'var(--text3)',label:'?'};
+      overdue:   {accent:'var(--red)',   bg:'rgba(248,113,113,.06)',border:'rgba(248,113,113,.35)',strip:'#f87171',icon:'⚠',label:'Overdue'},
+      'due-soon':{accent:'var(--amber)', bg:'rgba(245,158,11,.06)', border:'rgba(245,158,11,.35)', strip:'#f59e0b',icon:'🔔',label:'Due Soon'},
+      'due-today':{accent:'var(--blue)', bg:'rgba(59,130,246,.05)', border:'rgba(59,130,246,.25)',strip:'#3b82f6',icon:'📅',label:'Due Today'},
+      pending:   {accent:'var(--text3)', bg:'var(--card)',           border:'var(--border)',       strip:'#475569',icon:'⏳',label:'Pending'},
+      done:      {accent:'var(--green)', bg:'rgba(34,197,94,.04)',   border:'rgba(34,197,94,.2)',  strip:'#22c55e',icon:'✓',label:'Done'},
+      unknown:   {accent:'var(--text3)', bg:'var(--card)',           border:'var(--border)',       strip:'#475569',icon:'—',label:'Unknown'},
+    }[status]||{accent:'var(--text3)',bg:'var(--card)',border:'var(--border)',strip:'#475569',icon:'?',label:'?'};
 
     var logDate=c.ts?c.ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
-    var svcs=[];
-    if(c.xm>0)svcs.push('XM x'+c.xm);
-    if(c.tv)svcs.push('TV');if(c.chsi)svcs.push('CHSI');if(c.cdv)svcs.push('CDV');if(c.xh)svcs.push('XH');
-    var svcStr=svcs.length?svcs.join(' \u00b7 '):(c.reason||'No Sale');
+    var fuType = c.fuType || 'Callback';
+    var ftc = fuTypeColors[fuType]||fuTypeColors.Callback;
 
     var card=document.createElement('div');
-    card.style.cssText='background:'+sc.bg+';border:1px solid '+sc.border+';border-radius:12px;padding:14px 16px';
+    card.style.cssText='background:'+sc.bg+';border:1px solid '+sc.border+';border-radius:12px;overflow:hidden;transition:box-shadow .15s';
 
-    var cbNum = filtered.indexOf(c) + 1;
-    var lbl9 = 'font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px';
+    var lbl='font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:3px';
     var inner=
-    '<div style="display:flex;gap:12px;align-items:stretch">'+
-      // LEFT: compact info stack
-      '<div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0">'+
-        // Row 1: # + status + time
+      '<div style="height:3px;background:'+sc.strip+';width:100%"></div>'+
+      '<div style="padding:12px 16px">'+
+        // ── Header row: type dropdown · status · time left · scheduled time ──
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">'+
+          '<div style="position:relative;display:inline-flex">'+
+            '<select onchange="updateFuType(\''+c.id+'\',this.value)" style="height:24px;padding:0 8px 0 6px;border-radius:6px;border:1px solid '+ftc.border+';background:'+ftc.bg+';color:'+ftc.color+';font-size:11px;font-weight:700;cursor:pointer;outline:none;font-family:var(--sans)">'+
+              ['Callback','Collections','Construction','Exception'].map(function(t){ return '<option value="'+t+'"'+(fuType===t?' selected':'')+'>'+fuTypeIcons[t]+' '+t+'</option>'; }).join('')+
+            '</select>'+
+          '</div>'+
+          '<span style="font-size:12px;font-weight:700;color:'+sc.accent+'">'+sc.icon+' '+sc.label+'</span>'+
+          (timeLeft?'<span style="font-size:11px;font-weight:600;color:'+sc.accent+';background:'+sc.bg+';border:1px solid '+sc.border+';padding:1px 8px;border-radius:20px">'+timeLeft+'</span>':'')+
+          '<div style="margin-left:auto;font-size:11px;font-weight:600;color:var(--text);font-family:var(--mono)">'+cbFmt+'</div>'+
+        '</div>'+
+        // ── Info + Notes row ──
+        '<div style="display:flex;gap:12px;margin-bottom:10px">'+
+          // Left: 2-col stack (no Logged here — moved to footer)
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;flex:0 0 auto;min-width:0;width:260px">'+
+            '<div><div style="'+lbl+'">Customer</div><div style="font-size:12px;font-weight:600;color:var(--text)">'+(c.cbName||'—')+'</div></div>'+
+            '<div><div style="'+lbl+'">Phone</div><div onclick="copyToClip((\''+( c.cbPhone||'').replace(/'/g,"\\'")+'\').replace(/\\D/g,\'\'),\'Phone\')" title="Click to copy" style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--text);cursor:pointer;user-select:none" data-copy="phone">'+(c.cbPhone?fmtPhone(c.cbPhone):'—')+'</div></div>'+
+            '<div><div style="'+lbl+'">Account #</div><div onclick="copyToClip(\''+( c.acctRaw||'').replace(/'/g,"\\'")+'\',' +'\'Account #\')" title="Click to copy" style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--blue);cursor:pointer;user-select:none">'+(c.acctRaw?maskAcct(c.acctRaw):'—')+'</div></div>'+
+          '</div>'+
+          // Right: Call Notes
+          '<div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">'+
+            '<div style="display:flex;align-items:center;justify-content:space-between">'+
+              '<div style="display:flex;align-items:center;gap:6px">'+
+                '<div style="'+lbl+'margin-bottom:0">Call Notes</div>'+
+                '<div style="font-size:9px;color:var(--text3);font-style:italic">edits update the call log</div>'+
+              '</div>'+
+              '<button id="cb-notes-save-'+c.id+'" onclick="saveFuNotes(\''+c.id+'\')" style="display:none;height:22px;padding:0 10px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:5px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">Save</button>'+
+            '</div>'+
+            '<textarea id="cb-notes-ta-'+c.id+'" oninput="onFuNotesInput(\''+c.id+'\')" style="flex:1;min-height:72px;width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:7px 10px;font-size:11px;font-family:var(--sans);color:var(--text2);line-height:1.5;resize:none;outline:none;transition:border-color .15s" placeholder="No notes on this call…"></textarea>'+
+          '</div>'+
+        '</div>'+
+        // ── Action buttons + logged footer ──
         '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
-          '<span style="font-size:11px;font-weight:800;color:var(--text3);font-family:var(--mono)">#'+cbNum+'</span>'+
-          '<span style="font-size:11px;font-weight:700;color:'+sc.badge+';padding:2px 8px;border-radius:20px;border:1px solid '+sc.border+'">'+sc.label+'</span>'+
-          (timeLeft?'<span style="font-size:11px;font-weight:600;color:'+sc.badge+'">'+timeLeft+'</span>':'')+
-          '<span style="font-size:10px;color:var(--text3);margin-left:auto;font-family:var(--mono)">'+cbFmt+'</span>'+
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;flex:1" id="cbcard-btns-'+c.id+'"></div>'+
+          '<div style="font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:auto;padding-left:8px">'+logDate+'</div>'+
         '</div>'+
-        // Row 2: Customer + Phone + Account
-        '<div style="display:flex;gap:14px;flex-wrap:wrap">'+
-          (c.cbName?'<div><div style="'+lbl9+'">Customer</div><div style="font-size:12px;font-weight:600;color:var(--text)">'+c.cbName+'</div></div>':'')+
-          (c.cbPhone?'<div><div style="'+lbl9+'">Phone</div><div style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--text)">'+c.cbPhone+'</div></div>':'')+
-          (c.acctRaw?'<div><div style="'+lbl9+'">Account</div><div style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--text2)">'+c.acctRaw+'</div></div>':'')+
-        '</div>'+
-        // Row 3: buttons
-        '<div style="display:flex;gap:6px;flex-wrap:wrap" id="cbcard-btns-'+c.id+'"></div>'+
-      '</div>'+
-      // RIGHT: notes — spans full height, editable inline
-      '<div style="width:260px;flex-shrink:0;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column">'+
-        '<div style="'+lbl9+';margin-bottom:4px">Notes</div>'+
-        '<textarea id="cb-notes-'+c.id+'" style="flex:1;min-height:70px;background:transparent;border:none;outline:none;resize:none;font-size:11px;color:var(--text2);line-height:1.6;font-family:var(--sans);width:100%;box-sizing:border-box" placeholder="No notes">'+( c.notes||'')+'</textarea>'+
-        '<div style="display:flex;justify-content:flex-end;margin-top:4px">'+
-          '<button id="cb-save-'+c.id+'" style="height:22px;padding:0 10px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:5px;font-size:10px;font-weight:600;color:var(--blue);cursor:pointer;display:none">Save</button>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
+      '</div>';
 
     card.innerHTML=inner;
 
-    // Buttons via DOM to avoid quote issues
-    // Wire save button
-    var saveBtn = card.querySelector('#cb-save-'+c.id);
-    if(saveBtn){
-      saveBtn.dataset.cbid = c.id;
-      saveBtn.onclick = function(){ saveCbCard(this.dataset.cbid); };
+    // Set notes value via JS (avoids HTML-injection / double-render if notes contains special chars)
+    var ta = card.querySelector('#cb-notes-ta-'+c.id);
+    if(ta){
+      ta.value = c.notes || '';
+      ta.addEventListener('focus', function(){ this.style.borderColor='var(--blue)'; });
+      ta.addEventListener('blur',  function(){ this.style.borderColor='var(--border2)'; });
     }
+
     var btns=card.querySelector('#cbcard-btns-'+c.id);
     if(status!=='done'){
-      // Mark Done button
       var doneBtn=document.createElement('button');
-      doneBtn.textContent='\u2713 Done';
-      doneBtn.style.cssText='height:26px;padding:0 12px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--green);cursor:pointer';
-      doneBtn.dataset.cbid = c.id;
-      doneBtn.onclick = function(){
-        var id = this.dataset.cbid;
-        markCbDone(id);
-        setTimeout(renderCallbacksTab, 300);
-        _showToast('\u2713 Marked done — click to undo', 'ok', 5000, function(){ undoCbDone(id); });
+      doneBtn.innerHTML='✓ Mark Done';
+      doneBtn.style.cssText='height:28px;padding:0 14px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;letter-spacing:.02em';
+      doneBtn.dataset.cbid=c.id;
+      doneBtn.onclick=function(){
+        var id=this.dataset.cbid;
+        markCbDone(id); window._lastCbDoneId=id;
+        setTimeout(renderCallbacksTab,300);
+        _showToast('✓ Marked done — click Undo to revert','ok',5000);
       };
       btns.appendChild(doneBtn);
 
-      // Sale Made button
-      var saleBtn=document.createElement('button');
-      saleBtn.textContent='\uD83D\uDCB0 Sale Made';
-      saleBtn.style.cssText='height:26px;padding:0 12px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--amber);cursor:pointer';
-      saleBtn.dataset.cbid = c.id;
-      saleBtn.onclick = function(){
-        var p = document.getElementById('cb-sale-'+this.dataset.cbid);
-        if(p) p.style.display = p.style.display==='flex' ? 'none' : 'flex';
-      };
-      btns.appendChild(saleBtn);
+      if(c.fuType==='Callback'||!c.fuType){
+        var saleBtn=document.createElement('button');
+        saleBtn.innerHTML='💰 Sale Made';
+        saleBtn.style.cssText='height:28px;padding:0 14px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--amber);cursor:pointer';
+        saleBtn.dataset.cbid=c.id;
+        saleBtn.onclick=function(){
+          var p=document.getElementById('cb-sale-'+this.dataset.cbid);
+          if(p) p.style.display=p.style.display==='flex'?'none':'flex';
+        };
+        btns.appendChild(saleBtn);
+      }
 
-      // Reschedule button
       var reschedBtn=document.createElement('button');
-      reschedBtn.textContent='\uD83D\uDD53 Reschedule';
-      reschedBtn.style.cssText='height:26px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
-      reschedBtn.dataset.cbid = c.id;
-      reschedBtn.onclick = function(){
-        var row = document.getElementById('cb-resched-'+this.dataset.cbid);
-        if(row) row.style.display = row.style.display==='flex' ? 'none' : 'flex';
+      reschedBtn.innerHTML='🕒 Reschedule';
+      reschedBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
+      reschedBtn.dataset.cbid=c.id;
+      reschedBtn.onclick=function(){
+        var row=document.getElementById('cb-resched-'+this.dataset.cbid);
+        if(row) row.style.display=row.style.display==='flex'?'none':'flex';
       };
       btns.appendChild(reschedBtn);
+    } else {
+      // Done — show Mark Undone
+      var undoneBtn=document.createElement('button');
+      undoneBtn.innerHTML='↩ Mark Undone';
+      undoneBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
+      undoneBtn.dataset.cbid=c.id;
+      undoneBtn.onclick=function(){
+        undoCbDone(this.dataset.cbid);
+      };
+      btns.appendChild(undoneBtn);
     }
 
     if(c.cbPhone){
       var callBtn=document.createElement('button');
-      callBtn.textContent='\u{1F4DE} Call';
-      callBtn.style.cssText='height:26px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer';
-      callBtn.dataset.phone = c.cbPhone;
-      callBtn.onclick = function(){ window.open('tel:'+this.dataset.phone.replace(/\D/g,''),'_self'); };
+      callBtn.innerHTML='📞 Call';
+      callBtn.style.cssText='height:28px;padding:0 14px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer';
+      callBtn.dataset.phone=c.cbPhone;
+      callBtn.onclick=function(){ window.open('tel:'+this.dataset.phone.replace(/\D/g,''),'_self'); };
       btns.appendChild(callBtn);
     }
+
+    // ✎ Edit Log button — opens the call in the Tracker tab edit row
+    var editLogBtn=document.createElement('button');
+    editLogBtn.innerHTML='✎ Edit Log';
+    editLogBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
+    editLogBtn.dataset.cbid=c.id;
+    editLogBtn.onclick=function(){
+      switchTab('tracker');
+      setTimeout(function(){ openEdit(parseInt(this.dataset.cbid)); }.bind(this), 80);
+    };
+    btns.appendChild(editLogBtn);
+
+    // Reschedule panel
+    var reschedPanel=document.createElement('div');
+    reschedPanel.id='cb-resched-'+c.id;
+    reschedPanel.style.cssText='display:none;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:8px';
+    reschedPanel.innerHTML=
+      '<span style="font-size:11px;font-weight:600;color:var(--text2)">New time:</span>'+
+      '<input type="datetime-local" id="cb-resched-dt-'+c.id+'" style="height:30px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;flex:1;min-width:180px">'+
+      '<button onclick="saveCbResched(\''+c.id+'\')" style="height:30px;padding:0 14px;background:var(--purple);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Save</button>'+
+      '<button onclick="document.getElementById(\'cb-resched-'+c.id+'\').style.display=\'none\'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer">Cancel</button>';
+    card.querySelector('div[style*="padding:12px 16px"]').appendChild(reschedPanel);
+
+    // Sale panel — only for Callback type
+    if(c.fuType==='Callback'||!c.fuType){
+      var salePanel=document.createElement('div');
+      salePanel.id='cb-sale-'+c.id;
+      salePanel.style.cssText='display:none;flex-direction:column;gap:10px;margin-top:10px;padding:12px 14px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:8px';
+      salePanel.innerHTML=
+        '<div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:.05em;text-transform:uppercase">Record Sale</div>'+
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">'+
+          '<div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Revenue ($)</label><input type="number" id="cb-sale-rev-'+c.id+'" min="0" step="1" placeholder="0" style="width:90px;height:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none"></div>'+
+          '<div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">XM Lines</label><input type="number" id="cb-sale-xm-'+c.id+'" min="0" step="1" placeholder="0" style="width:70px;height:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none"></div>'+
+          '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+
+            '<label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer"><input type="checkbox" id="cb-sale-tv-'+c.id+'" style="accent-color:var(--blue)"> TV</label>'+
+            '<label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer"><input type="checkbox" id="cb-sale-chsi-'+c.id+'" style="accent-color:var(--blue)"> CHSI</label>'+
+            '<label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer"><input type="checkbox" id="cb-sale-cdv-'+c.id+'" style="accent-color:var(--blue)"> CDV</label>'+
+            '<label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer"><input type="checkbox" id="cb-sale-xh-'+c.id+'" style="accent-color:var(--blue)"> XH</label>'+
+          '</div>'+
+          '<button onclick="saveCbSale(\''+c.id+'\')" style="height:30px;padding:0 16px;background:var(--amber);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap">💰 Save Sale</button>'+
+          '<button onclick="document.getElementById(\'cb-sale-'+c.id+'\').style.display=\'none\'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer">Cancel</button>'+
+        '</div>';
+      card.querySelector('div[style*="padding:12px 16px"]').appendChild(salePanel);
+    }
+
     el.appendChild(card);
   });
 }
+
 
 function undoCbDone(id){
   var c = calls.find(function(x){ return String(x.id)===String(id); });
@@ -6497,10 +6820,41 @@ function undoCbDone(id){
   setTimeout(renderCallbacksTab, 300);
 }
 
-function saveCbResched(id){
-  var inp = document.getElementById('cb-resched-dt-'+id);
-  if(!inp || !inp.value) return;
+function onFuNotesInput(id){
+  var btn = document.getElementById('cb-notes-save-'+id);
+  if(btn) btn.style.display = 'block';
+}
+
+function saveFuNotes(id){
+  id = String(id);
+  var c = calls.find(function(x){ return String(x.id)===id; });
+  if(!c) return;
+  var ta = document.getElementById('cb-notes-ta-'+id);
+  if(ta) c.notes = ta.value;
+  saveCallsCache();
+  upsertCallToSheets(c);
+  // Keep call log table in sync
+  render();
+  var btn = document.getElementById('cb-notes-save-'+id);
+  if(btn){ btn.textContent='Saved ✓'; setTimeout(function(){ btn.style.display='none'; btn.textContent='Save'; }, 1200); }
+  _showToast('✓ Notes saved', 'ok', 1500);
+}
+
+function updateFuType(id, newType){
   var c = calls.find(function(x){ return String(x.id)===String(id); });
+  if(!c) return;
+  c.fuType = newType;
+  saveCallsCache();
+  upsertCallToSheets(c);
+  // Re-render after a tick so the select change finishes
+  setTimeout(renderCallbacksTab, 50);
+}
+
+function saveCbResched(id){
+  id = String(id);
+  var inp = document.getElementById('cb-resched-dt-'+id);
+  if(!inp || !inp.value) { _showToast('Pick a date & time first', 'warn', 2000); return; }
+  var c = calls.find(function(x){ return String(x.id)===id; });
   if(!c) return;
   c.cbTime = inp.value;
   c.cbDone = false; // re-open if it was marked done
@@ -6534,7 +6888,8 @@ function saveCbCard(id){
 }
 
 function saveCbSale(id){
-  var c = calls.find(function(x){ return String(x.id)===String(id); });
+  id = String(id);
+  var c = calls.find(function(x){ return String(x.id)===id; });
   if(!c) return;
   var rev  = parseFloat((document.getElementById('cb-sale-rev-'+id)||{}).value)||0;
   var xm   = parseInt((document.getElementById('cb-sale-xm-'+id)||{}).value)||0;
@@ -6545,11 +6900,15 @@ function saveCbSale(id){
   c.baseRev = rev; c.rev = rev + (xm * 45);
   c.xm=xm; c.tv=tv; c.chsi=chsi; c.cdv=cdv; c.xh=xh;
   c.cbDone = true;
+  // Set scheduled install date to today — the day the sale was closed on callback
+  var now = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  c.sched = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
   compute(c);
   saveCallsCache();
   upsertCallToSheets(c);
   updateStats();
-  _showToast('\uD83D\uDCB0 Sale recorded!', 'ok', 2500);
+  _showToast('💰 Sale recorded! Sched date set to today ('+c.sched+')', 'ok', 3000);
   setTimeout(renderCallbacksTab, 300);
 }
 
@@ -6781,6 +7140,20 @@ function rguFillLog(){
   toggleRgu();
   if(_activeTab !== 'tracker') switchTab('tracker');
   _showToast('\u2713 RGU selections applied to log', 'ok', 2500);
+}
+
+function copyToClip(text, label){
+  if(!text||text==='—') return;
+  var msg = label ? '✓ '+label+' copied' : '✓ Copied';
+  navigator.clipboard.writeText(text).then(function(){
+    _showToast(msg,'ok',1500);
+  }).catch(function(){
+    var ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+    _showToast(msg,'ok',1500);
+  });
 }
 
 function maskAcct(acct){
@@ -7055,21 +7428,31 @@ function launchFireworks(isXm,isTest){
 
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" data-tip="Back to top" style="font-size:16px;font-weight:900;line-height:1">▲</button>
 <div id="cb-panel">
-  <div class="cb-panel-title">Schedule Call Back</div>
-  <div class="cb-quick-btns">
+  <div class="cb-panel-title">Add Follow-Up</div>
+  <!-- Follow-Up Type -->
+  <div style="display:flex;flex-direction:column;gap:4px">
+    <label style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Type</label>
+    <select id="f-fu-type" onchange="onFuTypeChange()" style="height:32px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text);outline:none;cursor:pointer">
+      <option value="Callback">📞 Callback</option>
+      <option value="Collections">💰 Collections</option>
+      <option value="Construction">🏗 Construction</option>
+      <option value="Exception">⚠ Exception</option>
+    </select>
+  </div>
+  <!-- Quick time offsets — shown for Callback only -->
+  <div class="cb-quick-btns" id="cb-quick-wrap">
     <div class="cb-quick-btn" onclick="cbSetOffset(30)">+30 min</div>
     <div class="cb-quick-btn" onclick="cbSetOffset(60)">+1 hr</div>
     <div class="cb-quick-btn" onclick="cbSetOffset(120)">+2 hr</div>
     <div class="cb-quick-btn" onclick="cbSetOffset(1440)">Tomorrow</div>
   </div>
-  <div class="cb-dt-row">
-    <label>Date &amp; Time</label>
+  <div class="cb-dt-row" id="cb-dt-wrap">
+    <label id="cb-dt-label">Date &amp; Time <span id="cb-dt-req" style="color:var(--purple);font-size:9px">(required)</span></label>
     <input type="datetime-local" class="cb-dt" id="f-cb-dt" oninput="cbUpdateMyTime()">
   </div>
-  <div class="cb-tz-row">
+  <div class="cb-tz-row" id="cb-tz-wrap">
     <label style="line-height:1.3">Customer<br>Timezone</label>
     <select id="cb-tz" onchange="cbUpdateMyTime()" style="width:130px;flex-shrink:0">
-
       <option value="America/New_York">Eastern (ET)</option>
       <option value="America/Chicago">Central (CT)</option>
       <option value="America/Denver">Mountain (MT)</option>
