@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Xfinity Call Logger v0.03.22.102</title>
+<title>Xfinity Call Logger v0.3.31.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -25,7 +25,7 @@
   --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
   --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;min-width:720px;max-width:720px;margin:0 auto;position:relative}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;min-width:720px;max-width:900px;margin:0 auto;position:relative}
 .header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-logo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--blue) 0%,#6366f1 100%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;font-family:var(--mono)}
@@ -800,6 +800,14 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 #rgu-panel .rp-pill.active-xh{background:rgba(20,184,166,.12);color:rgb(20,184,166);border-color:rgba(20,184,166,.4)}
 #rgu-panel .rp-section-body{gap:9px}
 
+
+#celeb-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99999;opacity:0;transition:opacity .3s}
+#celeb-canvas.active{opacity:1}
+#celeb-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:100000;pointer-events:none;
+  border-radius:16px;padding:18px 36px;font-size:28px;font-weight:800;color:#fff;letter-spacing:.06em;
+  text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.5);transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .4s;opacity:0;white-space:nowrap}
+#celeb-banner.active{transform:translate(-50%,-50%) scale(1);opacity:1}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Russo+One&family=Rajdhani:wght@700&family=Exo+2:wght@700&family=Bebas+Neue&family=Righteous&family=Boogaloo&family=Black+Ops+One&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -808,7 +816,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.03.22.102</div>
+    <div class="version-chip">v0.3.31.1</div>
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
     <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
@@ -857,6 +865,28 @@ Goals shown for your type+cap level">…</div>
           onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'"
           onchange="saveSalesId(this.value.trim().toUpperCase())" data-tip="Your Sales Sales ID — tagged on all logged calls">
         <span id="s-sales-id-status" style="font-size:10px;color:var(--text3)"></span>
+      </div>
+      <!-- Sale Celebration -->
+      <div class="disp-section" style="margin-bottom:8px">
+        <div class="disp-section-hdr" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.disp-section-chevron').classList.toggle('open')">
+          <span class="disp-section-hdr-title">🎉 Sale Celebration</span>
+          <span class="disp-section-chevron">▾</span>
+        </div>
+        <div class="disp-section-body open">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <label style="font-size:11px;font-weight:600;color:var(--text2);min-width:60px">Type</label>
+            <select id="s-celebration" style="height:28px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-size:11px;color:var(--text2);outline:none;cursor:pointer;flex:1" onchange="saveCelebSetting(this.value)">
+              <option value="fireworks">🎆 Fireworks</option>
+              <option value="confetti">🎊 Confetti</option>
+              <option value="bubbles">🫧 Bubbles</option>
+              <option value="stars">⭐ Stars</option>
+              <option value="rain">💰 Money Rain</option>
+              <option value="off">Off</option>
+            </select>
+            <button onclick="testCelebration()" style="height:28px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer">▶ Test</button>
+          </div>
+          <div id="celeb-sliders" style="display:flex;flex-direction:column;gap:7px;margin-top:4px"></div>
+        </div>
       </div>
       <!-- Theme -->
       <div class="disp-section" style="margin-top:10px">
@@ -1290,7 +1320,7 @@ Goals shown for your type+cap level">…</div>
   <div class="stats-row daily">
     <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-green" id="d-rev">$0</div><div class="stat-sub" id="d-rev-sub">—</div></div>
     <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-green" id="d-rgus">0</div><div class="stat-sub" id="d-rgus-sub">—</div></div>
-    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="d-xm">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="d-xm">0</div><div class="stat-sub" id="d-xm-sub">need 2/day</div></div>
     <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="d-tv">0</div><div class="stat-sub">today</div></div>
     <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="d-chsi">0</div><div class="stat-sub" id="d-chsi-sub">today</div></div>
     <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="d-cdv">0</div><div class="stat-sub">today</div></div>
@@ -1303,7 +1333,7 @@ Goals shown for your type+cap level">…</div>
 </div>
 <div class="main">
   <div class="form-card" id="new-call-form-card">
-    <div class="form-header"><div class="form-header-title">Log New Call</div></div>
+    <div class="form-header"><div class="form-header-title">Log New Call</div><button onclick="resetForm()" style="height:22px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:5px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer;letter-spacing:.04em">✕ Clear</button></div>
     <div class="form-body">
       <!-- ── Row 1: XM · IE/BULK · TV/CHSI/CDV/XH │ No Sale / Play ── -->
       <div class="form-row-center">
@@ -1698,6 +1728,40 @@ Sets follow-up time and logs CB details">📞</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+// Per-type slider definitions
+var CELEB_SLIDERS = {
+  fireworks: [
+    {id:'count',  label:'Count',  min:20,  max:2000, step:20,  def:100},
+    {id:'speed',  label:'Speed',  min:1,   max:30,   step:1,   def:5},
+    {id:'size',   label:'Size',   min:1,   max:30,   step:1,   def:5},
+    {id:'spread', label:'Spread', min:1,   max:20,   step:1,   def:5}
+  ],
+  confetti: [
+    {id:'count',     label:'Count',      min:20,  max:1000, step:20,  def:180},
+    {id:'fallspeed', label:'Fall Speed', min:1,   max:30,   step:1,   def:5},
+    {id:'size',      label:'Size',       min:1,   max:30,   step:1,   def:5},
+    {id:'swayspeed', label:'Sway Speed', min:1,   max:30,   step:1,   def:5},
+    {id:'length',    label:'Length',     min:1,   max:100,  step:1,   def:5}
+  ],
+  bubbles: [
+    {id:'count',   label:'Count',      min:10,  max:500,  step:10,  def:50},
+    {id:'rise',    label:'Rise Speed', min:1,   max:30,   step:1,   def:5},
+    {id:'size',    label:'Bubble Size',min:1,   max:40,   step:1,   def:5},
+    {id:'wobble',  label:'Wobble',     min:1,   max:20,   step:1,   def:5}
+  ],
+  stars: [
+    {id:'count',  label:'Count',  min:20,  max:1500, step:20,  def:70},
+    {id:'speed',  label:'Speed',  min:1,   max:30,   step:1,   def:5},
+    {id:'size',   label:'Size',   min:1,   max:30,   step:1,   def:5},
+    {id:'spread', label:'Spread', min:1,   max:20,   step:1,   def:5}
+  ],
+  rain: [
+    {id:'count',     label:'Count',       min:10,  max:1000, step:10,  def:50},
+    {id:'fallspeed', label:'Fall Speed',  min:1,   max:30,   step:1,   def:5},
+    {id:'size',      label:'Symbol Size', min:1,   max:40,   step:1,   def:5}
+  ]
+};
+
 const GOALS={rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2};
 const CB={rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0};
 const TOKENS = ['🎩','🚂','🐶','🐱','⚓','👞','🚗','💎','🎲','⭐','🔥','⚡','🏆','👑','🦊','🐸','🍀','🌟','🪙','🎯'];
@@ -2090,13 +2154,16 @@ function doLogCall(){
   const cbName=document.getElementById('f-cb-name').value.trim();const cbPhone=document.getElementById('f-cb-phone').value.trim();const cbTime=(document.getElementById('f-cb-dt')&&document.getElementById('f-cb-dt').value)||'';const raw=document.getElementById('f-acct').value.trim();
   const c=compute({id:Date.now(),ts:new Date(),acct:buildAcct(raw,cbName,cbPhone),acctRaw:raw,cbName,cbPhone,cbTime,cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
-  calls.unshift(c);render();updateStats();resetForm();checkAlerts();upsertCallToSheets(c);
+  calls.unshift(c);render();updateStats();checkAlerts();upsertCallToSheets(c);
   if(typeof rguReset==='function') rguReset();
+  var _wasSale=isSale(); var _wasXm=xmVal>0;
   // Register current fiscal month in localStorage so it shows in history even without goals
   const _fk = 'xcl_goals_' + getFiscalMonth().replace(' ','');
   if(!localStorage.getItem(_fk)) localStorage.setItem(_fk, JSON.stringify({registeredAt: Date.now()}));
   buildFiscalHistoryDropdown();
   const btn=document.getElementById('submit-btn');btn.classList.add('ok');btn.innerHTML='<div class="btn-dot"></div>Logged!';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<div class="btn-dot"></div>Log Call';},800);
+  resetForm();
+  if(_wasSale) setTimeout(function(){ launchFireworks(_wasXm); },150);
 }
 function resetForm(){
   ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
@@ -2462,6 +2529,8 @@ function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d
 function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=fi.fiscalEnd;const ne=new Date(ns.getFullYear(),ns.getMonth()+1,22);return{fiscalStart:ns,fiscalEnd:ne};}
 function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<nf.fiscalEnd;}
 function updateStats(){
+  setTimeout(updateWindowTitle,0);
+  setTimeout(updateWindowTitle, 0);
   // ── Load goals for the active fiscal period ─────────────────────────────
   const activeFi   = getActiveFiscalInfo();
   const activeKey  = getFiscalKey(_userCallType, _userCapLevel,
@@ -2559,14 +2628,36 @@ function updateStats(){
   const dN    = td.length;
   const dSales= td.filter(c => c.hasSale).length;
 
+  // ── Calculate remaining work days in fiscal period ───────────────────────
+  const fi = getActiveFiscalInfo();
+  const nowD = new Date(); nowD.setHours(0,0,0,0);
+  const wd = Array.isArray(window._workDays) && window._workDays.length ? window._workDays : [1,2,3,4,5];
+  let remainingWorkDays = 0;
+  for(let d = new Date(nowD); d < fi.fiscalEnd; d.setDate(d.getDate()+1)){
+    if(wd.includes(d.getDay())) remainingWorkDays++;
+  }
+  // Daily targets needed from today to hit monthly goals
+  const dNeedRev  = remainingWorkDays > 0 ? Math.max(0, GOALS.rev  - mRev)  / remainingWorkDays : 0;
+  const dNeedChsi = remainingWorkDays > 0 ? Math.max(0, GOALS.chsi - mChsi) / remainingWorkDays : 0;
+  const dNeedRgus = remainingWorkDays > 0 ? Math.max(0, RGU_GOAL() - mRgus) / remainingWorkDays : 0;
+
   document.getElementById('d-rev').textContent = fmtMoney(dRev);
-  document.getElementById('d-rev-sub').textContent = dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'no sales yet';
+  document.getElementById('d-rev-sub').textContent = remainingWorkDays > 0
+    ? 'need $' + Math.ceil(dNeedRev) + '/day · ' + remainingWorkDays + 'd left'
+    : (dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'no sales yet');
   document.getElementById('d-rgus').textContent = fmtR(dRgus);
-  document.getElementById('d-rgus-sub').textContent = dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—';
+  document.getElementById('d-rgus-sub').textContent = remainingWorkDays > 0 && dNeedRgus > 0
+    ? 'need ' + Math.ceil(dNeedRgus) + '/day'
+    : (dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—');
   document.getElementById('d-xm').textContent  = dXm;
+  const dNeedXm = remainingWorkDays > 0 ? Math.max(2, Math.ceil(Math.max(0, GOALS.xm - mXm) / remainingWorkDays)) : 2;
+  const dXmSub = document.getElementById('d-xm-sub');
+  if(dXmSub) dXmSub.textContent = 'need ' + dNeedXm + '/day';
   document.getElementById('d-tv').textContent  = dTv;
   document.getElementById('d-chsi').textContent = fmtR(dChsi);
-  document.getElementById('d-chsi-sub').textContent = 'today';
+  document.getElementById('d-chsi-sub').textContent = remainingWorkDays > 0 && dNeedChsi > 0
+    ? 'need ' + Math.ceil(dNeedChsi) + '/day'
+    : 'today';
   document.getElementById('d-cdv').textContent = dCdv;
   document.getElementById('d-xh').textContent  = dXh;
   document.getElementById('d-calls').textContent = dN;
@@ -2693,11 +2784,11 @@ function toggleSettings(){
   const p=document.getElementById('settings-panel');
   const ov=document.getElementById('settings-overlay');
   const opening=!p.classList.contains('open');
-  if(!opening) saveSettings(); // auto-save on close
+  if(!opening){ nsCommitEditorToCats(); saveSettings(); } // commit outcomes then save on close
   p.classList.toggle('open');
   if(ov) ov.style.display=opening?'block':'none';
   if(opening){
-    const s=loadSettings();
+    const s=loadSettings(); loadCelebSetting();
     document.getElementById('s-rev').value=s.rev;
     document.getElementById('s-xm').value=s.xm;
     document.getElementById('s-tv').value=s.tv;
@@ -2885,7 +2976,7 @@ function markActivePreset(name){
 
 // Init on load
 (function(){
-  const s=loadSettings();
+  const s=loadSettings(); loadCelebSetting();
   applySettings(s);
   // refresh fiscal label at midnight
   function msToMidnight(){const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);return m-n;}
@@ -3205,6 +3296,7 @@ function _syncVerify(expectedTotal, pushFailed) {
         calls.sort(function(a, b) { return new Date(b.ts) - new Date(a.ts); });
         render(); updateStats(); buildFilterOptions(); saveCallsCache(); buildFiscalHistoryDropdown();
   if(_activeTab==='callbacks') renderCallbacksTab();
+  updateWindowTitle();
         setTimeout(_syncHide, 4000);
       } else {
         // Some calls didn't land — retry the missing ones
@@ -6563,6 +6655,7 @@ function calcRgu(){
   var tvOther= 0;
   var cdvEl = document.getElementById('rgu-cdv-inp'); _rguCdv = cdvEl ? cdvEl.checked : _rguCdv;
   var cdv    = _rguCdv ? 40 : 0;
+  var modem  = (document.getElementById('rgu-modem')||{}).checked ? 15 : 0;
   var xh = ((document.getElementById('rgu-xh-sp')||{}).checked?10:0) + ((document.getElementById('rgu-xh-sh')||{}).checked?55:0);
   var xm     = _rguXm * 45;
 
@@ -6570,18 +6663,17 @@ function calcRgu(){
 
   var tvTotal  = tv + tvAddon + ent + fam + (tvBoxes * 14) + hbo + starz + para + anc1 + anc2 + tvOther;
   var discount = 0; // APPB discount applied directly to CHSI tier
-  var total    = chsi + ie + tvTotal + cdv + xh + xm;
+  var total    = chsi + ie + tvTotal + cdv + modem + xh + xm;
 
   // Breakdown
   var parts = [];
-  if(chsiRaw) parts.push('CHSI $'+chsi.toFixed(2)+(appb&&!chsiIsIE?' (APPB)':''));
+  if(chsiRaw) parts.push('CHSI $'+chsi.toFixed(2));
 
   if(tvTotal) parts.push('TV $'+tvTotal.toFixed(2));
   if(cdv)     parts.push('CDV $'+cdv.toFixed(2));
   if(xh)      parts.push('XH $'+xh.toFixed(2));
   if(xm)      parts.push('XM $'+xm.toFixed(2));
-  if(appb)    parts.push('APPB -$10.00');
-
+  
   var xmSub = document.getElementById('rgu-xm-subtotal');
   if(xmSub) xmSub.textContent = '$'+(xm).toFixed(0);
   document.getElementById('rgu-total').textContent = '$'+total.toFixed(2);
@@ -6607,7 +6699,7 @@ function rguReset(){
       if(i===0) p.classList.add(id.includes('tv')?'active-tv':id.includes('xh')?'active-xh':'active');
     });
   });
-  ['rgu-xh-sp','rgu-xh-sh','rgu-cdv-inp','rgu-ent','rgu-fam','rgu-hbo','rgu-starz','rgu-para','rgu-anc1','rgu-anc2','rgu-other','rgu-appb'].forEach(function(id){
+  ['rgu-xh-sp','rgu-xh-sh','rgu-cdv-inp','rgu-modem','rgu-ent','rgu-fam','rgu-hbo','rgu-starz','rgu-para','rgu-anc1','rgu-anc2','rgu-other','rgu-appb'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.checked=false;
   });
   ['rgu-anc1-val','rgu-anc2-val','rgu-tv-other'].forEach(function(id){
@@ -6727,6 +6819,236 @@ function pwaInstall(){
   _pwaPrompt.userChoice.then(function(r){
     if(r.outcome === 'accepted') _pwaPrompt = null;
   });
+}
+
+// ── Dynamic window title ──────────────────────────────────────────────────
+function updateWindowTitle(){
+  try {
+    var now = new Date();
+    var fi = getActiveFiscalInfo();
+    var todayCalls = calls.filter(function(c){
+      var d = new Date(c.ts);
+      return d.toDateString() === now.toDateString() && inActiveFiscalTs(c.ts);
+    });
+    var totalCalls   = todayCalls.length;
+    var chsiCalls    = todayCalls.filter(function(c){ return c.chsi; }).length;
+    var chsiClose    = totalCalls ? Math.round(chsiCalls/totalCalls*100) : 0;
+    var xmSales      = todayCalls.reduce(function(s,c){ return s+(c.xm||0); }, 0);
+    var rev          = todayCalls.reduce(function(s,c){ return s+(c.rev||0); }, 0);
+    var parts = [
+      totalCalls + (totalCalls===1?' call':' calls'),
+      'CHSI ' + chsiCalls + ' (' + chsiClose + '%)',
+      'XM ' + xmSales,
+      '$' + rev.toFixed(0)
+    ];
+    document.title = parts.join(' · ');
+  } catch(e) {
+    document.title = 'Xfinity Call Logger';
+  }
+}
+
+function updateWindowTitle(){
+  try {
+    var now = new Date();
+    var todayCalls = calls.filter(function(c){
+      return new Date(c.ts).toDateString()===now.toDateString() && inActiveFiscalTs(c.ts);
+    });
+    var totalCalls = todayCalls.length;
+    var chsiCalls  = todayCalls.filter(function(c){ return c.chsi; }).length;
+    var chsiClose  = totalCalls ? Math.round(chsiCalls/totalCalls*100) : 0;
+    var xmSales    = todayCalls.reduce(function(s,c){ return s+(c.xm||0); },0);
+    var rev        = todayCalls.reduce(function(s,c){ return s+(c.rev||0); },0);
+    document.title = totalCalls+' calls · CHSI '+chsiCalls+' ('+chsiClose+'%) · XM '+xmSales+' · $'+rev.toFixed(0);
+  } catch(e){ document.title='Xfinity Call Logger'; }
+}
+
+// ── Celebration Animations ────────────────────────────────────────────────
+var _celebAnim = null;
+var _celebParticles = [];
+function getCelebType(){ return localStorage.getItem('xcl_celebration')||'fireworks'; }
+
+
+function getCelebCfg(){
+  try{ return JSON.parse(localStorage.getItem('xcl_celeb_cfg')||'{}'); } catch(e){ return {}; }
+}
+
+function saveCelebSliders(){
+  var type = getCelebType();
+  var defs = CELEB_SLIDERS[type]||[];
+  var cfg = getCelebCfg();
+  if(!cfg[type]) cfg[type]={};
+  defs.forEach(function(s){
+    var el = document.getElementById('celeb-s-'+s.id);
+    if(el) cfg[type][s.id] = parseInt(el.value);
+  });
+  localStorage.setItem('xcl_celeb_cfg', JSON.stringify(cfg));
+}
+
+function getCelebVal(key, def){
+  var type = getCelebType();
+  var cfg = getCelebCfg();
+  return (cfg[type]&&cfg[type][key]!==undefined) ? cfg[type][key] : def;
+}
+
+function renderCelebSliders(){
+  var type = getCelebType();
+  var defs = CELEB_SLIDERS[type]||[];
+  var cfg = getCelebCfg();
+  var typeCfg = (cfg[type])||{};
+  var el = document.getElementById('celeb-sliders');
+  if(!el) return;
+  if(!defs.length){ el.innerHTML='<div style="font-size:11px;color:var(--text3);padding:4px 0">No settings for this type.</div>'; return; }
+  el.innerHTML = defs.map(function(s){
+    var val = typeCfg[s.id]!==undefined ? typeCfg[s.id] : s.def;
+    return '<div style="display:flex;align-items:center;gap:10px">'+
+      '<label style="font-size:11px;color:var(--text3);min-width:90px">'+s.label+'</label>'+
+      '<input type="range" id="celeb-s-'+s.id+'" min="'+s.min+'" max="'+s.max+'" step="'+s.step+'" value="'+val+'" '+
+        'data-vid="celeb-v-'+s.id+'" '+
+        'oninput="saveCelebSliders();document.getElementById(this.dataset.vid).textContent=this.value" '+
+        'style="flex:1;accent-color:var(--blue)">'+
+      '<span id="celeb-v-'+s.id+'" style="font-size:11px;font-family:var(--mono);color:var(--text2);min-width:28px;text-align:right">'+val+'</span>'+
+    '</div>';
+  }).join('');
+}
+
+function loadCelebSliders(){ renderCelebSliders(); }
+function saveCelebSetting(val){ localStorage.setItem('xcl_celebration',val); var s=document.getElementById('s-celebration'); if(s) s.value=val; renderCelebSliders(); }
+function loadCelebSetting(){ var s=document.getElementById('s-celebration'); if(s) s.value=getCelebType(); renderCelebSliders(); }
+function testCelebration(){ launchFireworks(false,true); }
+
+function launchFireworks(isXm,isTest){
+  var type=getCelebType();
+  if(type==='off'&&!isTest) return;
+  var canvas=document.getElementById('celeb-canvas');
+  var banner=document.getElementById('celeb-banner');
+  if(!canvas) return;
+  if(_celebAnim) cancelAnimationFrame(_celebAnim);
+  _celebParticles=[];
+  var ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  canvas.classList.add('active');
+  var W=canvas.width,H=canvas.height;
+  var _cfgCount  = getCelebVal('count',   100);
+  var _cfgSpd    = getCelebVal('speed',    5) / 5;
+  var _cfgDur    = getCelebVal('duration', 5) / 5;
+  var _cfgSz     = getCelebVal('size',     5) / 5;
+  var _cfgSpread = getCelebVal('spread',   5) / 5;
+  var _cfgRise   = getCelebVal('rise',     5) / 5;
+  var _cfgWobble   = getCelebVal('wobble',    5) / 5;
+  var _cfgSway     = getCelebVal('swayspeed', 5) / 5;
+  var _cfgLength   = getCelebVal('length',    5) / 5;
+  var _cfgFall   = getCelebVal('fallspeed',5) / 5;
+  var _cfgP      = _cfgCount / 100;
+  var bannerText=isXm?'📱 XM SALE! 🎉':'🎉 SALE! 🎉';
+  if(type==='rain') bannerText=isXm?'💰💰 XM SALE! 💰💰':'💰 SALE! 💰';
+  if(type==='bubbles') bannerText=isXm?'🫧📱 XM SALE! 🫧':'🫧 SALE! 🫧';
+  if(type==='stars') bannerText=isXm?'⭐📱 XM SALE! ⭐':'⭐ SALE! ⭐';
+  if(banner&&!isTest){ banner.textContent=bannerText; banner.style.background=isXm?'linear-gradient(135deg,#0ea5e9,#6366f1)':'linear-gradient(135deg,var(--blue),#6366f1)'; banner.classList.add('active'); setTimeout(function(){ banner.classList.remove('active'); },isXm?3500:2500); }
+
+  if(type==='fireworks'){
+    var fwColors=isXm?['#38bdf8','#818cf8','#f472b6','#facc15','#34d399','#fff','#fb923c']:['#60a5fa','#34d399','#facc15','#f472b6','#fff','#a78bfa'];
+    function FWP(x,y,color){ this.x=x;this.y=y;this.color=color; var a=Math.random()*Math.PI*2,spd=(isXm?(5+Math.random()*11):(4+Math.random()*7))*_cfgSpd; this.vx=Math.cos(a)*spd;this.vy=Math.sin(a)*spd; this.alpha=1;this.radius=(isXm?(2+Math.random()*3):(1.5+Math.random()*2))*_cfgSz; this.decay=(0.006+Math.random()*0.005)/_cfgDur;this.gravity=0.08;this.trail=[]; }
+    FWP.prototype.update=function(){ this.trail.push({x:this.x,y:this.y,a:this.alpha}); if(this.trail.length>6)this.trail.shift(); this.vy+=this.gravity;this.x+=this.vx;this.y+=this.vy;this.vx*=0.98;this.vy*=0.98;this.alpha-=this.decay; };
+    FWP.prototype.draw=function(ctx){ this.trail.forEach(function(t,i){ ctx.beginPath();ctx.arc(t.x,t.y,this.radius*0.5,0,Math.PI*2);ctx.fillStyle=this.color;ctx.globalAlpha=t.a*(i/this.trail.length)*0.4;ctx.fill(); },this); ctx.beginPath();ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);ctx.fillStyle=this.color;ctx.globalAlpha=this.alpha;ctx.fill();ctx.globalAlpha=1; };
+    function fwB(x,y){ var c=Math.round((isXm?160:90)*_cfgP); var col=fwColors[Math.floor(Math.random()*fwColors.length)]; for(var i=0;i<c;i++) _celebParticles.push(new FWP(x,y,i%4===0?'#fff':col)); }
+    var cx=W/2,cy=H/2;
+    fwB(cx,cy*0.5);
+    if(isXm){ setTimeout(function(){fwB(cx*0.35,cy*0.6);},150); setTimeout(function(){fwB(cx*1.65,cy*0.6);},300); setTimeout(function(){fwB(cx,cy*0.35);},450); setTimeout(function(){fwB(cx*0.5,cy*0.8);fwB(cx*1.5,cy*0.8);},600); setTimeout(function(){fwB(cx*0.25,cy*0.4);fwB(cx*1.75,cy*0.4);},750); setTimeout(function(){fwB(cx,cy*0.25);fwB(cx*0.8,cy*0.9);fwB(cx*1.2,cy*0.9);},900); setTimeout(function(){fwB(cx*0.4,cy*0.5);fwB(cx*1.6,cy*0.5);fwB(cx,cy*0.7);},1100); }
+    else { setTimeout(function(){fwB(cx*0.4,cy*0.55);},200); setTimeout(function(){fwB(cx*1.6,cy*0.55);},350); setTimeout(function(){fwB(cx*0.7,cy*0.35);},500); setTimeout(function(){fwB(cx*1.3,cy*0.35);},650); setTimeout(function(){fwB(cx,cy*0.65);},800); }
+  } else if(type==='confetti'){
+    var cfC=['#f472b6','#60a5fa','#34d399','#facc15','#fb923c','#a78bfa','#fff','#38bdf8','#ff0044','#00e5ff','#ffec00','#ff6600'];
+    var cnt = Math.round((isXm?600:350)*_cfgP);
+    // Launch in waves from top — cannons from both sides + center rain
+    function spawnWave(offsetY){
+      for(var i=0;i<cnt;i++){
+        var fromSide = Math.random() < 0.35; // 35% shoot from sides like cannons
+        var x, vx, vy;
+        if(fromSide){
+          var side = Math.random() < 0.5 ? 0 : W;
+          x  = side;
+          vx = (side===0 ? 1 : -1) * (3 + Math.random()*8) * _cfgSway;
+          vy = -(2 + Math.random()*6) * _cfgFall;
+        } else {
+          x  = Math.random() * W;
+          vx = (Math.random()-0.5) * 5 * _cfgSway;
+          vy = -(1 + Math.random()*3);
+        }
+        var shapes = ['rect','rect','rect','circle','ribbon'];
+        var shape  = shapes[Math.floor(Math.random()*shapes.length)];
+        var sz = (6 + Math.random()*12) * _cfgSz;
+        _celebParticles.push({
+          x:x, y: offsetY || -Math.random()*H*0.2,
+          vx:vx, vy:vy,
+          w: shape==='ribbon' ? sz*0.3 : sz,
+          h: shape==='ribbon' ? sz*3   : sz,
+          shape:shape,
+          color: cfC[Math.floor(Math.random()*cfC.length)],
+          rot: Math.random()*Math.PI*2,
+          rotV: (Math.random()-0.5) * 0.25,
+          alpha:1,
+          decay: 0.003/Math.pow(_cfgLength*0.5+0.5, 2.2),
+          gravity: 0.12 + Math.random()*0.08,
+          drag: 0.98 + Math.random()*0.015,
+          wobble: Math.random()*0.12 * _cfgSway,
+          wobbleT: Math.random()*Math.PI*2,
+          type:'confetti'
+        });
+      }
+    }
+    spawnWave(0);
+    // Additional waves for sustained effect
+    setTimeout(function(){spawnWave(-H*0.1);},400);
+    setTimeout(function(){spawnWave(-H*0.15);},800);
+    if(isXm){
+      setTimeout(function(){spawnWave(-H*0.05);},1200);
+      setTimeout(function(){spawnWave(0);},1600);
+    }
+  } else if(type==='bubbles'){
+    for(var i=0;i<Math.round((isXm?80:50)*_cfgP);i++) _celebParticles.push({x:Math.random()*W,y:H+20,vx:(Math.random()-0.5)*1.5*_cfgSpd,vy:-(1+Math.random()*3)*_cfgSpd,r:(8+Math.random()*30)*_cfgSz,hue:Math.floor(Math.random()*360),alpha:0.6+Math.random()*0.4,decay:(0.003+Math.random()*0.004)/_cfgDur,wobble:Math.random()*0.05,wobbleT:Math.random()*Math.PI*2,type:'bubble'});
+  } else if(type==='stars'){
+    for(var i=0;i<Math.round((isXm?120:70)*_cfgP);i++){ var a=Math.random()*Math.PI*2,spd=(isXm?(3+Math.random()*9):(2+Math.random()*6))*_cfgSpd; _celebParticles.push({x:W/2,y:H/2,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:(4+Math.random()*8)*_cfgSz,points:Math.random()<0.5?5:4,color:['#facc15','#fff','#60a5fa','#f472b6','#34d399'][Math.floor(Math.random()*5)],rot:Math.random()*Math.PI,rotV:(Math.random()-0.5)*0.15,alpha:1,decay:(0.007+Math.random()*0.006)/_cfgDur,gravity:0.06,type:'star'}); }
+  } else if(type==='rain'){
+    var syms=['$','💵','💰','$','$','💸'];
+    for(var i=0;i<Math.round((isXm?80:50)*_cfgP);i++) _celebParticles.push({x:Math.random()*W,y:-30-Math.random()*H*0.5,vx:(Math.random()-0.5)*2*_cfgSpd,vy:(2+Math.random()*5)*_cfgSpd,sym:syms[Math.floor(Math.random()*syms.length)],size:(16+Math.random()*24)*_cfgSz,rot:(Math.random()-0.5)*0.5,rotV:(Math.random()-0.5)*0.05,alpha:1,decay:(0.004+Math.random()*0.004)/_cfgDur,type:'money'});
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    _celebParticles=_celebParticles.filter(function(p){ return p.alpha>0&&p.y<H+(p.type==='confetti'?H*2:100); });
+    _celebParticles.forEach(function(p){
+      if(p.type==='confetti'){
+        p.wobbleT += p.wobble;
+        p.vx *= p.drag; p.vy *= p.drag;
+        p.x += p.vx + Math.sin(p.wobbleT)*1.2;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.rot += p.rotV;
+        p.alpha -= p.decay;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        if(p.shape==='circle'){
+          ctx.beginPath();
+          ctx.arc(0, 0, p.w/2, 0, Math.PI*2);
+          ctx.fill();
+        } else if(p.shape==='ribbon'){
+          // ribbon: thin long strip that flutters
+          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        } else {
+          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        }
+        ctx.restore();
+      }
+      else if(p.type==='bubble'){ p.wobbleT+=p.wobble;p.x+=p.vx+Math.sin(p.wobbleT);p.y+=p.vy;p.alpha-=p.decay; ctx.save();ctx.globalAlpha=p.alpha*0.5;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.strokeStyle='hsl('+p.hue+',80%,70%)';ctx.lineWidth=2;ctx.stroke();ctx.globalAlpha=p.alpha*0.15;ctx.fillStyle='hsl('+p.hue+',80%,85%)';ctx.fill();ctx.restore(); }
+      else if(p.type==='star'){ p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.vx*=0.98;p.vy*=0.98;p.rot+=p.rotV;p.alpha-=p.decay; ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();var n=p.points,r1=p.r,r2=p.r*0.4;for(var j=0;j<n*2;j++){var ang=j*Math.PI/n-Math.PI/2;var r=j%2===0?r1:r2;ctx.lineTo(Math.cos(ang)*r,Math.sin(ang)*r);}ctx.closePath();ctx.fill();ctx.restore(); }
+      else if(p.type==='money'){ p.x+=p.vx;p.y+=p.vy;p.rot+=p.rotV;p.alpha-=p.decay; ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.font='bold '+p.size+'px sans-serif';ctx.fillStyle='#4ade80';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.sym,0,0);ctx.restore(); }
+      else { if(p.trail){p.trail.forEach(function(t,i){ctx.beginPath();ctx.arc(t.x,t.y,p.radius*0.5,0,Math.PI*2);ctx.fillStyle=p.color;ctx.globalAlpha=t.a*(i/p.trail.length)*0.4;ctx.fill();},p);}ctx.beginPath();ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);ctx.fillStyle=p.color;ctx.globalAlpha=p.alpha;ctx.fill();ctx.globalAlpha=1;if(p.update)p.update(); }
+    });
+    if(_celebParticles.length>0){ _celebAnim=requestAnimationFrame(animate); } else { canvas.classList.remove('active'); }
+  }
+  animate();
 }
 
 </script>
@@ -7016,6 +7338,7 @@ function pwaInstall(){
     <div style="display:flex;align-items:center;gap:16px;border-top:1px solid var(--border2);padding-top:6px">
       <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);min-width:28px">&#x260E; CDV</span>
       <label class="rp-chk"><input type="checkbox" id="rgu-cdv-inp" onchange="_rguCdv=this.checked;calcRgu()"> Voice — $40</label>
+          <label class="rp-chk"><input type="checkbox" id="rgu-modem" onchange="calcRgu()"> Modem/Gateway — $15</label>
     </div>
   </div>
 
@@ -7051,5 +7374,7 @@ function pwaInstall(){
   </div>
 </div>
 
+<canvas id="celeb-canvas"></canvas>
+<div id="celeb-banner"></div>
 </body>
 </html>
