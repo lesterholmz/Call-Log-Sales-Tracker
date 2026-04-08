@@ -286,10 +286,21 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .color-swatch{display:flex;align-items:center;gap:6px}
 .color-swatch input[type=color]{width:32px;height:24px;border:none;border-radius:4px;cursor:pointer;padding:0;background:none}
 .color-swatch-val{font-family:var(--mono);font-size:10px;color:var(--text3);width:54px}
-/* ── Follow-Up type filter chips ── */
+/* ── Edit panel ── */
+#edit-panel{display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:760px;max-height:calc(100vh - 92px);background:var(--card);border:1px solid var(--border);border-radius:12px 12px 0 0;z-index:310;box-shadow:0 -4px 32px rgba(0,0,0,.4);flex-direction:column;overflow:hidden}
+#edit-panel.open{display:flex}
+#edit-overlay{display:none;position:fixed;inset:0;z-index:309;background:rgba(0,0,0,.3);backdrop-filter:blur(1px)}
+.edit-panel-header{padding:0 20px;height:52px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.edit-panel-title{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
+.edit-panel-meta{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.edit-panel-close{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0;line-height:1}
+.edit-panel-close:hover{color:var(--red)}
+.edit-panel-body{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.edit-panel-footer{padding:12px 20px;border-top:1px solid var(--border);background:var(--card2);display:flex;gap:8px;flex-shrink:0}
 .fu-type-chip{height:26px;padding:0 12px;border:1px solid var(--border2);border-radius:20px;background:var(--surface);font-family:var(--sans);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap}
 .fu-type-chip:hover{border-color:var(--blue);color:var(--blue)}
 .fu-type-chip.active{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+.fu-card-header:hover{background:rgba(255,255,255,.03)}
 .theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
 .theme-card{border:2px solid var(--border2);border-radius:10px;background:var(--surface);cursor:pointer;padding:0;overflow:hidden;transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column}
 .theme-card:hover{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
@@ -311,7 +322,7 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .width-btn:hover{border-color:var(--blue);color:var(--blue)}
 .width-btn.active{border-color:var(--blue);background:var(--blue-lt);color:var(--blue)}
 
-.pace-summary{background:var(--surface);border-bottom:1px solid var(--border);overflow:hidden}
+.pace-summary{background:var(--surface);border-bottom:1px solid var(--border);overflow:hidden;padding-top:6px}
 .pace-summary-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
 .pace-summary-val{font-size:11px;font-family:var(--mono);font-weight:600}
 .pace-summary-val.ahead{color:var(--green)}.pace-summary-val.behind{color:var(--red)}.pace-summary-val.on{color:var(--amber)}
@@ -393,8 +404,7 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .cal-day.today .cal-day-dow{color:rgba(0,0,0,.75)}
 .cal-day.today .cal-day-num{color:var(--amber);font-weight:700}
 
-.main.editing .form-card{display:none}
-.main.editing .table-card{border-radius:12px}
+tbody tr.edit-row{display:none}
 
 #back-to-top{
   position:fixed;bottom:16px;right:calc(50% - 524px);z-index:500;
@@ -668,9 +678,9 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
   padding:14px 16px 10px;box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
   min-width:280px}
 .cb-panel-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
-.cb-quick-btns{display:flex;gap:6px;flex-wrap:wrap}
-.cb-quick-btn{padding:5px 12px;border-radius:999px;border:1px solid var(--border2);
-  background:var(--surface);font-size:11px;font-weight:600;color:var(--text2);
+.cb-quick-btns{display:flex;gap:4px;flex-wrap:nowrap}
+.cb-quick-btn{padding:3px 8px;border-radius:999px;border:1px solid var(--border2);
+  background:var(--surface);font-size:10px;font-weight:600;color:var(--text2);
   cursor:pointer;transition:all .12s;white-space:nowrap;user-select:none}
 .cb-quick-btn:hover{border-color:var(--purple);color:var(--purple)}
 .cb-quick-btn.active{background:var(--purple-lt);border-color:var(--purple);color:var(--purple)}
@@ -1934,7 +1944,7 @@ document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL();
 let _userCallType='acq',_userCapLevel=2;
 let _session=null; // {agentId, name, role, callType, capLevel, supervisorId}
 let _userList=[]; // cached from sheets
-let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='all',_logSearch='',_activeTab='tracker',_historicalFiscal=null;
+let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='today',_logSearch='',_activeTab='tracker',_historicalFiscal=null;
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});},1000);
 function checkAlerts(){
   const now=Date.now();if(now<alertDismissed)return;
@@ -1986,7 +1996,7 @@ function rawPhone(v){return v.replace(/\D/g,'');}
 document.getElementById('f-cb-phone').addEventListener('input',function(){onPhoneInput(this);});
 
 function dismissAlerts(){alertDismissed=Date.now()+5*60000;document.getElementById('alert-bar').classList.remove('visible');}
-function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();updateRevTotal();}
+function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();updateRevTotal();if(editingId&&window._editCall)renderEditXmLines(window._editCall);}
 function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();}
 function isIE(){const el=document.getElementById('chk-ie');return el&&el.classList.contains('ie-active');}
 function syncProds(){syncIEVisibility();const ie=isIE(),el=document.getElementById('chk-chsi');el.classList.remove('checked','ie-adj');if(prods.chsi)el.classList.add(ie?'ie-adj':'checked');['tv','cdv','xh'].forEach(k=>document.getElementById('chk-'+k).classList.toggle('checked',prods[k]));}
@@ -2217,7 +2227,9 @@ function toggleCb(){
     const btn = document.getElementById('cb-toggle');
     const rect = btn.getBoundingClientRect();
     panel.style.display = 'flex';
-    panel.style.left = rect.left + 'px';
+    const panelW = 280; // min-width
+    const maxLeft = window.innerWidth - panelW - 8;
+    panel.style.left = Math.min(rect.left, maxLeft) + 'px';
     panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
     panel.style.top = 'auto';
     // Reset type to Callback and update UI
@@ -2337,26 +2349,348 @@ function resetForm(){
   nsAutoSelect();
   syncIEVisibility();
 }
-function openEdit(id,fromAlert){if(editingId===id)return;editingId=id;window._editFromAlert=!!fromAlert;const c=calls.find(x=>x.id===id);editState={xm:c.xm,tv:c.tv,chsi:c.chsi,cdv:c.cdv,xh:c.xh};document.querySelector('.main').classList.add('editing');render();setTimeout(()=>{const r=document.querySelector('tr.edit-row');if(r){if(!fromAlert){r.scrollIntoView({block:'nearest',behavior:'smooth'});}const f=r.querySelector('input:not([type=checkbox]):not([type=datetime-local]),select');if(f)f.focus();}},50);}
+var _editSnapshot = null; // deep copy of call before edit — restored on cancel
+var _editMarkCbDone = false; // set true when opened via Sale Made — marks follow-up done on save
+
+function openEdit(id, fromAlert){
+  const c = calls.find(x => x.id === id);
+  if(!c) return;
+  editingId = id;
+  window._editFromAlert = !!fromAlert;
+
+  // Deep-copy for cancel restoration
+  _editSnapshot = JSON.parse(JSON.stringify(Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts})));
+
+  // Populate meta line
+  const meta = document.getElementById('edit-panel-meta');
+  if(meta){
+    const ts = c.ts instanceof Date ? c.ts : new Date(c.ts);
+    meta.textContent = ts.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' ' + ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  }
+
+  // Wire delete button
+  const delBtn = document.getElementById('edit-del-btn');
+  if(delBtn){ delBtn.onclick = function(){ if(confirm('Delete this call?')){ delCall(id); } }; }
+
+  // Move the form-body into the panel
+  const formBody = document.querySelector('#new-call-form-card .form-body');
+  const panelBody = document.getElementById('edit-panel-body');
+  if(formBody && panelBody){
+    panelBody.appendChild(formBody);
+  }
+  // Hide the new-call form card header while editing (panel has its own header)
+  const formCard = document.getElementById('new-call-form-card');
+  if(formCard) formCard.style.display = 'none';
+
+  // Populate all form fields with call data
+  _populateFormFromCall(c);
+  // Render XM line activation section
+  renderEditXmLines(c);
+  window._editCall = c; // keep reference for stepper updates
+
+  // If opened via Sale Made, set sched to today and hint in header
+  if(window._editSaleToday){
+    window._editSaleToday = false;
+    var now = new Date();
+    var pad = function(n){ return String(n).padStart(2,'0'); };
+    var todayVal = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+    var schedEl = document.getElementById('f-sched');
+    if(schedEl) schedEl.value = todayVal;
+    var titleEl = document.querySelector('.edit-panel-title');
+    if(titleEl) titleEl.childNodes[0].textContent = '💰 Sale Made — ';
+    // Also mark cbDone so it closes off the follow-up on save
+    _editMarkCbDone = true;
+  } else {
+    window._editSaleToday = false;
+    _editMarkCbDone = false;
+    var titleEl2 = document.querySelector('.edit-panel-title');
+    if(titleEl2) titleEl2.childNodes[0].textContent = '✎ Edit Call ';
+  }
+
+  // Open panel
+  const panel = document.getElementById('edit-panel');
+  panel.classList.add('open');
+  document.getElementById('edit-overlay').style.display = 'block';
+
+  // Focus acct field
+  setTimeout(function(){ const f = document.getElementById('f-acct'); if(f) f.focus(); }, 80);
+}
+
+function renderEditXmLines(c){
+  var wrap = document.getElementById('edit-xm-lines');
+  if(!wrap) return;
+  var xm = xmVal; // current XM count from form stepper
+  if(xm < 1){ wrap.style.display='none'; return; }
+
+  // Ensure xmLines array is sized correctly, preserving existing data
+  if(!c.xmLines) c.xmLines = [];
+  while(c.xmLines.length < xm) c.xmLines.push({id:c.xmLines.length+1, schedDate:c.sched||'', activated:false});
+  c.xmLines = c.xmLines.slice(0, xm);
+
+  var lines = c.xmLines;
+  wrap.style.display = 'block';
+  wrap.innerHTML =
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--teal);margin-bottom:10px">📱 XM Line Activation Dates</div>'+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
+    lines.map(function(line){
+      return '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">'+
+        '<div style="font-size:9px;color:var(--text3);font-weight:600">Line '+line.id+'</div>'+
+        '<div style="display:flex;gap:6px;align-items:center">'+
+          '<input type="date" id="exm-date-'+line.id+'" value="'+(line.schedDate||'')+'" '+
+            'style="height:28px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none" '+
+            'onchange="editXmLineUpdate()">'+
+          '<label style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--teal);cursor:pointer;white-space:nowrap">'+
+            '<input type="checkbox" id="exm-act-'+line.id+'" '+(line.activated?'checked':'')+' '+
+              'style="accent-color:var(--teal)" onchange="editXmLineUpdate()"> Activated'+
+          '</label>'+
+        '</div>'+
+      '</div>';
+    }).join('')+
+    '</div>'+
+    '<div id="exm-summary" style="font-size:10px;color:var(--text3);margin-top:8px"></div>';
+
+  editXmLineUpdate();
+}
+
+function editXmLineUpdate(){
+  // Update revenue totals based on activation state
+  var activated = 0;
+  var xm = xmVal;
+  for(var i=1;i<=xm;i++){
+    var el = document.getElementById('exm-act-'+i);
+    if(el && el.checked) activated++;
+  }
+  var baseRev = parseFloat((document.getElementById('f-rev')||{}).value)||0;
+  var xmRev = xm * 45;
+  var total = baseRev + xmRev;
+  var sumEl = document.getElementById('exm-summary');
+  if(sumEl){
+    sumEl.innerHTML = 'XM Rev: <span style="color:var(--teal);font-weight:600;font-family:var(--mono)">$'+xmRev+'</span>' +
+      ' · Base: <span style="font-family:var(--mono)">$'+baseRev.toFixed(2)+'</span>' +
+      ' · Total: <span style="color:var(--green);font-weight:700;font-family:var(--mono)">$'+total.toFixed(2)+'</span>' +
+      ' · <span style="color:var(--teal)">'+activated+'/'+xm+' activated</span>';
+  }
+}
+
+function _populateFormFromCall(c){
+  // Basic fields
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  set('f-acct',    c.acctRaw || '');
+  set('f-sched',   c.sched   || '');
+  set('f-rev',     c.baseRev != null ? c.baseRev : (c.rev || ''));
+  set('f-notes',   c.notes   || '');
+  set('f-cb-name', c.cbName  || '');
+  set('f-cb-phone', c.cbPhone ? fmtPhone(c.cbPhone) : '');
+  set('f-cb-dt',   c.cbTime  || '');
+
+  // Follow-up type
+  const fuTypeSel = document.getElementById('f-fu-type');
+  if(fuTypeSel) fuTypeSel.value = c.fuType || 'Callback';
+
+  // XM
+  setXm(c.xm || 0);
+
+  // Products
+  Object.keys(prods).forEach(k => {
+    prods[k] = !!c[k];
+    const el = document.getElementById('chk-' + k);
+    if(el) el.classList.toggle('checked', !!c[k]);
+  });
+
+  // IE
+  _ieActive = !!(c.ie || c.ieAdj);
+  const ieEl = document.getElementById('chk-ie');
+  if(ieEl) ieEl.classList.toggle('ie-active', _ieActive);
+  const ieLbl = document.getElementById('ie-lbl');
+  if(ieLbl) ieLbl.style.color = _ieActive ? 'var(--green)' : 'var(--text3)';
+
+  // BULK
+  _bulkActive = !!c.bulk;
+  const bkEl = document.getElementById('chk-bulk');
+  if(bkEl) bkEl.classList.toggle('bulk-active', _bulkActive);
+  const blbl = document.getElementById('bulk-lbl');
+  if(blbl) blbl.style.color = _bulkActive ? 'var(--blue)' : 'var(--text3)';
+
+  // No-sale state — parse stored reason back into _nsCat/_nsSub
+  _nsClose();
+  if(!c.hasSale && c.reason && c.reason !== 'NO SALE MADE'){
+    const parts = c.reason.split(' > ');
+    _nsCat = parts[0] || '';
+    _nsSub = parts[1] || '';
+    _nsState = 'tier2';
+    const nsToggle = document.getElementById('ns-toggle');
+    if(nsToggle) nsToggle.classList.add('active');
+  } else if(!c.hasSale && c.reason === 'NO SALE MADE'){
+    _nsState = 'tier1';
+    const nsToggle = document.getElementById('ns-toggle');
+    if(nsToggle) nsToggle.classList.add('active');
+  }
+
+  // Follow-up display
+  cbOpen = !!(c.cbTime || c.fuType);
+  const cbToggle = document.getElementById('cb-toggle');
+  if(cbToggle) cbToggle.classList.toggle('active', cbOpen);
+  if(cbOpen && c.fuType){ onFuTypeChange(); }
+  updateCbDisplay();
+  updateNotesState();
+  updateRevTotal();
+  updatePlay();
+  syncIEVisibility();
+}
+
 function closeEdit(){
-  editingId=null;editState={};window._editFromAlert=false;
-  document.querySelector('.main').classList.remove('editing');
+  if(editingId && _editSnapshot){
+    // Restore call to its pre-edit state
+    const idx = calls.findIndex(x => x.id === editingId);
+    if(idx !== -1){
+      const restored = Object.assign({}, _editSnapshot);
+      restored.ts = new Date(_editSnapshot.ts);
+      calls[idx] = normalizeCall(restored);
+    }
+  }
+  editingId = null;
+  editState = {};
+  _editSnapshot = null;
+  _editMarkCbDone = false;
+  window._editCall = null;
+  window._editFromAlert = false;
+  var xmWrap = document.getElementById('edit-xm-lines');
+  if(xmWrap){ xmWrap.style.display='none'; xmWrap.innerHTML=''; }
+
+  // Move form-body back to form-card and restore card visibility
+  const formBody = document.getElementById('edit-panel-body').querySelector('.form-body');
+  const formCard = document.getElementById('new-call-form-card');
+  if(formBody && formCard){ formCard.appendChild(formBody); formCard.style.display = ''; }
+
+  document.getElementById('edit-panel').classList.remove('open');
+  document.getElementById('edit-overlay').style.display = 'none';
+  resetForm();
   render();
 }
-function saveEdit(id){const c=calls.find(x=>x.id===id);if(!c)return;c.acctRaw=document.getElementById('e-acct').value.trim();c.cbName=document.getElementById('e-cb-name').value.trim();c.cbPhone=document.getElementById('e-cb-phone').value.trim();c.acct=buildAcct(c.acctRaw,c.cbName,c.cbPhone);c.sched=document.getElementById('e-sched').value;const eBaseRev = parseFloat(document.getElementById('e-rev').value)||0;
-  c.baseRev = eBaseRev;
-  if(!c.xmLines && c.xm > 0) c.xmLines = Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:c.sched||'',activated:false}));
-  if(c.xmLines) c.xmLines.forEach(line => {
-    const de=document.getElementById('e-xm-date-'+line.id);
-    const ae=document.getElementById('e-xm-act-'+line.id);
-    if(de) line.schedDate=de.value;
-    if(ae) line.activated=ae.checked;
+
+function saveEdit(){
+  const id = editingId;
+  const c = calls.find(x => x.id === id);
+  if(!c) return;
+
+  // Read all form fields — same as doLogCall
+  const raw      = document.getElementById('f-acct').value.trim();
+  const cbName   = document.getElementById('f-cb-name').value.trim();
+  const cbPhone  = document.getElementById('f-cb-phone').value.trim();
+  const cbTime   = (document.getElementById('f-cb-dt') && document.getElementById('f-cb-dt').value) || '';
+  const fuType   = cbOpen ? ((document.getElementById('f-fu-type') && document.getElementById('f-fu-type').value) || 'Callback') : '';
+  const baseRev  = parseFloat(document.getElementById('f-rev').value) || 0;
+  const sched    = document.getElementById('f-sched').value;
+  const notes    = document.getElementById('f-notes').value.trim();
+  const reason   = (_nsState !== 'closed' && !isSale()) ? getNoSaleReason() : '';
+  const noXmReason = (_nsState !== 'closed' && isSale() && xmVal === 0) ? getNoSaleReason() : '';
+
+  c.acctRaw   = raw;
+  c.cbName    = cbName;
+  c.cbPhone   = cbPhone;
+  c.acct      = buildAcct(raw, cbName, cbPhone);
+  c.sched     = sched;
+  c.baseRev   = baseRev;
+  c.rev       = baseRev + (xmVal * XM_LINE_REV);
+  c.xm        = xmVal;
+  c.tv        = prods.tv;
+  c.chsi      = prods.chsi;
+  c.cdv       = prods.cdv;
+  c.xh        = prods.xh;
+  c.ie        = _ieActive;
+  c.bulk      = _bulkActive;
+  c.reason    = reason;
+  c.noXmReason= noXmReason;
+  c.notes     = notes;
+  c.cbTime    = cbTime;
+  c.fuType    = fuType;
+  c.cbDone    = c.cbDone || false;
+
+  // If opened via Sale Made — credit today, but don't auto-close the follow-up
+  var wasSaleMade = _editMarkCbDone;
+  if(wasSaleMade){
+    c.fuType = c.fuType || 'Callback';
+  }
+
+  // XM lines — preserve existing, update count and read activation inputs
+  if(!c.xmLines || c.xmLines.length !== xmVal){
+    c.xmLines = Array.from({length: xmVal}, (_, i) => ({
+      id: i + 1,
+      schedDate: c.xmLines && c.xmLines[i] ? c.xmLines[i].schedDate : (sched || ''),
+      activated: c.xmLines && c.xmLines[i] ? c.xmLines[i].activated : false
+    }));
+  }
+  // Read per-line dates and activation from the edit panel inputs
+  c.xmLines.forEach(function(line){
+    var dateEl = document.getElementById('exm-date-'+line.id);
+    var actEl  = document.getElementById('exm-act-'+line.id);
+    if(dateEl) line.schedDate = dateEl.value;
+    if(actEl)  line.activated = actEl.checked;
   });
-  c.rev = eBaseRev + (c.xm * XM_LINE_REV);c.xm=editState.xm;c.tv=editState.tv;c.chsi=editState.chsi;c.cdv=editState.cdv;c.xh=editState.xh;c.reason=(document.getElementById('e-reason').value==='NO SALE MADE'?getEditNoSaleReason():document.getElementById('e-reason').value);c.notes=document.getElementById('e-notes').value.trim();c.cbTime=document.getElementById('e-cb-dt').value;c.ie=c.ie||false;c.bulk=c.bulk||false;c.noXmReason=c.noXmReason||'';c.ieAdj=c.chsi&&c.ie;compute(c);closeEdit();updateStats();upsertCallToSheets(c);checkAlerts();saveCallsCache();}
-function delCall(id){if(editingId===id)closeEdit();deleteCallFromSheets(id);calls=calls.filter(c=>c.id!==id);render();updateStats();saveCallsCache();}
-function markCbDone(id){const c=calls.find(x=>String(x.id)===String(id));if(c){c.cbDone=true;const el=document.getElementById('e-cb-done');if(el)el.checked=true;render();updateStats();checkAlerts();saveCallsCache();upsertCallToSheets(c);}}
+
+  compute(c);
+
+  // Move form-body back, close panel
+  const _fb = document.getElementById('edit-panel-body').querySelector('.form-body');
+  const _fc = document.getElementById('new-call-form-card');
+  if(_fb && _fc){ _fc.appendChild(_fb); _fc.style.display = ''; }
+
+  // Close panel (don't restore — save is intentional)
+  _editSnapshot = null;
+  editingId = null;
+  editState = {};
+  document.getElementById('edit-panel').classList.remove('open');
+  document.getElementById('edit-overlay').style.display = 'none';
+  resetForm();
+
+  _editMarkCbDone = false;
+
+  render();
+  updateStats();
+  upsertCallToSheets(c);
+  checkAlerts();
+  saveCallsCache();
+  // Refresh follow-ups tab if active, or mark stale so it re-renders on next visit
+  if(_activeTab === 'callbacks') renderCallbacksTab();
+
+  if(wasSaleMade){
+    _showToast('💰 Sale recorded!', 'ok', 2500);
+    setTimeout(function(){ launchFireworks(c.xm > 0); }, 150);
+  } else {
+    _showToast('✓ Call updated', 'ok', 2000);
+  }
+}
+function delCall(id){
+  _editSnapshot = null;
+  if(editingId === id){
+    const _fb = document.getElementById('edit-panel-body').querySelector('.form-body');
+    const _fc = document.getElementById('new-call-form-card');
+    if(_fb && _fc){ _fc.appendChild(_fb); _fc.style.display = ''; }
+    editingId = null; editState = {};
+    document.getElementById('edit-panel').classList.remove('open');
+    document.getElementById('edit-overlay').style.display = 'none';
+    resetForm();
+  }
+  deleteCallFromSheets(id);
+  calls = calls.filter(c => c.id !== id);
+  render(); updateStats(); saveCallsCache();
+}
+function markCbDone(id){const c=calls.find(x=>String(x.id)===String(id));if(c){c.cbDone=true;render();updateStats();checkAlerts();saveCallsCache();upsertCallToSheets(c);}}
 function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}if(editingId)updateEditRevTotal(editingId);}
-function eToggleProd(k){editState[k]=!editState[k];const el=document.getElementById('e-chk-'+k);if(!el)return;const ie=k==='chsi'&&(document.getElementById('e-reason')?.value||'')==='IE (.75)';el.className='e-chk'+(k==='chsi'?(editState.chsi?(ie?' ie':' on'):''):(editState[k]?' on':''));}
+function eToggleProd(k){editState[k]=!editState[k];const el=document.getElementById('e-chk-'+k);if(!el)return;const ie=k==='chsi'&&editState.chsi&&editState.ie;el.className='e-chk'+(k==='chsi'?(editState.chsi?(ie?' ie':' on'):''):(editState[k]?' on':''));el.querySelector('svg').style.stroke=editState[k]?'':'var(--text3)';}
+function eToggleIE(){
+  editState.ie=!editState.ie;
+  const btn=document.getElementById('e-ie-btn');
+  if(btn){btn.style.background=editState.ie?'var(--amber-lt)':'var(--surface)';btn.style.borderColor=editState.ie?'var(--amber)':'var(--border2)';btn.style.color=editState.ie?'var(--amber)':'var(--text3)';}
+  // Also refresh CHSI button appearance since IE affects its credit
+  const chsiEl=document.getElementById('e-chk-chsi');
+  if(chsiEl&&editState.chsi){chsiEl.className='e-chk'+(editState.ie?' ie':' on');}
+}
+function eToggleBulk(){
+  editState.bulk=!editState.bulk;
+  const btn=document.getElementById('e-bulk-btn');
+  if(btn){btn.style.background=editState.bulk?'var(--blue-lt)':'var(--surface)';btn.style.borderColor=editState.bulk?'var(--blue)':'var(--border2)';btn.style.color=editState.bulk?'var(--blue)':'var(--text3)';}
+}
 function eReasonChange(){const re=document.getElementById('e-reason');if(!re)return;const t2=document.getElementById('e-nosale-tier2');if(!t2)return;if(re.value==='NO SALE MADE'){const cats=document.getElementById('e-nosale-cat');if(cats&&cats.options.length<2){cats.innerHTML='<option value="">— reason category —</option>'+Object.keys(NO_SALE_CATS).map(c=>`<option>${c}</option>`).join('');}t2.style.display='flex';}else{t2.style.display='none';}}
 function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
 function fmtCb(iso){if(!iso)return'';const d=new Date(iso);return d.toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}
@@ -2392,7 +2726,7 @@ function renderReadRow(c){
 function renderEditRow(c){
   const es=editState;
   const pb=(k,l)=>{
-    const on=es[k],ie=k==='chsi'&&es.chsi&&(c.ie||false);
+    const on=es[k],ie=k==='chsi'&&es.chsi&&es.ie;
     const cls='e-chk'+(k==='chsi'?(es.chsi?(ie?' ie':' on'):''):(on?' on':''));
     return`<div class="e-prod-check"><div class="e-prod-label">${l}</div><div class="${cls}" id="e-chk-${k}" onclick="eToggleProd('${k}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>`;
   };
@@ -2463,6 +2797,15 @@ function renderEditRow(c){
               </div>
             </div>
             ${pb('tv','TV')}${pb('chsi','CHSI')}${pb('cdv','CDV')}${pb('xh','XH')}
+            <div style="width:1px;background:var(--border2);align-self:stretch;margin:0 2px"></div>
+            <div class="e-prod-check">
+              <div class="e-prod-label" style="color:var(--amber)">IE</div>
+              <div id="e-ie-btn" onclick="eToggleIE()" style="width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;border:1px solid ${editState.ie?'var(--amber)':'var(--border2)'};background:${editState.ie?'var(--amber-lt)':'var(--surface)'};color:${editState.ie?'var(--amber)':'var(--text3)'};transition:all .12s;user-select:none" title="IE — .75 CHSI credit">IE</div>
+            </div>
+            <div class="e-prod-check">
+              <div class="e-prod-label" style="color:var(--blue)">BULK</div>
+              <div id="e-bulk-btn" onclick="eToggleBulk()" style="width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;border:1px solid ${editState.bulk?'var(--blue)':'var(--border2)'};background:${editState.bulk?'var(--blue-lt)':'var(--surface)'};color:${editState.bulk?'var(--blue)':'var(--text3)'};transition:all .12s;user-select:none" title="Bulk account">BLK</div>
+            </div>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
@@ -2572,7 +2915,7 @@ function setLogFilter(val){
   render();
 }
 
-function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=allFiltered;document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="8" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}if(editingId&&window._editFromAlert){const ec=filtered.find(c=>c.id===editingId);const oc=filtered.filter(c=>c.id!==editingId);tb.innerHTML=(ec?renderEditRow(ec):'')+oc.map(renderReadRow).join('');}else{tb.innerHTML=filtered.map(c=>c.id===editingId?renderEditRow(c):renderReadRow(c)).join('');}}
+function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=allFiltered;document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="8" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}tb.innerHTML=filtered.map(renderReadRow).join('');}
 
 function pctCls(p){return p>=1?'good':p>=.7?'ok':'warn';}
 
@@ -2684,16 +3027,16 @@ function setStatsView(v){
   document.getElementById('btn-pipeline').classList.toggle('active',v==='pipeline');
   const lbl=document.getElementById('stats-period-label');
   if(lbl){
-    if(v==='pipeline'){const nf=getNextFiscalInfo();lbl.textContent='Next fiscal ('+nf.fiscalStart.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+new Date(nf.fiscalEnd-86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'})+')';}
+    if(v==='pipeline'){const nf=getNextFiscalInfo();lbl.textContent='Next fiscal ('+nf.fiscalStart.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+nf.fiscalEnd.toLocaleDateString('en-US',{month:'short',day:'numeric'})+')';}
     else lbl.textContent='Month to date';
   }
   clearTimeout(_statsRevertTimer);
   if(v!=='orders') _statsRevertTimer=setTimeout(()=>setStatsView('orders'),15000);
   updateStats();
 }
-function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d=new Date(sched+'T00:00:00');const r=d>=fi.fiscalStart&&d<fi.fiscalEnd;return r;}
-function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=fi.fiscalEnd;const ne=new Date(ns.getFullYear(),ns.getMonth()+1,22);return{fiscalStart:ns,fiscalEnd:ne};}
-function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<nf.fiscalEnd;}
+function inFiscal(sched){if(!sched)return false;const fi=getFiscalInfo();const d=new Date(sched+'T00:00:00');const r=d>=fi.fiscalStart&&d<=fi.fiscalEnd;return r;}
+function getNextFiscalInfo(){const fi=getFiscalInfo();const ns=new Date(fi.fiscalEnd.getFullYear(),fi.fiscalEnd.getMonth(),fi.fiscalEnd.getDate()+1);const ne=new Date(ns.getFullYear(),ns.getMonth()+1,21);return{fiscalStart:ns,fiscalEnd:ne};}
+function inNextFiscal(sched){if(!sched)return false;const nf=getNextFiscalInfo();const d=new Date(sched+'T00:00:00');return d>=nf.fiscalStart&&d<=nf.fiscalEnd;}
 function updateStats(){
   setTimeout(updateWindowTitle,0);
   setTimeout(updateWindowTitle, 0);
@@ -2701,22 +3044,23 @@ function updateStats(){
   const activeFi   = getActiveFiscalInfo();
   const activeKey  = getFiscalKey(_userCallType, _userCapLevel,
                        activeFi.label || getFiscalMonth());
+  const activeCbKey = getCbKey(activeFi.label || getFiscalMonth());
   const savedGoals = JSON.parse(localStorage.getItem(activeKey) || '{}');
+  const savedCb    = JSON.parse(localStorage.getItem(activeCbKey) || '{}');
   const _capDef    = getCapDefaults();
   // Saved goals win > cap defaults > hardcoded defaults
-  // Use explicit undefined check so 0 values are preserved
   GOALS.rev  = savedGoals.rev  !== undefined ? savedGoals.rev  : _capDef.rev;
   GOALS.xm   = savedGoals.xm   !== undefined ? savedGoals.xm   : _capDef.xm;
   GOALS.tv   = savedGoals.tv   !== undefined ? savedGoals.tv   : _capDef.tv;
   GOALS.chsi = savedGoals.chsi !== undefined ? savedGoals.chsi : _capDef.chsi;
   GOALS.cdv  = savedGoals.cdv  !== undefined ? savedGoals.cdv  : _capDef.cdv;
   GOALS.xh   = savedGoals.xh   !== undefined ? savedGoals.xh   : _capDef.xh;
-  CB.rev   = savedGoals.cbRev  || 0;
-  CB.xm    = savedGoals.cbXm   || 0;
-  CB.tv    = savedGoals.cbTv   || 0;
-  CB.chsi  = savedGoals.cbChsi || 0;
-  CB.cdv   = savedGoals.cbCdv  || 0;
-  CB.xh    = savedGoals.cbXh   || 0;
+  CB.rev   = savedCb.cbRev  || 0;
+  CB.xm    = savedCb.cbXm   || 0;
+  CB.tv    = savedCb.cbTv   || 0;
+  CB.chsi  = savedCb.cbChsi || 0;
+  CB.cdv   = savedCb.cbCdv  || 0;
+  CB.xh    = savedCb.cbXh   || 0;
 
   // ── Filter calls for the active fiscal period ────────────────────────────
   const today = new Date().toDateString();
@@ -2799,7 +3143,7 @@ function updateStats(){
   const nowD = new Date(); nowD.setHours(0,0,0,0);
   const wd = Array.isArray(window._workDays) && window._workDays.length ? window._workDays : [1,2,3,4,5];
   let remainingWorkDays = 0;
-  for(let d = new Date(nowD); d < fi.fiscalEnd; d.setDate(d.getDate()+1)){
+  for(let d = new Date(nowD); d <= fi.fiscalEnd; d.setDate(d.getDate()+1)){
     if(wd.includes(d.getDay())) remainingWorkDays++;
   }
   // Daily targets needed from today to hit monthly goals
@@ -2831,7 +3175,10 @@ function updateStats(){
 
   updatePace();
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingId){closeEdit();return;}if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){if(editingId){saveEdit(editingId);return;}}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && editingId){ closeEdit(); return; }
+  if(e.key==='Enter' && editingId && e.target.tagName!=='TEXTAREA' && e.target.tagName!=='SELECT'){ saveEdit(); return; }
+});
 
 (function(){
   var W=720, H=900;
@@ -2876,6 +3223,20 @@ function getFiscalKey(type, cap, month){
   const c = cap   || _userCapLevel || 1;
   const m = month || getFiscalMonth();
   return 'xcl_goals_'+t+'_cap'+c+'_'+m.replace(' ','');
+}
+
+function getCurrentAgentId(){
+  return (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || 'guest';
+}
+
+function getCbKey(month){
+  const m  = month || getFiscalMonth();
+  const id = getCurrentAgentId();
+  return 'xcl_cb_'+id+'_'+m.replace(' ','');
+}
+
+function getCbKeyForMonth(monthLabel){
+  return getCbKey(monthLabel);
 }
 
 
@@ -2955,18 +3316,6 @@ function toggleSettings(){
   if(ov) ov.style.display=opening?'block':'none';
   if(opening){
     const s=loadSettings(); loadCelebSetting();
-    document.getElementById('s-rev').value=s.rev;
-    document.getElementById('s-xm').value=s.xm;
-    document.getElementById('s-tv').value=s.tv;
-    document.getElementById('s-chsi').value=s.chsi;
-    document.getElementById('s-cdv').value=s.cdv;
-    document.getElementById('s-xh').value=s.xh;
-    document.getElementById('s-cb-rev').value=s.cbRev||0;
-    document.getElementById('s-cb-xm').value=s.cbXm||0;
-    document.getElementById('s-cb-tv').value=s.cbTv||0;
-    document.getElementById('s-cb-chsi').value=s.cbChsi||0;
-    document.getElementById('s-cb-cdv').value=s.cbCdv||0;
-    document.getElementById('s-cb-xh').value=s.cbXh||0;
     // populate alert window checkboxes
     const aw=s.alertWindows||[15];
     [5,10,15,20,30,60].forEach(v=>{
@@ -2977,8 +3326,10 @@ function toggleSettings(){
     renderOutcomeEditor(s.outcomes||[...DEFAULT_OUTCOMES]);
     document.getElementById('s-sheets-url').value=s.sheetsUrl||localStorage.getItem('xcl_sheets_url')||'';
     renderTokenGrid();
+    // Always rebuild selector with current type+cap first, then load goals and CB for that key
     buildFiscalMonthSelector();
-    document.getElementById('s-pto').value = s.ptoHours||0;
+    const sel=document.getElementById('s-fiscal-month');
+    if(sel&&sel.value) loadGoalsForFiscalMonth(sel.value);
     updatePtoPreview();
     // populate schedule
     const sch = s.schedule||'5x8';
@@ -2986,7 +3337,7 @@ function toggleSettings(){
     document.getElementById('sched-4x10').classList.toggle('active', sch==='4x10');
     const wd = Array.isArray(s.workDays) ? s.workDays : [1,2,3,4,5];
     [0,1,2,3,4,5,6].forEach(function(d){ const el=document.getElementById('wd-'+d); if(el) el.checked=wd.includes(d); });
-    }
+  }
 }
 function saveSettings(){
   const s={
@@ -3011,26 +3362,43 @@ function saveSettings(){
     workDays:[0,1,2,3,4,5,6].filter(function(d){var el=document.getElementById('wd-'+d);return el&&el.checked;}),
     sheetsUrl:(()=>{const u=document.getElementById('s-sheets-url').value.trim();if(u)localStorage.setItem('xcl_sheets_url',u);return u;})(),
   };
-  // Split: fiscal-specific fields saved under monthly key
-  const fiscalFields = {
+  // Split: goals saved to shared fiscal key, chargebacks to personal CB key
+  const goalFields = {
     rev:s.rev, xm:s.xm, tv:s.tv, chsi:s.chsi, cdv:s.cdv, xh:s.xh,
-    ptoHours:s.ptoHours,
+    ptoHours:s.ptoHours
+  };
+  const cbFields = {
     cbRev:s.cbRev, cbXm:s.cbXm, cbTv:s.cbTv, cbChsi:s.cbChsi, cbCdv:s.cbCdv, cbXh:s.cbXh
   };
   const globalFields = Object.assign({},s);
   ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh'].forEach(k=>delete globalFields[k]);
-  // Save key = selected fiscal month dropdown value (already correct format)
+  // Derive keys fresh from current role + selected month
   const selFiscal = document.getElementById('s-fiscal-month');
-  const saveKey = selFiscal ? selFiscal.value : getFiscalKey();
-  localStorage.setItem(saveKey, JSON.stringify(fiscalFields));
-  localStorage.setItem('xcl_settings',JSON.stringify(globalFields));
+  let goalSaveKey, cbSaveKey;
+  if(selFiscal && selFiscal.value){
+    const monthMatch = selFiscal.value.match(/xcl_goals_[a-z]+_cap\d+_([A-Za-z]+)(\d{4})$/);
+    if(monthMatch){
+      const monthLabel = monthMatch[1]+' '+monthMatch[2];
+      goalSaveKey = getFiscalKeyForMonth(monthLabel);
+      cbSaveKey   = getCbKeyForMonth(monthLabel);
+    } else {
+      goalSaveKey = getFiscalKey();
+      cbSaveKey   = getCbKey();
+    }
+  } else {
+    goalSaveKey = getFiscalKey();
+    cbSaveKey   = getCbKey();
+  }
+  localStorage.setItem(goalSaveKey, JSON.stringify(goalFields));
+  localStorage.setItem(cbSaveKey,   JSON.stringify(cbFields));
+  localStorage.setItem('xcl_settings', JSON.stringify(globalFields));
   saveColorSettings();
   // Tag with version for migration detection
   globalFields.settingsVersion = SETTINGS_VERSION;
   localStorage.setItem('xcl_settings', JSON.stringify(globalFields));
   localStorage.setItem('xcl_settings_version', String(SETTINGS_VERSION));
   // Push full merged settings to Sheets for multi-user sharing
-  if(getSheetsUrl()) pushSettingsToSheets(Object.assign({}, fiscalFields, globalFields, {settingsVersion: SETTINGS_VERSION}));
+  if(getSheetsUrl()) pushSettingsToSheets(Object.assign({}, goalFields, cbFields, globalFields, {settingsVersion: SETTINGS_VERSION}));
   applySettings(s);
   saveUserProfile(); // persist cap+type with settings
   updateStats();
@@ -3045,6 +3413,7 @@ function saveSettings(){
 function resetSettings(){
   if(confirm('Reset goals & chargebacks for '+getFiscalMonth()+'? Global settings (theme, schedule, etc.) are kept.')){
     localStorage.removeItem(getFiscalKey());
+    localStorage.removeItem(getCbKey());
     localStorage.removeItem('xcl_settings');
     applySettings(DEFAULTS);
     updateStats();
@@ -3657,12 +4026,14 @@ function getFiscalInfo(){
   let fiscalStart, fiscalEnd;
   if(day >= 22){
     fiscalStart = new Date(now.getFullYear(), now.getMonth(), 22);
-    fiscalEnd   = new Date(now.getFullYear(), now.getMonth()+1, 22);
+    fiscalEnd   = new Date(now.getFullYear(), now.getMonth()+1, 21);
   } else {
     fiscalStart = new Date(now.getFullYear(), now.getMonth()-1, 22);
-    fiscalEnd   = new Date(now.getFullYear(), now.getMonth(), 22);
+    fiscalEnd   = new Date(now.getFullYear(), now.getMonth(), 21);
   }
-  const totalDays = Math.round((fiscalEnd - fiscalStart) / 86400000);
+  // fiscalEnd for loop purposes is midnight of the 22nd — the 21st is the last work day
+  // so loop condition d < fiscalEnd correctly excludes the 22nd ✓
+  const totalDays = Math.round((fiscalEnd - fiscalStart) / 86400000) + 1;
   const elapsedDays = Math.round((now - fiscalStart) / 86400000);
   const progress = Math.min(1, Math.max(0, elapsedDays / totalDays));
   return {fiscalStart, fiscalEnd, totalDays, elapsedDays, progress};
@@ -4099,15 +4470,9 @@ function downloadReconCSV(){
 
 function openCallFromAlert(id){
   document.getElementById('alert-bar').classList.remove('visible');
-  switchTab('callbacks');
-  // After tab renders, scroll to the card for this call
-  setTimeout(function(){
-    var card = document.getElementById('cbcard-btns-'+id);
-    if(card){
-      var el = card.closest('[style*="border-radius:12px"]');
-      if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.outline='2px solid var(--amber)'; setTimeout(function(){ el.style.outline=''; },2000); }
-    }
-  }, 150);
+  // If not already on tracker tab, switch to it so user sees the log
+  if(_activeTab !== 'tracker') switchTab('tracker');
+  setTimeout(function(){ openEdit(id); }, 100);
 }
 
 /* ── Import Previous Tracker (Sheet11 column mapping) ──────────────────────
@@ -4638,8 +5003,8 @@ function clearLogSearch(){
 }
 
 function getFiscalKeyForMonth(monthLabel){
-  // monthLabel like "April 2026" → "xcl_goals_acq_cap4_April2026"
-  return getFiscalKey(_userCallType, _userCapLevel, monthLabel);
+  // Always use current _userCallType and _userCapLevel at call time
+  return 'xcl_goals_'+(_userCallType||'acq')+'_cap'+(_userCapLevel||1)+'_'+monthLabel.replace(' ','');
 }
 
 function buildFiscalMonthSelector(){
@@ -4703,15 +5068,24 @@ function updateGoalsViewingNotice(){
   const sel = document.getElementById('s-fiscal-month');
   const notice = document.getElementById('goals-viewing-notice');
   if(!sel||!notice) return;
-  const isCurrent = sel.value === getFiscalKey();
-  notice.style.display = isCurrent ? 'none' : 'block';
+  // Compare by deriving the fresh key for the selected month
+  const monthMatch = sel.value.match(/xcl_goals_[a-z]+_cap\d+_([A-Za-z]+)(\d{4})$/);
+  const freshKey = monthMatch ? getFiscalKeyForMonth(monthMatch[1]+' '+monthMatch[2]) : sel.value;
+  notice.style.display = freshKey === getFiscalKey() ? 'none' : 'block';
 }
 
 function loadGoalsForFiscalMonth(storageKey){
-  const stored = JSON.parse(localStorage.getItem(storageKey)||'{}');
-  // Use cap defaults as base, fall back to DEFAULTS if cap not set
+  // Extract month label and rebuild both keys fresh with current role
+  const monthMatch = storageKey.match(/xcl_goals_[a-z]+_cap\d+_([A-Za-z]+)(\d{4})$/);
+  const monthLabel = monthMatch ? monthMatch[1]+' '+monthMatch[2] : null;
+  const freshGoalKey = monthLabel ? getFiscalKeyForMonth(monthLabel) : storageKey;
+  const freshCbKey   = monthLabel ? getCbKeyForMonth(monthLabel)     : getCbKey();
+
+  const storedGoals = JSON.parse(localStorage.getItem(freshGoalKey)||'{}');
+  const storedCb    = JSON.parse(localStorage.getItem(freshCbKey)||'{}');
   const capDef = getCapDefaults();
-  const merged = Object.assign({}, DEFAULTS, capDef, stored);
+  const merged = Object.assign({}, DEFAULTS, capDef, storedGoals);
+
   document.getElementById('s-rev').value   = merged.rev||'';
   document.getElementById('s-xm').value    = merged.xm||'';
   document.getElementById('s-tv').value    = merged.tv||'';
@@ -4719,12 +5093,13 @@ function loadGoalsForFiscalMonth(storageKey){
   document.getElementById('s-cdv').value   = merged.cdv||'';
   document.getElementById('s-xh').value    = merged.xh||'';
   document.getElementById('s-pto').value   = merged.ptoHours||0;
-  document.getElementById('s-cb-rev').value  = merged.cbRev||0;
-  document.getElementById('s-cb-xm').value   = merged.cbXm||0;
-  document.getElementById('s-cb-tv').value   = merged.cbTv||0;
-  document.getElementById('s-cb-chsi').value = merged.cbChsi||0;
-  document.getElementById('s-cb-cdv').value  = merged.cbCdv||0;
-  document.getElementById('s-cb-xh').value   = merged.cbXh||0;
+  // CB fields come from personal CB key
+  document.getElementById('s-cb-rev').value   = storedCb.cbRev||0;
+  document.getElementById('s-cb-xm').value    = storedCb.cbXm||0;
+  document.getElementById('s-cb-tv').value    = storedCb.cbTv||0;
+  document.getElementById('s-cb-chsi').value  = storedCb.cbChsi||0;
+  document.getElementById('s-cb-cdv').value   = storedCb.cbCdv||0;
+  document.getElementById('s-cb-xh').value    = storedCb.cbXh||0;
   updatePtoPreview();
   updateGoalsViewingNotice();
 }
@@ -4942,7 +5317,7 @@ function nsAddReason(cat, inp){
 
 
 const SHARED_SETTINGS_KEYS  = ['noSaleCats','noSaleCatsVersion','outcomes','settingsVersion','goals'];
-const PERSONAL_SETTINGS_KEYS = ['ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh','schedule','workDays','alertWindows','sheetsUrl','callType','capLevel'];
+const PERSONAL_SETTINGS_KEYS = ['ptoHours','schedule','workDays','alertWindows','sheetsUrl','callType','capLevel'];
 
 /* ── Settings sync to Google Sheets ─────────────────────────────────────
  * _settings_shared tab  — org-wide: categories, outcomes
@@ -4961,13 +5336,17 @@ function pushSettingsToSheets(allSettings){
   // Always include callType and capLevel in personal
   personal.callType = _userCallType;
   personal.capLevel = _userCapLevel;
-  // Bundle all goal keys into shared.goals object
+  // Bundle all goal keys (shared) and CB keys (personal)
   const goalsBundle = {};
+  const cbBundle = {};
+  const agentId = getCurrentAgentId();
   for(let i=0; i<localStorage.length; i++){
     const k = localStorage.key(i);
     if(k && k.startsWith('xcl_goals_')) goalsBundle[k] = localStorage.getItem(k);
+    if(k && k.startsWith('xcl_cb_'+agentId+'_')) cbBundle[k] = localStorage.getItem(k);
   }
   if(Object.keys(goalsBundle).length) shared.goals = goalsBundle;
+  if(Object.keys(cbBundle).length) personal.chargebacks = cbBundle;
   const _agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || '';
   return sheetsPost({ action:'saveSettings', agentId:_agentId, shared:JSON.stringify(shared), personal:JSON.stringify(personal) })
     .then(()  => _showToast('✓ Settings saved to sheet', 'ok', 2500))
@@ -4997,8 +5376,10 @@ window.addEventListener('scroll', function(){
     _nsClose();
     return;
   }
+  const panelW2 = 280;
+  const maxLeft2 = window.innerWidth - panelW2 - 8;
   panel.style.top  = (rect.bottom + 6) + 'px';
-  panel.style.left = rect.left + 'px';
+  panel.style.left = Math.min(rect.left, maxLeft2) + 'px';
 }, { passive: true });
 
 function renderNxmTable(){
@@ -5011,7 +5392,7 @@ function renderNxmTable(){
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const eod = d => { const e=new Date(d); e.setHours(23,59,59,999); return e; };
   let filtered = calls.filter(c => c.noXmReason && c.hasSale);
-  if(filter==='fiscal'){ const fi=getFiscalInfo(); filtered=filtered.filter(c=>c.ts>=fi.fiscalStart&&c.ts<fi.fiscalEnd); }
+  if(filter==='fiscal'){ const fi=getFiscalInfo(); filtered=filtered.filter(c=>c.ts>=fi.fiscalStart&&c.ts<=new Date(fi.fiscalEnd.getTime()+86400000-1)); }
   else if(filter==='today'){ filtered=filtered.filter(c=>c.ts>=today&&c.ts<=eod(today)); }
   else if(filter==='yesterday'){ const y=new Date(today);y.setDate(y.getDate()-1);filtered=filtered.filter(c=>c.ts>=y&&c.ts<=eod(y)); }
   else if(filter==='this-week'){ const ws=new Date(today);ws.setDate(ws.getDate()-ws.getDay());filtered=filtered.filter(c=>c.ts>=ws&&c.ts<=eod(now)); }
@@ -5128,14 +5509,44 @@ window.addEventListener('scroll', function(){
   if(!panel || !btn) return;
   const rect = btn.getBoundingClientRect();
   if(rect.top < 104){ cbOpen=false; panel.style.display='none'; document.getElementById('cb-toggle').classList.remove('active'); updateNotesState(); return; }
-  panel.style.left   = rect.left + 'px';
+  const _cbMaxLeft = window.innerWidth - 288;
+  panel.style.left   = Math.min(rect.left, _cbMaxLeft) + 'px';
   panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
 }, { passive: true });
 
 function cbSetAndClose(){
   const dt = document.getElementById('f-cb-dt').value;
   if(!dt){ flash('f-cb-dt'); return; }
-  cbOpen = true; // keep cbOpen true so call logs with CB time
+
+  // Convert entered time (customer tz) → user's local tz, save converted value
+  const tzSel = document.getElementById('cb-tz');
+  const custTz = tzSel ? tzSel.value : Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const myTz   = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  if(custTz !== myTz){
+    try {
+      // Parse the entered value as customer local time → get true UTC
+      const custStr = dt + ':00';
+      const tempDate   = new Date(custStr);
+      const localOffset = tempDate.getTimezoneOffset();
+      const custDate   = new Date(tempDate.toLocaleString('en-US', {timeZone: custTz}));
+      const utcDate    = new Date(tempDate.toLocaleString('en-US', {timeZone: 'UTC'}));
+      const custOffset = (utcDate - custDate) / 60000;
+      const trueUtc    = new Date(tempDate.getTime() - localOffset * 60000 + custOffset * 60000);
+
+      // Format true UTC as user's local datetime-local value (YYYY-MM-DDTHH:MM)
+      const myDate = new Date(trueUtc.toLocaleString('en-US', {timeZone: myTz}));
+      const pad = n => String(n).padStart(2,'0');
+      const localVal =
+        myDate.getFullYear()+'-'+pad(myDate.getMonth()+1)+'-'+pad(myDate.getDate())+
+        'T'+pad(myDate.getHours())+':'+pad(myDate.getMinutes());
+      document.getElementById('f-cb-dt').value = localVal;
+    } catch(e) {
+      // If conversion fails, keep original value
+    }
+  }
+
+  cbOpen = true;
   const panel = document.getElementById('cb-panel');
   if(panel) panel.style.display = 'none';
   document.getElementById('cb-toggle').classList.add('active');
@@ -5560,12 +5971,13 @@ function inActiveFiscal(sched){
   if(!sched) return false;
   const fi = getActiveFiscalInfo();
   const d  = new Date(sched+'T00:00:00');
-  return d >= fi.fiscalStart && d < fi.fiscalEnd;
+  return d >= fi.fiscalStart && d <= fi.fiscalEnd;
 }
 
 function inActiveFiscalTs(ts){
   const fi = getActiveFiscalInfo();
-  return ts >= fi.fiscalStart && ts < fi.fiscalEnd;
+  const endOfLastDay = new Date(fi.fiscalEnd.getTime() + 86400000 - 1);
+  return ts >= fi.fiscalStart && ts <= endOfLastDay;
 }
 
 function saveCallsCache(){
@@ -6630,7 +7042,7 @@ function renderCallbacksTab(){
     var status=getCbStatus(c);
     var cbDate=c.cbTime?new Date(c.cbTime):null;
     var cbFmt=cbDate&&!isNaN(cbDate)?
-      cbDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' at '+
+      (cbDate.toDateString()===now.toDateString()?'Today ':cbDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' ')+
       cbDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
     var diff=cbDate?(cbDate-now)/60000:null;
     var timeLeft='';
@@ -6654,50 +7066,50 @@ function renderCallbacksTab(){
     card.style.cssText='background:'+sc.bg+';border:1px solid '+sc.border+';border-radius:12px;overflow:hidden;transition:box-shadow .15s';
 
     var lbl='font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:3px';
+    var cardId = 'fucard-'+c.id;
     var inner=
       '<div style="height:3px;background:'+sc.strip+';width:100%"></div>'+
-      '<div style="padding:12px 16px">'+
-        // ── Header row: type dropdown · status · time left · scheduled time ──
-        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">'+
-          '<div style="position:relative;display:inline-flex">'+
-            '<select onchange="updateFuType(\''+c.id+'\',this.value)" style="height:24px;padding:0 8px 0 6px;border-radius:6px;border:1px solid '+ftc.border+';background:'+ftc.bg+';color:'+ftc.color+';font-size:11px;font-weight:700;cursor:pointer;outline:none;font-family:var(--sans)">'+
-              ['Callback','Collections','Construction','Exception'].map(function(t){ return '<option value="'+t+'"'+(fuType===t?' selected':'')+'>'+fuTypeIcons[t]+' '+t+'</option>'; }).join('')+
-            '</select>'+
-          '</div>'+
-          '<span style="font-size:12px;font-weight:700;color:'+sc.accent+'">'+sc.icon+' '+sc.label+'</span>'+
-          (timeLeft?'<span style="font-size:11px;font-weight:600;color:'+sc.accent+';background:'+sc.bg+';border:1px solid '+sc.border+';padding:1px 8px;border-radius:20px">'+timeLeft+'</span>':'')+
-          '<div style="margin-left:auto;font-size:11px;font-weight:600;color:var(--text);font-family:var(--mono)">'+cbFmt+'</div>'+
-        '</div>'+
-        // ── Info + Notes row ──
-        '<div style="display:flex;gap:12px;margin-bottom:10px">'+
-          // Left: 2-col stack (no Logged here — moved to footer)
-          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;flex:0 0 auto;min-width:0;width:260px">'+
-            '<div><div style="'+lbl+'">Customer</div><div style="font-size:12px;font-weight:600;color:var(--text)">'+(c.cbName||'—')+'</div></div>'+
-            '<div><div style="'+lbl+'">Phone</div><div onclick="copyToClip((\''+( c.cbPhone||'').replace(/'/g,"\\'")+'\').replace(/\\D/g,\'\'),\'Phone\')" title="Click to copy" style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--text);cursor:pointer;user-select:none" data-copy="phone">'+(c.cbPhone?fmtPhone(c.cbPhone):'—')+'</div></div>'+
-            '<div><div style="'+lbl+'">Account #</div><div onclick="copyToClip(\''+( c.acctRaw||'').replace(/'/g,"\\'")+'\',' +'\'Account #\')" title="Click to copy" style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--blue);cursor:pointer;user-select:none">'+(c.acctRaw?maskAcct(c.acctRaw):'—')+'</div></div>'+
-          '</div>'+
-          // Right: Call Notes
-          '<div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">'+
-            '<div style="display:flex;align-items:center;justify-content:space-between">'+
-              '<div style="display:flex;align-items:center;gap:6px">'+
-                '<div style="'+lbl+'margin-bottom:0">Call Notes</div>'+
-                '<div style="font-size:9px;color:var(--text3);font-style:italic">edits update the call log</div>'+
-              '</div>'+
-              '<button id="cb-notes-save-'+c.id+'" onclick="saveFuNotes(\''+c.id+'\')" style="display:none;height:22px;padding:0 10px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:5px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">Save</button>'+
+      // ── Collapsed header — always visible, click to expand ──
+      '<div class="fu-card-header" onclick="toggleFuCard(\''+cardId+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;flex-wrap:nowrap;min-width:0">'+
+        '<span style="font-size:11px;font-weight:700;color:'+sc.accent+';flex-shrink:0">'+sc.icon+' '+sc.label+'</span>'+
+        (timeLeft?'<span style="font-size:10px;font-weight:600;color:'+sc.accent+';white-space:nowrap;flex-shrink:0">'+timeLeft+'</span>':'')+
+        '<span style="font-size:11px;color:var(--text2);white-space:nowrap;flex-shrink:0;font-family:var(--mono)">'+cbFmt+'</span>'+
+        '<span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;flex-shrink:0">'+(c.cbName||'—')+'</span>'+
+        (c.notes?'<span style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1">'+c.notes.split('\n')[0]+'</span>':'<span style="flex:1"></span>')+
+        '<span id="fu-chevron-'+c.id+'" style="color:var(--text3);font-size:12px;flex-shrink:0;transition:transform .2s">▾</span>'+
+      '</div>'+
+      // ── Expanded body — hidden by default ──
+      '<div id="'+cardId+'" style="display:none;border-top:1px solid '+sc.border+'">'+
+        '<div style="padding:12px 16px">'+
+          // Info + Notes row
+          '<div style="display:flex;gap:12px;margin-bottom:10px">'+
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;flex:0 0 auto;min-width:0;width:260px">'+
+              '<div><div style="'+lbl+'">Customer</div><div style="font-size:12px;font-weight:600;color:var(--text)">'+(c.cbName||'—')+'</div></div>'+
+              '<div><div style="'+lbl+'">Phone</div><div onclick="copyToClip((\''+( c.cbPhone||'').replace(/'/g,"\\'")+'\').replace(/\\D/g,\'\'),\'Phone\')" title="Click to copy" style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--text);cursor:pointer;user-select:none">'+(c.cbPhone?fmtPhone(c.cbPhone):'—')+'</div></div>'+
+              '<div><div style="'+lbl+'">Account #</div><div onclick="copyToClip(\''+( c.acctRaw||'').replace(/'/g,"\\'")+'\',' +'\'Account #\')" title="Click to copy" style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--blue);cursor:pointer;user-select:none">'+(c.acctRaw?maskAcct(c.acctRaw):'—')+'</div></div>'+
             '</div>'+
-            '<textarea id="cb-notes-ta-'+c.id+'" oninput="onFuNotesInput(\''+c.id+'\')" style="flex:1;min-height:72px;width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:7px 10px;font-size:11px;font-family:var(--sans);color:var(--text2);line-height:1.5;resize:none;outline:none;transition:border-color .15s" placeholder="No notes on this call…"></textarea>'+
+            '<div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">'+
+              '<div style="display:flex;align-items:center;justify-content:space-between">'+
+                '<div style="display:flex;align-items:center;gap:6px">'+
+                  '<div style="'+lbl+'margin-bottom:0">Call Notes</div>'+
+                  '<div style="font-size:9px;color:var(--text3);font-style:italic">edits update the call log</div>'+
+                '</div>'+
+                '<button id="cb-notes-save-'+c.id+'" onclick="saveFuNotes(\''+c.id+'\')" style="display:none;height:22px;padding:0 10px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:5px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">Save</button>'+
+              '</div>'+
+              '<textarea id="cb-notes-ta-'+c.id+'" oninput="onFuNotesInput(\''+c.id+'\')" style="flex:1;min-height:60px;width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:7px 10px;font-size:11px;font-family:var(--sans);color:var(--text2);line-height:1.5;resize:none;outline:none;transition:border-color .15s" placeholder="No notes on this call…"></textarea>'+
+            '</div>'+
           '</div>'+
-        '</div>'+
-        // ── Action buttons + logged footer ──
-        '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
-          '<div style="display:flex;gap:6px;flex-wrap:wrap;flex:1" id="cbcard-btns-'+c.id+'"></div>'+
-          '<div style="font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:auto;padding-left:8px">'+logDate+'</div>'+
+          // Action buttons + logged footer
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap;flex:1" id="cbcard-btns-'+c.id+'"></div>'+
+            '<div style="font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:auto;padding-left:8px">'+logDate+'</div>'+
+          '</div>'+
         '</div>'+
       '</div>';
 
     card.innerHTML=inner;
 
-    // Set notes value via JS (avoids HTML-injection / double-render if notes contains special chars)
+    // Set notes value via JS
     var ta = card.querySelector('#cb-notes-ta-'+c.id);
     if(ta){
       ta.value = c.notes || '';
@@ -6725,8 +7137,9 @@ function renderCallbacksTab(){
         saleBtn.style.cssText='height:28px;padding:0 14px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--amber);cursor:pointer';
         saleBtn.dataset.cbid=c.id;
         saleBtn.onclick=function(){
-          var p=document.getElementById('cb-sale-'+this.dataset.cbid);
-          if(p) p.style.display=p.style.display==='flex'?'none':'flex';
+          var id=parseInt(this.dataset.cbid);
+          window._editSaleToday=true; // flag: set sched to today on save
+          openEdit(id);
         };
         btns.appendChild(saleBtn);
       }
@@ -6752,23 +7165,13 @@ function renderCallbacksTab(){
       btns.appendChild(undoneBtn);
     }
 
-    if(c.cbPhone){
-      var callBtn=document.createElement('button');
-      callBtn.innerHTML='📞 Call';
-      callBtn.style.cssText='height:28px;padding:0 14px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer';
-      callBtn.dataset.phone=c.cbPhone;
-      callBtn.onclick=function(){ window.open('tel:'+this.dataset.phone.replace(/\D/g,''),'_self'); };
-      btns.appendChild(callBtn);
-    }
-
     // ✎ Edit Log button — opens the call in the Tracker tab edit row
     var editLogBtn=document.createElement('button');
     editLogBtn.innerHTML='✎ Edit Log';
     editLogBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
     editLogBtn.dataset.cbid=c.id;
     editLogBtn.onclick=function(){
-      switchTab('tracker');
-      setTimeout(function(){ openEdit(parseInt(this.dataset.cbid)); }.bind(this), 80);
+      openEdit(parseInt(this.dataset.cbid));
     };
     btns.appendChild(editLogBtn);
 
@@ -6782,28 +7185,6 @@ function renderCallbacksTab(){
       '<button onclick="saveCbResched(\''+c.id+'\')" style="height:30px;padding:0 14px;background:var(--purple);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Save</button>'+
       '<button onclick="document.getElementById(\'cb-resched-'+c.id+'\').style.display=\'none\'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer">Cancel</button>';
     card.querySelector('div[style*="padding:12px 16px"]').appendChild(reschedPanel);
-
-    // Sale panel — only for Callback type
-    if(c.fuType==='Callback'||!c.fuType){
-      var salePanel=document.createElement('div');
-      salePanel.id='cb-sale-'+c.id;
-      salePanel.style.cssText='display:none;flex-direction:column;gap:10px;margin-top:10px;padding:12px 14px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:8px';
-      salePanel.innerHTML=
-        '<div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:.05em;text-transform:uppercase">Record Sale</div>'+
-        '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">'+
-          '<div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Revenue ($)</label><input type="number" id="cb-sale-rev-'+c.id+'" min="0" step="1" placeholder="0" style="width:90px;height:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none"></div>'+
-          '<div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">XM Lines</label><input type="number" id="cb-sale-xm-'+c.id+'" min="0" step="1" placeholder="0" style="width:70px;height:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none"></div>'+
-          '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+
-            '<label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer"><input type="checkbox" id="cb-sale-tv-'+c.id+'" style="accent-color:var(--blue)"> TV</label>'+
-            '<label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer"><input type="checkbox" id="cb-sale-chsi-'+c.id+'" style="accent-color:var(--blue)"> CHSI</label>'+
-            '<label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer"><input type="checkbox" id="cb-sale-cdv-'+c.id+'" style="accent-color:var(--blue)"> CDV</label>'+
-            '<label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer"><input type="checkbox" id="cb-sale-xh-'+c.id+'" style="accent-color:var(--blue)"> XH</label>'+
-          '</div>'+
-          '<button onclick="saveCbSale(\''+c.id+'\')" style="height:30px;padding:0 16px;background:var(--amber);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap">💰 Save Sale</button>'+
-          '<button onclick="document.getElementById(\'cb-sale-'+c.id+'\').style.display=\'none\'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer">Cancel</button>'+
-        '</div>';
-      card.querySelector('div[style*="padding:12px 16px"]').appendChild(salePanel);
-    }
 
     el.appendChild(card);
   });
@@ -6838,6 +7219,16 @@ function saveFuNotes(id){
   var btn = document.getElementById('cb-notes-save-'+id);
   if(btn){ btn.textContent='Saved ✓'; setTimeout(function(){ btn.style.display='none'; btn.textContent='Save'; }, 1200); }
   _showToast('✓ Notes saved', 'ok', 1500);
+}
+
+function toggleFuCard(id){
+  var body = document.getElementById(id);
+  var cardId = id.replace('fucard-','');
+  var chevron = document.getElementById('fu-chevron-'+cardId);
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if(chevron) chevron.style.transform = open ? '' : 'rotate(180deg)';
 }
 
 function updateFuType(id, newType){
@@ -7754,6 +8145,27 @@ function launchFireworks(isXm,isTest){
   <div style="display:flex;gap:6px;margin-top:8px">
     <button onclick="rguFillLog()" style="flex:1;height:28px;background:var(--blue);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">&#x2192; Use in Log</button>
     <button onclick="rguReset()" style="height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">↺ Reset</button>
+  </div>
+</div>
+
+<div id="edit-overlay" onclick="closeEdit()"></div>
+<div id="edit-panel">
+  <div class="edit-panel-header">
+    <div class="edit-panel-title">
+      ✎ Edit Call
+      <span class="edit-panel-meta" id="edit-panel-meta"></span>
+    </div>
+    <button class="edit-panel-close" onclick="closeEdit()" title="Cancel (Esc)">✕</button>
+  </div>
+  <div class="edit-panel-body" id="edit-panel-body">
+    <!-- Log form body is moved here on open -->
+    <!-- XM line activation dates — shown when call has XM lines -->
+    <div id="edit-xm-lines" style="display:none;background:var(--surface);border:1px solid rgba(20,184,166,.3);border-radius:10px;padding:12px 14px"></div>
+  </div>
+  <div class="edit-panel-footer">
+    <button class="submit-btn" id="edit-save-btn" onclick="saveEdit()">✓ Save Changes</button>
+    <button class="e-btn cancel" onclick="closeEdit()" style="height:38px;padding:0 18px">Cancel</button>
+    <button class="e-btn del" id="edit-del-btn" style="height:38px;padding:0 18px;margin-left:auto">Delete Call</button>
   </div>
 </div>
 
