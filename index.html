@@ -1077,30 +1077,6 @@ Goals shown for your type+cap level">…</div>
           <div class="token-grid" id="token-grid"></div>
         </div>
       </div>
-      <!-- Schedule -->
-      <div class="disp-section">
-        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
-          <span class="disp-section-hdr-title">📅 Schedule</span>
-          <span class="disp-section-chevron">▼</span>
-        </div>
-        <div class="disp-section-body">
-          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Sets which days appear as work days on the calendar.</div>
-          <div style="display:flex;gap:8px;margin-bottom:12px">
-            <button class="sched-btn active" id="sched-5x8" onclick="setSchedType('5x8',this)">5×8 hrs</button>
-            <button class="sched-btn" id="sched-4x10" onclick="setSchedType('4x10',this)">4×10 hrs</button>
-          </div>
-          <div class="settings-section-label" style="margin-top:0">Work Days</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px" id="workday-grid">
-            <label class="workday-lbl"><input type="checkbox" id="wd-0" value="0"><span>Sun</span></label>
-            <label class="workday-lbl"><input type="checkbox" id="wd-1" value="1" checked><span>Mon</span></label>
-            <label class="workday-lbl"><input type="checkbox" id="wd-2" value="2" checked><span>Tue</span></label>
-            <label class="workday-lbl"><input type="checkbox" id="wd-3" value="3" checked><span>Wed</span></label>
-            <label class="workday-lbl"><input type="checkbox" id="wd-4" value="4" checked><span>Thu</span></label>
-            <label class="workday-lbl"><input type="checkbox" id="wd-5" value="5" checked><span>Fri</span></label>
-            <label class="workday-lbl"><input type="checkbox" id="wd-6" value="6"><span>Sat</span></label>
-          </div>
-        </div>
-      </div>
       <!-- Tooltips -->
       <div class="disp-section">
         <div class="disp-section-hdr" onclick="toggleDispSection(this)">
@@ -1213,6 +1189,31 @@ Goals shown for your type+cap level">…</div>
             <div class="settings-field cb-field"><label style="color:var(--red)">CHSI</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-chsi" min="0" step="1" value="0" class="cb-input"></div></div>
             <div class="settings-field cb-field"><label style="color:var(--red)">CDV</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-cdv" min="0" step="1" value="0" class="cb-input"></div></div>
             <div class="settings-field cb-field"><label style="color:var(--red)">XH</label><div style="display:flex;align-items:center;gap:0"><span class="cb-prefix">−</span><input type="number" id="s-cb-xh" min="0" step="1" value="0" class="cb-input"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="disp-section">
+        <div class="disp-section-hdr" onclick="toggleDispSection(this)">
+          <span class="disp-section-hdr-title">📅 Schedule</span>
+          <span class="disp-section-chevron">▼</span>
+        </div>
+        <div class="disp-section-body">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Sets which days appear as work days on the calendar and affects remaining days calculation.</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button class="sched-btn active" id="sched-5x8" onclick="setSchedType('5x8',this)">5×8 hrs</button>
+            <button class="sched-btn" id="sched-4x10" onclick="setSchedType('4x10',this)">4×10 hrs</button>
+          </div>
+          <div class="settings-section-label" style="margin-top:0">Work Days</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px" id="workday-grid">
+            <label class="workday-lbl"><input type="checkbox" id="wd-0" value="0"><span>Sun</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-1" value="1" checked><span>Mon</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-2" value="2" checked><span>Tue</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-3" value="3" checked><span>Wed</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-4" value="4" checked><span>Thu</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-5" value="5" checked><span>Fri</span></label>
+            <label class="workday-lbl"><input type="checkbox" id="wd-6" value="6"><span>Sat</span></label>
           </div>
         </div>
       </div>
@@ -1846,6 +1847,35 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+'use strict';
+
+// ── Privacy: suppress console output in production ──────────────────────────
+// Enable debug mode: localStorage.setItem('xcl_debug','1') then reload
+(function(){
+  const debug = localStorage.getItem('xcl_debug') === '1';
+  if(!debug){
+    const noop = function(){};
+    console.log   = noop;
+    console.info  = noop;
+    console.debug = noop;
+    // Sanitize warn/error — strip anything that looks like PII
+    const _warn  = console.warn.bind(console);
+    const _error = console.error.bind(console);
+    const sanitize = function(args){
+      return args.map(function(a){
+        if(typeof a === 'string'){
+          return a.replace(/\b\d{9,13}\b/g,'[acct]')
+                  .replace(/\(\d{3}\)\s?\d{3}-\d{4}/g,'[phone]')
+                  .replace(/\b\d{3}-\d{3}-\d{4}\b/g,'[phone]');
+        }
+        if(typeof a === 'object' && a !== null && (a.acctRaw||a.cbPhone||a.cbName)) return '[call record]';
+        return a;
+      });
+    };
+    console.warn  = function(){ _warn.apply(console,  sanitize(Array.from(arguments))); };
+    console.error = function(){ _error.apply(console, sanitize(Array.from(arguments))); };
+  }
+})();
 // Per-type slider definitions
 var CELEB_SLIDERS = {
   fireworks: [
@@ -1937,8 +1967,8 @@ const NO_SALE_CATS_DEFAULTS = {
 // Live object — loaded from settings if saved, otherwise seeded from defaults
 const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
-const XCL_CALLS_KEY = 'xcl_calls_cache'; // base key — suffixed with agentId at runtime
-function getCallsCacheKey(){ return XCL_CALLS_KEY; } // fixed key — auth disabled
+const XCL_CALLS_KEY = 'xcl_calls_cache';
+function getCallsCacheKey(){ const id = getCurrentAgentId(); return id && id !== 'guest' ? XCL_CALLS_KEY+'_'+id : XCL_CALLS_KEY; }
 const XM_LINE_REV = 45;
 document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL();
 let _userCallType='acq',_userCapLevel=2;
@@ -2343,6 +2373,13 @@ function resetForm(){
   cbOpen=false;
   const cbt=document.getElementById('cb-toggle');if(cbt)cbt.classList.remove('active');
   const cbp=document.getElementById('cb-panel');if(cbp)cbp.style.display='none';
+  const cbtz=document.getElementById('cb-tz');
+  if(cbtz){
+    const localTz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const opt=Array.from(cbtz.options).find(o=>o.value===localTz);
+    cbtz.selectedIndex=opt?Array.from(cbtz.options).indexOf(opt):0;
+  }
+  const cbmt=document.getElementById('cb-mytime');if(cbmt)cbmt.textContent='';
   updateNotesState();
   updatePlay();
   
@@ -3041,10 +3078,9 @@ function updateStats(){
   setTimeout(updateWindowTitle,0);
   setTimeout(updateWindowTitle, 0);
   // ── Load goals for the active fiscal period ─────────────────────────────
-  const activeFi   = getActiveFiscalInfo();
-  const activeKey  = getFiscalKey(_userCallType, _userCapLevel,
-                       activeFi.label || getFiscalMonth());
-  const activeCbKey = getCbKey(activeFi.label || getFiscalMonth());
+  const activeFiscalMonth = getFiscalMonth();
+  const activeKey  = getFiscalKey(_userCallType, _userCapLevel, activeFiscalMonth);
+  const activeCbKey = getCbKey(activeFiscalMonth);
   const savedGoals = JSON.parse(localStorage.getItem(activeKey) || '{}');
   const savedCb    = JSON.parse(localStorage.getItem(activeCbKey) || '{}');
   const _capDef    = getCapDefaults();
@@ -3226,7 +3262,8 @@ function getFiscalKey(type, cap, month){
 }
 
 function getCurrentAgentId(){
-  return (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || 'guest';
+  // Always prefer localStorage directly — _session may not be set yet at startup
+  return localStorage.getItem('xcl_sales_id') || (_session && _session.agentId) || 'guest';
 }
 
 function getCbKey(month){
@@ -3259,13 +3296,18 @@ const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cb
 function loadSettings(){
   const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
   const g=JSON.parse(localStorage.getItem(getFiscalKey())||'{}');
+  const cb=JSON.parse(localStorage.getItem(getCbKey())||'{}');
   const capDef=getCapDefaults();
   // Strip goal fields from global settings — they belong only in fiscal storage
   const goalFields=['rev','xm','tv','chsi','cdv','xh'];
   const sClean=Object.assign({},s);
   goalFields.forEach(k=>delete sClean[k]);
   // Priority: saved fiscal goals (g) > cap defaults > global settings
-  return Object.assign({},DEFAULTS,sClean,capDef,g);
+  // CB fields come from personal CB key
+  return Object.assign({},DEFAULTS,sClean,capDef,g,{
+    cbRev:cb.cbRev||0, cbXm:cb.cbXm||0, cbTv:cb.cbTv||0,
+    cbChsi:cb.cbChsi||0, cbCdv:cb.cbCdv||0, cbXh:cb.cbXh||0
+  });
 }
 function applySettings(s){
   window._schedule = s.schedule||'5x8';
@@ -3280,12 +3322,11 @@ function applySettings(s){
   window._sheetsUrl=s.sheetsUrl||localStorage.getItem('xcl_sheets_url')||'';
   if(window._sheetsUrl)localStorage.setItem('xcl_sheets_url',window._sheetsUrl);
   if(Array.isArray(s.outcomes)&&s.outcomes.length){
-    OUTCOMES=[...new Set([...LOCKED_OUTCOMES,...(s.outcomes||[]).filter(o=>o)])];if(s.noSaleCats){
-    // Restore saved structure
-    if(s.noSaleCats && Object.keys(s.noSaleCats).length > 0){
-      Object.keys(NO_SALE_CATS).forEach(k=>delete NO_SALE_CATS[k]);
-      Object.assign(NO_SALE_CATS, s.noSaleCats);
-    }
+    OUTCOMES=[...new Set([...LOCKED_OUTCOMES,...(s.outcomes||[]).filter(o=>o)])];
+  }
+  if(s.noSaleCats && Object.keys(s.noSaleCats).length > 0){
+    Object.keys(NO_SALE_CATS).forEach(k=>delete NO_SALE_CATS[k]);
+    Object.assign(NO_SALE_CATS, s.noSaleCats);
     // Merge: add any new default categories/reasons missing from saved data
     if((s.noSaleCatsVersion||0) < NO_SALE_CATS_VERSION){
       Object.keys(NO_SALE_CATS_DEFAULTS).forEach(cat => {
@@ -3298,7 +3339,6 @@ function applySettings(s){
         }
       });
     }
-  }
   }
   // refresh outcome dropdowns in any open edit rows
   // e-reason is now a custom two-tier no-sale selector — skip auto-refresh
@@ -3733,7 +3773,7 @@ function upsertCallToSheets(call) {
 function deleteCallFromSheets(id) {
   if (!getSheetsUrl()) return;
   _showToast('Deleting from sheet…', 'syncing');
-  sheetsPost({ action: 'delete', id: id })
+  sheetsPost({ action: 'delete', id: id, agentId: getCurrentAgentId() })
     .then(function() {
       _showToast('✓ Deleted from sheet', 'ok', 2000);
     })
@@ -3799,7 +3839,7 @@ function _syncRunPush(allCalls) {
       return copy;
     });
 
-    sheetsPost({ action: 'upsertBatch', calls: serialized })
+    sheetsPost({ action: 'upsertBatch', agentId: getCurrentAgentId(), calls: serialized })
       .then(function() {
         done++;
         pushNext();
@@ -3818,7 +3858,7 @@ function _syncVerify(expectedTotal, pushFailed) {
   _syncShow('Verifying sync…', 'Pulling sheet to confirm all ' + expectedTotal + ' calls landed', 82);
   setSheetsStatus('Verifying…', 'var(--amber)');
 
-  sheetsGet({ action: 'load' })
+  sheetsGet({ action: 'load', agentId: getCurrentAgentId() })
     .then(function(d) {
       if (d.status !== 'ok') {
         _syncShow('Verification failed', d.message || 'Sheet returned an error', 100, 'error');
@@ -3879,7 +3919,7 @@ function _syncRetry(missing, originalTotal, sheetCount) {
     if (retried >= total) {
       // Final check
       setTimeout(function() {
-        sheetsGet({ action: 'load' })
+        sheetsGet({ action: 'load', agentId: getCurrentAgentId() })
           .then(function(d) {
             var sheetIds   = new Set((d.calls || []).map(function(c) { return String(c.id); }));
             var stillMiss  = missing.filter(function(c) { return !sheetIds.has(String(c.id)); });
@@ -3967,7 +4007,7 @@ function loadFromSheets(){
   if(!url) return;
   _syncShow('Loading from Google Sheets\u2026', '', 0);
 
-  sheetsGet({action:'load'})
+  sheetsGet({action:'load', agentId: getCurrentAgentId()})
   .then(d => {
     if(d.status !== 'ok'){
       _syncHide();
@@ -3975,7 +4015,10 @@ function loadFromSheets(){
       return;
     }
     _syncShow('Merging calls\u2026', '', 60);
-    const sheetCalls = (d.calls||[]).map(normalizeCall);
+    const myId = getCurrentAgentId();
+    const allSheetCalls = (d.calls||[]).map(normalizeCall);
+    // Only accept calls that belong to this user, or have no agentId (legacy/backfilled)
+    const sheetCalls = allSheetCalls.filter(c => !c.agentId || c.agentId === myId);
     const sheetMap   = new Map(sheetCalls.map(c => [String(c.id), c]));
     const localMap   = new Map(calls.map(c  => [String(c.id),  c]));
 
@@ -5982,14 +6025,19 @@ function inActiveFiscalTs(ts){
 
 function saveCallsCache(){
   try {
-    localStorage.setItem(getCallsCacheKey(), JSON.stringify(calls.map(c => Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts}))));
+    const data = JSON.stringify(calls.map(c => Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts})));
+    localStorage.setItem(getCallsCacheKey(), btoa(unescape(encodeURIComponent(data))));
   } catch(e) { console.warn('Cache save failed:', e); }
 }
 function loadCallsCache(){
   try {
     const raw = localStorage.getItem(getCallsCacheKey());
     if(!raw) return [];
-    return JSON.parse(raw).map(normalizeCall);
+    // Support both encoded and legacy plain JSON
+    let parsed;
+    try { parsed = JSON.parse(decodeURIComponent(escape(atob(raw)))); }
+    catch(e) { parsed = JSON.parse(raw); } // fallback for legacy unencoded cache
+    return parsed.map(normalizeCall);
   } catch(e) { console.warn('Cache load failed:', e); return []; }
 }
 
@@ -6268,13 +6316,12 @@ function showLogoutConfirm(){
 }
 
 function doLogout(){
+  const cacheKey = getCallsCacheKey(); // get key before clearing session
   _session = null;
   localStorage.removeItem('xcl_session');
-  // Per-user cache cleared above — also remove any legacy shared cache
-  localStorage.removeItem('xcl_calls_cache');
+  localStorage.removeItem('xcl_calls_cache'); // legacy key cleanup
+  localStorage.removeItem(cacheKey);
   calls = [];
-  // Clear per-user cache on logout
-  if(localStorage.getItem(getCallsCacheKey())) localStorage.removeItem(getCallsCacheKey());
   render();
   document.getElementById('logout-confirm').style.display='none';
   const badge = document.getElementById('session-badge');
@@ -6570,6 +6617,8 @@ function deleteUser(agentId){
     applySettings(loadSettings());
     updateRoleBtns(); // sync cap dropdown + ACQ/MOV buttons
     updateRoleChip();
+    // Set callback timezone dropdown to user's local timezone
+    (function(){ const cbtz=document.getElementById('cb-tz'); if(!cbtz) return; const localTz=Intl.DateTimeFormat().resolvedOptions().timeZone; const opt=Array.from(cbtz.options).find(o=>o.value===localTz); if(opt) cbtz.value=opt.value; })();
     applySessionUI();
     var cachedCalls = loadCallsCache();
     if(cachedCalls.length){
@@ -6726,10 +6775,18 @@ function saveSalesId(val){
         if(d.shared){
           try{
             var shared = typeof d.shared==='string' ? JSON.parse(d.shared) : d.shared;
+            // Restore shared goal keys bundle
             if(shared.goals){
               var gb = typeof shared.goals==='string' ? JSON.parse(shared.goals) : shared.goals;
               Object.entries(gb).forEach(function(kv){ if(kv[0].startsWith('xcl_goals_')) localStorage.setItem(kv[0],kv[1]); });
             }
+            // Restore global settings (outcomes, noSaleCats) into xcl_settings
+            var existingSettings = JSON.parse(localStorage.getItem('xcl_settings')||'{}');
+            if(shared.outcomes) existingSettings.outcomes = shared.outcomes;
+            if(shared.noSaleCats) existingSettings.noSaleCats = shared.noSaleCats;
+            if(shared.noSaleCatsVersion) existingSettings.noSaleCatsVersion = shared.noSaleCatsVersion;
+            localStorage.setItem('xcl_settings', JSON.stringify(existingSettings));
+            applySettings(loadSettings());
           }catch(e){}
         }
         // Restore personal settings (cap level, call type, schedule etc.)
@@ -6741,6 +6798,11 @@ function saveSalesId(val){
             saveUserProfile(); // persist to localStorage
             updateRoleBtns();
             updateRoleChip();
+            // Restore personal CB history
+            if(personal.chargebacks){
+              var cbb = typeof personal.chargebacks==='string' ? JSON.parse(personal.chargebacks) : personal.chargebacks;
+              Object.entries(cbb).forEach(function(kv){ if(kv[0].startsWith('xcl_cb_')) localStorage.setItem(kv[0],kv[1]); });
+            }
             reloadGoalsForRole();
           }catch(e){}
         }
@@ -6943,11 +7005,12 @@ function renderCallbacksTab(){
 
   function getCbStatus(c){
     if(c.cbDone) return 'done';
-    // Non-timed follow-ups are always 'pending'
-    if(!c.cbTime || c.cbTime === '') return c.fuType ? 'pending' : 'unknown';
+    // No time set — if it has a fuType it's a pending non-timed follow-up
+    if(!c.cbTime || c.cbTime === '') return c.fuType ? 'pending' : null;
     var t = new Date(c.cbTime);
     if(isNaN(t)) t = new Date(c.cbTime.replace(' ','T'));
-    if(isNaN(t)) return 'unknown';
+    // Unparseable time but has fuType — treat as pending rather than dropping it
+    if(isNaN(t)) return c.fuType ? 'pending' : null;
     var diff = (t - now)/60000;
     if(diff < 0) return 'overdue';
     if(diff <= 30) return 'due-soon';
@@ -6955,7 +7018,7 @@ function renderCallbacksTab(){
     return 'pending';
   }
 
-  // Include any call that has a fuType set OR has a cbTime
+  // Include any call that has a fuType OR a cbTime
   var cbCalls = calls.filter(function(c){
     return (c.fuType && c.fuType !== '') || (c.cbTime && c.cbTime !== '');
   });
@@ -6965,7 +7028,8 @@ function renderCallbacksTab(){
 
   var filtered = typeFiltered.filter(function(c){
     var s = getCbStatus(c);
-    if(filter==='open') return s!=='done' && s!=='unknown';
+    if(s === null) return false; // no fuType and no parseable cbTime — truly nothing to show
+    if(filter==='open') return s !== 'done';
     if(filter==='overdue') return s==='overdue';
     if(filter==='due-today') return s==='due-today'||s==='due-soon';
     if(filter==='due-soon') return s==='due-soon';
@@ -6973,15 +7037,16 @@ function renderCallbacksTab(){
   });
 
   filtered.sort(function(a,b){
-    var order={overdue:0,'due-soon':1,'due-today':2,pending:3,done:4,unknown:5};
-    var sa=getCbStatus(a),sb=getCbStatus(b);
-    if(order[sa]!==order[sb]) return order[sa]-order[sb];
+    var order={overdue:0,'due-soon':1,'due-today':2,pending:3,done:4};
+    var sa=getCbStatus(a)||'pending', sb=getCbStatus(b)||'pending';
+    var oa=order[sa]!==undefined?order[sa]:3, ob=order[sb]!==undefined?order[sb]:3;
+    if(oa!==ob) return oa-ob;
     return new Date(a.cbTime||0)-new Date(b.cbTime||0);
   });
 
   // Summary strip
   var counts={overdue:0,'due-soon':0,'due-today':0,pending:0,done:0};
-  typeFiltered.forEach(function(c){ var s=getCbStatus(c); if(counts[s]!==undefined) counts[s]++; });
+  typeFiltered.forEach(function(c){ var s=getCbStatus(c); if(s && counts[s]!==undefined) counts[s]++; });
   var summEl=document.getElementById('cb-tab-summary');
   if(summEl){
     var strips=[
