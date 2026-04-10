@@ -2129,16 +2129,16 @@ function selectNsCat(cat){
 function selectNsSub(sub){
   _nsSub = sub;
   _nsState = 'tier2';
+  _nsPanelOpen = false; // mark closed before updating display
   // Show selection highlighted briefly, then fade panel out
   renderNsPanel();
   colorReason();
   updateNosaleDisplay();
   const tog = document.getElementById('ns-toggle');
   if(tog) tog.classList.add('active');
-  // Fade out after short confirmation delay
+  // Fade panel out after short confirmation delay
+  const panel = document.getElementById('nosale-panel');
   setTimeout(function(){
-    _nsPanelOpen = false;
-    const panel = document.getElementById('nosale-panel');
     if(panel){
       panel.style.transition = 'opacity .35s';
       panel.style.opacity = '0';
