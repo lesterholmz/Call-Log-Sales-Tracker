@@ -6272,6 +6272,8 @@ function startSession(user){
   _userCallType = user.callType || 'acq';
   _userCapLevel = parseInt(user.capLevel) || 1;
   localStorage.setItem('xcl_session', JSON.stringify({agentId:user.agentId, ts:Date.now()}));
+  // Persist agentId immediately so getCallsCacheKey() and getCbKey() work correctly
+  localStorage.setItem('xcl_sales_id', user.agentId);
   // Cache user locally
   const cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
   const idx = cached.findIndex(function(u){ return u.agentId===user.agentId; });
@@ -6279,7 +6281,7 @@ function startSession(user){
   localStorage.setItem('xcl_user_cache', JSON.stringify(cached));
   hideLoginScreen();
   applySessionUI();
-  // Load per-user cache now that session is known
+  // Load per-user cache now that session and agentId are both set
   var cachedCalls = loadCallsCache();
   if(cachedCalls.length){
     calls = cachedCalls;
