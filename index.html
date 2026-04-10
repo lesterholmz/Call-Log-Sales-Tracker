@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Xfinity Call Logger v0.3.31.2</title>
+<title>Xfinity Call Logger v0.4.9.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -166,7 +166,6 @@ tbody tr.read-row:last-child{border-bottom:none}
 tbody tr.read-row:hover{background:rgba(59,130,246,.07)}
 .edit-hint{opacity:0;transition:opacity .15s;font-size:9px;color:var(--blue);font-family:var(--mono);margin-left:4px}
 tbody tr.read-row:hover .edit-hint{opacity:1}
-tbody tr.edit-row{border-bottom:1px solid var(--border);background:rgba(59,130,246,.06);outline:2px solid var(--blue);outline-offset:-2px}
 tbody tr.has-callback{background:rgba(167,139,250,.04)}
 tbody tr.callback-due{background:rgba(245,158,11,.06)!important;animation:cbPulse 2s ease-in-out infinite}
 @keyframes cbPulse{0%,100%{background:rgba(245,158,11,.06)}50%{background:rgba(245,158,11,.13)}}
@@ -188,28 +187,11 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .p-ie{background:rgba(34,197,94,.08);color:var(--green);border:1px solid rgba(34,197,94,.2)}
 .p-tech{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
 .p-other{background:rgba(255,255,255,.04);color:var(--text3);border:1px solid var(--border2)}
-.e-input{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 9px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;width:100%}
-.e-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
-.e-input.e-select{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none;width:100%;cursor:pointer}
-.e-select:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
-.e-select option{background:var(--card)}
-.edit-action-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(59,130,246,.08);border-top:1px solid var(--blue);flex-wrap:wrap}
-.edit-action-bar .hint{font-size:10px;color:var(--text3);font-family:var(--mono);margin-left:auto}
 .e-btn{height:30px;padding:0 14px;border:none;border-radius:6px;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all .12s;white-space:nowrap}
 .e-btn.save{background:var(--green);color:#fff}.e-btn.save:hover{background:#16a34a}
 .e-btn.cancel{background:var(--card2);color:var(--text2);border:1px solid var(--border2)}.e-btn.cancel:hover{color:var(--red)}
 .e-btn.del{background:var(--red-lt);color:var(--red);border:1px solid rgba(248,113,113,.2)}.e-btn.del:hover{background:rgba(248,113,113,.15)}
 .e-btn.cbdone{background:var(--purple-lt);color:var(--purple);border:1px solid rgba(167,139,250,.2)}.e-btn.cbdone:hover{background:rgba(167,139,250,.15)}
-.e-products{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.e-prod-check{display:flex;flex-direction:column;align-items:center;gap:3px}
-.e-prod-label{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
-.e-chk{width:28px;height:28px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
-.e-chk:hover{background:var(--card2)}
-.e-chk.on{background:var(--green-lt);border-color:var(--green)}
-.e-chk.ie{background:var(--amber-lt);border-color:var(--amber)}
-.e-chk svg{width:15px;height:15px;stroke:var(--text3);stroke-width:2.5;fill:none}
-.e-chk.on svg{stroke:var(--green)}
-.e-chk.ie svg{stroke:var(--amber)}
 .empty{text-align:center;padding:48px;color:var(--text3);font-size:13px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 
@@ -404,7 +386,6 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .cal-day.today .cal-day-dow{color:rgba(0,0,0,.75)}
 .cal-day.today .cal-day-num{color:var(--amber);font-weight:700}
 
-tbody tr.edit-row{display:none}
 
 #back-to-top{
   position:fixed;bottom:16px;right:calc(50% - 524px);z-index:500;
@@ -840,7 +821,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <div class="header">
   <div class="brand"><div class="brand-logo">X</div><div class="brand-name">Xfinity <span>Call Logger</span></div></div>
   <div class="header-right">
-    <div class="version-chip">v0.3.31.2</div>
+    <div class="version-chip">v0.4.9.1</div>
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
     <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
@@ -1238,7 +1219,7 @@ Goals shown for your type+cap level">…</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
         <button class="outcome-add-btn" onclick="testSheetsConnection()" style="font-size:11px;justify-content:center">⚡ Test</button>
         <button class="outcome-add-btn" onclick="loadFromSheets()" style="font-size:11px;justify-content:center;background:var(--teal-lt);border-color:rgba(20,184,166,.3);color:var(--teal)" title="Pull calls from sheet into tracker">↓ Pull from Sheet</button>
-        <button class="outcome-add-btn" onclick="syncAllToSheets()" style="font-size:11px;justify-content:center;grid-column:1/-1;background:var(--blue-lt);border-color:rgba(59,130,246,.3);color:var(--blue)" title="Push all local calls to sheet, then verify">↑ Push All Calls to Sheet</button>
+        
       </div>
       <div style="margin-top:6px">
         <span id="sheets-status" style="font-size:11px;color:var(--text3);font-family:var(--mono);display:block;min-height:16px"></span>
@@ -2713,22 +2694,6 @@ function delCall(id){
   render(); updateStats(); saveCallsCache();
 }
 function markCbDone(id){const c=calls.find(x=>String(x.id)===String(id));if(c){c.cbDone=true;render();updateStats();checkAlerts();saveCallsCache();upsertCallToSheets(c);}}
-function eStepXm(d){editState.xm=Math.max(0,Math.min(10,(editState.xm||0)+d));const el=document.getElementById('e-xm-val');if(el)el.textContent=editState.xm;const w=document.getElementById('e-xm-wrap');if(w){w.style.borderColor=editState.xm>0?'var(--teal)':'var(--border2)';w.style.background=editState.xm>0?'var(--teal-lt)':'var(--surface)';}if(editingId)updateEditRevTotal(editingId);}
-function eToggleProd(k){editState[k]=!editState[k];const el=document.getElementById('e-chk-'+k);if(!el)return;const ie=k==='chsi'&&editState.chsi&&editState.ie;el.className='e-chk'+(k==='chsi'?(editState.chsi?(ie?' ie':' on'):''):(editState[k]?' on':''));el.querySelector('svg').style.stroke=editState[k]?'':'var(--text3)';}
-function eToggleIE(){
-  editState.ie=!editState.ie;
-  const btn=document.getElementById('e-ie-btn');
-  if(btn){btn.style.background=editState.ie?'var(--amber-lt)':'var(--surface)';btn.style.borderColor=editState.ie?'var(--amber)':'var(--border2)';btn.style.color=editState.ie?'var(--amber)':'var(--text3)';}
-  // Also refresh CHSI button appearance since IE affects its credit
-  const chsiEl=document.getElementById('e-chk-chsi');
-  if(chsiEl&&editState.chsi){chsiEl.className='e-chk'+(editState.ie?' ie':' on');}
-}
-function eToggleBulk(){
-  editState.bulk=!editState.bulk;
-  const btn=document.getElementById('e-bulk-btn');
-  if(btn){btn.style.background=editState.bulk?'var(--blue-lt)':'var(--surface)';btn.style.borderColor=editState.bulk?'var(--blue)':'var(--border2)';btn.style.color=editState.bulk?'var(--blue)':'var(--text3)';}
-}
-function eReasonChange(){const re=document.getElementById('e-reason');if(!re)return;const t2=document.getElementById('e-nosale-tier2');if(!t2)return;if(re.value==='NO SALE MADE'){const cats=document.getElementById('e-nosale-cat');if(cats&&cats.options.length<2){cats.innerHTML='<option value="">— reason category —</option>'+Object.keys(NO_SALE_CATS).map(c=>`<option>${c}</option>`).join('');}t2.style.display='flex';}else{t2.style.display='none';}}
 function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
 function fmtCb(iso){if(!iso)return'';const d=new Date(iso);return d.toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}
 function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=new Date(c.cbTime).getTime()-Date.now();if(ms<0)return'overdue';const maxW=Math.max(...(window._alertWindows||[15]));if(ms<maxW*60000)return'due-soon';return'pending';}
@@ -2760,155 +2725,6 @@ function renderReadRow(c){
   const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'||(c.fuType&&!c.cbDone)?' has-callback':'');
   return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acct||''}"><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;
 }
-function renderEditRow(c){
-  const es=editState;
-  const pb=(k,l)=>{
-    const on=es[k],ie=k==='chsi'&&es.chsi&&es.ie;
-    const cls='e-chk'+(k==='chsi'?(es.chsi?(ie?' ie':' on'):''):(on?' on':''));
-    return`<div class="e-prod-check"><div class="e-prod-label">${l}</div><div class="${cls}" id="e-chk-${k}" onclick="eToggleProd('${k}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>`;
-  };
-  const st=cbStatus(c),doneBtn=st&&st!=='done'?`<button class="e-btn cbdone" onclick="markCbDone(${c.id})">✓ Done</button>`:'';
-
-  return`<tr class="edit-row"><td colspan="8" style="padding:0">
-
-  <div style="display:flex;border-bottom:1px solid var(--border)">
-
-    <!-- Notes ~232px -->
-    <div style="flex:0 0 275px;padding:8px 10px;border-right:1px solid var(--border);box-sizing:border-box;display:flex;flex-direction:column;gap:4px;min-width:0">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">📝 Notes</div>
-      <textarea id="e-notes" style="flex:1;width:100%;background:var(--surface);border:2px solid rgba(167,139,250,.4);border-radius:6px;padding:5px 7px;font-family:var(--sans);font-size:11px;color:var(--text);outline:none;resize:none;min-height:70px;box-sizing:border-box" onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='rgba(167,139,250,.4)'" placeholder="Notes…">${c.notes||''}</textarea>
-
-      <div style="display:flex;gap:3px;align-items:flex-end;margin-top:6px">
-        <div class="field" style="flex-shrink:0">
-          <label>Base Rev</label>
-          <input id="e-rev" type="text" placeholder="0.00" value="${c.baseRev||''}" oninput="updateEditRevTotal(${c.id})" style="width:64px;font-family:var(--mono);font-size:13px;height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);transition:border-color .15s;box-sizing:border-box">
-        </div>
-        <div class="field" style="flex-shrink:0">
-          <label>XM Rev</label>
-          <div id="e-xm-rev-${c.id}" style="width:52px;height:38px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--teal);display:flex;align-items:center;font-weight:600">$${(es.xm*XM_LINE_REV).toFixed(0)}</div>
-        </div>
-        <div class="field" style="flex-shrink:0">
-          <label>Total</label>
-          <div id="e-rev-total-${c.id}" style="width:60px;height:38px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--green);display:flex;align-items:center;font-weight:700">$${((c.baseRev||0)+(es.xm*XM_LINE_REV)).toFixed(2)}</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Details: remaining width -->
-    <div style="flex:1;padding:8px 10px;box-sizing:border-box;display:flex;flex-direction:column;gap:5px;min-width:0;overflow:hidden">
-
-      <!-- Row 1: Outcome + Acct -->
-      <div style="display:flex;gap:5px;align-items:flex-end">
-        <div style="display:flex;flex-direction:column;gap:3px;width:160px;flex-shrink:0">
-          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Outcome</div>
-          <select id="e-reason" class="e-select" onchange="eReasonChange()" style="width:160px;font-size:11px">
-            <option value="">— no sale reason —</option>
-            <option value="NO SALE MADE"${c.reason&&!c.hasSale?'':''}>✘ No Sale</option>
-          </select>
-          <div id="e-nosale-tier2" style="display:${(!c.hasSale&&c.reason)?'flex':'none'};flex-direction:column;gap:3px;margin-top:3px">
-            <select id="e-nosale-cat" class="e-select" onchange="eNosaleCatChange()" style="width:160px;font-size:11px">
-              <option value="">— reason category —</option>
-              ${Object.keys(NO_SALE_CATS).map(cat=>`<option${c.reason&&NO_SALE_CATS[cat]&&NO_SALE_CATS[cat].includes(c.reason)?` selected`:``}>${cat}</option>`).join('')}
-            </select>
-            <select id="e-nosale-sub" class="e-select" style="width:160px;font-size:11px">
-              <option value="">— specific reason —</option>
-            </select>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:3px;width:190px;flex-shrink:0">
-          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--purple)">CB Time</div>
-          <input id="e-cb-dt" class="e-input" type="datetime-local" value="${c.cbTime||''}" style="width:190px;height:28px;font-size:10px;border-color:rgba(167,139,250,.35)">
-        </div>
-      </div>
-
-      <!-- Row 2: Products + Sched + Rev -->
-      <div style="display:flex;gap:5px;align-items:flex-end;flex-wrap:nowrap">
-        <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
-          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Products</div>
-          <div class="e-products" style="gap:4px">
-            <div class="e-prod-check"><div class="e-prod-label">XM</div>
-              <div id="e-xm-wrap" style="display:flex;align-items:center;height:28px;border-radius:5px;overflow:hidden;border:1px solid ${es.xm>0?'var(--teal)':'var(--border2)'};background:${es.xm>0?'var(--teal-lt)':'var(--surface)'}">
-                <button style="width:20px;height:100%;border:none;background:none;cursor:pointer;color:var(--text2);font-size:12px;display:flex;align-items:center;justify-content:center" type="button" onclick="eStepXm(-1)">−</button>
-                <div id="e-xm-val" style="min-width:18px;text-align:center;font-family:var(--mono);font-size:12px;font-weight:500;color:var(--teal)">${es.xm}</div>
-                <button style="width:20px;height:100%;border:none;background:none;cursor:pointer;color:var(--text2);font-size:12px;display:flex;align-items:center;justify-content:center" type="button" onclick="eStepXm(1)">+</button>
-              </div>
-            </div>
-            ${pb('tv','TV')}${pb('chsi','CHSI')}${pb('cdv','CDV')}${pb('xh','XH')}
-            <div style="width:1px;background:var(--border2);align-self:stretch;margin:0 2px"></div>
-            <div class="e-prod-check">
-              <div class="e-prod-label" style="color:var(--amber)">IE</div>
-              <div id="e-ie-btn" onclick="eToggleIE()" style="width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;border:1px solid ${editState.ie?'var(--amber)':'var(--border2)'};background:${editState.ie?'var(--amber-lt)':'var(--surface)'};color:${editState.ie?'var(--amber)':'var(--text3)'};transition:all .12s;user-select:none" title="IE — .75 CHSI credit">IE</div>
-            </div>
-            <div class="e-prod-check">
-              <div class="e-prod-label" style="color:var(--blue)">BULK</div>
-              <div id="e-bulk-btn" onclick="eToggleBulk()" style="width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;border:1px solid ${editState.bulk?'var(--blue)':'var(--border2)'};background:${editState.bulk?'var(--blue-lt)':'var(--surface)'};color:${editState.bulk?'var(--blue)':'var(--text3)'};transition:all .12s;user-select:none" title="Bulk account">BLK</div>
-            </div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
-          <div style="font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Sched</div>
-          <div style="position:relative;width:90px">
-              <input id="e-sched-display" class="e-input" type="text" readonly
-                value="${c.sched?((d=>d.getMonth()+1+'/'+(d.getDate())+'/'+(String(d.getFullYear()).slice(-2)))(new Date(c.sched+'T00:00:00'))):''}"
-                placeholder="MM/DD/YY"
-                style="width:90px;font-size:11px;font-family:var(--mono);cursor:pointer;caret-color:transparent"
-                onclick="document.getElementById('e-sched').click()">
-              <input id="e-sched" type="date" value="${c.sched||''}"
-                style="position:absolute;top:-5px;left:0;width:100%;height:100%;opacity:0;cursor:pointer"
-                onchange="(function(v){const d=new Date(v+'T00:00:00');document.getElementById('e-sched-display').value=v?((d.getMonth()+1)+'/'+d.getDate()+'/'+String(d.getFullYear()).slice(-2)):'';})(this.value)">
-            </div>
-        </div>
-
-      </div>
-
-      <!-- XM Lines activation row -->
-      ${c.xm > 0 ? `<div style="display:flex;flex-direction:column;gap:6px;padding:8px 0 4px;border-top:1px solid var(--border)">
-        <div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)">XM Line Activation Dates</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          ${(c.xmLines||Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:c.sched||'',activated:false}))).map(line => `
-            <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
-              <div style="font-size:9px;color:var(--text3);font-weight:600">Line ${line.id}</div>
-              <div style="display:flex;gap:4px;align-items:center">
-                <input type="date" id="e-xm-date-${line.id}" value="${line.schedDate||''}" class="e-input" style="width:120px;padding:4px 6px;font-size:11px">
-                <label style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--teal);cursor:pointer;white-space:nowrap">
-                  <input type="checkbox" id="e-xm-act-${line.id}" ${line.activated?'checked':''} style="accent-color:var(--teal)" onchange="updateEditXmRev(${c.id})"> Activated
-                </label>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        <div id="e-xm-summary-${c.id}" style="font-size:10px;color:var(--text3)">XM Rev: <span style="color:var(--teal);font-weight:600;font-family:var(--mono)">$${(c.xm * XM_LINE_REV).toFixed(0)}</span> · Base: <span style="font-family:var(--mono)">$${(c.baseRev||0).toFixed(2)}</span> · Total: <span style="color:var(--green);font-weight:700;font-family:var(--mono)">$${c.rev.toFixed(2)}</span></div>
-      </div>` : ''}
-      <!-- Row 3: Acct / Phone / Name -->
-      <div style="display:flex;gap:6px;align-items:flex-end;margin-top:4px">
-        <div class="field" style="flex-shrink:0">
-          <label>Acct / Ticket</label>
-          <input id="e-acct" type="text" value="${c.acctRaw||''}" placeholder="Acct#" style="width:130px;height:38px;font-family:var(--mono);font-size:12px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);box-sizing:border-box">
-        </div>
-        <div class="field" style="flex-shrink:0">
-          <label>Phone #</label>
-          <input id="e-cb-phone" type="text" value="${c.cbPhone||''}" placeholder="(555) 867-5309" maxlength="14" style="width:130px;height:38px;font-family:var(--mono);font-size:12px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);box-sizing:border-box;text-align:left" oninput="onPhoneInput(this)">
-        </div>
-        <div class="field" style="flex-shrink:0">
-          <label>Name</label>
-          <input id="e-cb-name" type="text" value="${c.cbName||''}" placeholder="First Last" style="width:130px;height:38px;font-family:var(--sans);font-size:12px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 8px;outline:none;color:var(--text);box-sizing:border-box">
-        </div>
-        ${doneBtn}
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Action bar -->
-  <div class="edit-action-bar">
-    <button class="e-btn save" onclick="saveEdit(${c.id})">✓ Save</button>
-    <button class="e-btn cancel" onclick="closeEdit()">Cancel</button>
-    <button class="e-btn del" onclick="delCall(${c.id})">Delete</button>
-    <span class="hint">Esc to cancel · Enter to save</span>
-  </div>
-
-</td></tr>`;}
-
 /* ── Log filter ── */
 function buildFilterOptions(){
   const sel=document.getElementById('log-filter');
@@ -3079,11 +2895,13 @@ function updateStats(){
   setTimeout(updateWindowTitle, 0);
   // ── Load goals for the active fiscal period ─────────────────────────────
   const activeFiscalMonth = getFiscalMonth();
-  const activeKey  = getFiscalKey(_userCallType, _userCapLevel, activeFiscalMonth);
+  const activeKey   = getFiscalKey(_userCallType, _userCapLevel, activeFiscalMonth);
   const activeCbKey = getCbKey(activeFiscalMonth);
-  const savedGoals = JSON.parse(localStorage.getItem(activeKey) || '{}');
-  const savedCb    = JSON.parse(localStorage.getItem(activeCbKey) || '{}');
-  const _capDef    = getCapDefaults();
+  const activePtoKey= getPtoKey(activeFiscalMonth);
+  const savedGoals  = JSON.parse(localStorage.getItem(activeKey) || '{}');
+  const savedCb     = JSON.parse(localStorage.getItem(activeCbKey) || '{}');
+  const savedPto    = JSON.parse(localStorage.getItem(activePtoKey) || '{}');
+  const _capDef     = getCapDefaults();
   // Saved goals win > cap defaults > hardcoded defaults
   GOALS.rev  = savedGoals.rev  !== undefined ? savedGoals.rev  : _capDef.rev;
   GOALS.xm   = savedGoals.xm   !== undefined ? savedGoals.xm   : _capDef.xm;
@@ -3097,6 +2915,8 @@ function updateStats(){
   CB.chsi  = savedCb.cbChsi || 0;
   CB.cdv   = savedCb.cbCdv  || 0;
   CB.xh    = savedCb.cbXh   || 0;
+  // PTO from personal per-user per-month key — fallback to legacy goalFields location
+  window._ptoHours = savedPto.ptoHours !== undefined ? savedPto.ptoHours : (savedGoals.ptoHours||0);
 
   // ── Filter calls for the active fiscal period ────────────────────────────
   const today = new Date().toDateString();
@@ -3276,6 +3096,16 @@ function getCbKeyForMonth(monthLabel){
   return getCbKey(monthLabel);
 }
 
+function getPtoKey(month){
+  const m  = month || getFiscalMonth();
+  const id = getCurrentAgentId();
+  return 'xcl_pto_'+id+'_'+m.replace(' ','');
+}
+
+function getPtoKeyForMonth(monthLabel){
+  return getPtoKey(monthLabel);
+}
+
 
 const CAP_GOAL_DEFAULTS = {
   acq: {
@@ -3297,14 +3127,16 @@ function loadSettings(){
   const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
   const g=JSON.parse(localStorage.getItem(getFiscalKey())||'{}');
   const cb=JSON.parse(localStorage.getItem(getCbKey())||'{}');
+  const pto=JSON.parse(localStorage.getItem(getPtoKey())||'{}');
   const capDef=getCapDefaults();
   // Strip goal fields from global settings — they belong only in fiscal storage
   const goalFields=['rev','xm','tv','chsi','cdv','xh'];
   const sClean=Object.assign({},s);
   goalFields.forEach(k=>delete sClean[k]);
   // Priority: saved fiscal goals (g) > cap defaults > global settings
-  // CB fields come from personal CB key
+  // CB and PTO come from personal per-user keys
   return Object.assign({},DEFAULTS,sClean,capDef,g,{
+    ptoHours: pto.ptoHours !== undefined ? pto.ptoHours : (g.ptoHours||0),
     cbRev:cb.cbRev||0, cbXm:cb.cbXm||0, cbTv:cb.cbTv||0,
     cbChsi:cb.cbChsi||0, cbCdv:cb.cbCdv||0, cbXh:cb.cbXh||0
   });
@@ -3404,9 +3236,9 @@ function saveSettings(){
   };
   // Split: goals saved to shared fiscal key, chargebacks to personal CB key
   const goalFields = {
-    rev:s.rev, xm:s.xm, tv:s.tv, chsi:s.chsi, cdv:s.cdv, xh:s.xh,
-    ptoHours:s.ptoHours
+    rev:s.rev, xm:s.xm, tv:s.tv, chsi:s.chsi, cdv:s.cdv, xh:s.xh
   };
+  const ptoFields = { ptoHours:s.ptoHours };
   const cbFields = {
     cbRev:s.cbRev, cbXm:s.cbXm, cbTv:s.cbTv, cbChsi:s.cbChsi, cbCdv:s.cbCdv, cbXh:s.cbXh
   };
@@ -3414,23 +3246,27 @@ function saveSettings(){
   ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh'].forEach(k=>delete globalFields[k]);
   // Derive keys fresh from current role + selected month
   const selFiscal = document.getElementById('s-fiscal-month');
-  let goalSaveKey, cbSaveKey;
+  let goalSaveKey, cbSaveKey, ptoSaveKey;
   if(selFiscal && selFiscal.value){
     const monthMatch = selFiscal.value.match(/xcl_goals_[a-z]+_cap\d+_([A-Za-z]+)(\d{4})$/);
     if(monthMatch){
       const monthLabel = monthMatch[1]+' '+monthMatch[2];
       goalSaveKey = getFiscalKeyForMonth(monthLabel);
       cbSaveKey   = getCbKeyForMonth(monthLabel);
+      ptoSaveKey  = getPtoKeyForMonth(monthLabel);
     } else {
       goalSaveKey = getFiscalKey();
       cbSaveKey   = getCbKey();
+      ptoSaveKey  = getPtoKey();
     }
   } else {
     goalSaveKey = getFiscalKey();
     cbSaveKey   = getCbKey();
+    ptoSaveKey  = getPtoKey();
   }
   localStorage.setItem(goalSaveKey, JSON.stringify(goalFields));
   localStorage.setItem(cbSaveKey,   JSON.stringify(cbFields));
+  localStorage.setItem(ptoSaveKey,  JSON.stringify(ptoFields));
   localStorage.setItem('xcl_settings', JSON.stringify(globalFields));
   saveColorSettings();
   // Tag with version for migration detection
@@ -3454,6 +3290,7 @@ function resetSettings(){
   if(confirm('Reset goals & chargebacks for '+getFiscalMonth()+'? Global settings (theme, schedule, etc.) are kept.')){
     localStorage.removeItem(getFiscalKey());
     localStorage.removeItem(getCbKey());
+    localStorage.removeItem(getPtoKey());
     localStorage.removeItem('xcl_settings');
     applySettings(DEFAULTS);
     updateStats();
@@ -3715,10 +3552,6 @@ function _syncShow(msg, detail, pct, state) {
   if (spin)   spin.style.display = state === 'done' || state === 'error' ? 'none' : '';
 }
 
-function _syncSetCount(text) {
-  var el = document.getElementById('sync-count');
-  if (el) el.textContent = text || '';
-}
 
 function _syncHide() {
   var bar = document.getElementById('sheets-load-bar');
@@ -3780,182 +3613,6 @@ function deleteCallFromSheets(id) {
     .catch(function(err) {
       _showToast('✗ Delete failed — ' + (err.message || ''), 'err', 4000);
     });
-}
-
-/* ── Batch push: sends all local calls to sheet in chunks ───────────────── *
- * Apps Script has a 6-minute execution limit and URL Fetch quotas.          *
- * We chunk into groups of CHUNK_SIZE, await each, then verify.              */
-var SYNC_CHUNK = 25; // calls per batch request
-var _syncAborted = false;
-
-function syncAllToSheets() {
-  var url = getSheetsUrl();
-  if (!url) { setSheetsStatus('No URL configured', 'var(--red)'); return; }
-  _syncAborted = false;
-  _syncRunPush(calls.slice()); // pass a copy so in-flight edits don't interfere
-}
-
-function _syncRunPush(allCalls) {
-  var total   = allCalls.length;
-  var chunks  = [];
-  for (var i = 0; i < total; i += SYNC_CHUNK) {
-    chunks.push(allCalls.slice(i, i + SYNC_CHUNK));
-  }
-  var totalChunks = chunks.length;
-  var done = 0;
-  var failed = 0;
-
-  _syncShow('Pushing to Google Sheets…', 'Starting — ' + total + ' calls in ' + totalChunks + ' batches', 0);
-  setSheetsStatus('Pushing ' + total + ' calls…', 'var(--amber)');
-
-  function pushNext() {
-    if (_syncAborted) {
-      _syncShow('Sync cancelled', '', 0, 'error');
-      setSheetsStatus('✗ Cancelled', 'var(--red)');
-      setTimeout(_syncHide, 3000);
-      return;
-    }
-    if (done + failed >= totalChunks) {
-      // All chunks sent — now verify
-      _syncVerify(total, failed);
-      return;
-    }
-
-    var chunkIdx  = done + failed;
-    var chunk     = chunks[chunkIdx];
-    var pushed    = chunkIdx * SYNC_CHUNK;
-    var pct       = Math.round((chunkIdx / totalChunks) * 80); // push = 0–80%
-    var detail    = 'Batch ' + (chunkIdx + 1) + ' of ' + totalChunks +
-                    ' (' + pushed + '–' + Math.min(pushed + chunk.length, total) + ' of ' + total + ')';
-
-    _syncShow('Pushing to Google Sheets…', detail, pct);
-    _syncSetCount(pushed + ' / ' + total);
-
-    // Serialize dates for JSON transport
-    var serialized = chunk.map(function(c) {
-      var copy = {};
-      for (var k in c) copy[k] = c[k];
-      copy.ts = c.ts instanceof Date ? c.ts.toISOString() : c.ts;
-      return copy;
-    });
-
-    sheetsPost({ action: 'upsertBatch', agentId: getCurrentAgentId(), calls: serialized })
-      .then(function() {
-        done++;
-        pushNext();
-      })
-      .catch(function(err) {
-        failed++;
-        console.warn('[Sync] Chunk ' + chunkIdx + ' failed:', err);
-        pushNext(); // continue despite error
-      });
-  }
-
-  pushNext();
-}
-
-function _syncVerify(expectedTotal, pushFailed) {
-  _syncShow('Verifying sync…', 'Pulling sheet to confirm all ' + expectedTotal + ' calls landed', 82);
-  setSheetsStatus('Verifying…', 'var(--amber)');
-
-  sheetsGet({ action: 'load', agentId: getCurrentAgentId() })
-    .then(function(d) {
-      if (d.status !== 'ok') {
-        _syncShow('Verification failed', d.message || 'Sheet returned an error', 100, 'error');
-        setSheetsStatus('✗ Verify failed: ' + (d.message || 'error'), 'var(--red)');
-        setTimeout(_syncHide, 5000);
-        return;
-      }
-
-      var sheetCalls = (d.calls || []).map(normalizeCall);
-      var sheetIds   = new Set(sheetCalls.map(function(c) { return String(c.id); }));
-      var localIds   = calls.map(function(c) { return String(c.id); });
-
-      var missing = localIds.filter(function(id) { return !sheetIds.has(id); });
-      var sheetCount = sheetCalls.length;
-
-      _syncShow('Verifying sync…', 'Checking ' + sheetCount + ' sheet rows vs ' + localIds.length + ' local calls…', 95);
-
-      if (missing.length === 0) {
-        var summary = '\u2713 All ' + expectedTotal + ' calls confirmed in sheet';
-        if (pushFailed > 0) summary += ' (\u26a0 ' + pushFailed + ' batch errors — data still landed)';
-        _syncShow('Sync complete', summary, 100, 'done');
-        setSheetsStatus('\u2713 ' + expectedTotal + ' calls synced \u00b7 ' + sheetCount + ' in sheet', 'var(--green)');
-        // Merge any sheet-only calls back into local
-        sheetCalls.forEach(function(sc) {
-          var exists = calls.some(function(c) { return String(c.id) === String(sc.id); });
-          if (!exists) calls.push(sc);
-        });
-        calls.sort(function(a, b) { return new Date(b.ts) - new Date(a.ts); });
-        render(); updateStats(); buildFilterOptions(); saveCallsCache(); buildFiscalHistoryDropdown();
-  if(_activeTab==='callbacks') renderCallbacksTab();
-  updateWindowTitle();
-        setTimeout(_syncHide, 4000);
-      } else {
-        // Some calls didn't land — retry the missing ones
-        _syncShow(
-          'Retrying missing calls\u2026',
-          missing.length + ' call' + (missing.length !== 1 ? 's' : '') + ' missing from sheet — retrying',
-          95
-        );
-        setSheetsStatus('\u26a0 Retrying ' + missing.length + ' missing\u2026', 'var(--amber)');
-        var missingSet  = new Set(missing);
-        var toRetry     = calls.filter(function(c) { return missingSet.has(String(c.id)); });
-        _syncRetry(toRetry, expectedTotal, sheetCount);
-      }
-    })
-    .catch(function(err) {
-      _syncShow('Verification error', err.message, 100, 'error');
-      setSheetsStatus('\u2717 Verify error: ' + err.message, 'var(--red)');
-      setTimeout(_syncHide, 5000);
-    });
-}
-
-function _syncRetry(missing, originalTotal, sheetCount) {
-  var retried = 0;
-  var total   = missing.length;
-
-  function next() {
-    if (retried >= total) {
-      // Final check
-      setTimeout(function() {
-        sheetsGet({ action: 'load', agentId: getCurrentAgentId() })
-          .then(function(d) {
-            var sheetIds   = new Set((d.calls || []).map(function(c) { return String(c.id); }));
-            var stillMiss  = missing.filter(function(c) { return !sheetIds.has(String(c.id)); });
-            var nowInSheet = total - stillMiss.length;
-            if (stillMiss.length === 0) {
-              _syncShow('Sync complete', '\u2713 All ' + originalTotal + ' calls confirmed in sheet', 100, 'done');
-              setSheetsStatus('\u2713 All ' + originalTotal + ' calls synced', 'var(--green)');
-            } else {
-              _syncShow(
-                'Sync finished with gaps',
-                '\u26a0 ' + stillMiss.length + ' call' + (stillMiss.length !== 1 ? 's' : '') +
-                  ' could not be pushed — check Apps Script logs',
-                100, 'error'
-              );
-              setSheetsStatus(
-                '\u26a0 ' + stillMiss.length + ' missing after retry',
-                'var(--amber)'
-              );
-            }
-            setTimeout(_syncHide, 5000);
-          })
-          .catch(function() { setTimeout(_syncHide, 3000); });
-      }, 2000);
-      return;
-    }
-    var c    = missing[retried];
-    var copy = {};
-    for (var k in c) copy[k] = c[k];
-    copy.ts = c.ts instanceof Date ? c.ts.toISOString() : c.ts;
-    sheetsPost({ action: 'upsert', call: copy })
-      .then(function() { retried++; next(); })
-      .catch(function() { retried++; next(); });
-    var pct = 95 + Math.round((retried / total) * 5);
-    _syncShow('Retrying missing calls\u2026', 'Retrying ' + retried + ' of ' + total, pct);
-  }
-  next();
 }
 
 /* ── loadFromSheets: pull-only on startup ───────────────────────────────── */
@@ -5117,14 +4774,16 @@ function updateGoalsViewingNotice(){
 }
 
 function loadGoalsForFiscalMonth(storageKey){
-  // Extract month label and rebuild both keys fresh with current role
+  // Extract month label and rebuild all keys fresh with current role/user
   const monthMatch = storageKey.match(/xcl_goals_[a-z]+_cap\d+_([A-Za-z]+)(\d{4})$/);
   const monthLabel = monthMatch ? monthMatch[1]+' '+monthMatch[2] : null;
   const freshGoalKey = monthLabel ? getFiscalKeyForMonth(monthLabel) : storageKey;
   const freshCbKey   = monthLabel ? getCbKeyForMonth(monthLabel)     : getCbKey();
+  const freshPtoKey  = monthLabel ? getPtoKeyForMonth(monthLabel)    : getPtoKey();
 
   const storedGoals = JSON.parse(localStorage.getItem(freshGoalKey)||'{}');
   const storedCb    = JSON.parse(localStorage.getItem(freshCbKey)||'{}');
+  const storedPto   = JSON.parse(localStorage.getItem(freshPtoKey)||'{}');
   const capDef = getCapDefaults();
   const merged = Object.assign({}, DEFAULTS, capDef, storedGoals);
 
@@ -5134,7 +4793,8 @@ function loadGoalsForFiscalMonth(storageKey){
   document.getElementById('s-chsi').value  = merged.chsi||'';
   document.getElementById('s-cdv').value   = merged.cdv||'';
   document.getElementById('s-xh').value    = merged.xh||'';
-  document.getElementById('s-pto').value   = merged.ptoHours||0;
+  // PTO from personal per-user per-month key — fallback to legacy goalFields location
+  document.getElementById('s-pto').value   = storedPto.ptoHours !== undefined ? storedPto.ptoHours : (storedGoals.ptoHours||0);
   // CB fields come from personal CB key
   document.getElementById('s-cb-rev').value   = storedCb.cbRev||0;
   document.getElementById('s-cb-xm').value    = storedCb.cbXm||0;
@@ -5177,22 +4837,6 @@ function syncIEVisibility(){
   // Update IE label color
   const lbl = document.getElementById('ie-lbl');
   if(lbl) lbl.style.color = _ieActive ? 'var(--green)' : 'var(--text3)';
-}
-
-function eNosaleCatChange(){
-  const cat = document.getElementById('e-nosale-cat')?.value||'';
-  const sub = document.getElementById('e-nosale-sub');
-  if(!sub) return;
-  const subs = cat ? NO_SALE_CATS[cat]||[] : [];
-  sub.innerHTML = '<option value="">— specific reason —</option>'+subs.map(s=>`<option>${s}</option>`).join('');
-}
-
-function getEditNoSaleReason(){
-  const sub = document.getElementById('e-nosale-sub')?.value||'';
-  const cat = document.getElementById('e-nosale-cat')?.value||'';
-  if(sub) return sub;
-  if(cat) return cat;
-  return 'NO SALE MADE';
 }
 
 
@@ -5359,7 +5003,7 @@ function nsAddReason(cat, inp){
 
 
 const SHARED_SETTINGS_KEYS  = ['noSaleCats','noSaleCatsVersion','outcomes','settingsVersion','goals'];
-const PERSONAL_SETTINGS_KEYS = ['ptoHours','schedule','workDays','alertWindows','sheetsUrl','callType','capLevel'];
+const PERSONAL_SETTINGS_KEYS = ['schedule','workDays','alertWindows','sheetsUrl','callType','capLevel'];
 
 /* ── Settings sync to Google Sheets ─────────────────────────────────────
  * _settings_shared tab  — org-wide: categories, outcomes
@@ -5381,14 +5025,17 @@ function pushSettingsToSheets(allSettings){
   // Bundle all goal keys (shared) and CB keys (personal)
   const goalsBundle = {};
   const cbBundle = {};
+  const ptoBundle = {};
   const agentId = getCurrentAgentId();
   for(let i=0; i<localStorage.length; i++){
     const k = localStorage.key(i);
     if(k && k.startsWith('xcl_goals_')) goalsBundle[k] = localStorage.getItem(k);
     if(k && k.startsWith('xcl_cb_'+agentId+'_')) cbBundle[k] = localStorage.getItem(k);
+    if(k && k.startsWith('xcl_pto_'+agentId+'_')) ptoBundle[k] = localStorage.getItem(k);
   }
   if(Object.keys(goalsBundle).length) shared.goals = goalsBundle;
   if(Object.keys(cbBundle).length) personal.chargebacks = cbBundle;
+  if(Object.keys(ptoBundle).length) personal.ptoHistory = ptoBundle;
   const _agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || '';
   return sheetsPost({ action:'saveSettings', agentId:_agentId, shared:JSON.stringify(shared), personal:JSON.stringify(personal) })
     .then(()  => _showToast('✓ Settings saved to sheet', 'ok', 2500))
@@ -5858,56 +5505,6 @@ function updateRevTotal(){
     totEl.style.borderColor = total > 0 ? 'rgba(34,197,94,.3)' : 'var(--border2)';
     totEl.style.background  = total > 0 ? 'var(--green-lt)' : 'var(--surface)';
   }
-}
-
-function updateEditXmRev(callId){
-  const c = calls.find(x=>x.id===callId);
-  if(!c || !c.xmLines) return;
-  // Count activated lines from current checkboxes
-  const activated = c.xmLines.filter(line => {
-    const el = document.getElementById('e-xm-act-'+line.id);
-    return el ? el.checked : line.activated;
-  }).length;
-  const xmRev   = c.xm * XM_LINE_REV;
-  const baseRev = parseFloat(document.getElementById('e-rev').value)||0;
-  const total   = baseRev + xmRev;
-  // Update the summary line in the edit row
-  const summaryEl = document.getElementById('e-xm-summary-'+callId);
-  if(summaryEl){
-    summaryEl.innerHTML = 'XM Rev: <span style="color:var(--teal);font-weight:600;font-family:var(--mono)">$'+(xmRev.toFixed(0))+'</span> · Base: <span style="font-family:var(--mono)">$'+(baseRev.toFixed(2))+'</span> · Total: <span style="color:var(--green);font-weight:700;font-family:var(--mono)">$'+(total.toFixed(2))+'</span> · <span style="color:var(--teal)">'+(activated)+'/'+c.xm+' activated</span>';
-  }
-}
-
-function updateEditRevTotal(callId){
-  const baseEl  = document.getElementById('e-rev');
-  const xmRevEl = document.getElementById('e-xm-rev-'+callId);
-  const totEl   = document.getElementById('e-rev-total-'+callId);
-  if(!baseEl) return;
-  const base   = parseFloat(baseEl.value.replace(/[^0-9.]/g,''))||0;
-  const xmRev  = (editState.xm||0) * XM_LINE_REV;
-  const total  = base + xmRev;
-  if(xmRevEl) xmRevEl.textContent = '$'+xmRev.toFixed(0);
-  if(totEl)   totEl.textContent   = '$'+total.toFixed(2);
-}
-
-
-function getFiscalInfoForDate(date){
-  // Get fiscal period containing this date
-  const day = date.getDate();
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  let fStart, fEnd;
-  if(day >= 22){
-    fStart = new Date(year, month, 22);
-    fEnd   = new Date(year, month+1, 22);
-  } else {
-    fStart = new Date(year, month-1, 22);
-    fEnd   = new Date(year, month, 22);
-  }
-  const names = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const label = names[fEnd.getMonth()] + ' ' + fEnd.getFullYear();
-  const key = 'xcl_goals_'+(_userCallType||'acq')+'_cap'+(_userCapLevel||1)+'_'+label.replace(' ','');
-  return { fiscalStart: fStart, fiscalEnd: fEnd, label, key };
 }
 
 function buildFiscalHistoryDropdown(){
@@ -6790,24 +6387,38 @@ function saveSalesId(val){
             applySettings(loadSettings());
           }catch(e){}
         }
-        // Restore personal settings (cap level, call type, schedule etc.)
+        // Restore personal settings (cap level, call type, schedule, PTO, alerts etc.)
         if(d.personal){
           try{
             var personal = typeof d.personal==='string' ? JSON.parse(d.personal) : d.personal;
             if(personal.callType) _userCallType = personal.callType||_userCallType;
             if(personal.capLevel) _userCapLevel = parseInt(personal.capLevel)||_userCapLevel;
-            saveUserProfile(); // persist to localStorage
+            saveUserProfile(); // persist callType + capLevel
             updateRoleBtns();
             updateRoleChip();
+            // Restore personal settings into xcl_settings
+            var existingGlobal = JSON.parse(localStorage.getItem('xcl_settings')||'{}');
+            ['schedule','workDays','alertWindows','sheetsUrl'].forEach(function(k){
+              if(personal[k] !== undefined) existingGlobal[k] = personal[k];
+            });
+            localStorage.setItem('xcl_settings', JSON.stringify(existingGlobal));
             // Restore personal CB history
             if(personal.chargebacks){
               var cbb = typeof personal.chargebacks==='string' ? JSON.parse(personal.chargebacks) : personal.chargebacks;
               Object.entries(cbb).forEach(function(kv){ if(kv[0].startsWith('xcl_cb_')) localStorage.setItem(kv[0],kv[1]); });
             }
+            // Restore personal PTO history
+            if(personal.ptoHistory){
+              var ptob = typeof personal.ptoHistory==='string' ? JSON.parse(personal.ptoHistory) : personal.ptoHistory;
+              Object.entries(ptob).forEach(function(kv){ if(kv[0].startsWith('xcl_pto_')) localStorage.setItem(kv[0],kv[1]); });
+            }
+            applySettings(loadSettings()); // apply everything at once
             reloadGoalsForRole();
           }catch(e){}
         }
         _showToast('\u2713 Settings restored for ' + val, 'ok', 2500);
+        // Now load calls for this agent from their sheet tab
+        loadFromSheets();
       } else {
         _showToast('Sales ID set to ' + val, 'ok', 2000);
       }
@@ -6816,6 +6427,9 @@ function saveSalesId(val){
     });
   } else {
     _showToast('Sales ID set to ' + val, 'ok', 2000);
+    // Load from cache for this agent even without Sheets
+    var cachedCalls = loadCallsCache();
+    if(cachedCalls.length){ calls = cachedCalls; calls.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);}); render(); updateStats(); buildFilterOptions(); }
   }
 }
 
@@ -7318,54 +6932,6 @@ function saveCbResched(id){
   saveCallsCache();
   upsertCallToSheets(c);
   _showToast('\u2713 Call back rescheduled', 'ok', 2000);
-  setTimeout(renderCallbacksTab, 300);
-}
-
-function cbFieldChanged(id){
-  var btn = document.getElementById('cb-save-'+id);
-  if(btn) btn.style.display='block';
-}
-
-function saveCbCard(id){
-  var c = calls.find(function(x){ return String(x.id)===String(id); });
-  if(!c) return;
-  var nameEl  = document.getElementById('cb-name-'+id);
-  var phoneEl = document.getElementById('cb-phone-'+id);
-  var notesEl = document.getElementById('cb-notes-'+id);
-  if(nameEl)  c.cbName  = nameEl.value.trim();
-  if(phoneEl) c.cbPhone = phoneEl.value.trim();
-  if(notesEl) c.notes   = notesEl.value;
-  // Rebuild acct display
-  c.acct = buildAcct(c.acctRaw||'', c.cbName, c.cbPhone);
-  saveCallsCache();
-  upsertCallToSheets(c);
-  var btn = document.getElementById('cb-save-'+id);
-  if(btn) btn.style.display='none';
-  _showToast('\u2713 Saved', 'ok', 1500);
-}
-
-function saveCbSale(id){
-  id = String(id);
-  var c = calls.find(function(x){ return String(x.id)===id; });
-  if(!c) return;
-  var rev  = parseFloat((document.getElementById('cb-sale-rev-'+id)||{}).value)||0;
-  var xm   = parseInt((document.getElementById('cb-sale-xm-'+id)||{}).value)||0;
-  var tv   = !!(document.getElementById('cb-sale-tv-'+id)||{}).checked;
-  var chsi = !!(document.getElementById('cb-sale-chsi-'+id)||{}).checked;
-  var cdv  = !!(document.getElementById('cb-sale-cdv-'+id)||{}).checked;
-  var xh   = !!(document.getElementById('cb-sale-xh-'+id)||{}).checked;
-  c.baseRev = rev; c.rev = rev + (xm * 45);
-  c.xm=xm; c.tv=tv; c.chsi=chsi; c.cdv=cdv; c.xh=xh;
-  c.cbDone = true;
-  // Set scheduled install date to today — the day the sale was closed on callback
-  var now = new Date();
-  var pad = function(n){ return String(n).padStart(2,'0'); };
-  c.sched = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
-  compute(c);
-  saveCallsCache();
-  upsertCallToSheets(c);
-  updateStats();
-  _showToast('💰 Sale recorded! Sched date set to today ('+c.sched+')', 'ok', 3000);
   setTimeout(renderCallbacksTab, 300);
 }
 
