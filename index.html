@@ -2030,8 +2030,22 @@ function _nsClose(){
 }
 
 function toggleNoSale(callerEl){
-  // If panel is open → close it. If auto-active but no panel → open panel.
-  if(_nsPanelOpen){ _nsClose(); _nsPanelOpen=false; nsAutoSelect(); colorReason(); return; }
+  if(_nsPanelOpen){
+    // Panel open — close it
+    _nsPanelOpen = false;
+    const panel = document.getElementById('nosale-panel');
+    if(panel) panel.classList.remove('open');
+    colorReason();
+    return;
+  }
+  if(_nsState !== 'closed'){
+    // Already have a selection — reset it entirely
+    _nsClose();
+    nsAutoSelect();
+    colorReason();
+    return;
+  }
+  // Open fresh
   _nsState = 'tier1'; _nsCat = ''; _nsSub = '';
   const tog   = document.getElementById('ns-toggle');
   const panel = document.getElementById('nosale-panel');
@@ -2050,16 +2064,40 @@ function renderNsPanel(){
   const panel = document.getElementById('nosale-panel');
   if(!panel) return;
 
-  // Title
+  // Guard — if NO_SALE_CATS is empty (race condition on startup), restore from defaults
+  if(Object.keys(NO_SALE_CATS).length === 0){
+    Object.assign(NO_SALE_CATS, JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS)));
+  }
+
+  panel.innerHTML = '';
+
+  // Title / breadcrumb
   const titleDiv = document.createElement('div');
   titleDiv.className = 'ns-panel-title';
+
+  if(_nsState === 'tier2'){
+    // Breadcrumb: ← Category
+    const back = document.createElement('span');
+    back.textContent = '← ';
+    back.style.cssText = 'cursor:pointer;opacity:.6;font-size:11px';
+    back.addEventListener('click', function(e){
+      e.stopPropagation();
+      _nsSub = ''; _nsState = 'tier1';
+      renderNsPanel();
+    });
+    const catLabel = document.createElement('span');
+    catLabel.textContent = _nsCat;
+    titleDiv.appendChild(back);
+    titleDiv.appendChild(catLabel);
+  } else {
+    titleDiv.textContent = 'Reason Category';
+  }
 
   // Pill grid
   const grid = document.createElement('div');
   grid.className = 'ns-pill-grid';
 
   if(_nsState === 'tier1'){
-    titleDiv.textContent = 'Reason Category';
     Object.keys(NO_SALE_CATS).forEach(cat => {
       const d = document.createElement('div');
       d.className = 'ns-cat-pill' + (_nsCat === cat ? ' active' : '');
@@ -2068,7 +2106,6 @@ function renderNsPanel(){
       grid.appendChild(d);
     });
   } else if(_nsState === 'tier2'){
-    titleDiv.textContent = _nsCat;
     (NO_SALE_CATS[_nsCat] || []).forEach(s => {
       const d = document.createElement('div');
       d.className = 'ns-sub-pill' + (_nsSub === s ? ' active' : '');
@@ -2078,55 +2115,40 @@ function renderNsPanel(){
     });
   }
 
-  // SET button row
-  const setRow = document.createElement('div');
-  setRow.style.cssText = 'display:flex;justify-content:flex-end;margin-top:4px';
-  const setBtn = document.createElement('button');
-  setBtn.textContent = 'SET';
-  setBtn.style.cssText = 'height:28px;padding:0 14px;background:var(--red);border:none;border-radius:6px;font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.05em;opacity:' + (_nsSub || _nsCat ? '1' : '0.4') + ';pointer-events:' + (_nsSub || _nsCat ? 'auto' : 'none');
-  setBtn.addEventListener('click', function(e){
-    e.stopPropagation();
-    // Don't fully close — keep cat/sub but close panel
-    _nsPanelOpen = false;
-    const panel = document.getElementById('nosale-panel');
-    if(panel) panel.classList.remove('open');
-    const tog = document.getElementById('ns-toggle');
-    if(tog) tog.classList.add('active');
-    updateNosaleDisplay();
-    colorReason();
-  });
-  setRow.appendChild(setBtn);
-
-  panel.innerHTML = '';
   panel.appendChild(titleDiv);
   panel.appendChild(grid);
-  panel.appendChild(setRow);
 }
 
-
-
 function selectNsCat(cat){
-  if(_nsCat !== cat) _nsSub = ''; // clear sub when switching categories
+  if(_nsCat !== cat) _nsSub = '';
   _nsCat = cat;
   _nsState = 'tier2';
   renderNsPanel();
 }
 
 function selectNsSub(sub){
-  if(_nsSub === sub){
-    // Already selected — deselect and go back to tier1
-    _nsSub = ''; _nsCat = '';
-    _nsState = 'tier1';
-    const b = document.getElementById('ns-back-external');
-    if(b) b.style.display = 'none';
-    renderNsPanel();
-  } else {
-    // New selection — stay open, show reason highlighted
-    _nsSub = sub;
-    _nsState = 'tier2';
-    renderNsPanel();
-    colorReason();
-  }
+  _nsSub = sub;
+  _nsState = 'tier2';
+  // Show selection highlighted briefly, then fade panel out
+  renderNsPanel();
+  colorReason();
+  updateNosaleDisplay();
+  const tog = document.getElementById('ns-toggle');
+  if(tog) tog.classList.add('active');
+  // Fade out after short confirmation delay
+  setTimeout(function(){
+    _nsPanelOpen = false;
+    const panel = document.getElementById('nosale-panel');
+    if(panel){
+      panel.style.transition = 'opacity .35s';
+      panel.style.opacity = '0';
+      setTimeout(function(){
+        panel.classList.remove('open');
+        panel.style.opacity = '';
+        panel.style.transition = '';
+      }, 350);
+    }
+  }, 600);
 }
 
 
@@ -2898,10 +2920,10 @@ function updateStats(){
   const activeKey   = getFiscalKey(_userCallType, _userCapLevel, activeFiscalMonth);
   const activeCbKey = getCbKey(activeFiscalMonth);
   const activePtoKey= getPtoKey(activeFiscalMonth);
-  const savedGoals  = JSON.parse(localStorage.getItem(activeKey) || '{}');
+  const _capDef     = getCapDefaults();
+  const savedGoals  = getGoalsForKey(activeKey, _capDef);
   const savedCb     = JSON.parse(localStorage.getItem(activeCbKey) || '{}');
   const savedPto    = JSON.parse(localStorage.getItem(activePtoKey) || '{}');
-  const _capDef     = getCapDefaults();
   // Saved goals win > cap defaults > hardcoded defaults
   GOALS.rev  = savedGoals.rev  !== undefined ? savedGoals.rev  : _capDef.rev;
   GOALS.xm   = savedGoals.xm   !== undefined ? savedGoals.xm   : _capDef.xm;
@@ -3074,6 +3096,36 @@ function getFiscalMonth(){
   const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
   return names[fiscalMonth]+' '+fiscalYear;
 }
+
+function getPrevFiscalMonth(){
+  // Returns the label for the fiscal month before the current one
+  const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const cur = getFiscalMonth();
+  const parts = cur.match(/([A-Za-z]+)\s+(\d{4})/);
+  if(!parts) return cur;
+  const mIdx = names.indexOf(parts[1]);
+  const yr   = parseInt(parts[2]);
+  const prevM = mIdx === 0 ? 11 : mIdx - 1;
+  const prevY = mIdx === 0 ? yr - 1 : yr;
+  return names[prevM]+' '+prevY;
+}
+
+// Load goals for a fiscal key — if current month has no saved goals,
+// inherit from previous month rather than falling back to hardcoded defaults
+function getGoalsForKey(goalKey, capDef){
+  const saved = JSON.parse(localStorage.getItem(goalKey)||'{}');
+  const goalFields = ['rev','xm','tv','chsi','cdv','xh'];
+  const hasGoals = goalFields.some(k => saved[k] !== undefined);
+  if(hasGoals) return saved;
+  // No goals saved for this month — try previous month's key
+  const prevMonthLabel = getPrevFiscalMonth();
+  const prevKey = goalKey.replace(/[A-Za-z]+\d{4}$/, prevMonthLabel.replace(' ',''));
+  const prevSaved = JSON.parse(localStorage.getItem(prevKey)||'{}');
+  const hasPrevGoals = goalFields.some(k => prevSaved[k] !== undefined);
+  if(hasPrevGoals) return prevSaved;
+  // Fall back to cap defaults
+  return capDef;
+}
 function getFiscalKey(type, cap, month){
   const t = type || _userCallType || 'acq';
   const c = cap   || _userCapLevel || 1;
@@ -3125,10 +3177,10 @@ function getCapDefaults(){ return (CAP_GOAL_DEFAULTS[_userCallType]||CAP_GOAL_DE
 const DEFAULTS={schedule:'5x8',workDays:[1,2,3,4,5],ptoHours:0,cbRev:0,cbXm:0,cbTv:0,cbChsi:0,cbCdv:0,cbXh:0,rev:6870,xm:13,tv:23,chsi:82,cdv:3,xh:2,alertWindows:[15],outcomes:[...DEFAULT_OUTCOMES],sheetsUrl:'https://script.google.com/macros/s/AKfycbzXunD0sW1o_BLXw16r0A3c_ZZ0ltsaq-kBj1rh3VxHDaGsniHG-bGOmmf2PaFAGtwU/exec'};
 function loadSettings(){
   const s=JSON.parse(localStorage.getItem('xcl_settings')||'{}');
-  const g=JSON.parse(localStorage.getItem(getFiscalKey())||'{}');
+  const capDef=getCapDefaults();
+  const g=getGoalsForKey(getFiscalKey(), capDef);
   const cb=JSON.parse(localStorage.getItem(getCbKey())||'{}');
   const pto=JSON.parse(localStorage.getItem(getPtoKey())||'{}');
-  const capDef=getCapDefaults();
   // Strip goal fields from global settings — they belong only in fiscal storage
   const goalFields=['rev','xm','tv','chsi','cdv','xh'];
   const sClean=Object.assign({},s);
@@ -3157,8 +3209,12 @@ function applySettings(s){
     OUTCOMES=[...new Set([...LOCKED_OUTCOMES,...(s.outcomes||[]).filter(o=>o)])];
   }
   if(s.noSaleCats && Object.keys(s.noSaleCats).length > 0){
-    Object.keys(NO_SALE_CATS).forEach(k=>delete NO_SALE_CATS[k]);
-    Object.assign(NO_SALE_CATS, s.noSaleCats);
+    // Validate that at least some categories have reasons before replacing
+    const hasReasons = Object.values(s.noSaleCats).some(arr => Array.isArray(arr) && arr.length > 0);
+    if(hasReasons){
+      Object.keys(NO_SALE_CATS).forEach(k=>delete NO_SALE_CATS[k]);
+      Object.assign(NO_SALE_CATS, s.noSaleCats);
+    }
     // Merge: add any new default categories/reasons missing from saved data
     if((s.noSaleCatsVersion||0) < NO_SALE_CATS_VERSION){
       Object.keys(NO_SALE_CATS_DEFAULTS).forEach(cat => {
@@ -3227,13 +3283,66 @@ function saveSettings(){
     cbXh:parseFloat(document.getElementById('s-cb-xh').value)||0,
     alertWindows:(()=>{const sel=[5,10,15,20,30,60].filter(v=>{const el=document.getElementById('ao-'+v);return el&&el.checked;});return sel.length?sel:[15];})(),
     outcomes:getOutcomeEditorValues(),
-    noSaleCats:(()=>{ nsCommitEditorToCats(); return JSON.parse(JSON.stringify(NO_SALE_CATS)); })(),
+    noSaleCats:(()=>{ nsCommitEditorToCats(); return Object.keys(NO_SALE_CATS).length > 0 ? JSON.parse(JSON.stringify(NO_SALE_CATS)) : JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS)); })(),
     noSaleCatsVersion:NO_SALE_CATS_VERSION,
     ptoHours:parseFloat(document.getElementById('s-pto').value)||0,
     schedule:(document.getElementById('sched-4x10').classList.contains('active')?'4x10':'5x8'),
     workDays:[0,1,2,3,4,5,6].filter(function(d){var el=document.getElementById('wd-'+d);return el&&el.checked;}),
     sheetsUrl:(()=>{const u=document.getElementById('s-sheets-url').value.trim();if(u)localStorage.setItem('xcl_sheets_url',u);return u;})(),
   };
+
+  // ── Detect what changed before saving ────────────────────────────────────
+  // Compare against raw storage — not merged defaults — to avoid false positives
+  const selFiscalEl2 = document.getElementById('s-fiscal-month');
+  const isCurrent = !selFiscalEl2 || selFiscalEl2.value === getFiscalKey();
+  const monthStr = selFiscalEl2 ? (selFiscalEl2.options[selFiscalEl2.selectedIndex]||{}).text||getFiscalMonth() : getFiscalMonth();
+  const prevGoals  = JSON.parse(localStorage.getItem(goalSaveKey)||'{}');
+  const prevCb     = JSON.parse(localStorage.getItem(cbSaveKey)||'{}');
+  const prevPto    = JSON.parse(localStorage.getItem(ptoSaveKey)||'{}');
+  const prevGlobal = JSON.parse(localStorage.getItem('xcl_settings')||'{}');
+  const typeLabel  = _userCallType === 'acq' ? 'Acquisition' : 'Movers';
+  const capLabels  = {1:'New Hire',2:'Associate',3:'Specialist',4:'Professional'};
+  const changedSections = [];
+
+  // Goals changed? Only flag if there was already a saved value to compare against
+  const goalKeys = ['rev','xm','tv','chsi','cdv','xh'];
+  const goalsHadSavedValues = Object.keys(prevGoals).length > 0;
+  if(goalsHadSavedValues && goalKeys.some(k => s[k] !== prevGoals[k])){
+    changedSections.push('🎯 Goals · '+typeLabel+' Cap '+_userCapLevel+' ('+(capLabels[_userCapLevel]||'')+')'+(isCurrent?'':' — '+monthStr));
+  } else if(!goalsHadSavedValues){
+    // First-time save — always flag as new
+    changedSections.push('🎯 Goals set · '+typeLabel+' Cap '+_userCapLevel+' ('+(capLabels[_userCapLevel]||'')+')'+(isCurrent?'':' — '+monthStr));
+  }
+  // PTO changed?
+  if(prevPto.ptoHours !== undefined ? s.ptoHours !== prevPto.ptoHours : s.ptoHours > 0){
+    changedSections.push('PTO '+(s.ptoHours||0)+'hrs'+(isCurrent?'':' — '+monthStr));
+  }
+  // Chargebacks changed?
+  const cbKeys = ['cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh'];
+  if(cbKeys.some(k => s[k] !== (prevCb[k]||0))){
+    changedSections.push('⬇ Chargebacks'+(isCurrent?'':' — '+monthStr));
+  }
+  // Schedule / work days changed?
+  if(s.schedule !== (prevGlobal.schedule||'5x8') || JSON.stringify(s.workDays) !== JSON.stringify(prevGlobal.workDays||[1,2,3,4,5])){
+    changedSections.push('📅 Schedule · '+(s.schedule==='4x10'?'4×10':'5×8'));
+  }
+  // Alerts changed?
+  if(JSON.stringify(s.alertWindows) !== JSON.stringify(prevGlobal.alertWindows||[15])){
+    changedSections.push('🔔 Alerts · '+s.alertWindows.join('/')+'min');
+  }
+  // Outcomes / no-sale changed?
+  if(JSON.stringify(s.outcomes) !== JSON.stringify(prevGlobal.outcomes||[]) ||
+     JSON.stringify(s.noSaleCats) !== JSON.stringify(prevGlobal.noSaleCats||{})){
+    changedSections.push('📋 Outcomes');
+  }
+  // Sheets URL changed?
+  if(s.sheetsUrl && s.sheetsUrl !== (prevGlobal.sheetsUrl||'')){
+    changedSections.push('🔗 Sheets URL');
+  }
+
+  const toastMsg = changedSections.length
+    ? '✓ Saved: ' + changedSections.join(' · ')
+    : '✓ No changes to save';
   // Split: goals saved to shared fiscal key, chargebacks to personal CB key
   const goalFields = {
     rev:s.rev, xm:s.xm, tv:s.tv, chsi:s.chsi, cdv:s.cdv, xh:s.xh
@@ -3280,10 +3389,8 @@ function saveSettings(){
   updateStats();
   buildCalendar && updatePace && updatePace();
   const btn=document.querySelector('.settings-save');
-  const typeLabel = _userCallType === 'acq' ? 'Acquisition' : 'Movers';
-  const capLabels = {1:'New Hire',2:'Associate',3:'Specialist',4:'Professional'};
   btn.textContent='✓ Saved!';btn.classList.add('saved');
-  _showToast('✓ Goals saved for ' + typeLabel + ' · Cap ' + _userCapLevel + ' (' + (capLabels[_userCapLevel]||'') + ')', 'ok', 3000);
+  _showToast(toastMsg, changedSections.length ? 'ok' : 'warn', 4000);
   setTimeout(()=>{btn.textContent='✓ Save Settings';btn.classList.remove('saved');},1200);
 }
 function resetSettings(){
@@ -4781,10 +4888,10 @@ function loadGoalsForFiscalMonth(storageKey){
   const freshCbKey   = monthLabel ? getCbKeyForMonth(monthLabel)     : getCbKey();
   const freshPtoKey  = monthLabel ? getPtoKeyForMonth(monthLabel)    : getPtoKey();
 
-  const storedGoals = JSON.parse(localStorage.getItem(freshGoalKey)||'{}');
+  const capDef = getCapDefaults();
+  const storedGoals = getGoalsForKey(freshGoalKey, capDef);
   const storedCb    = JSON.parse(localStorage.getItem(freshCbKey)||'{}');
   const storedPto   = JSON.parse(localStorage.getItem(freshPtoKey)||'{}');
-  const capDef = getCapDefaults();
   const merged = Object.assign({}, DEFAULTS, capDef, storedGoals);
 
   document.getElementById('s-rev').value   = merged.rev||'';
@@ -4952,9 +5059,11 @@ function nsCommitEditorToCats(){
     }).filter(Boolean);
     newCats[catName] = reasons;
   });
-  // Update NO_SALE_CATS in place
-  Object.keys(NO_SALE_CATS).forEach(k => delete NO_SALE_CATS[k]);
-  Object.assign(NO_SALE_CATS, newCats);
+  // Only update if editor actually had content — empty result means editor was never rendered
+  if(Object.keys(newCats).length > 0){
+    Object.keys(NO_SALE_CATS).forEach(k => delete NO_SALE_CATS[k]);
+    Object.assign(NO_SALE_CATS, newCats);
+  }
 }
 
 function nsRenameCat(oldName, newName){
