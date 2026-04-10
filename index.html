@@ -4007,18 +4007,22 @@ function loadFromSheets(){
   if(!url) return;
   _syncShow('Loading from Google Sheets\u2026', '', 0);
 
-  sheetsGet({action:'load', agentId: getCurrentAgentId()})
+  const _myId = getCurrentAgentId();
+  sheetsGet({action:'load', agentId: _myId})
   .then(d => {
     if(d.status !== 'ok'){
       _syncHide();
       setSheetsStatus('✗ '+(d.message||'Sync failed'), 'var(--red)');
+      _showToast('✗ Load error: ' + (d.message||'unknown'), 'err', 8000);
       return;
     }
     _syncShow('Merging calls\u2026', '', 60);
     const myId = getCurrentAgentId();
     const allSheetCalls = (d.calls||[]).map(normalizeCall);
+    // Diagnostic — visible toast showing what came back
+    _showToast('Sheet: ' + allSheetCalls.length + ' rows · agentId=' + myId, 'ok', 8000);
     // Only accept calls that belong to this user, or have no agentId (legacy/backfilled)
-    const sheetCalls = allSheetCalls.filter(c => !c.agentId || c.agentId === myId);
+    const sheetCalls = allSheetCalls.filter(c => !c.agentId || String(c.agentId) === String(myId));
     const sheetMap   = new Map(sheetCalls.map(c => [String(c.id), c]));
     const localMap   = new Map(calls.map(c  => [String(c.id),  c]));
 
@@ -4050,7 +4054,7 @@ function loadFromSheets(){
   .catch(err => {
     _syncHide();
     setSheetsStatus('✗ '+err.message, 'var(--red)');
-    console.error('[Sync] fetch error:', err);
+    _showToast('✗ Sync error: ' + err.message, 'err', 8000);
   });
 }
 
