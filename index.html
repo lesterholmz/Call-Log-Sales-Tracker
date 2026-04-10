@@ -2319,9 +2319,10 @@ function confirmBlankNoSale(){
 }
 
 function logCall(){
+  // Block if edit panel is open — Log Call button shouldn't fire in edit mode
+  if(editingId) return;
   var rguPanel = document.getElementById('rgu-panel');
   if(rguPanel && rguPanel.style.display === 'flex'){ _showToast('Close RGU Calculator first', 'warn', 2000); return; }
-  // acct is always visible; no longer required gating here
   if(isBlankCall()){ showBlankCallConfirm(); return; }
   doLogCall();
 }
