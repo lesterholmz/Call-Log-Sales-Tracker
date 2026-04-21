@@ -74,7 +74,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .goal-bar-track{height:3px;background:var(--border2);border-radius:4px;margin-top:3px;overflow:visible;position:relative}
 .goal-bar-fill{height:100%;border-radius:2px;transition:width .5s ease,background .5s ease,box-shadow .5s ease;position:relative;z-index:1}
 .goal-bar-over{position:absolute;top:-5px;left:0;height:100%;border-radius:2px;background:var(--blue);transition:width .5s ease;z-index:2;pointer-events:none}
-.stat-sub{font-size:10px;color:var(--text3);margin-top:0}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:0;line-height:1.4}
 .stats-row.daily{padding-bottom:6px}
 .stats-row.monthly .stat{padding-top:10px;padding-bottom:8px}
 .stats-row.daily .stat{padding-top:6px;padding-bottom:5px}
@@ -378,10 +378,6 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .cal-day.weekend .cal-day-strip{background:#b45309}
 .cal-day.weekend{border-color:rgba(180,83,9,.35)}
 .cal-day.weekend .cal-day-num{color:var(--amber)}
-.cal-day.fiscal-start .cal-day-strip{background:#15803d}
-.cal-day.fiscal-start{border-color:rgba(21,128,61,.5)}
-.cal-day.fiscal-end .cal-day-strip{background:#dc2626}
-.cal-day.fiscal-end{border-color:rgba(220,38,38,.5)}
 .cal-day.past{opacity:.45}
 .cal-day.past .cal-day-strip{filter:saturate(.4)}
 .cal-day.today{
@@ -793,7 +789,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 </head>
 <body>
 <div class="header">
-  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="22" y1="8" x2="8" y2="22" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><line x1="8" y1="8" x2="23" y2="25" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.21.1</span></div></div>
+  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.21.1</span></div></div>
   <div class="header-right">
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
@@ -2811,7 +2807,8 @@ function renderReadRow(c){
     cb=`<span class="cb-badge">${fuIcon} ${fmtCb(c.cbTime)}</span>`;
   }
   const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'||(c.fuType&&!c.cbDone)?' has-callback':'');
-  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct" title="${c.acctRaw||''}"><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;
+  const acctTip = [c.cbName, c.cbPhone ? fmtPhone(c.cbPhone) : ''].filter(Boolean).join(' · ');
+  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;
 }
 /* ── Log filter ── */
 function buildFilterOptions(){
@@ -3097,47 +3094,88 @@ function updateStats(){
 
   // Rotating motivational messages — changes each time stats update
   const FIRE_MSGS = [
-    'keep pushing', 'don\'t let up', 'sky\'s the limit', 'keep stacking',
-    'more is more', 'stay hungry', 'don\'t stop now', 'keep it rolling',
-    'on a tear', 'on fire', 'locked in', 'keep the pressure on',
-    'no days off', 'stay relentless', 'make it count'
+    'Keep Pushing!', 'Don\'t Let Up!', 'Sky\'s the Limit!', 'Keep Stacking!',
+    'More Is More!', 'Stay Hungry!', 'Don\'t Stop Now!', 'Keep It Rolling!',
+    'On a Tear!', 'On Fire!', 'Locked In!', 'Keep the Pressure On!',
+    'No Days Off!', 'Stay Relentless!', 'Make It Count!'
   ];
-  const _fireMsg = () => '🔥 crushing it · ' + FIRE_MSGS[Math.floor(Math.random() * FIRE_MSGS.length)];
+  const _rnd = () => FIRE_MSGS[Math.floor(Math.random() * FIRE_MSGS.length)];
 
+  // Build aligned multi-line sub-label HTML
+  // emoji on left, lines stacked to right
+  const _subHtml = (lines) => {
+    if(!lines || !lines.length) return '';
+    const emoji = lines[0].match(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}]\s*/u);
+    if(!emoji){
+      // No emoji — plain stacked lines
+      return '<div style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.4">' +
+        lines.map(l => '<span>' + l + '</span>').join('') + '</div>';
+    }
+    const em = emoji[0].trim();
+    const rest0 = lines[0].slice(emoji[0].length);
+    const textLines = [rest0, ...lines.slice(1)].filter(Boolean);
+    return '<div style="display:flex;align-items:flex-start;gap:4px">' +
+      '<span>' + em + '</span>' +
+      '<div style="display:flex;flex-direction:column;line-height:1.4">' +
+      textLines.map(l => '<span>' + l + '</span>').join('') +
+      '</div></div>';
+  };
+
+  const _setSubHtml = (id, lines) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = _subHtml(lines);
+  };
+
+  // Revenue
   document.getElementById('d-rev').textContent = fmtMoney(dRev);
-  document.getElementById('d-rev-sub').textContent = remainingWorkDays > 0
-    ? (mRev >= GOALS.rev
-        ? _fireMsg()
-        : 'need $' + Math.ceil(dNeedRev) + '/day · ' + remainingWorkDays + 'd left')
-    : (dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'no sales yet');
+  if(remainingWorkDays > 0 && mRev >= GOALS.rev){
+    _setSubHtml('d-rev-sub', ['🔥 Crushing It!', _rnd()]);
+  } else {
+    document.getElementById('d-rev-sub').textContent = remainingWorkDays > 0
+      ? 'need $' + Math.ceil(dNeedRev) + '/day · ' + remainingWorkDays + 'd left'
+      : (dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'no sales yet');
+  }
 
+  // RGUs
   document.getElementById('d-rgus').textContent = fmtR(dRgus);
-  document.getElementById('d-rgus-sub').textContent = remainingWorkDays > 0
-    ? (mRgus >= RGU_GOAL()
-        ? _fireMsg()
-        : 'need ' + Math.ceil(dNeedRgus) + '/day')
-    : (dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—');
+  if(remainingWorkDays > 0 && mRgus >= RGU_GOAL()){
+    _setSubHtml('d-rgus-sub', ['🔥 Crushing It!', _rnd()]);
+  } else {
+    document.getElementById('d-rgus-sub').textContent = remainingWorkDays > 0
+      ? (Math.ceil(dNeedRgus) > 0 ? 'need ' + Math.ceil(dNeedRgus) + '/day' : 'on pace')
+      : (dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—');
+  }
 
+  // XM
   document.getElementById('d-xm').textContent = dXm;
   const calcNeedXm = remainingWorkDays > 0 ? Math.ceil(Math.max(0, GOALS.xm - mXm) / remainingWorkDays) : 0;
   const dXmSub = document.getElementById('d-xm-sub');
-  if(dXmSub) dXmSub.textContent = remainingWorkDays > 0
-    ? (calcNeedXm < 2 ? '🔥 crushing it · ' + FIRE_MSGS[Math.floor(Math.random() * FIRE_MSGS.length)] + ' · 2+/day' : 'need ' + Math.max(2, calcNeedXm) + '/day')
-    : 'today';
+  if(dXmSub){
+    if(remainingWorkDays > 0 && calcNeedXm < 2){
+      dXmSub.innerHTML = _subHtml(['🔥 Crushing It!', _rnd(), '2+/day']);
+    } else {
+      dXmSub.textContent = remainingWorkDays > 0 ? 'need ' + Math.max(2, calcNeedXm) + '/day' : 'today';
+    }
+  }
 
+  // TV / CDV / XH (unchanged)
   document.getElementById('d-tv').textContent  = dTv;
+
+  // CHSI
   document.getElementById('d-chsi').textContent = fmtR(dChsi);
   const MIN_DAILY_CHSI = 5;
   const needChsiCeil = Math.ceil(dNeedChsi);
-  let chsiSubMsg;
-  if(remainingWorkDays <= 0){
-    chsiSubMsg = 'today';
-  } else if(needChsiCeil < MIN_DAILY_CHSI){
-    chsiSubMsg = '🔥 crushing it · ' + FIRE_MSGS[Math.floor(Math.random() * FIRE_MSGS.length)] + ' · 5+/day';
-  } else {
-    chsiSubMsg = 'need ' + needChsiCeil + '/day';
+  const dChsiSubEl = document.getElementById('d-chsi-sub');
+  if(dChsiSubEl){
+    if(remainingWorkDays <= 0){
+      dChsiSubEl.textContent = 'today';
+    } else if(needChsiCeil < MIN_DAILY_CHSI){
+      dChsiSubEl.innerHTML = _subHtml(['🔥 Crushing It!', _rnd(), '5+/day']);
+    } else {
+      dChsiSubEl.textContent = 'need ' + needChsiCeil + '/day';
+    }
   }
-  document.getElementById('d-chsi-sub').textContent = chsiSubMsg;
   document.getElementById('d-cdv').textContent = dCdv;
   document.getElementById('d-xh').textContent  = dXh;
   document.getElementById('d-calls').textContent = dN;
