@@ -3093,76 +3093,68 @@ function updateStats(){
   const dNeedRgus = remainingWorkDays > 0 ? Math.max(0, RGU_GOAL() - mRgus) / remainingWorkDays : 0;
 
   // Rotating motivational messages — changes each time stats update
-  const FIRE_MSGS = [
-    'Keep Pushing!', 'Don\'t Let Up!', 'Sky\'s the Limit!', 'Keep Stacking!',
-    'More Is More!', 'Stay Hungry!', 'Don\'t Stop Now!', 'Keep It Rolling!',
-    'On a Tear!', 'On Fire!', 'Locked In!', 'Keep the Pressure On!',
-    'No Days Off!', 'Stay Relentless!', 'Make It Count!'
+  const FIRE_EMOJIS = ['🔥','💪','⚡','🚀','🎯','🏆','💥','🔑','👊','🌟'];
+  const FIRE_MSGS_SHORT = [
+    'Keep Pushing!', 'Don\'t Let Up!', 'Stay Hungry!', 'Don\'t Stop Now!',
+    'Keep Stacking!', 'More Is More!', 'On a Tear!', 'On Fire!',
+    'Locked In!', 'No Days Off!', 'Make It Count!'
   ];
-  const _rnd = () => FIRE_MSGS[Math.floor(Math.random() * FIRE_MSGS.length)];
+  const FIRE_MSGS_ALL = [
+    ...FIRE_MSGS_SHORT,
+    'Sky\'s the Limit!', 'Keep It Rolling!', 'Keep the Pressure On!', 'Stay Relentless!'
+  ];
+  const _rnd = (pool) => { const p = pool || FIRE_MSGS_ALL; return p[Math.floor(Math.random() * p.length)]; };
+  const _rndEmoji = () => FIRE_EMOJIS[Math.floor(Math.random() * FIRE_EMOJIS.length)];
 
-  // Build aligned multi-line sub-label HTML
-  // emoji on left, lines stacked to right
   const _subHtml = (lines) => {
     if(!lines || !lines.length) return '';
-    const emoji = lines[0].match(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}]\s*/u);
-    if(!emoji){
-      // No emoji — plain stacked lines
-      return '<div style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.4">' +
-        lines.map(l => '<span>' + l + '</span>').join('') + '</div>';
-    }
-    const em = emoji[0].trim();
-    const rest0 = lines[0].slice(emoji[0].length);
-    const textLines = [rest0, ...lines.slice(1)].filter(Boolean);
-    return '<div style="display:flex;align-items:flex-start;gap:4px">' +
-      '<span>' + em + '</span>' +
-      '<div style="display:flex;flex-direction:column;line-height:1.4">' +
-      textLines.map(l => '<span>' + l + '</span>').join('') +
-      '</div></div>';
+    return '<div style="display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.5">' +
+      lines.map(l => '<span>' + l + '</span>').join('') + '</div>';
   };
 
   const _setSubHtml = (id, lines) => {
     const el = document.getElementById(id);
-    if(!el) return;
-    el.innerHTML = _subHtml(lines);
+    if(el) el.innerHTML = _subHtml(lines);
   };
 
-  // Revenue
+  // Revenue — 2-line, full pool
   document.getElementById('d-rev').textContent = fmtMoney(dRev);
   if(remainingWorkDays > 0 && mRev >= GOALS.rev){
-    _setSubHtml('d-rev-sub', ['🔥 Crushing It!', _rnd()]);
+    _setSubHtml('d-rev-sub', [_rndEmoji()+' Crushing It!', _rnd(FIRE_MSGS_ALL)]);
   } else {
     document.getElementById('d-rev-sub').textContent = remainingWorkDays > 0
       ? 'need $' + Math.ceil(dNeedRev) + '/day · ' + remainingWorkDays + 'd left'
       : (dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'no sales yet');
   }
 
-  // RGUs
+  // RGUs — 2-line, full pool
   document.getElementById('d-rgus').textContent = fmtR(dRgus);
   if(remainingWorkDays > 0 && mRgus >= RGU_GOAL()){
-    _setSubHtml('d-rgus-sub', ['🔥 Crushing It!', _rnd()]);
+    _setSubHtml('d-rgus-sub', [_rndEmoji()+' Crushing It!', _rnd(FIRE_MSGS_ALL)]);
   } else {
     document.getElementById('d-rgus-sub').textContent = remainingWorkDays > 0
       ? (Math.ceil(dNeedRgus) > 0 ? 'need ' + Math.ceil(dNeedRgus) + '/day' : 'on pace')
       : (dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—');
   }
 
-  // XM
+  // XM — 3-line if floor not met today, 2-line if met, short pool only
   document.getElementById('d-xm').textContent = dXm;
   const calcNeedXm = remainingWorkDays > 0 ? Math.ceil(Math.max(0, GOALS.xm - mXm) / remainingWorkDays) : 0;
   const dXmSub = document.getElementById('d-xm-sub');
   if(dXmSub){
     if(remainingWorkDays > 0 && calcNeedXm < 2){
-      dXmSub.innerHTML = _subHtml(['🔥 Crushing It!', _rnd(), '2+/day']);
+      const xmLines = [_rndEmoji()+' Crushing It!', _rnd(FIRE_MSGS_SHORT)];
+      if(dXm < 2) xmLines.push('2+/day');
+      dXmSub.innerHTML = _subHtml(xmLines);
     } else {
       dXmSub.textContent = remainingWorkDays > 0 ? 'need ' + Math.max(2, calcNeedXm) + '/day' : 'today';
     }
   }
 
-  // TV / CDV / XH (unchanged)
-  document.getElementById('d-tv').textContent  = dTv;
+  // TV
+  document.getElementById('d-tv').textContent = dTv;
 
-  // CHSI
+  // CHSI — 3-line if floor not met today, 2-line if met, short pool only
   document.getElementById('d-chsi').textContent = fmtR(dChsi);
   const MIN_DAILY_CHSI = 5;
   const needChsiCeil = Math.ceil(dNeedChsi);
@@ -3171,7 +3163,9 @@ function updateStats(){
     if(remainingWorkDays <= 0){
       dChsiSubEl.textContent = 'today';
     } else if(needChsiCeil < MIN_DAILY_CHSI){
-      dChsiSubEl.innerHTML = _subHtml(['🔥 Crushing It!', _rnd(), '5+/day']);
+      const chsiLines = [_rndEmoji()+' Crushing It!', _rnd(FIRE_MSGS_SHORT)];
+      if(dChsi < MIN_DAILY_CHSI) chsiLines.push('5+/day');
+      dChsiSubEl.innerHTML = _subHtml(chsiLines);
     } else {
       dChsiSubEl.textContent = 'need ' + needChsiCeil + '/day';
     }
