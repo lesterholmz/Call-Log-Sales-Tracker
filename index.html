@@ -3646,8 +3646,17 @@ function saveSettings(){
   const toastMsg = changedSections.length
     ? '✓ Saved: ' + changedSections.join(' · ')
     : '✓ No changes to save';
+
   // Split: goals saved to shared fiscal key, chargebacks to personal CB key
   const goalFields = {
+    rev:s.rev, xm:s.xm, tv:s.tv, chsi:s.chsi, cdv:s.cdv, xh:s.xh
+  };
+  const ptoFields = { ptoHours:s.ptoHours };
+  const cbFields = {
+    cbRev:s.cbRev, cbXm:s.cbXm, cbTv:s.cbTv, cbChsi:s.cbChsi, cbCdv:s.cbCdv, cbXh:s.cbXh
+  };
+  const globalFields = Object.assign({},s);
+  ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh'].forEach(k=>delete globalFields[k]);
   localStorage.setItem(goalSaveKey, JSON.stringify(goalFields));
   localStorage.setItem(cbSaveKey,   JSON.stringify(cbFields));
   localStorage.setItem(ptoSaveKey,  JSON.stringify(ptoFields));
