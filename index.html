@@ -60,7 +60,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .stats-panel{background:var(--surface);border-bottom:1px solid var(--border)}
 .stats-section-label{padding:8px 24px 6px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:10px;position:relative}
 .stats-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.stats-row{display:grid;grid-template-columns:repeat(8,1fr);padding:0 24px}
+.stats-row{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1fr 1fr 1fr 0.8fr;padding:0 24px}
 .stats-row.monthly{border-bottom:1px solid var(--border2)}
 .stat{padding:10px 8px 8px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
 .stat:first-child{padding-left:0;min-width:90px}.stat:last-child{border-right:none}
@@ -74,6 +74,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .goal-bar-track{height:3px;background:var(--border2);border-radius:4px;margin-top:3px;overflow:visible;position:relative}
 .goal-bar-fill{height:100%;border-radius:2px;transition:width .5s ease,background .5s ease,box-shadow .5s ease;position:relative;z-index:1}
 .goal-bar-over{position:absolute;top:-5px;left:0;height:100%;border-radius:2px;background:var(--blue);transition:width .5s ease;z-index:2;pointer-events:none}
+.stat-achieve{font-size:9px;font-weight:700;color:var(--green);text-align:center;letter-spacing:.04em;min-height:12px;line-height:1.2}
 .stat-sub{font-size:10px;color:var(--text3);margin-top:0;line-height:1.4}
 .stats-row.daily{padding-bottom:6px}
 .stats-row.monthly .stat{padding-top:10px;padding-bottom:8px}
@@ -750,8 +751,6 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 .role-btn:hover{border-color:var(--blue);color:var(--blue)}
 .role-btn.active{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
 
-.team-rep-card{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s}
-.team-rep-card:hover{border-color:var(--blue)}
 
 #calc-panel{position:fixed;z-index:9999;display:none;flex-direction:column;
   background:var(--card);border:1px solid var(--border);border-radius:14px;
@@ -805,10 +804,10 @@ Goals shown for your type+cap level">…</div>
 <div class="tab-bar">
   <button class="tab-btn active" id="tab-tracker" onclick="switchTab('tracker')">📞 Tracker</button>
   <button class="tab-btn" id="tab-trends" onclick="switchTab('trends')">📈 Trends</button>
+  <button class="tab-btn" id="tab-reports" onclick="switchTab('reports')">📋 Reports</button>
   <button class="tab-btn" id="tab-jobaid" onclick="switchTab('jobaid')">📖 Job Aids</button>
   <button class="tab-btn" id="tab-callbacks" onclick="switchTab('callbacks')">🔔 Follow-Ups</button>
   <button class="tab-btn" id="tab-disputes" onclick="switchTab('disputes')">⚖ Disputes</button>
-  <button class="tab-btn" id="tab-team" onclick="switchTab('team')" style="display:none">👥 Team</button>
 </div>
 <!-- Settings Panel -->
 <div id="settings-overlay" onclick="toggleSettings()" style="display:none;position:absolute;inset:0;z-index:299;background:rgba(0,0,0,.25);backdrop-filter:blur(1px)"></div>
@@ -843,17 +842,17 @@ Goals shown for your type+cap level">…</div>
       <div class="disp-section" style="margin-bottom:8px">
         <div class="disp-section-hdr" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.disp-section-chevron').classList.toggle('open')">
           <span class="disp-section-hdr-title">🎉 Sale Celebration</span>
-          <span class="disp-section-chevron">▾</span>
+          <span class="disp-section-chevron">▼</span>
         </div>
-        <div class="disp-section-body open">
+        <div class="disp-section-body">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
             <label style="font-size:11px;font-weight:600;color:var(--text2);min-width:60px">Type</label>
             <select id="s-celebration" style="height:28px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-size:11px;color:var(--text2);outline:none;cursor:pointer;flex:1" onchange="saveCelebSetting(this.value)">
-              <option value="fireworks">🎆 Fireworks</option>
-              <option value="confetti">🎊 Confetti</option>
-              <option value="bubbles">🫧 Bubbles</option>
-              <option value="stars">⭐ Stars</option>
-              <option value="rain">💰 Money Rain</option>
+              <option value="fireworks">Fireworks</option>
+              <option value="confetti">Confetti</option>
+              <option value="bubbles">Bubbles</option>
+              <option value="stars">Stars</option>
+              <option value="rain">Money Rain</option>
               <option value="off">Off</option>
             </select>
             <button onclick="testCelebration()" style="height:28px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer">▶ Test</button>
@@ -867,7 +866,7 @@ Goals shown for your type+cap level">…</div>
           <span class="disp-section-hdr-title">🎨 Theme</span>
           <span class="disp-section-chevron open">▼</span>
         </div>
-        <div class="disp-section-body open">
+        <div class="disp-section-body">
           <div class="theme-grid">
             <button class="theme-card" id="tp-dark" onclick="applyPreset('dark')">
               <div class="tc-preview" style="background:#0a0f1e">
@@ -1360,15 +1359,15 @@ Goals shown for your type+cap level">…</div>
   </div>
   <div class="stats-row monthly">
     <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-blue" id="m-rev" data-tip="Total revenue this fiscal period
-(Base + XM activations)">$0</div><div class="stat-pct"><span class="pct-val warn" id="m-rev-pct">0%</span><span id="m-rev-lbl">of $6,870</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rev-bar"></div><div class="goal-bar-over" id="m-rev-over"></div></div><span class="stat-pace" id="m-rev-pace"></span></div>
+(Base + XM activations)">$0</div><div class="stat-achieve" id="m-rev-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-rev-pct">0%</span><span id="m-rev-lbl">of $6,870</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rev-bar"></div><div class="goal-bar-over" id="m-rev-over"></div></div><span class="stat-pace" id="m-rev-pace"></span></div>
     <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-blue" id="m-rgus" data-tip="Revenue Generating Units
-(XM lines each=1, TV=1, CHSI=1 or 0.75 IE, CDV=1, XH=1)">0</div><div class="stat-pct"><span class="pct-val warn" id="m-rgus-pct">0%</span><span id="m-rgus-lbl">of 123</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rgus-bar"></div><div class="goal-bar-over" id="m-rgus-over"></div></div><span class="stat-pace" id="m-rgus-pace"></span></div>
-    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm" data-tip="XM mobile lines sold this period">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span id="m-xm-lbl">of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
-    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="m-tv" data-tip="TV packages sold this period">0</div><div class="stat-pct"><span class="pct-val warn" id="m-tv-pct">0%</span><span id="m-tv-lbl">of 23</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-tv-bar"></div><div class="goal-bar-over" id="m-tv-over"></div></div><span class="stat-pace" id="m-tv-pace"></span></div>
+(XM lines each=1, TV=1, CHSI=1 or 0.75 IE, CDV=1, XH=1)">0</div><div class="stat-achieve" id="m-rgus-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-rgus-pct">0%</span><span id="m-rgus-lbl">of 123</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rgus-bar"></div><div class="goal-bar-over" id="m-rgus-over"></div></div><span class="stat-pace" id="m-rgus-pace"></span></div>
+    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm" data-tip="XM mobile lines sold this period">0</div><div class="stat-achieve" id="m-xm-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span id="m-xm-lbl">of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
+    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="m-tv" data-tip="TV packages sold this period">0</div><div class="stat-achieve" id="m-tv-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-tv-pct">0%</span><span id="m-tv-lbl">of 23</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-tv-bar"></div><div class="goal-bar-over" id="m-tv-over"></div></div><span class="stat-pace" id="m-tv-pace"></span></div>
     <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="m-chsi" data-tip="Internet (CHSI) units sold
-(IE accounts = 0.75 RGU)">0</div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span id="m-chsi-lbl">of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
-    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="m-cdv" data-tip="Digital Voice (home phone) sold">0</div><div class="stat-pct"><span class="pct-val warn" id="m-cdv-pct">0%</span><span id="m-cdv-lbl">of 3</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-cdv-bar"></div><div class="goal-bar-over" id="m-cdv-over"></div></div><span class="stat-pace" id="m-cdv-pace"></span></div>
-    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="m-xh" data-tip="Xfinity Home security units sold">0</div><div class="stat-pct"><span class="pct-val warn" id="m-xh-pct">0%</span><span id="m-xh-lbl">of 2</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xh-bar"></div><div class="goal-bar-over" id="m-xh-over"></div></div><span class="stat-pace" id="m-xh-pace"></span></div>
+(IE accounts = 0.75 RGU)">0</div><div class="stat-achieve" id="m-chsi-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span id="m-chsi-lbl">of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
+    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="m-cdv" data-tip="Digital Voice (home phone) sold">0</div><div class="stat-achieve" id="m-cdv-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-cdv-pct">0%</span><span id="m-cdv-lbl">of 3</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-cdv-bar"></div><div class="goal-bar-over" id="m-cdv-over"></div></div><span class="stat-pace" id="m-cdv-pace"></span></div>
+    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="m-xh" data-tip="Xfinity Home security units sold">0</div><div class="stat-achieve" id="m-xh-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-xh-pct">0%</span><span id="m-xh-lbl">of 2</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xh-bar"></div><div class="goal-bar-over" id="m-xh-over"></div></div><span class="stat-pace" id="m-xh-pace"></span></div>
     <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="m-calls" data-tip="Total calls logged this fiscal period">0</div><div class="stat-pct"><span class="pct-val" id="m-cr" style="color:var(--text3)">—</span><span>close rate</span></div></div>
   </div>
   <div class="stats-section-label" style="padding-top:6px">Today</div>
@@ -1421,8 +1420,8 @@ Goals shown for your type+cap level">…</div>
             </div>
             <div class="checks-group">
               <div class="check-wrap" data-tip="Television service"><label>TV</label><div class="chk" id="chk-tv" onclick="toggleProd('tv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-              <div class="check-wrap" data-tip="Cable High Speed Internet"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-              <div class="check-wrap" data-tip="Cable Digital Voice (home phone)"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="check-wrap" data-tip="High Speed Internet"><label>CHSI</label><div class="chk" id="chk-chsi" onclick="toggleProd('chsi')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+              <div class="check-wrap" data-tip="Digital Voice (home phone)"><label>CDV</label><div class="chk" id="chk-cdv" onclick="toggleProd('cdv')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
               <div class="check-wrap" data-tip="Xfinity Home security"><label>XH</label><div class="chk" id="chk-xh" onclick="toggleProd('xh')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
               <div class="xm-wrap" style="margin-left:12px" data-tip="XM mobile lines
 $45 revenue credit per activation">
@@ -1529,6 +1528,41 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 </div>
 
 <!-- ══ TAB: JOB AIDS ══ -->
+
+<div class="tab-panel" id="panel-reports" style="display:none;padding:20px 24px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:14px;font-weight:700;color:var(--text)">📋 No XM Sales Report</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+      <select id="report-filter" onchange="renderReports()" style="height:30px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-size:11px;font-weight:600;color:var(--text2);outline:none;cursor:pointer">
+        <option value="today">Today</option>
+        <option value="yesterday">Yesterday</option>
+        <option value="this-week">This Week</option>
+        <option value="last-week">Last Week</option>
+        <option value="fiscal">Current Fiscal Month</option>
+        <option value="prev-fiscal">Previous Fiscal Month</option>
+      </select>
+      <span id="report-count" style="font-size:11px;color:var(--text3)">0 calls</span>
+    </div>
+  </div>
+  <div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead>
+        <tr style="background:var(--surface)">
+          <th onclick="copyReportCol('datetime')" title="Click to copy column" style="padding:8px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">Date/Time</th>
+          <th onclick="copyReportCol('acct')" title="Click to copy column" style="padding:8px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">Account #</th>
+          <th onclick="copyReportCol('tv')" title="Click to copy column" style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">TV</th>
+          <th onclick="copyReportCol('chsi')" title="Click to copy column" style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">CHSI</th>
+          <th onclick="copyReportCol('cdv')" title="Click to copy column" style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">CDV</th>
+          <th onclick="copyReportCol('xh')" title="Click to copy column" style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">XH</th>
+          <th onclick="copyReportCol('noxm')" title="Click to copy column" style="padding:8px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">No XM Reason</th>
+        </tr>
+      </thead>
+      <tbody id="report-body">
+        <tr><td colspan="7" style="padding:40px;text-align:center;color:var(--text3)">No data</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <div class="tab-panel" id="panel-jobaid">
   <!-- ── Job Aid sub-tab bar (drag to reorder) ── -->
@@ -1917,6 +1951,12 @@ const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
 const XCL_CALLS_KEY = 'xcl_calls_cache';
 function getCallsCacheKey(){ const id = getCurrentAgentId(); return id && id !== 'guest' ? XCL_CALLS_KEY+'_'+id : XCL_CALLS_KEY; }
+// Clear any stale call caches — Sheets is now the single source of truth
+(function clearStaleCallsCache(){
+  try {
+    Object.keys(localStorage).filter(k => k.startsWith('xcl_calls_cache')).forEach(k => localStorage.removeItem(k));
+  } catch(e) {}
+})();
 const XM_LINE_REV = 45;
 document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL();
 let _userCallType='acq',_userCapLevel=2;
@@ -2226,9 +2266,9 @@ function onFuTypeChange(){
   var tzWrap    = document.getElementById('cb-tz-wrap');
   var req       = document.getElementById('cb-dt-req');
   if(quickWrap) quickWrap.style.display = isCallback ? 'flex' : 'none';
-  if(dtWrap)    dtWrap.style.display    = 'flex'; // always show date, just mark optional
+  if(dtWrap)    dtWrap.style.display    = 'flex';
   if(req)       req.textContent = isCallback ? '(required)' : '(optional)';
-  if(tzWrap)    tzWrap.style.display    = isCallback ? 'flex' : 'none';
+  if(tzWrap)    tzWrap.style.display    = (type === 'Callback' || type === 'Construction') ? 'flex' : 'none';
   // Update panel title
   var titles = {Callback:'📞 Callback',Collections:'💰 Collections',Construction:'🏗 Construction',Exception:'⚠ Exception'};
   var titleEl = document.querySelector('#cb-panel .cb-panel-title');
@@ -3093,59 +3133,93 @@ function updateStats(){
   const dNeedRgus = remainingWorkDays > 0 ? Math.max(0, RGU_GOAL() - mRgus) / remainingWorkDays : 0;
 
   // Rotating motivational messages — changes each time stats update
+  const ACHIEVE_MSGS = [
+    'Crushing It!', 'Killing It!', 'Nailing It!', 'Dominating!',
+    'Unstoppable!', 'Beast Mode!', 'On Another Level!', 'Locked In!',
+    'Goal Smashed!', 'Above & Beyond!', 'Overachiever!', 'Outstanding!',
+    'Setting the Bar!', 'Top Performer!', 'All Day!'
+  ];
   const FIRE_EMOJIS = ['🔥','💪','⚡','🚀','🎯','🏆','💥','🔑','👊','🌟'];
-  const FIRE_MSGS_SHORT = [
-    'Keep Pushing!', 'Don\'t Let Up!', 'Stay Hungry!', 'Don\'t Stop Now!',
-    'Keep Stacking!', 'More Is More!', 'On a Tear!', 'On Fire!',
-    'Locked In!', 'No Days Off!', 'Make It Count!'
-  ];
+  // Each daily message paired with its own unique emoji
   const FIRE_MSGS_ALL = [
-    ...FIRE_MSGS_SHORT,
-    'Sky\'s the Limit!', 'Keep It Rolling!', 'Keep the Pressure On!', 'Stay Relentless!'
+    {e:'💪', m:'Keep Pushing!'},
+    {e:'⚡', m:'Don\'t Let Up!'},
+    {e:'🔥', m:'Stay Hungry!'},
+    {e:'🚀', m:'Don\'t Stop Now!'},
+    {e:'📈', m:'Keep Stacking!'},
+    {e:'💰', m:'More Is More!'},
+    {e:'🏹', m:'On a Tear!'},
+    {e:'🗓️', m:'No Days Off!'},
+    {e:'🎯', m:'Make It Count!'},
+    {e:'🏁', m:'Finish Strong!'},
+    {e:'🌟', m:'Sky\'s the Limit!'},
+    {e:'🛞', m:'Keep It Rolling!'},
+    {e:'💨', m:'STAY on the GAS!'},
+    {e:'👊', m:'Stay Relentless!'},
+    {e:'🔒', m:'Locked In!'}
   ];
+  // Short messages only (no wrap risk) for pace-constrained slots
+  const FIRE_MSGS_SHORT = FIRE_MSGS_ALL.filter(x =>
+    ['Keep Pushing!','Don\'t Let Up!','Stay Hungry!','Don\'t Stop Now!',
+     'Keep Stacking!','More Is More!','On a Tear!','No Days Off!',
+     'Make It Count!','Finish Strong!','Locked In!'].includes(x.m)
+  );
   const _rnd = (pool) => { const p = pool || FIRE_MSGS_ALL; return p[Math.floor(Math.random() * p.length)]; };
   const _rndEmoji = () => FIRE_EMOJIS[Math.floor(Math.random() * FIRE_EMOJIS.length)];
+  const _rndAchieve = () => ACHIEVE_MSGS[Math.floor(Math.random() * ACHIEVE_MSGS.length)];
 
-  const _subHtml = (lines) => {
-    if(!lines || !lines.length) return '';
-    return '<div style="display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.5">' +
-      lines.map(l => '<span>' + l + '</span>').join('') + '</div>';
-  };
-
-  const _setSubHtml = (id, lines) => {
+  // Helper to set monthly achieve message
+  const _setAchieve = (id, show) => {
     const el = document.getElementById(id);
-    if(el) el.innerHTML = _subHtml(lines);
+    if(!el) return;
+    el.textContent = show ? _rndEmoji() + ' ' + _rndAchieve() : '';
   };
 
-  // Revenue — 2-line, full pool
+  // Helper to set colorful daily motivational message
+  const _setFireSub = (id, msgObj, extra) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    const txt = msgObj.e + ' ' + msgObj.m + (extra ? ' ' + extra : '');
+    el.innerHTML = '<span style="color:var(--green);font-weight:700">' + txt + '</span>';
+  };
+
+  // ── Monthly achievement messages ─────────────────────────────────────────
+  _setAchieve('m-rev-achieve',  mRev  >= GOALS.rev);
+  _setAchieve('m-rgus-achieve', mRgus >= RGU_GOAL());
+  _setAchieve('m-xm-achieve',   mXm   >= GOALS.xm);
+  _setAchieve('m-tv-achieve',   mTv   >= GOALS.tv);
+  _setAchieve('m-chsi-achieve', mChsi >= GOALS.chsi);
+  _setAchieve('m-cdv-achieve',  mCdv  >= GOALS.cdv);
+  _setAchieve('m-xh-achieve',   mXh   >= GOALS.xh);
+
+  // ── Daily sub-labels ──────────────────────────────────────────────────────
+  // Revenue
   document.getElementById('d-rev').textContent = fmtMoney(dRev);
   if(remainingWorkDays > 0 && mRev >= GOALS.rev){
-    _setSubHtml('d-rev-sub', [_rndEmoji()+' Crushing It!', _rnd(FIRE_MSGS_ALL)]);
+    _setFireSub('d-rev-sub', _rnd(FIRE_MSGS_ALL));
   } else {
     document.getElementById('d-rev-sub').textContent = remainingWorkDays > 0
       ? 'need $' + Math.ceil(dNeedRev) + '/day · ' + remainingWorkDays + 'd left'
       : (dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'no sales yet');
   }
 
-  // RGUs — 2-line, full pool
+  // RGUs
   document.getElementById('d-rgus').textContent = fmtR(dRgus);
   if(remainingWorkDays > 0 && mRgus >= RGU_GOAL()){
-    _setSubHtml('d-rgus-sub', [_rndEmoji()+' Crushing It!', _rnd(FIRE_MSGS_ALL)]);
+    _setFireSub('d-rgus-sub', _rnd(FIRE_MSGS_ALL));
   } else {
     document.getElementById('d-rgus-sub').textContent = remainingWorkDays > 0
       ? (Math.ceil(dNeedRgus) > 0 ? 'need ' + Math.ceil(dNeedRgus) + '/day' : 'on pace')
       : (dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—');
   }
 
-  // XM — 3-line if floor not met today, 2-line if met, short pool only
+  // XM
   document.getElementById('d-xm').textContent = dXm;
   const calcNeedXm = remainingWorkDays > 0 ? Math.ceil(Math.max(0, GOALS.xm - mXm) / remainingWorkDays) : 0;
   const dXmSub = document.getElementById('d-xm-sub');
   if(dXmSub){
     if(remainingWorkDays > 0 && calcNeedXm < 2){
-      const xmLines = [_rndEmoji()+' Crushing It!', _rnd(FIRE_MSGS_SHORT)];
-      if(dXm < 2) xmLines.push('2+/day');
-      dXmSub.innerHTML = _subHtml(xmLines);
+      _setFireSub('d-xm-sub', _rnd(FIRE_MSGS_SHORT), dXm < 2 ? '· 2+/day' : '');
     } else {
       dXmSub.textContent = remainingWorkDays > 0 ? 'need ' + Math.max(2, calcNeedXm) + '/day' : 'today';
     }
@@ -3154,7 +3228,7 @@ function updateStats(){
   // TV
   document.getElementById('d-tv').textContent = dTv;
 
-  // CHSI — 3-line if floor not met today, 2-line if met, short pool only
+  // CHSI
   document.getElementById('d-chsi').textContent = fmtR(dChsi);
   const MIN_DAILY_CHSI = 5;
   const needChsiCeil = Math.ceil(dNeedChsi);
@@ -3163,9 +3237,7 @@ function updateStats(){
     if(remainingWorkDays <= 0){
       dChsiSubEl.textContent = 'today';
     } else if(needChsiCeil < MIN_DAILY_CHSI){
-      const chsiLines = [_rndEmoji()+' Crushing It!', _rnd(FIRE_MSGS_SHORT)];
-      if(dChsi < MIN_DAILY_CHSI) chsiLines.push('5+/day');
-      dChsiSubEl.innerHTML = _subHtml(chsiLines);
+      _setFireSub('d-chsi-sub', _rnd(FIRE_MSGS_SHORT), dChsi < MIN_DAILY_CHSI ? '· 5+/day' : '');
     } else {
       dChsiSubEl.textContent = 'need ' + needChsiCeil + '/day';
     }
@@ -3500,12 +3572,10 @@ function saveSettings(){
   localStorage.setItem(goalSaveKey, JSON.stringify(goalFields));
   localStorage.setItem(cbSaveKey,   JSON.stringify(cbFields));
   localStorage.setItem(ptoSaveKey,  JSON.stringify(ptoFields));
-  localStorage.setItem('xcl_settings', JSON.stringify(globalFields));
-  saveColorSettings();
-  // Tag with version for migration detection
   globalFields.settingsVersion = SETTINGS_VERSION;
   localStorage.setItem('xcl_settings', JSON.stringify(globalFields));
   localStorage.setItem('xcl_settings_version', String(SETTINGS_VERSION));
+  saveColorSettings();
   // Push full merged settings to Sheets for multi-user sharing
   if(getSheetsUrl()) pushSettingsToSheets(Object.assign({}, goalFields, cbFields, globalFields, {settingsVersion: SETTINGS_VERSION}));
   applySettings(s);
@@ -3704,11 +3774,14 @@ function dropOutcome(e,target){
 
 function getOutcomeEditorValues(){
   const ed=document.getElementById('outcome-editor');
-  if(!ed)return[...DEFAULT_OUTCOMES];
-  return[...ed.querySelectorAll('.outcome-item')].map(el=>{
+  if(!ed) return OUTCOMES.length ? [...OUTCOMES] : [...DEFAULT_OUTCOMES];
+  const items=[...ed.querySelectorAll('.outcome-item')].map(el=>{
     const inp=el.querySelector('input');
     return(inp?inp.value:el.dataset.val||'').trim();
   }).filter(Boolean);
+  // Only return editor values if editor was actually rendered with content
+  // Otherwise fall back to current in-memory OUTCOMES to avoid wiping saved data
+  return items.length ? items : (OUTCOMES.length ? [...OUTCOMES] : [...DEFAULT_OUTCOMES]);
 }
 
 /* ── Google Sheets Sync ── */
@@ -4041,13 +4114,14 @@ function updatePace(){
 /* ── Tab switching ── */
 function switchTab(tab){
   _activeTab = tab;
-  ['tracker','trends','jobaid','callbacks','disputes'].forEach(t=>{
+  ['tracker','trends','reports','jobaid','callbacks','disputes'].forEach(t=>{
     const btn = document.getElementById('tab-'+t);
     const panel = document.getElementById('panel-'+t);
     if(btn) btn.classList.toggle('active', t===tab);
     if(panel) panel.style.display = (t===tab) ? 'block' : 'none';
   });
   if(tab==='trends') renderTrends();
+  if(tab==='reports') renderReports();
   if(tab==='disputes') buildReconFiscalOptions();
   if(tab==='callbacks'){
     var tr=document.getElementById('cb-type-filter-row');
@@ -4056,7 +4130,109 @@ function switchTab(tab){
   }
 }
 
-/* ── Trends charts ── */
+/* ── Reports ── */
+var _reportData = [];
+
+function getReportFilteredCalls(){
+  const f = (document.getElementById('report-filter')||{}).value || 'today';
+  const now = new Date();
+  const startOfDay = d => { const x=new Date(d); x.setHours(0,0,0,0); return x; };
+  const endOfDay   = d => { const x=new Date(d); x.setHours(23,59,59,999); return x; };
+
+  let from, to;
+  if(f==='today'){
+    from=startOfDay(now); to=endOfDay(now);
+  } else if(f==='yesterday'){
+    const y=new Date(now); y.setDate(y.getDate()-1);
+    from=startOfDay(y); to=endOfDay(y);
+  } else if(f==='this-week'){
+    const d=new Date(now); d.setDate(d.getDate()-d.getDay());
+    from=startOfDay(d); to=endOfDay(now);
+  } else if(f==='last-week'){
+    const d=new Date(now); d.setDate(d.getDate()-d.getDay()-7);
+    from=startOfDay(d);
+    const e=new Date(d); e.setDate(e.getDate()+6);
+    to=endOfDay(e);
+  } else if(f==='fiscal'){
+    const fi=getFiscalInfo(); from=fi.fiscalStart; to=new Date(fi.fiscalEnd); to.setHours(23,59,59,999);
+  } else if(f==='prev-fiscal'){
+    const prev=getPrevFiscalMonth();
+    const parts=prev.match(/([A-Za-z]+)\s+(\d{4})/);
+    const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    if(parts){
+      const mIdx=names.indexOf(parts[1]), yr=parseInt(parts[2]);
+      const prevM=mIdx===0?11:mIdx-1, prevY=mIdx===0?yr-1:yr;
+      from=new Date(prevY,prevM,22); to=new Date(yr,mIdx,21,23,59,59,999);
+    } else { from=new Date(0); to=now; }
+  }
+  return calls.filter(c => {
+    if(c.xm > 0) return false; // has XM — exclude
+    const ts = c.ts instanceof Date ? c.ts : new Date(c.ts);
+    return ts >= from && ts <= to;
+  }).sort((a,b) => new Date(b.ts)-new Date(a.ts));
+}
+
+function renderReports(){
+  _reportData = getReportFilteredCalls();
+  const tbody = document.getElementById('report-body');
+  const count  = document.getElementById('report-count');
+  if(count) count.textContent = _reportData.length + ' call' + (_reportData.length!==1?'s':'');
+  if(!tbody) return;
+  if(!_reportData.length){
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:40px;text-align:center;color:var(--text3)">No calls without XM in this period</td></tr>';
+    return;
+  }
+  const chk = '<span style="color:var(--green);font-weight:700">✓</span>';
+  tbody.innerHTML = _reportData.map(function(c, i){
+    const ts = c.ts instanceof Date ? c.ts : new Date(c.ts);
+    const dt = ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}) + ' ' +
+               ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    const acctDisplay = maskAcct(c.acctRaw||'');
+    // No XM reason — use noXmReason for sales, reason for no-sales
+    var noxm = c.noXmReason || c.reason || '';
+    if(c.cbTime){
+      const cbStr = new Date(c.cbTime).toLocaleDateString('en-US',{month:'numeric',day:'numeric'}) + ' ' +
+                    new Date(c.cbTime).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+      noxm = noxm ? noxm + ' · CB: ' + cbStr : 'CB: ' + cbStr;
+    }
+    const rowBg = i%2===0 ? '' : 'background:var(--surface)';
+    const tdC = 'style="padding:3px 4px;text-align:center;font-size:11px"';
+    return '<tr style="'+rowBg+';border-bottom:1px solid var(--border2)">' +
+      '<td style="padding:4px 5px;font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap">'+dt+'</td>' +
+      '<td style="padding:4px 5px;font-family:var(--mono);font-size:11px;color:var(--blue);white-space:nowrap">'+acctDisplay+'</td>' +
+      '<td '+tdC+'>'+(c.tv?chk:'')+'</td>' +
+      '<td '+tdC+'>'+(c.chsi?chk:'')+'</td>' +
+      '<td '+tdC+'>'+(c.cdv?chk:'')+'</td>' +
+      '<td '+tdC+'>'+(c.xh?chk:'')+'</td>' +
+      '<td style="padding:4px 5px;font-size:11px;color:var(--text2)">'+(noxm||'—')+'</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function copyReportCol(col){
+  if(!_reportData.length){ _showToast('No data to copy','warn',2000); return; }
+  var lines = _reportData.map(function(c){
+    const ts = c.ts instanceof Date ? c.ts : new Date(c.ts);
+    if(col==='datetime') return ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'})+' '+ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    if(col==='acct')  return c.acctRaw||'';
+    if(col==='tv')    return c.tv ? 'X' : '';
+    if(col==='chsi')  return c.chsi ? 'X' : '';
+    if(col==='cdv')   return c.cdv ? 'X' : '';
+    if(col==='xh')    return c.xh ? 'X' : '';
+    if(col==='noxm'){
+      var r = c.noXmReason || c.reason || '';
+      if(c.cbTime){ const cbStr=new Date(c.cbTime).toLocaleDateString('en-US',{month:'numeric',day:'numeric'})+' '+new Date(c.cbTime).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}); r=r?r+' · CB: '+cbStr:'CB: '+cbStr; }
+      return r;
+    }
+    return '';
+  });
+  const labels = {datetime:'Date/Time',acct:'Account #',tv:'TV',chsi:'CHSI',cdv:'CDV',xh:'XH',noxm:'No XM Reason'};
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    _showToast('⎘ '+labels[col]+' copied ('+lines.length+' rows)','ok',2500);
+  }).catch(function(){
+    _showToast('Copy failed','err',2000);
+  });
+}
 let _charts = {};
 function renderTrends(){
   const el = document.getElementById('trends-main');
@@ -5874,23 +6050,8 @@ function inActiveFiscalTs(ts){
   return ts >= fi.fiscalStart && ts <= endOfLastDay;
 }
 
-function saveCallsCache(){
-  try {
-    const data = JSON.stringify(calls.map(c => Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts})));
-    localStorage.setItem(getCallsCacheKey(), btoa(unescape(encodeURIComponent(data))));
-  } catch(e) { console.warn('Cache save failed:', e); }
-}
-function loadCallsCache(){
-  try {
-    const raw = localStorage.getItem(getCallsCacheKey());
-    if(!raw) return [];
-    // Support both encoded and legacy plain JSON
-    let parsed;
-    try { parsed = JSON.parse(decodeURIComponent(escape(atob(raw)))); }
-    catch(e) { parsed = JSON.parse(raw); } // fallback for legacy unencoded cache
-    return parsed.map(normalizeCall);
-  } catch(e) { console.warn('Cache load failed:', e); return []; }
-}
+function saveCallsCache(){ /* cache disabled — Sheets is source of truth */ }
+function loadCallsCache(){ return []; }
 
 function setTooltips(on){
   document.body.classList.toggle('tips-on', on);
@@ -6157,8 +6318,6 @@ function applySessionUI(){
     badge.style.display='inline-flex';
   }
   // Show/hide team tab and users tab
-  const teamBtn = document.getElementById('tab-team');
-  if(teamBtn) teamBtn.style.display = (_session.role==='supervisor'||_session.role==='admin') ? '' : 'none';
   const usersBtn = document.getElementById('stab-users');
   if(usersBtn) usersBtn.style.display = _session.role==='admin' ? '' : 'none';
 }
@@ -6191,25 +6350,6 @@ function doLogout(){
 // ── Team Dashboard ────────────────────────────────────────────────────────
 var _teamData = {}; // {agentId: [calls]}
 
-function loadTeamData(){
-  if(!_session || (_session.role!=='supervisor' && _session.role!=='admin')) return;
-  _showToast('Loading team data...', 'ok', 2000);
-  sheetsGet({action:'loadTeam', supervisorId:_session.agentId, role:_session.role})
-  .then(function(d){
-    if(d.status==='ok' && d.calls){
-      _teamData = {};
-      d.calls.forEach(function(c){
-        c.ts = new Date(c.ts);
-        var aid = c.agentId||'unknown';
-        if(!_teamData[aid]) _teamData[aid]=[];
-        _teamData[aid].push(c);
-      });
-      buildTeamFiscalDropdown();
-      renderTeamDashboard();
-    }
-  })
-  .catch(function(err){ _showToast('Team load failed: '+err.message,'warn',3000); });
-}
 
 function buildTeamFiscalDropdown(){
   const sel = document.getElementById('team-fiscal-sel');
@@ -6231,66 +6371,6 @@ function buildTeamFiscalDropdown(){
   }).join('');
 }
 
-function renderTeamDashboard(){
-  const sel = document.getElementById('team-fiscal-sel');
-  const selectedMonth = sel ? sel.value : getFiscalMonth();
-
-  // Get reps this supervisor manages
-  const myReps = _userList.filter(function(u){
-    return u.supervisorId===_session.agentId || _session.role==='admin';
-  });
-
-  const aggEl = document.getElementById('team-agg-stats');
-  const cardsEl = document.getElementById('team-rep-cards');
-  if(!aggEl || !cardsEl) return;
-
-  // Aggregate across all reps
-  var totCalls=0, totSales=0, totRev=0, totRgus=0, totXm=0;
-
-  var repRows = myReps.map(function(rep){
-    var repCalls = (_teamData[rep.agentId]||[]).filter(function(c){
-      return getFiscalInfoForDate(c.ts).label===selectedMonth;
-    });
-    var sales = repCalls.filter(function(c){ return c.hasSale; });
-    var rev   = repCalls.reduce(function(s,c){ return s+c.rev; },0);
-    var rgus  = repCalls.reduce(function(s,c){ return s+c.rgus; },0);
-    var xm    = repCalls.reduce(function(s,c){ return s+c.xm; },0);
-    totCalls+=repCalls.length; totSales+=sales.length; totRev+=rev; totRgus+=rgus; totXm+=xm;
-    return {rep, repCalls, sales, rev, rgus, xm};
-  });
-
-  // Aggregate bar
-  aggEl.innerHTML = [
-    teamStatCard('Calls', totCalls, ''),
-    teamStatCard('Revenue', '$'+totRev.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}), ''),
-    teamStatCard('RGUs', totRgus.toFixed(2), ''),
-    teamStatCard('XM Lines', totXm, ''),
-  ].join('');
-
-  // Rep cards
-  cardsEl.innerHTML = repRows.map(function(row){
-    var cr = row.repCalls.length ? (row.sales.length/row.repCalls.length*100).toFixed(0)+'%' : '—';
-    return '<div class="team-rep-card" onclick="(function(e){drillRepDetail(\''+row.rep.agentId+'\');})(event)">' +
-      '<div style="display:flex;align-items:center;gap:10px;flex:1">' +
-        '<div style="width:32px;height:32px;border-radius:8px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue)">'+
-          (row.rep.name||row.rep.agentId).charAt(0).toUpperCase()+
-        '</div>' +
-        '<div>' +
-          '<div style="font-size:12px;font-weight:600;color:var(--text)">'+(row.rep.name||row.rep.agentId)+'</div>' +
-          '<div style="font-size:10px;color:var(--text3)">'+row.rep.agentId+' · '+(row.rep.callType==='mov'?'Movers':'Acquisition')+' Cap'+row.rep.capLevel+'</div>' +
-        '</div>' +
-      '</div>' +
-      '<div style="display:flex;gap:16px;font-family:var(--mono);font-size:11px">' +
-        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">CALLS</div><div style="color:var(--text);font-weight:600">'+row.repCalls.length+'</div></div>' +
-        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">REV</div><div style="color:var(--green);font-weight:600">$'+row.rev.toFixed(0)+'</div></div>' +
-        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">RGUs</div><div style="color:var(--blue);font-weight:600">'+row.rgus.toFixed(2)+'</div></div>' +
-        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">XM</div><div style="color:var(--teal);font-weight:600">'+row.xm+'</div></div>' +
-        '<div style="text-align:center"><div style="color:var(--text3);font-size:9px">CR</div><div style="color:var(--amber);font-weight:600">'+cr+'</div></div>' +
-      '</div>' +
-      '<div style="color:var(--text3);font-size:14px;margin-left:8px">›</div>' +
-    '</div>';
-  }).join('') || '<div style="font-size:12px;color:var(--text3);padding:12px 0">No agents assigned. Check team data in settings.</div>';
-}
 
 function teamStatCard(label, val, sub){
   return '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px">' +
@@ -6300,23 +6380,7 @@ function teamStatCard(label, val, sub){
   '</div>';
 }
 
-function drillRepDetail(agentId){
-  const rep = _userList.find(function(u){ return u.agentId===agentId; }) || {agentId};
-  const repCalls = (_teamData[agentId]||[]).sort(function(a,b){ return new Date(b.ts)-new Date(a.ts); });
-  document.getElementById('team-rep-detail-name').textContent = (rep.name||agentId)+' — '+repCalls.length+' calls';
-  const logEl = document.getElementById('team-rep-call-log');
-  logEl.innerHTML = '<table class="log-table" style="width:100%"><thead><tr><th>Time</th><th>Acct</th><th>Sched</th><th>Rev</th><th>RGUs</th><th>Outcome</th><th>Notes</th></tr></thead><tbody>' +
-    repCalls.map(function(c){
-      const ts=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
-      const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';
-      return '<tr><td style="font-size:11px">'+ts+'</td><td style="font-size:11px;font-family:var(--mono)">'+((c.acctRaw||c.acct)||'—')+'</td><td style="font-size:11px">'+sc+'</td><td style="font-size:11px;font-family:var(--mono)">'+(c.rev>0?'$'+c.rev.toFixed(2):'—')+'</td><td style="font-size:11px">'+c.rgus+'</td><td><span class="pill '+pillCls(c)+'" style="font-size:10px">'+pillTxt(c)+'</span></td><td style="font-size:11px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis">'+((c.notes||''))+'</td></tr>';
-    }).join('')+'</tbody></table>';
-  document.getElementById('team-rep-detail').style.display='block';
-}
 
-function closeRepDetail(){
-  document.getElementById('team-rep-detail').style.display='none';
-}
 
 // ── User Management ───────────────────────────────────────────────────────
 var _editingUserId = null;
@@ -7509,8 +7573,8 @@ function launchFireworks(isXm,isTest){
       <option value="America/Denver">Mountain (MT)</option>
       <option value="America/Los_Angeles">Pacific (PT)</option>
     </select>
-    <button onclick="cbSetAndClose()" style="height:30px;padding:0 12px;background:var(--purple);border:none;border-radius:6px;font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;cursor:pointer;flex-shrink:0;letter-spacing:.05em">SET</button>
   </div>
+  <button onclick="cbSetAndClose()" style="height:30px;padding:0 12px;background:var(--purple);border:none;border-radius:6px;font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;cursor:pointer;width:100%;letter-spacing:.05em;margin-top:4px">SET</button>
   <div class="cb-mytime" id="cb-mytime"></div>
 </div>
 <div id="nosale-panel"></div>
@@ -7553,27 +7617,7 @@ function launchFireworks(isXm,isTest){
 
 <div id="blank-call-confirm"><div class="bcc-title">Log Blank No Sale?</div><div class="bcc-desc">No selections were made. Log this as a No Sale call with no reason given?</div><div class="bcc-btns"><button class="bcc-yes" onclick="confirmBlankNoSale()">Yes, Log It</button><button class="bcc-no" onclick="dismissBlankConfirm()">Cancel</button></div></div>
 
-<div class="tab-panel" id="panel-team" style="display:none">
-  <div style="padding:16px 24px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <div style="font-size:16px;font-weight:700;color:var(--text)">&#x1F465; Team Dashboard</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <select id="team-fiscal-sel" onchange="renderTeamDashboard()" style="height:28px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;color:var(--text2);outline:none;cursor:pointer;font-family:var(--mono)"></select>
-        <button onclick="loadTeamData()" style="height:28px;padding:0 12px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer">&#x21BB; Refresh</button>
-      </div>
-    </div>
-    <div id="team-agg-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px"></div>
-    <div style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Agents</div>
-    <div id="team-rep-cards" style="display:flex;flex-direction:column;gap:8px"></div>
-    <div id="team-rep-detail" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <button onclick="closeRepDetail()" style="height:28px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text2);cursor:pointer">&#x2190; Back</button>
-        <div id="team-rep-detail-name" style="font-size:14px;font-weight:700;color:var(--text)"></div>
-      </div>
-      <div id="team-rep-call-log" style="overflow-x:auto"></div>
-    </div>
-  </div>
-</div>
+
 
 
 <div id="setup-wizard" style="display:none !important;position:fixed;inset:0;z-index:99998;background:var(--bg);align-items:center;justify-content:center">
