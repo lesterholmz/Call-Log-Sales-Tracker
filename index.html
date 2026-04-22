@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Call Logger v0.4.21.1</title>
+<title>Call Logger v0.4.22</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -788,7 +788,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 </head>
 <body>
 <div class="header">
-  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.21.1</span></div></div>
+  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.22</span></div></div>
   <div class="header-right">
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
@@ -1375,10 +1375,10 @@ Goals shown for your type+cap level">…</div>
     <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-green" id="d-rev">$0</div><div class="stat-sub" style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.3"><span id="d-rev-sub">—</span><span id="d-rev-sub2" style="color:var(--text3)"></span></div></div>
     <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-green" id="d-rgus">0</div><div class="stat-sub" style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.3"><span id="d-rgus-sub">—</span><span id="d-rgus-sub2" style="color:var(--text3)"></span></div></div>
     <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="d-xm">0</div><div class="stat-sub" id="d-xm-sub">need 2/day</div></div>
-    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="d-tv">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="d-tv">0</div><div class="stat-sub" id="d-tv-sub">today</div></div>
     <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="d-chsi">0</div><div class="stat-sub" id="d-chsi-sub">today</div></div>
-    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="d-cdv">0</div><div class="stat-sub">today</div></div>
-    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="d-xh">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="d-cdv">0</div><div class="stat-sub" id="d-cdv-sub">today</div></div>
+    <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="d-xh">0</div><div class="stat-sub" id="d-xh-sub">today</div></div>
     <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="d-calls">0</div><div class="stat-sub" style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.3"><span id="d-calls-sub">No</span><span id="d-calls-sub2" style="color:var(--text3)">Calls Yet</span></div></div>
   </div>
 </div>
@@ -3140,48 +3140,72 @@ function updateStats(){
   const dNeedRev  = remainingWorkDays > 0 ? Math.max(0, GOALS.rev  - mRev)  / remainingWorkDays : 0;
   const dNeedChsi = remainingWorkDays > 0 ? Math.max(0, GOALS.chsi - mChsi) / remainingWorkDays : 0;
   const dNeedRgus = remainingWorkDays > 0 ? Math.max(0, RGU_GOAL() - mRgus) / remainingWorkDays : 0;
+  const dNeedTv   = remainingWorkDays > 0 ? Math.max(0, GOALS.tv   - mTv)   / remainingWorkDays : 0;
+  const dNeedCdv  = remainingWorkDays > 0 ? Math.max(0, GOALS.cdv  - mCdv)  / remainingWorkDays : 0;
+  const dNeedXh   = remainingWorkDays > 0 ? Math.max(0, GOALS.xh   - mXh)   / remainingWorkDays : 0;
 
   // Rotating motivational messages — changes each time stats update
   const ACHIEVE_MSGS = [
-    'Crushing It!', 'Killing It!', 'Nailing It!', 'Dominating!',
-    'Unstoppable!', 'Beast Mode!', 'On Another Level!', 'Locked In!',
-    'Goal Smashed!', 'Above & Beyond!', 'Overachiever!', 'Outstanding!',
-    'Setting the Bar!', 'Top Performer!', 'All Day!'
+    '🔥 Crushing It!', '⚡ Killing It!', '🎯 Nailing It!', '👊 Dominating!',
+    '🚀 Unstoppable!', '💪 Beast Mode!', '📈 Next Level!', '🔒 Locked In!',
+    '💥 Goal Smashed!', '🌟 Beyond Goals!', '🏆 Overachiever!', '👑 Outstanding!',
+    '🏅 Sets the Bar!', '🥇 Top Performer!', '💨 All Day!',
+    '💎 Elite!', '✨ Flawless!', '🔱 On Fire!', '🌀 In the Zone!', '🦅 Unmatched!'
   ];
   const FIRE_EMOJIS = ['🔥','💪','⚡','🚀','🎯','🏆','💥','🔑','👊','🌟'];
   // Each daily message paired with its own unique emoji
   const FIRE_MSGS_ALL = [
     {e:'💪', m:'Keep Pushing!'},
-    {e:'⚡', m:'Don\'t Let Up!'},
+    {e:'⚡', m:"Don't Let Up!"},
     {e:'🔥', m:'Stay Hungry!'},
-    {e:'🚀', m:'Don\'t Stop Now!'},
+    {e:'🚀', m:"Don't Stop Now!"},
     {e:'📈', m:'Keep Stacking!'},
     {e:'💰', m:'More Is More!'},
     {e:'🏹', m:'On a Tear!'},
     {e:'🗓️', m:'No Days Off!'},
     {e:'🎯', m:'Make It Count!'},
     {e:'🏁', m:'Finish Strong!'},
-    {e:'🌟', m:'Sky\'s the Limit!'},
+    {e:'🔒', m:'Locked In!'},
+    {e:'👊', m:'Push Harder!'},
+    {e:'👁️', m:'Eyes on It!'},
+    {e:'🌊', m:'Full Send!'},
+    {e:'✅', m:'Go Mode!'},
     {e:'🛞', m:'Keep It Rolling!'},
     {e:'💨', m:'STAY on the GAS!'},
-    {e:'👊', m:'Stay Relentless!'},
-    {e:'🔒', m:'Locked In!'}
+    {e:'🔱', m:'Stay Relentless!'},
+    {e:'⬆️', m:'No Ceiling!'},
+    {e:'⚙️', m:'Keep Grinding!'},
+    {e:'💡', m:'Stay Sharp!'}
   ];
   // Short messages only (no wrap risk) for pace-constrained slots
   const FIRE_MSGS_SHORT = FIRE_MSGS_ALL.filter(x =>
-    ['Keep Pushing!','Don\'t Let Up!','Stay Hungry!','Don\'t Stop Now!',
+    ['Keep Pushing!',"Don't Let Up!",'Stay Hungry!',"Don't Stop Now!",
      'Keep Stacking!','More Is More!','On a Tear!','No Days Off!',
-     'Make It Count!','Finish Strong!','Locked In!'].includes(x.m)
+     'Make It Count!','Finish Strong!','Locked In!','Push Harder!',
+     'Eyes on It!','Full Send!','Go Mode!','Keep Grinding!','Stay Sharp!',
+     '⬆️ No Ceiling!'].includes(x.m)
   );
   const _rnd = (pool) => { const p = pool || FIRE_MSGS_ALL; return p[Math.floor(Math.random() * p.length)]; };
   const _rndEmoji = () => FIRE_EMOJIS[Math.floor(Math.random() * FIRE_EMOJIS.length)];
   const _rndAchieve = () => ACHIEVE_MSGS[Math.floor(Math.random() * ACHIEVE_MSGS.length)];
 
+  // Shuffled pools for unique-per-tile selection this render cycle
+  const _shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+  const _achievePool  = _shuffle(ACHIEVE_MSGS);
+  const _emojiPool    = _shuffle(FIRE_EMOJIS);
+  const _shortPool    = _shuffle(FIRE_MSGS_SHORT);
+  const _allPool      = _shuffle(FIRE_MSGS_ALL);
+  let _ai = 0, _ei = 0, _si = 0, _ali = 0;
+  const _nextAchieve = () => _achievePool[_ai++ % _achievePool.length];
+  const _nextEmoji   = () => _emojiPool[_ei++ % _emojiPool.length];
+  const _nextShort   = () => _shortPool[_si++ % _shortPool.length];
+  const _nextAll     = () => _allPool[_ali++ % _allPool.length];
+
   // Helper to set monthly achieve message
   const _setAchieve = (id, show) => {
     const el = document.getElementById(id);
     if(!el) return;
-    el.textContent = show ? _rndEmoji() + ' ' + _rndAchieve() : '';
+    el.textContent = show ? _nextAchieve() : '';
   };
 
   // Helper to set colorful daily motivational message
@@ -3202,10 +3226,10 @@ function updateStats(){
   _setAchieve('m-xh-achieve',   mXh   >= GOALS.xh);
 
   // ── Daily sub-labels ──────────────────────────────────────────────────────
-  // Revenue
+  // Revenue — motivational if today's pace met OR monthly goal met
   document.getElementById('d-rev').textContent = fmtMoney(dRev);
-  if(remainingWorkDays > 0 && mRev >= GOALS.rev){
-    _setFireSub('d-rev-sub', _rnd(FIRE_MSGS_ALL));
+  if(remainingWorkDays > 0 && (dRev >= dNeedRev || mRev >= GOALS.rev)){
+    _setFireSub('d-rev-sub', _nextAll());
     const r2=document.getElementById('d-rev-sub2'); if(r2) r2.textContent='';
   } else {
     const revSub = document.getElementById('d-rev-sub');
@@ -3219,10 +3243,10 @@ function updateStats(){
     }
   }
 
-  // RGUs
+  // RGUs — motivational if today's pace met OR monthly goal met
   document.getElementById('d-rgus').textContent = fmtR(dRgus);
-  if(remainingWorkDays > 0 && mRgus >= RGU_GOAL()){
-    _setFireSub('d-rgus-sub', _rnd(FIRE_MSGS_ALL));
+  if(remainingWorkDays > 0 && (dRgus >= dNeedRgus || mRgus >= RGU_GOAL())){
+    _setFireSub('d-rgus-sub', _nextAll());
     const r2=document.getElementById('d-rgus-sub2'); if(r2) r2.textContent='';
   } else {
     const rguSub = document.getElementById('d-rgus-sub');
@@ -3237,22 +3261,31 @@ function updateStats(){
     }
   }
 
-  // XM
+  // XM — motivational if today >= 2 OR monthly goal met
   document.getElementById('d-xm').textContent = dXm;
   const calcNeedXm = remainingWorkDays > 0 ? Math.ceil(Math.max(0, GOALS.xm - mXm) / remainingWorkDays) : 0;
   const dXmSub = document.getElementById('d-xm-sub');
   if(dXmSub){
-    if(remainingWorkDays > 0 && calcNeedXm < 2){
-      _setFireSub('d-xm-sub', _rnd(FIRE_MSGS_SHORT), dXm < 2 ? '· 2+/day' : '');
+    if(remainingWorkDays > 0 && (dXm >= 2 || mXm >= GOALS.xm)){
+      _setFireSub('d-xm-sub', _nextShort(), dXm < 2 ? '· 2+/day' : '');
     } else {
       dXmSub.textContent = remainingWorkDays > 0 ? 'need ' + Math.max(2, calcNeedXm) + '/day' : 'today';
     }
   }
 
-  // TV
+  // TV — motivational if today's pace met OR monthly goal met
   document.getElementById('d-tv').textContent = dTv;
+  const dTvSub = document.getElementById('d-tv-sub');
+  if(dTvSub){
+    if(remainingWorkDays > 0 && (dTv >= dNeedTv || mTv >= GOALS.tv)){
+      _setFireSub('d-tv-sub', _nextShort());
+    } else {
+      dTvSub.textContent = remainingWorkDays > 0 ? (Math.ceil(dNeedTv) > 0 ? 'need '+Math.ceil(dNeedTv)+'/day' : 'on pace') : 'today';
+      dTvSub.style.color = '';
+    }
+  }
 
-  // CHSI
+  // CHSI — motivational if today >= 5 OR monthly goal met
   document.getElementById('d-chsi').textContent = fmtR(dChsi);
   const MIN_DAILY_CHSI = 5;
   const needChsiCeil = Math.ceil(dNeedChsi);
@@ -3260,14 +3293,37 @@ function updateStats(){
   if(dChsiSubEl){
     if(remainingWorkDays <= 0){
       dChsiSubEl.textContent = 'today';
-    } else if(needChsiCeil < MIN_DAILY_CHSI){
-      _setFireSub('d-chsi-sub', _rnd(FIRE_MSGS_SHORT), dChsi < MIN_DAILY_CHSI ? '· 5+/day' : '');
+    } else if(dChsi >= MIN_DAILY_CHSI || mChsi >= GOALS.chsi){
+      _setFireSub('d-chsi-sub', _nextShort(), dChsi < MIN_DAILY_CHSI ? '· 5+/day' : '');
     } else {
-      dChsiSubEl.textContent = 'need ' + needChsiCeil + '/day';
+      dChsiSubEl.textContent = 'need ' + Math.max(MIN_DAILY_CHSI, needChsiCeil) + '/day';
+      dChsiSubEl.style.color = '';
     }
   }
+
+  // CDV — motivational only if sold at least 1 today OR monthly goal met
   document.getElementById('d-cdv').textContent = dCdv;
-  document.getElementById('d-xh').textContent  = dXh;
+  const dCdvSub = document.getElementById('d-cdv-sub');
+  if(dCdvSub){
+    if(remainingWorkDays > 0 && dCdv >= 1){
+      _setFireSub('d-cdv-sub', _nextShort());
+    } else {
+      dCdvSub.textContent = remainingWorkDays > 0 ? (Math.ceil(dNeedCdv) > 0 ? 'need '+Math.ceil(dNeedCdv)+'/day' : 'on pace') : 'today';
+      dCdvSub.style.color = '';
+    }
+  }
+
+  // XH — motivational only if sold at least 1 today OR monthly goal met
+  document.getElementById('d-xh').textContent = dXh;
+  const dXhSub = document.getElementById('d-xh-sub');
+  if(dXhSub){
+    if(remainingWorkDays > 0 && dXh >= 1){
+      _setFireSub('d-xh-sub', _nextShort());
+    } else {
+      dXhSub.textContent = remainingWorkDays > 0 ? (Math.ceil(dNeedXh) > 0 ? 'need '+Math.ceil(dNeedXh)+'/day' : 'on pace') : 'today';
+      dXhSub.style.color = '';
+    }
+  }
   document.getElementById('d-calls').textContent = dN;
   const dCrEl = document.getElementById('d-calls-sub');
   const dCrLbl = document.getElementById('d-calls-sub2');
@@ -4088,6 +4144,17 @@ function buildCalendar(fiscalStart, totalDays, elapsedDays){
   const cal = document.getElementById('pace-cal');
   if(!cal) return;
   cal.innerHTML = '';
+
+  // Update pace-summary tooltip with fiscal progress info
+  const pct = Math.round(Math.min(elapsedDays, totalDays) / totalDays * 100);
+  const remaining = Math.max(0, totalDays - elapsedDays);
+  const summary = document.getElementById('pace-summary');
+  if(summary) summary.setAttribute('data-tip',
+    'Fiscal Month Progress\n' +
+    'Day ' + Math.min(elapsedDays + 1, totalDays) + ' of ' + totalDays +
+    ' · ' + pct + '% complete\n' +
+    remaining + ' day' + (remaining !== 1 ? 's' : '') + ' remaining'
+  );
   const DOWS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const today = new Date();
   today.setHours(0,0,0,0);
@@ -4109,7 +4176,7 @@ function buildCalendar(fiscalStart, totalDays, elapsedDays){
     if(isFirst)     cls += ' fiscal-start';
     if(isLast)      cls += ' fiscal-end';
     div.className = cls;
-    div.title = date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+    div.title = date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}) + (isToday ? '\n' + pct + '% through fiscal month' : '');
     div.innerHTML =
       '<div class="cal-day-strip"><div class="cal-day-dow">' + DOWS[dow] + '</div></div>' +
       '<div class="cal-day-body">' +
@@ -5989,7 +6056,7 @@ function buildFiscalHistoryDropdown(){
         const mIdx = names.indexOf(parts[1]);
         const yr   = parseInt(parts[2]);
         if(mIdx >= 0){
-          const fEnd   = new Date(yr, mIdx, 22);
+          const fEnd   = new Date(yr, mIdx, 21);
           const fStart = new Date(yr, mIdx-1, 22);
           seen.set(k, {fiscalStart: fStart, fiscalEnd: fEnd, label: parts[1]+' '+yr, key: k});
         }
@@ -6015,7 +6082,7 @@ function buildFiscalHistoryDropdown(){
     var _pMonth = names[_pDate.getMonth()] + ' ' + _pDate.getFullYear();
     var _pKey = getFiscalKey(_userCallType, _userCapLevel, _pMonth);
     var _pStart = new Date(_pDate.getFullYear(), _pDate.getMonth()-1, 22);
-    var _pEnd   = new Date(_pDate.getFullYear(), _pDate.getMonth(), 22);
+    var _pEnd   = new Date(_pDate.getFullYear(), _pDate.getMonth(), 21);
     if(!seen.has(_pKey)) seen.set(_pKey, {fiscalStart:_pStart, fiscalEnd:_pEnd, label:_pMonth, key:_pKey});
   }
 
@@ -6027,7 +6094,7 @@ function buildFiscalHistoryDropdown(){
   function fmtRange(fi){
     if(!fi.fiscalStart||!fi.fiscalEnd) return fi.label||'';
     const s=fi.fiscalStart;
-    const e=new Date(fi.fiscalEnd.getTime()-86400000);
+    const e=fi.fiscalEnd;
     return _mn[s.getMonth()]+' '+s.getDate()+' – '+_mn[e.getMonth()]+' '+e.getDate();
   }
   sel.innerHTML = sorted.map(fi =>
