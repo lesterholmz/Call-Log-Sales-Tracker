@@ -4903,13 +4903,29 @@ function onImportPrevFile(input) {
       updateStats();
       buildFilterOptions();
 
-      /* Push to Google Sheets (fire-and-forget) */
-      for (var pi = 0; pi < newCalls.length; pi++) upsertCallToSheets(newCalls[pi]);
-
-      setImportPrevStatus(
-        '\u2713 ' + imported + ' imported \u00b7 ' + skipped + ' skipped \u00b7 ' + dupes + ' dupes',
-        'var(--green)'
-      );
+      /* Push to Google Sheets in batches to avoid rate limiting */
+      (function pushBatched(calls, batchSize, delayMs) {
+        var total = calls.length;
+        var sent  = 0;
+        function sendNext() {
+          if (sent >= total) {
+            setImportPrevStatus(
+              '\u2713 ' + imported + ' imported \u00b7 ' + skipped + ' skipped \u00b7 ' + dupes + ' dupes \u00b7 synced to Sheets',
+              'var(--green)'
+            );
+            return;
+          }
+          var batch = calls.slice(sent, sent + batchSize);
+          batch.forEach(function(c) { upsertCallToSheets(c); });
+          sent += batchSize;
+          setImportPrevStatus(
+            '\u2713 ' + imported + ' imported \u00b7 syncing ' + Math.min(sent, total) + '/' + total + ' to Sheets\u2026',
+            'var(--blue)'
+          );
+          setTimeout(sendNext, delayMs);
+        }
+        sendNext();
+      })(newCalls, 10, 600);
 
       input.value = '';
 
@@ -6074,7 +6090,10 @@ function buildFiscalHistoryDropdown(){
   // 3. Always include current + past 5 fiscal months
   const current = getFiscalInfo();
   const curKey  = getFiscalKey();
-  seen.set(curKey, {fiscalStart:current.fiscalStart, fiscalEnd:current.fiscalEnd, label:getFiscalMonth(), key:curKey});
+  if(![...seen.values()].some(v => v.label === getFiscalMonth()))
+    seen.set(curKey, {fiscalStart:current.fiscalStart, fiscalEnd:current.fiscalEnd, label:getFiscalMonth(), key:curKey});
+  else
+    seen.set(curKey, {fiscalStart:current.fiscalStart, fiscalEnd:current.fiscalEnd, label:getFiscalMonth(), key:curKey});
   // Add past months so they always show even without calls/goals
   const names=['January','February','March','April','May','June','July','August','September','October','November','December'];
   for(var _pm=1; _pm<=5; _pm++){
@@ -6083,7 +6102,9 @@ function buildFiscalHistoryDropdown(){
     var _pKey = getFiscalKey(_userCallType, _userCapLevel, _pMonth);
     var _pStart = new Date(_pDate.getFullYear(), _pDate.getMonth()-1, 22);
     var _pEnd   = new Date(_pDate.getFullYear(), _pDate.getMonth(), 21);
-    if(!seen.has(_pKey)) seen.set(_pKey, {fiscalStart:_pStart, fiscalEnd:_pEnd, label:_pMonth, key:_pKey});
+    // Only add if no entry with same label already exists
+    if(![...seen.values()].some(v => v.label === _pMonth))
+      seen.set(_pKey, {fiscalStart:_pStart, fiscalEnd:_pEnd, label:_pMonth, key:_pKey});
   }
 
   // Sort descending by fiscal start
