@@ -26,14 +26,14 @@
   --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
 }
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;min-width:720px;max-width:900px;margin:0 auto;position:relative}
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 12px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-logo{width:30px;height:30px;border-radius:8px;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4)}
 .brand-name{font-size:14px;font-weight:700;color:var(--text)}
 .brand-name span{color:var(--blue)}
 .header-right{display:flex;align-items:center;gap:12px}
 /* ── Tab navigation ── */
-.tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 24px;gap:2px;position:sticky;top:52px;z-index:190}
+.tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 12px;gap:2px;position:sticky;top:52px;z-index:190}
 .tab-btn{height:40px;padding:0 18px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s;letter-spacing:.03em;white-space:nowrap;margin-bottom:-1px}
 .tab-btn:hover{color:var(--text2)}
 .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
@@ -47,7 +47,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .month-chip{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);background:var(--amber-lt);border:1px solid rgba(245,158,11,0.25);padding:4px 12px;border-radius:20px}
 #alert-bar{display:none;position:sticky;top:52px;z-index:190;background:rgba(45,31,5,0.75);backdrop-filter:blur(6px);border-bottom:1px solid rgba(245,158,11,0.4)}
 #alert-bar.visible{display:block}
-.alert-inner{padding:10px 24px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.alert-inner{padding:10px 12px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
 .alert-content{flex:1;min-width:200px}
 .alert-title{font-size:12px;font-weight:700;color:var(--amber);margin-bottom:4px}
@@ -58,11 +58,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .alert-dismiss{background:none;border:1px solid rgba(245,158,11,.3);border-radius:6px;color:var(--amber);font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;white-space:nowrap;font-family:var(--sans)}
 .alert-dismiss:hover{background:rgba(245,158,11,.1)}
 .stats-panel{background:var(--surface);border-bottom:1px solid var(--border)}
-.stats-section-label{padding:8px 24px 6px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:10px;position:relative}
+.stats-section-label{padding:8px 12px 6px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:10px;position:relative}
 .stats-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.stats-row{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1fr 1fr 1fr 0.8fr;padding:0 24px}
+.stats-row{display:grid;grid-template-columns:1.25fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 0.6fr;padding:0 12px}
 .stats-row.monthly{border-bottom:1px solid var(--border2)}
-.stat{padding:10px 8px 8px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
+.stat{padding:10px 0 8px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
 .stat:first-child{padding-left:0;min-width:90px}.stat:last-child{border-right:none}
 .stat-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
 .stats-row.monthly .stat-val{font-family:var(--mono);font-size:clamp(11px,1.4vw,17px);font-weight:600;color:var(--text);line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
@@ -79,7 +79,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .stats-row.daily{padding-bottom:6px}
 .stats-row.monthly .stat{padding-top:10px;padding-bottom:8px}
 .stats-row.daily .stat{padding-top:6px;padding-bottom:5px}
-.main{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.main{padding:20px 12px;display:flex;flex-direction:column;gap:16px}
 .form-card{background:var(--card);border:1px solid var(--border);border-radius:12px}
 .form-header{padding:11px 18px;background:var(--card2);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between}
 .form-header-title{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text2);display:flex;align-items:center;gap:8px}
@@ -1368,18 +1368,18 @@ Goals shown for your type+cap level">…</div>
 (IE accounts = 0.75 RGU)">0</div><div class="stat-achieve" id="m-chsi-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span id="m-chsi-lbl">of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
     <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="m-cdv" data-tip="Digital Voice (home phone) sold">0</div><div class="stat-achieve" id="m-cdv-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-cdv-pct">0%</span><span id="m-cdv-lbl">of 3</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-cdv-bar"></div><div class="goal-bar-over" id="m-cdv-over"></div></div><span class="stat-pace" id="m-cdv-pace"></span></div>
     <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="m-xh" data-tip="Xfinity Home security units sold">0</div><div class="stat-achieve" id="m-xh-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-xh-pct">0%</span><span id="m-xh-lbl">of 2</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xh-bar"></div><div class="goal-bar-over" id="m-xh-over"></div></div><span class="stat-pace" id="m-xh-pace"></span></div>
-    <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="m-calls" data-tip="Total calls logged this fiscal period">0</div><div class="stat-pct"><span class="pct-val" id="m-cr" style="color:var(--text3)">—</span><span>close rate</span></div></div>
+    <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="m-calls" data-tip="Total calls logged this fiscal period">0</div><div class="stat-sub" style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.3"><span id="m-cr" style="color:var(--text3)">No</span><span id="m-cr-lbl" style="color:var(--text3)">Calls Yet</span></div></div>
   </div>
   <div class="stats-section-label" style="padding-top:6px">Today</div>
   <div class="stats-row daily">
-    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-green" id="d-rev">$0</div><div class="stat-sub" id="d-rev-sub">—</div></div>
-    <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-green" id="d-rgus">0</div><div class="stat-sub" id="d-rgus-sub">—</div></div>
+    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val c-green" id="d-rev">$0</div><div class="stat-sub" style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.3"><span id="d-rev-sub">—</span><span id="d-rev-sub2" style="color:var(--text3)"></span></div></div>
+    <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-green" id="d-rgus">0</div><div class="stat-sub" style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.3"><span id="d-rgus-sub">—</span><span id="d-rgus-sub2" style="color:var(--text3)"></span></div></div>
     <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="d-xm">0</div><div class="stat-sub" id="d-xm-sub">need 2/day</div></div>
     <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="d-tv">0</div><div class="stat-sub">today</div></div>
     <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="d-chsi">0</div><div class="stat-sub" id="d-chsi-sub">today</div></div>
     <div class="stat"><div class="stat-label">CDV</div><div class="stat-val c-blue" id="d-cdv">0</div><div class="stat-sub">today</div></div>
     <div class="stat"><div class="stat-label">XH</div><div class="stat-val c-blue" id="d-xh">0</div><div class="stat-sub">today</div></div>
-    <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="d-calls">0</div><div class="stat-sub" id="d-calls-sub">no calls yet</div></div>
+    <div class="stat"><div class="stat-label">Calls</div><div class="stat-val" id="d-calls">0</div><div class="stat-sub" style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.3"><span id="d-calls-sub">No</span><span id="d-calls-sub2" style="color:var(--text3)">Calls Yet</span></div></div>
   </div>
 </div>
 <div class="pace-summary" id="pace-summary">
@@ -3105,8 +3105,17 @@ function updateStats(){
   document.getElementById('m-rgus-lbl').textContent = 'of ' + RGU_GOAL();
 
   const crEl = document.getElementById('m-cr');
-  if(crEl){ crEl.textContent = mN ? (mSales/mN*100).toFixed(0)+'%' : '—';
-    crEl.className = 'pct-val ' + (mN && mSales/mN>=.3 ? 'good' : mN ? 'ok' : ''); }
+  const crLbl = document.getElementById('m-cr-lbl');
+  if(crEl){
+    if(mN){
+      crEl.textContent = (mSales/mN*100).toFixed(0)+'%';
+      crEl.className = mSales/mN>=.3 ? 'c-green' : 'c-amber';
+      if(crLbl){ crLbl.textContent = 'close rate'; crLbl.style.color='var(--text3)'; }
+    } else {
+      crEl.textContent = 'No'; crEl.className = ''; crEl.style.color='var(--text3)';
+      if(crLbl){ crLbl.textContent = 'Calls Yet'; crLbl.style.color='var(--text3)'; }
+    }
+  }
 
   // ── Today stats ──────────────────────────────────────────────────────────
   const dRev  = td.reduce((s,c) => s+c.rev, 0);
@@ -3197,20 +3206,35 @@ function updateStats(){
   document.getElementById('d-rev').textContent = fmtMoney(dRev);
   if(remainingWorkDays > 0 && mRev >= GOALS.rev){
     _setFireSub('d-rev-sub', _rnd(FIRE_MSGS_ALL));
+    const r2=document.getElementById('d-rev-sub2'); if(r2) r2.textContent='';
   } else {
-    document.getElementById('d-rev-sub').textContent = remainingWorkDays > 0
-      ? 'need $' + Math.ceil(dNeedRev) + '/day · ' + remainingWorkDays + 'd left'
-      : (dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'no sales yet');
+    const revSub = document.getElementById('d-rev-sub');
+    const revSub2 = document.getElementById('d-rev-sub2');
+    if(remainingWorkDays > 0){
+      if(revSub){ revSub.textContent = 'need $'+Math.ceil(dNeedRev)+'/day'; revSub.style.color=''; }
+      if(revSub2){ revSub2.textContent = remainingWorkDays+'d left'; }
+    } else {
+      if(revSub){ revSub.textContent = dSales ? dSales+' sale'+(dSales!==1?'s':'') : 'No'; revSub.style.color='var(--text3)'; }
+      if(revSub2){ revSub2.textContent = dSales ? '' : 'Sales Yet'; }
+    }
   }
 
   // RGUs
   document.getElementById('d-rgus').textContent = fmtR(dRgus);
   if(remainingWorkDays > 0 && mRgus >= RGU_GOAL()){
     _setFireSub('d-rgus-sub', _rnd(FIRE_MSGS_ALL));
+    const r2=document.getElementById('d-rgus-sub2'); if(r2) r2.textContent='';
   } else {
-    document.getElementById('d-rgus-sub').textContent = remainingWorkDays > 0
-      ? (Math.ceil(dNeedRgus) > 0 ? 'need ' + Math.ceil(dNeedRgus) + '/day' : 'on pace')
-      : (dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—');
+    const rguSub = document.getElementById('d-rgus-sub');
+    const rguSub2 = document.getElementById('d-rgus-sub2');
+    if(remainingWorkDays > 0){
+      const need = Math.ceil(dNeedRgus);
+      if(rguSub){ rguSub.textContent = need > 0 ? 'need '+need+'/day' : 'on pace'; rguSub.style.color=''; }
+      if(rguSub2){ rguSub2.textContent = need > 0 ? remainingWorkDays+'d left' : ''; }
+    } else {
+      if(rguSub){ rguSub.textContent = dRgus ? 'across '+dSales+' sale'+(dSales!==1?'s':'') : '—'; rguSub.style.color='var(--text3)'; }
+      if(rguSub2){ rguSub2.textContent = ''; }
+    }
   }
 
   // XM
@@ -3245,7 +3269,15 @@ function updateStats(){
   document.getElementById('d-cdv').textContent = dCdv;
   document.getElementById('d-xh').textContent  = dXh;
   document.getElementById('d-calls').textContent = dN;
-  document.getElementById('d-calls-sub').textContent = dN ? (dSales/dN*100).toFixed(0)+'% close rate' : 'no calls yet';
+  const dCrEl = document.getElementById('d-calls-sub');
+  const dCrLbl = document.getElementById('d-calls-sub2');
+  if(dN){
+    if(dCrEl){ dCrEl.textContent = (dSales/dN*100).toFixed(0)+'%'; dCrEl.style.color=''; }
+    if(dCrLbl){ dCrLbl.textContent = 'close rate'; }
+  } else {
+    if(dCrEl){ dCrEl.textContent = 'No'; dCrEl.style.color='var(--text3)'; }
+    if(dCrLbl){ dCrLbl.textContent = 'Calls Yet'; }
+  }
 
   updatePace();
 }
@@ -4761,6 +4793,7 @@ function onImportPrevFile(input) {
         newCalls.push({
           id:          idBase + imported,
           ts:          ts,
+          agentId:     getCurrentAgentId(),
           acct:        acct,
           acctRaw:     acct,
           cbName:      '',
