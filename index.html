@@ -3217,13 +3217,13 @@ function updateStats(){
   };
 
   // ── Monthly achievement messages ─────────────────────────────────────────
-  _setAchieve('m-rev-achieve',  mRev  >= GOALS.rev);
-  _setAchieve('m-rgus-achieve', mRgus >= RGU_GOAL());
-  _setAchieve('m-xm-achieve',   mXm   >= GOALS.xm);
-  _setAchieve('m-tv-achieve',   mTv   >= GOALS.tv);
-  _setAchieve('m-chsi-achieve', mChsi >= GOALS.chsi);
-  _setAchieve('m-cdv-achieve',  mCdv  >= GOALS.cdv);
-  _setAchieve('m-xh-achieve',   mXh   >= GOALS.xh);
+  _setAchieve('m-rev-achieve',  mRev  >= GOALS.rev  && GOALS.rev  > 0);
+  _setAchieve('m-rgus-achieve', mRgus >= RGU_GOAL() && RGU_GOAL() > 0);
+  _setAchieve('m-xm-achieve',   mXm   >= GOALS.xm   && GOALS.xm   > 0);
+  _setAchieve('m-tv-achieve',   mTv   >= GOALS.tv   && GOALS.tv   > 0);
+  _setAchieve('m-chsi-achieve', mChsi >= GOALS.chsi && GOALS.chsi > 0);
+  _setAchieve('m-cdv-achieve',  mCdv  >= GOALS.cdv  && GOALS.cdv  > 0);
+  _setAchieve('m-xh-achieve',   mXh   >= GOALS.xh   && GOALS.xh   > 0);
 
   // ── Daily sub-labels ──────────────────────────────────────────────────────
   // Revenue — motivational if today's pace met OR monthly goal met
@@ -3575,11 +3575,30 @@ function saveSettings(){
     sheetsUrl:(()=>{const u=document.getElementById('s-sheets-url').value.trim();if(u)localStorage.setItem('xcl_sheets_url',u);return u;})(),
   };
 
-  // ── Detect what changed before saving ────────────────────────────────────
-  // Compare against raw storage — not merged defaults — to avoid false positives
+  // ── Derive save keys first ───────────────────────────────────────────────
   const selFiscalEl2 = document.getElementById('s-fiscal-month');
   const isCurrent = !selFiscalEl2 || selFiscalEl2.value === getFiscalKey();
   const monthStr = selFiscalEl2 ? (selFiscalEl2.options[selFiscalEl2.selectedIndex]||{}).text||getFiscalMonth() : getFiscalMonth();
+  let goalSaveKey, cbSaveKey, ptoSaveKey;
+  if(selFiscalEl2 && selFiscalEl2.value){
+    const monthMatch = selFiscalEl2.value.match(/xcl_goals_[a-z]+_cap\d+_([A-Za-z]+)(\d{4})$/);
+    if(monthMatch){
+      const monthLabel = monthMatch[1]+' '+monthMatch[2];
+      goalSaveKey = getFiscalKeyForMonth(monthLabel);
+      cbSaveKey   = getCbKeyForMonth(monthLabel);
+      ptoSaveKey  = getPtoKeyForMonth(monthLabel);
+    } else {
+      goalSaveKey = getFiscalKey();
+      cbSaveKey   = getCbKey();
+      ptoSaveKey  = getPtoKey();
+    }
+  } else {
+    goalSaveKey = getFiscalKey();
+    cbSaveKey   = getCbKey();
+    ptoSaveKey  = getPtoKey();
+  }
+
+  // ── Detect what changed before saving ────────────────────────────────────
   const prevGoals  = JSON.parse(localStorage.getItem(goalSaveKey)||'{}');
   const prevCb     = JSON.parse(localStorage.getItem(cbSaveKey)||'{}');
   const prevPto    = JSON.parse(localStorage.getItem(ptoSaveKey)||'{}');
@@ -3629,34 +3648,6 @@ function saveSettings(){
     : '✓ No changes to save';
   // Split: goals saved to shared fiscal key, chargebacks to personal CB key
   const goalFields = {
-    rev:s.rev, xm:s.xm, tv:s.tv, chsi:s.chsi, cdv:s.cdv, xh:s.xh
-  };
-  const ptoFields = { ptoHours:s.ptoHours };
-  const cbFields = {
-    cbRev:s.cbRev, cbXm:s.cbXm, cbTv:s.cbTv, cbChsi:s.cbChsi, cbCdv:s.cbCdv, cbXh:s.cbXh
-  };
-  const globalFields = Object.assign({},s);
-  ['rev','xm','tv','chsi','cdv','xh','ptoHours','cbRev','cbXm','cbTv','cbChsi','cbCdv','cbXh'].forEach(k=>delete globalFields[k]);
-  // Derive keys fresh from current role + selected month
-  const selFiscal = document.getElementById('s-fiscal-month');
-  let goalSaveKey, cbSaveKey, ptoSaveKey;
-  if(selFiscal && selFiscal.value){
-    const monthMatch = selFiscal.value.match(/xcl_goals_[a-z]+_cap\d+_([A-Za-z]+)(\d{4})$/);
-    if(monthMatch){
-      const monthLabel = monthMatch[1]+' '+monthMatch[2];
-      goalSaveKey = getFiscalKeyForMonth(monthLabel);
-      cbSaveKey   = getCbKeyForMonth(monthLabel);
-      ptoSaveKey  = getPtoKeyForMonth(monthLabel);
-    } else {
-      goalSaveKey = getFiscalKey();
-      cbSaveKey   = getCbKey();
-      ptoSaveKey  = getPtoKey();
-    }
-  } else {
-    goalSaveKey = getFiscalKey();
-    cbSaveKey   = getCbKey();
-    ptoSaveKey  = getPtoKey();
-  }
   localStorage.setItem(goalSaveKey, JSON.stringify(goalFields));
   localStorage.setItem(cbSaveKey,   JSON.stringify(cbFields));
   localStorage.setItem(ptoSaveKey,  JSON.stringify(ptoFields));
