@@ -85,6 +85,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .form-header-title{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text2);display:flex;align-items:center;gap:8px}
 .form-header-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.call-start-grow{transition:transform .15s,background .15s}
+.call-start-grow:hover{transform:scale(1.5);background:rgba(34,197,94,.12)}
+.form-clear-grow{transition:transform .15s,background .15s,color .15s}
+.form-clear-grow:hover{transform:scale(1.5);background:rgba(248,113,113,.1);color:var(--red)!important}
+.pill-scroll{overflow:hidden;white-space:nowrap;max-width:100%;position:relative}
+.pill-scroll.scrolling{overflow-x:auto;scrollbar-width:none}
+.pill-scroll.scrolling::-webkit-scrollbar{display:none}
 .form-hint{font-size:11px;color:var(--text3);font-family:var(--mono)}
 .form-body{padding:14px 12px;display:flex;flex-direction:column;gap:8px}
 .frow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
@@ -183,6 +190,7 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .cb-badge.done{color:var(--text3);background:transparent;border-color:var(--border2);text-decoration:line-through;opacity:.5}
 .pill{display:inline-flex;align-items:center;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
 .p-sale{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.p-xm{background:rgba(20,184,166,.12);color:var(--teal);border:1px solid rgba(20,184,166,.25)}
 .p-nosale{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.2)}
 .p-bulk{background:var(--blue-lt);color:var(--blue);border:1px solid rgba(59,130,246,.2)}
 .p-ie{background:rgba(34,197,94,.08);color:var(--green);border:1px solid rgba(34,197,94,.2)}
@@ -1389,8 +1397,8 @@ Goals shown for your type+cap level">…</div>
   <div id="pace-cal"></div>
 </div>
 <div class="main">
-  <div class="form-card" id="new-call-form-card">
-    <div class="form-header"><div class="form-header-title">Log New Call</div><div style="display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%)"><button id="call-start-btn" onclick="callStartTimer()" style="height:22px;padding:0 10px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:5px;font-size:10px;font-weight:600;color:var(--green);cursor:pointer;letter-spacing:.04em;white-space:nowrap">▶ Call Start</button><span id="call-timer" style="font-family:var(--mono);font-size:11px;color:var(--text3);min-width:42px;display:none">0:00</span></div><button onclick="resetForm()" title="Clear form" style="width:26px;height:26px;background:none;border:none;border-radius:50%;font-size:14px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1" onmouseover="this.style.color='var(--red)';this.style.background='rgba(248,113,113,.1)'" onmouseout="this.style.color='var(--text3)';this.style.background='none'">✕</button></div>
+  <div class="form-card" id="new-call-form-card" oninput="updateClearVisibility()" onclick="updateClearVisibility()">
+    <div class="form-header"><div class="form-header-title" onclick="callStartTimer()" title="Press when call connects" style="cursor:pointer;user-select:none">Log New Call</div><div style="display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%)"><button id="call-start-btn" onclick="callStartTimer()" title="Press when call connects" class="call-start-grow" style="width:30px;height:30px;background:none;border:none;border-radius:50%;font-size:18px;color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">▶</button><span id="call-timer" style="display:none"></span></div><div style="position:relative"><button id="form-clear-btn" onclick="handleClear()" title="Clear form" class="form-clear-grow" style="width:22px;height:22px;background:none;border:none;border-radius:50%;font-size:12px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;visibility:hidden">✕</button><div id="clear-popover" style="display:none;position:absolute;right:0;top:32px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:999;min-width:160px;flex-direction:column;gap:6px"><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:0 4px 4px;border-bottom:1px solid var(--border2);margin-bottom:2px">Clear what?</div><button onclick="clearTimerOnly()" id="clear-timer-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='none'">⏱ Reset Timer</button><button onclick="clearFormOnly()" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">🗑 Clear Form</button><button onclick="clearBoth()" id="clear-both-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">⏱🗑 Clear Both</button></div></div></div>
     <div class="form-body">
       <!-- ── Row 1: XM · IE/BULK · TV/CHSI/CDV/XH │ No Sale / Play ── -->
       <div class="form-row-center">
@@ -2038,8 +2046,8 @@ function rawPhone(v){return v.replace(/\D/g,'');}
 document.getElementById('f-cb-phone').addEventListener('input',function(){onPhoneInput(this);});
 
 function dismissAlerts(){alertDismissed=Date.now()+5*60000;document.getElementById('alert-bar').classList.remove('visible');}
-function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();updateRevTotal();if(editingId&&window._editCall)renderEditXmLines(window._editCall);}
-function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();}
+function setXm(v){xmVal=Math.max(0,Math.min(10,v));document.getElementById('xm-val').textContent=xmVal;document.getElementById('xm-stepper').classList.toggle('has-val',xmVal>0);updatePlay();updateRevTotal();updateClearVisibility();if(editingId&&window._editCall)renderEditXmLines(window._editCall);}
+function toggleProd(k){prods[k]=!prods[k];syncProds();updatePlay();updateClearVisibility();}
 function isIE(){const el=document.getElementById('chk-ie');return el&&el.classList.contains('ie-active');}
 function syncProds(){syncIEVisibility();const ie=isIE(),el=document.getElementById('chk-chsi');el.classList.remove('checked','ie-adj');if(prods.chsi)el.classList.add(ie?'ie-adj':'checked');['tv','cdv','xh'].forEach(k=>document.getElementById('chk-'+k).classList.toggle('checked',prods[k]));}
 // No-sale state machine
@@ -2053,6 +2061,7 @@ let _nsSub    = '';  // selected sub-reason
 
 function _nsClose(){
   _nsState = 'closed'; _nsCat = ''; _nsSub = ''; _nsPanelOpen = false;
+  updateClearVisibility();
   const panel = document.getElementById('nosale-panel');
   const tog   = document.getElementById('ns-toggle');
   if(panel) panel.classList.remove('open');
@@ -2090,6 +2099,7 @@ function toggleNoSale(callerEl){
   renderNsPanel();
   colorReason();
   nsAutoSelect();
+  updateClearVisibility();
 }
 
 function renderNsPanel(){
@@ -2361,7 +2371,6 @@ function confirmBlankNoSale(){
 }
 
 function logCall(){
-  // Block if edit panel is open — Log Call button shouldn't fire in edit mode
   if(editingId) return;
   if(isBlankCall()){ showBlankCallConfirm(); return; }
   doLogCall();
@@ -2433,6 +2442,8 @@ function resetForm(){
   updateNotesState();
   updatePlay();
   resetCallTimer();
+  _clearPressCount = 0;
+  updateClearVisibility();
   nsAutoSelect();
   syncIEVisibility();
 }
@@ -2837,12 +2848,15 @@ function renderReadRow(c){
   // Build separate pills for each element
   let outcomePills = '';
   if(c.hasSale){
-    outcomePills += `<span class="pill p-sale">${c.playName||'Sale'}</span> `;
-    if(c.xm > 0) outcomePills += `<span class="pill p-sale">XM×${c.xm}</span> `;
-    if(c.tv)  outcomePills += `<span class="pill p-sale">TV</span> `;
-    if(c.chsi) outcomePills += `<span class="pill p-sale">${c.ie?'IE':'CHSI'}</span> `;
-    if(c.cdv) outcomePills += `<span class="pill p-sale">CDV</span> `;
-    if(c.xh)  outcomePills += `<span class="pill p-sale">XH</span> `;
+    const lobs = [];
+    if(c.xm > 0) lobs.push(c.xm > 1 ? `XM(${c.xm})` : 'XM');
+    if(c.tv)  lobs.push('TV');
+    if(c.chsi) lobs.push(c.ie?'IE':'CHSI');
+    if(c.cdv) lobs.push('CDV');
+    if(c.xh)  lobs.push('XH');
+    const playTxt = (c.playName||'Sale') + (lobs.length ? ' | '+lobs.join(' · ') : '');
+    const pillColor = c.xm > 0 ? 'p-xm' : 'p-sale';
+    outcomePills += `<span class="pill ${pillColor}">${playTxt}</span> `;
   } else {
     outcomePills += `<span class="pill p-nosale">No Sale</span> `;
     if(c.reason && c.reason !== 'NO SALE MADE'){
@@ -2851,21 +2865,26 @@ function renderReadRow(c){
       outcomePills += `<span class="pill ${pillCls(c)}">${c.callOutcome}</span> `;
     }
   }
-  // Callback/follow-up badge
+  // Callback/follow-up badge — always last
+  let cbPill = '';
   if(c.cbTime && !c.cbDone){
     const fuTypeIcons={Callback:'📞',Collections:'💰',Construction:'🏗',Exception:'⚠'};
     const icon = fuTypeIcons[c.fuType]||'📞';
-    outcomePills += `<span class="cb-badge">${icon} ${fmtCb(c.cbTime)}</span>`;
+    cbPill = `<span class="cb-badge">${icon} ${fmtCb(c.cbTime)}</span>`;
   } else if(c.cbDone && c.cbTime){
-    outcomePills += `<span class="cb-badge done">✓ ${fmtCb(c.cbTime)}</span>`;
+    cbPill = `<span class="cb-badge done">✓ ${fmtCb(c.cbTime)}</span>`;
   } else if(c.fuType && c.fuType !== 'Callback' && !c.cbTime){
     const fuTypeIcons={Collections:'💰',Construction:'🏗',Exception:'⚠'};
-    outcomePills += `<span class="cb-badge">${fuTypeIcons[c.fuType]||''} ${c.fuType}</span>`;
+    cbPill = `<span class="cb-badge">${fuTypeIcons[c.fuType]||''} ${c.fuType}</span>`;
+  }
+  outcomePills += cbPill;
+  if(c.hasSale && c.xm === 0 && c.noXmReason){
+    outcomePills += ` <span class="pill p-other"><span style="color:var(--red);font-weight:700">No XM</span> · ${c.noXmReason}</span>`;
   }
 
   const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'||(c.fuType&&!c.cbDone)?' has-callback':'');
   const acctTip = [c.cbName, c.cbPhone ? fmtPhone(c.cbPhone) : ''].filter(Boolean).join(' · ');
-  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td>${rev}</td><td>${rgu}</td><td style="white-space:normal">${outcomePills}</td></tr>`;
+  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td>${rev}</td><td>${rgu}</td><td style="max-width:0;width:40%"><div class="pill-scroll" onmouseenter="pillScrollStart(this)" onmouseleave="pillScrollStop(this)">${outcomePills}</div></td></tr>`;
 }
 /* ── Log filter ── */
 function buildFilterOptions(){
@@ -3727,32 +3746,134 @@ function clearAppCacheAndReload(){
 }
 var _callStartTime = null;
 var _callTimerInterval = null;
+var _clearPressCount = 0;
 
 function callStartTimer(){
+  if(_callStartTime !== null) return; // already running
   _callStartTime = new Date();
+  _clearPressCount = 0;
   const btn = document.getElementById('call-start-btn');
   const timerEl = document.getElementById('call-timer');
-  if(btn){ btn.textContent = '● Live'; btn.style.background='rgba(248,113,113,.12)'; btn.style.borderColor='rgba(248,113,113,.35)'; btn.style.color='var(--red)'; btn.onclick=null; }
-  if(timerEl) timerEl.style.display = 'inline';
+  const startStr = _callStartTime.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  if(btn) btn.style.display = 'none';
+  updateClearVisibility();
+  if(timerEl){
+    timerEl.style.display = 'inline-flex';
+    timerEl.style.alignItems = 'center';
+    timerEl.style.gap = '6px';
+  }
   clearInterval(_callTimerInterval);
-  _callTimerInterval = setInterval(function(){
+  // Render immediately — no waiting for first tick
+  const renderTimer = function(){
     if(!_callStartTime) return;
     const secs = Math.floor((Date.now() - _callStartTime.getTime()) / 1000);
     const m = Math.floor(secs / 60), s = secs % 60;
     const el = document.getElementById('call-timer');
-    if(el) el.textContent = m + ':' + String(s).padStart(2,'0');
-  }, 1000);
+    if(el) el.innerHTML =
+      '<span style="display:inline-flex;align-items:center;gap:5px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);border-radius:20px;padding:3px 10px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--teal);white-space:nowrap">' +
+        '📞 ' + startStr +
+      '</span>' +
+      '<span style="display:inline-flex;align-items:center;gap:5px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:20px;padding:3px 10px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green);white-space:nowrap">' +
+        '⏱ ' + m + ':' + String(s).padStart(2,'0') +
+      '</span>';
+  };
+  renderTimer();
+  _callTimerInterval = setInterval(renderTimer, 1000);
 }
 
+function updateClearVisibility(){
+  const btn = document.getElementById('form-clear-btn');
+  if(!btn) return;
+  const show = _callStartTime !== null || !isBlankCall();
+  btn.style.visibility = show ? 'visible' : 'hidden';
+}
+function handleClear(){
+  const pop = document.getElementById('clear-popover');
+  const btn = document.getElementById('form-clear-btn');
+  if(!pop) return;
+  const isOpen = pop.style.display === 'flex';
+  if(isOpen){ closeClearPopover(); return; }
+  // Show timer options only when timer is running
+  const timerBtn = document.getElementById('clear-timer-btn');
+  const bothBtn  = document.getElementById('clear-both-btn');
+  const timerActive = _callStartTime !== null;
+  if(timerBtn) timerBtn.style.display = timerActive ? 'flex' : 'none';
+  if(bothBtn)  bothBtn.style.display  = timerActive ? 'flex' : 'none';
+  pop.style.display = 'flex';
+  if(btn){ btn.style.transform='scale(1.5)'; btn.style.color='var(--red)'; btn.style.background='rgba(248,113,113,.1)'; }
+  setTimeout(function(){ document.addEventListener('click', closeClearOnOutside, {once:true}); }, 0);
+}
+function closeClearPopover(){
+  const pop = document.getElementById('clear-popover');
+  const btn = document.getElementById('form-clear-btn');
+  if(pop) pop.style.display = 'none';
+  if(btn){ btn.style.transform=''; btn.style.color='var(--text3)'; btn.style.background='none'; }
+}
+function closeClearOnOutside(e){
+  const pop = document.getElementById('clear-popover');
+  if(pop && !pop.contains(e.target)) closeClearPopover();
+}
+function clearTimerOnly(){
+  closeClearPopover();
+  resetCallTimer();
+  _clearPressCount = 0;
+}
+function clearFormOnly(){
+  closeClearPopover();
+  _clearPressCount = 0;
+  // Clear form fields without resetting timer
+  const editPanelBody = document.getElementById('edit-panel-body');
+  const formCard = document.getElementById('new-call-form-card');
+  if(editPanelBody && formCard){ const fb = editPanelBody.querySelector('.form-body'); if(fb){ formCard.appendChild(fb); formCard.style.display=''; } }
+  ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  var fuTypeSel=document.getElementById('f-fu-type');if(fuTypeSel)fuTypeSel.value='Callback';
+  setXm(0); updateRevTotal();
+  Object.keys(prods).forEach(k=>{prods[k]=false;const el=document.getElementById('chk-'+k);if(el)el.classList.remove('checked','ie-adj');});
+  _ieActive=false; const ie=document.getElementById('chk-ie');if(ie)ie.classList.remove('ie-active');
+  _bulkActive=false; const bk=document.getElementById('chk-bulk');if(bk)bk.classList.remove('bulk-active');
+  const blbl=document.getElementById('bulk-lbl');if(blbl)blbl.style.color='var(--text3)';
+  const ilbl=document.getElementById('ie-lbl');if(ilbl)ilbl.style.color='var(--text3)';
+  _nsClose(); cbOpen=false;
+  const cbt=document.getElementById('cb-toggle');if(cbt)cbt.classList.remove('active');
+  const cbp=document.getElementById('cb-panel');if(cbp)cbp.style.display='none';
+  updateNotesState(); updatePlay(); nsAutoSelect(); syncIEVisibility();
+  updateClearVisibility();
+}
+function clearBoth(){
+  closeClearPopover();
+  _clearPressCount = 0;
+  resetForm(); // resets timer + form
+}
 function resetCallTimer(){
   _callStartTime = null;
   clearInterval(_callTimerInterval);
   _callTimerInterval = null;
   const btn = document.getElementById('call-start-btn');
   const timerEl = document.getElementById('call-timer');
-  if(btn){ btn.textContent = '▶ Call Start'; btn.style.background='var(--green-lt)'; btn.style.borderColor='rgba(34,197,94,.3)'; btn.style.color='var(--green)'; btn.onclick=callStartTimer; }
-  if(timerEl){ timerEl.style.display='none'; timerEl.textContent='0:00'; }
+  if(btn){ btn.style.display = 'flex'; btn.onclick = callStartTimer; }
+  if(timerEl){ timerEl.style.display='none'; timerEl.innerHTML=''; }
+  updateClearVisibility();
 }
+function pillScrollStart(el){
+  if(el.scrollWidth <= el.clientWidth) return;
+  el._scrollDelay = setTimeout(function(){
+    el.classList.add('scrolling');
+    el._scrollInterval = setInterval(function(){
+      if(el.scrollLeft >= el.scrollWidth - el.clientWidth){
+        clearInterval(el._scrollInterval);
+        return;
+      }
+      el.scrollLeft += 1;
+    }, 16); // ~60fps smooth scroll
+  }, 800);
+}
+function pillScrollStop(el){
+  clearTimeout(el._scrollDelay);
+  clearInterval(el._scrollInterval);
+  el.classList.remove('scrolling');
+  el.scrollLeft = 0;
+}
+
 function resetSettings(){
   if(confirm('Reset goals & chargebacks for '+getFiscalMonth()+'? Global settings (theme, schedule, etc.) are kept.')){
     localStorage.removeItem(getFiscalKey());
