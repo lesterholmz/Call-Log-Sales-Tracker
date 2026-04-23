@@ -7339,7 +7339,8 @@ function renderCallbacksTab(){
   var el=document.getElementById('cb-tab-cards');
   if(!el) return;
   if(!filtered.length){
-    el.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🔔</div><div>No follow-ups match this filter</div></div>';
+    var diag = 'calls:'+calls.length+' cbCalls:'+cbCalls.length+' typeFiltered:'+typeFiltered.length+' filter:'+filter;
+    el.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🔔</div><div>No follow-ups match this filter</div><div style="font-size:10px;font-family:var(--mono);opacity:.5">'+diag+'</div></div>';
     return;
   }
 
