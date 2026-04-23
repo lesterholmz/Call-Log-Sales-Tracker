@@ -7353,6 +7353,7 @@ function renderCallbacksTab(){
 
   el.innerHTML='';
   filtered.forEach(function(c){
+    try {
     var status=getCbStatus(c);
     var cbDate=c.cbTime?new Date(c.cbTime):null;
     var cbFmt=cbDate&&!isNaN(cbDate)?
@@ -7501,6 +7502,13 @@ function renderCallbacksTab(){
     var reschedTarget = card.querySelector('div[style*="padding:12px 16px"]') || card.querySelector('.fu-card-body') || card;
     reschedTarget.appendChild(reschedPanel);
     el.appendChild(card);
+    } catch(err) {
+      console.error('XCL follow-up card error for call', c.id, err);
+      var errDiv = document.createElement('div');
+      errDiv.style.cssText = 'padding:8px 12px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;font-size:11px;color:var(--red);font-family:var(--mono)';
+      errDiv.textContent = 'Card error (id:'+c.id+'): '+err.message;
+      el.appendChild(errDiv);
+    }
   });
 }
 
