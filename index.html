@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Call Logger v0.4.22</title>
+<title>Call Logger v0.4.23</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -796,7 +796,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 </head>
 <body>
 <div class="header">
-  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.22</span></div></div>
+  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.23</span></div></div>
   <div class="header-right">
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
@@ -1346,7 +1346,6 @@ Goals shown for your type+cap level">…</div>
     <button class="settings-reset" onclick="resetSettings()">Reset</button>
   </div>
 </div>
-<div id="settings-overlay" onclick="toggleSettings()" style="display:none;position:absolute;inset:0;z-index:299;background:rgba(0,0,0,.25);backdrop-filter:blur(1px)"></div>
 <div id="sheets-load-bar">
   <div class="sync-bar-top">
     <div class="load-spinner" id="sync-spinner"></div>
@@ -1397,7 +1396,7 @@ Goals shown for your type+cap level">…</div>
   <div id="pace-cal"></div>
 </div>
 <div class="main">
-  <div class="form-card" id="new-call-form-card" oninput="updateClearVisibility()" onclick="updateClearVisibility()">
+  <div class="form-card" id="new-call-form-card" oninput="updateClearVisibility()">
     <div class="form-header"><div class="form-header-title" onclick="callStartTimer()" title="Press when call connects" style="cursor:pointer;user-select:none">Log New Call</div><div style="display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%)"><button id="call-start-btn" onclick="callStartTimer()" title="Press when call connects" class="call-start-grow" style="width:30px;height:30px;background:none;border:none;border-radius:50%;font-size:18px;color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">▶</button><span id="call-timer" style="display:none"></span></div><div style="position:relative"><button id="form-clear-btn" onclick="handleClear()" title="Clear form" class="form-clear-grow" style="width:22px;height:22px;background:none;border:none;border-radius:50%;font-size:12px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;visibility:hidden">✕</button><div id="clear-popover" style="display:none;position:absolute;right:0;top:32px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:999;min-width:160px;flex-direction:column;gap:6px"><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:0 4px 4px;border-bottom:1px solid var(--border2);margin-bottom:2px">Clear what?</div><button onclick="clearTimerOnly()" id="clear-timer-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='none'">⏱ Reset Timer</button><button onclick="clearFormOnly()" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">🗑 Clear Form</button><button onclick="clearBoth()" id="clear-both-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">⏱🗑 Clear Both</button></div></div></div>
     <div class="form-body">
       <!-- ── Row 1: XM · IE/BULK · TV/CHSI/CDV/XH │ No Sale / Play ── -->
@@ -1527,10 +1526,10 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
     </div>
     <table>
       <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th></tr></thead>
-      <tbody id="log-body"><tr><td colspan="8" class="empty">No calls logged yet — fill in the form above to get started</td></tr></tbody>
+      <tbody id="log-body"><tr><td colspan="5" class="empty">No calls logged yet — fill in the form above to get started</td></tr></tbody>
     </table>
   </div>
-</div>
+</div><!-- end .main -->
 </div><!-- end panel-tracker -->
 
 <!-- ══ TAB: TRENDS ══ -->
@@ -1834,10 +1833,10 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
         </tr></thead>
         <tbody id="recon-table-body"></tbody>
       </table>
-    </div>
 
   </div>
-</div>
+  </div>
+</div><!-- end panel-disputes -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -2071,7 +2070,6 @@ function _nsClose(){
 
 function toggleNoSale(callerEl){
   if(_nsPanelOpen){
-    // Panel open — close it
     _nsPanelOpen = false;
     const panel = document.getElementById('nosale-panel');
     if(panel) panel.classList.remove('open');
@@ -2079,14 +2077,12 @@ function toggleNoSale(callerEl){
     return;
   }
   if(_nsState !== 'closed'){
-    // Already have a selection — reset it entirely
     _nsClose();
     nsAutoSelect();
     colorReason();
     updateNosaleDisplay();
     return;
   }
-  // Open fresh
   _nsState = 'tier1'; _nsCat = ''; _nsSub = '';
   const tog   = document.getElementById('ns-toggle');
   const panel = document.getElementById('nosale-panel');
@@ -6216,15 +6212,17 @@ function toggleDispSection(hdr){
 function positionNsPanel(anchorEl){
   const panel = document.getElementById('nosale-panel');
   if(!panel || !anchorEl) return;
-  // Anchor to XM stepper if available, else use callerEl
   const xmStepper = document.getElementById('xm-stepper');
   const anchor = xmStepper || anchorEl;
   const rect = anchor.getBoundingClientRect();
   const vv = window.visualViewport;
   const offsetX = vv ? vv.offsetLeft : 0;
   const offsetY = vv ? vv.offsetTop  : 0;
-  panel.style.top  = (rect.bottom + offsetY + 6) + 'px';
-  panel.style.left = (rect.left   + offsetX)     + 'px';
+  // Fallback if anchor is hidden/offscreen
+  const top  = rect.bottom > 0 ? rect.bottom + offsetY + 6 : 200;
+  const left = rect.left   > 0 ? rect.left   + offsetX     : 20;
+  panel.style.top  = top  + 'px';
+  panel.style.left = left + 'px';
   panel.style.minWidth = '280px';
 }
 
@@ -7898,7 +7896,6 @@ function launchFireworks(isXm,isTest){
   <button onclick="cbSetAndClose()" style="height:30px;padding:0 12px;background:var(--purple);border:none;border-radius:6px;font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;cursor:pointer;width:100%;letter-spacing:.05em;margin-top:4px">SET</button>
   <div class="cb-mytime" id="cb-mytime"></div>
 </div>
-<div id="nosale-panel"></div>
 <div id="logout-confirm" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.4);align-items:center;justify-content:center">
   <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;width:260px;text-align:center;display:flex;flex-direction:column;gap:12px">
     <div style="font-size:14px;font-weight:700;color:var(--text)">Sign Out?</div>
@@ -8100,5 +8097,7 @@ function launchFireworks(isXm,isTest){
 
 <canvas id="celeb-canvas"></canvas>
 <div id="celeb-banner"></div>
+
+<div id="nosale-panel"></div>
 </body>
 </html>
