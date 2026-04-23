@@ -7339,8 +7339,7 @@ function renderCallbacksTab(){
   var el=document.getElementById('cb-tab-cards');
   if(!el) return;
   if(!filtered.length){
-    var diag = 'calls:'+calls.length+' cbCalls:'+cbCalls.length+' typeFiltered:'+typeFiltered.length+' filter:'+filter;
-    el.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🔔</div><div>No follow-ups match this filter</div><div style="font-size:10px;font-family:var(--mono);opacity:.5">'+diag+'</div></div>';
+    el.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🔔</div><div>No follow-ups match this filter</div></div>';
     return;
   }
 
@@ -7499,8 +7498,8 @@ function renderCallbacksTab(){
       '<input type="datetime-local" id="cb-resched-dt-'+c.id+'" style="height:30px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;flex:1;min-width:180px">'+
       '<button onclick="saveCbResched(\''+c.id+'\')" style="height:30px;padding:0 14px;background:var(--purple);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Save</button>'+
       '<button onclick="document.getElementById(\'cb-resched-'+c.id+'\').style.display=\'none\'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer">Cancel</button>';
-    card.querySelector('div[style*="padding:12px 16px"]').appendChild(reschedPanel);
-
+    var reschedTarget = card.querySelector('div[style*="padding:12px 16px"]') || card.querySelector('.fu-card-body') || card;
+    reschedTarget.appendChild(reschedPanel);
     el.appendChild(card);
   });
 }

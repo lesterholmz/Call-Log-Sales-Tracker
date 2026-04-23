@@ -18,8 +18,23 @@ self.addEventListener('activate', function(e){
 });
 
 self.addEventListener('fetch', function(e){
-  // Only cache same-origin requests, pass through external (Sheets API etc)
-  if(!e.request.url.startsWith(self.location.origin)){ return; }
+  if(!e.request.url.startsWith(self.location.origin)) return;
+
+  // Network-first for index.html — always fetch latest deploy
+  if(e.request.url.endsWith('/') || e.request.url.includes('index.html')){
+    e.respondWith(
+      fetch(e.request).then(function(resp){
+        var clone = resp.clone();
+        caches.open(CACHE).then(function(c){ c.put(e.request, clone); });
+        return resp;
+      }).catch(function(){
+        return caches.match(e.request); // offline fallback
+      })
+    );
+    return;
+  }
+
+  // Cache-first for everything else (manifest, icons)
   e.respondWith(
     caches.match(e.request).then(function(cached){
       return cached || fetch(e.request).then(function(resp){
