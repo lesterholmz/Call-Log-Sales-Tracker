@@ -81,7 +81,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .stats-row.daily .stat{padding-top:6px;padding-bottom:5px}
 .main{padding:20px 12px;display:flex;flex-direction:column;gap:16px}
 .form-card{background:var(--card);border:1px solid var(--border);border-radius:12px}
-.form-header{padding:11px 18px;background:var(--card2);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between}
+.form-header{padding:11px 18px;background:var(--card2);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between;position:relative}
 .form-header-title{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text2);display:flex;align-items:center;gap:8px}
 .form-header-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -1191,6 +1191,9 @@ Goals shown for your type+cap level">…</div>
       <div style="margin-top:6px">
         <span id="sheets-status" style="font-size:11px;color:var(--text3);font-family:var(--mono);display:block;min-height:16px"></span>
       </div>
+      <div class="settings-section-label" style="margin-top:14px">App Reset</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">Clears all local app data and forces the latest version to load. Your call history in Google Sheets is not affected. You will need to log back in.</div>
+      <button onclick="clearAppCacheAndReload()" style="height:34px;padding:0 16px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.35);border-radius:7px;font-size:11px;font-weight:700;color:var(--red);cursor:pointer;width:100%">🗑 Clear Local Data &amp; Force Reload</button>
     </div>
 
     <!-- ── Outcomes ── -->
@@ -1387,7 +1390,7 @@ Goals shown for your type+cap level">…</div>
 </div>
 <div class="main">
   <div class="form-card" id="new-call-form-card">
-    <div class="form-header"><div class="form-header-title">Log New Call</div><button onclick="resetForm()" style="height:22px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:5px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer;letter-spacing:.04em">✕ Clear</button></div>
+    <div class="form-header"><div class="form-header-title">Log New Call</div><div style="display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%)"><button id="call-start-btn" onclick="callStartTimer()" style="height:22px;padding:0 10px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:5px;font-size:10px;font-weight:600;color:var(--green);cursor:pointer;letter-spacing:.04em;white-space:nowrap">▶ Call Start</button><span id="call-timer" style="font-family:var(--mono);font-size:11px;color:var(--text3);min-width:42px;display:none">0:00</span></div><button onclick="resetForm()" title="Clear form" style="width:26px;height:26px;background:none;border:none;border-radius:50%;font-size:14px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1" onmouseover="this.style.color='var(--red)';this.style.background='rgba(248,113,113,.1)'" onmouseout="this.style.color='var(--text3)';this.style.background='none'">✕</button></div>
     <div class="form-body">
       <!-- ── Row 1: XM · IE/BULK · TV/CHSI/CDV/XH │ No Sale / Play ── -->
       <div class="form-row-center">
@@ -1515,7 +1518,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
       <div class="table-actions"><div class="log-search-wrap"><span class="log-search-icon">🔍</span><input class="log-search-input" id="log-search" type="text" placeholder="Search acct #…" oninput="setLogSearch(this.value)" autocomplete="off" spellcheck="false"><button class="log-search-clear" id="log-search-clear" onclick="clearLogSearch()" title="Clear">✕</button></div><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
     </div>
     <table>
-      <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Sched</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th><th>Follow-Up</th><th>Notes</th></tr></thead>
+      <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th></tr></thead>
       <tbody id="log-body"><tr><td colspan="8" class="empty">No calls logged yet — fill in the form above to get started</td></tr></tbody>
     </table>
   </div>
@@ -1548,7 +1551,8 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
     <table style="width:100%;border-collapse:collapse;font-size:12px">
       <thead>
         <tr style="background:var(--surface)">
-          <th onclick="copyReportCol('datetime')" title="Click to copy column" style="padding:8px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">Date/Time</th>
+          <th onclick="copyReportCol('date')" title="Click to copy column" style="padding:8px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">Date</th>
+          <th onclick="copyReportCol('time')" title="Click to copy column" style="padding:8px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">Time</th>
           <th onclick="copyReportCol('acct')" title="Click to copy column" style="padding:8px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">Account #</th>
           <th onclick="copyReportCol('tv')" title="Click to copy column" style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">TV</th>
           <th onclick="copyReportCol('chsi')" title="Click to copy column" style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none">CHSI</th>
@@ -2376,7 +2380,7 @@ function doLogCall(){
   const cbPhone=document.getElementById('f-cb-phone').value.trim();
   const cbTime=(document.getElementById('f-cb-dt')&&document.getElementById('f-cb-dt').value)||'';
   const raw=document.getElementById('f-acct').value.trim();
-  const c=compute({id:Date.now(),ts:new Date(),acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
+  const c=compute({id:Date.now(),ts:_callStartTime || new Date(),acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
   calls.unshift(c);render();updateStats();checkAlerts();upsertCallToSheets(c);
   var _wasSale=isSale(); var _wasXm=xmVal>0;
@@ -2428,7 +2432,7 @@ function resetForm(){
   const cbmt=document.getElementById('cb-mytime');if(cbmt)cbmt.textContent='';
   updateNotesState();
   updatePlay();
-  
+  resetCallTimer();
   nsAutoSelect();
   syncIEVisibility();
 }
@@ -2662,7 +2666,7 @@ function saveEdit(){
   const cbPhone  = document.getElementById('f-cb-phone').value.trim();
   const cbTime   = (document.getElementById('f-cb-dt') && document.getElementById('f-cb-dt').value) || '';
   const fuType   = cbOpen ? ((document.getElementById('f-fu-type') && document.getElementById('f-fu-type').value) || 'Callback') : '';
-  const baseRev  = parseFloat(document.getElementById('f-rev').value) || 0;
+  const baseRev  = getRevVal();
   const sched    = document.getElementById('f-sched').value;
   const notes    = document.getElementById('f-notes').value.trim();
   const reason   = (_nsState !== 'closed' && !isSale()) ? getNoSaleReason() : '';
@@ -2826,29 +2830,42 @@ function pillTxt(c){if(c.hasSale){const base=(c.bulk?'BULK · ':'')+( c.xm>0?`${
 function outcomeOpts(sel=''){return`<option value="">— select outcome —</option>`+OUTCOMES.map(v=>`<option${sel===v?' selected':''}>${v}</option>`).join('');}
 function renderReadRow(c){
   const ts=c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),ds=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'});
-  const sc=c.sched?new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}):'—';
   const rev=c.rev>0?`<span class="td-rev-pos">$${c.rev.toFixed(2)}</span>`:`<span class="td-nil">—</span>`;
   const rgu=c.rgus>0?`<span class="rgu-val">${fmtR(c.rgus)}</span>`:`<span class="rgu-nil">—</span>`;
   const st=cbStatus(c);
-  const fuTypeIcons={Callback:'📞',Collections:'💰',Construction:'🏗',Exception:'⚠'};
-  const fuIcon=fuTypeIcons[c.fuType]||'';
-  const fuLabel=c.fuType&&c.fuType!=='Callback'?c.fuType:'';
-  let cb='<span class="td-nil">—</span>';
-  if(c.fuType&&!c.cbTime&&!c.cbDone){
-    // Non-callback follow-up with no time — show type badge only
-    cb=`<span class="cb-badge">${fuIcon} ${fuLabel}</span>`;
-  } else if(st==='done'){
-    cb=`<span class="cb-badge done">${fuIcon||'✓'} ${fmtCb(c.cbTime)}</span>`;
-  } else if(st==='overdue'){
-    cb=`<span class="cb-badge overdue">⚠ ${fmtCb(c.cbTime)}</span>`;
-  } else if(st==='due-soon'){
-    cb=`<span class="cb-badge due-soon">🔔 ${fmtCb(c.cbTime)}</span>`;
-  } else if(st==='pending'){
-    cb=`<span class="cb-badge">${fuIcon} ${fmtCb(c.cbTime)}</span>`;
+
+  // Build separate pills for each element
+  let outcomePills = '';
+  if(c.hasSale){
+    outcomePills += `<span class="pill p-sale">${c.playName||'Sale'}</span> `;
+    if(c.xm > 0) outcomePills += `<span class="pill p-sale">XM×${c.xm}</span> `;
+    if(c.tv)  outcomePills += `<span class="pill p-sale">TV</span> `;
+    if(c.chsi) outcomePills += `<span class="pill p-sale">${c.ie?'IE':'CHSI'}</span> `;
+    if(c.cdv) outcomePills += `<span class="pill p-sale">CDV</span> `;
+    if(c.xh)  outcomePills += `<span class="pill p-sale">XH</span> `;
+  } else {
+    outcomePills += `<span class="pill p-nosale">No Sale</span> `;
+    if(c.reason && c.reason !== 'NO SALE MADE'){
+      outcomePills += `<span class="pill p-other">${c.reason}</span> `;
+    } else if(c.callOutcome && !c.hasSale && c.callOutcome !== 'NO SALE MADE'){
+      outcomePills += `<span class="pill ${pillCls(c)}">${c.callOutcome}</span> `;
+    }
   }
+  // Callback/follow-up badge
+  if(c.cbTime && !c.cbDone){
+    const fuTypeIcons={Callback:'📞',Collections:'💰',Construction:'🏗',Exception:'⚠'};
+    const icon = fuTypeIcons[c.fuType]||'📞';
+    outcomePills += `<span class="cb-badge">${icon} ${fmtCb(c.cbTime)}</span>`;
+  } else if(c.cbDone && c.cbTime){
+    outcomePills += `<span class="cb-badge done">✓ ${fmtCb(c.cbTime)}</span>`;
+  } else if(c.fuType && c.fuType !== 'Callback' && !c.cbTime){
+    const fuTypeIcons={Collections:'💰',Construction:'🏗',Exception:'⚠'};
+    outcomePills += `<span class="cb-badge">${fuTypeIcons[c.fuType]||''} ${c.fuType}</span>`;
+  }
+
   const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'||(c.fuType&&!c.cbDone)?' has-callback':'');
   const acctTip = [c.cbName, c.cbPhone ? fmtPhone(c.cbPhone) : ''].filter(Boolean).join(' · ');
-  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span><span class="edit-hint">✎ edit</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td class="td-time">${sc}</td><td>${rev}</td><td>${rgu}</td><td><span class="pill ${pillCls(c)}">${pillTxt(c)}</span></td><td>${cb}</td><td style="font-size:11px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${c.notes||''}</td></tr>`;
+  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td>${rev}</td><td>${rgu}</td><td style="white-space:normal">${outcomePills}</td></tr>`;
 }
 /* ── Log filter ── */
 function buildFilterOptions(){
@@ -2893,7 +2910,7 @@ function setLogFilter(val){
   render();
 }
 
-function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=allFiltered;document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="8" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}tb.innerHTML=filtered.map(renderReadRow).join('');}
+function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=allFiltered;document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="5" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}tb.innerHTML=filtered.map(renderReadRow).join('');}
 
 function pctCls(p){return p>=1?'good':p>=.7?'ok':'warn';}
 
@@ -3682,6 +3699,60 @@ function saveSettings(){
     if(ov) ov.style.display='none';
   }
 }
+function clearAppCacheAndReload(){
+  if(!confirm('This will clear all local app data and reload the latest version.\n\nYour call history in Google Sheets is NOT affected.\nYou will need to log back in.\n\nContinue?')) return;
+
+  // Clear all xcl_* keys from localStorage
+  var keysToRemove = [];
+  for(var i = 0; i < localStorage.length; i++){
+    var k = localStorage.key(i);
+    if(k && k.startsWith('xcl_')) keysToRemove.push(k);
+  }
+  keysToRemove.forEach(function(k){ localStorage.removeItem(k); });
+
+  // Unregister service worker and clear its cache
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(reg){ reg.unregister(); });
+    });
+  }
+  if('caches' in window){
+    caches.keys().then(function(names){
+      names.forEach(function(name){ caches.delete(name); });
+    });
+  }
+
+  // Hard reload after brief delay to allow SW unregister
+  setTimeout(function(){ window.location.reload(true); }, 500);
+}
+var _callStartTime = null;
+var _callTimerInterval = null;
+
+function callStartTimer(){
+  _callStartTime = new Date();
+  const btn = document.getElementById('call-start-btn');
+  const timerEl = document.getElementById('call-timer');
+  if(btn){ btn.textContent = '● Live'; btn.style.background='rgba(248,113,113,.12)'; btn.style.borderColor='rgba(248,113,113,.35)'; btn.style.color='var(--red)'; btn.onclick=null; }
+  if(timerEl) timerEl.style.display = 'inline';
+  clearInterval(_callTimerInterval);
+  _callTimerInterval = setInterval(function(){
+    if(!_callStartTime) return;
+    const secs = Math.floor((Date.now() - _callStartTime.getTime()) / 1000);
+    const m = Math.floor(secs / 60), s = secs % 60;
+    const el = document.getElementById('call-timer');
+    if(el) el.textContent = m + ':' + String(s).padStart(2,'0');
+  }, 1000);
+}
+
+function resetCallTimer(){
+  _callStartTime = null;
+  clearInterval(_callTimerInterval);
+  _callTimerInterval = null;
+  const btn = document.getElementById('call-start-btn');
+  const timerEl = document.getElementById('call-timer');
+  if(btn){ btn.textContent = '▶ Call Start'; btn.style.background='var(--green-lt)'; btn.style.borderColor='rgba(34,197,94,.3)'; btn.style.color='var(--green)'; btn.onclick=callStartTimer; }
+  if(timerEl){ timerEl.style.display='none'; timerEl.textContent='0:00'; }
+}
 function resetSettings(){
   if(confirm('Reset goals & chargebacks for '+getFiscalMonth()+'? Global settings (theme, schedule, etc.) are kept.')){
     localStorage.removeItem(getFiscalKey());
@@ -4278,14 +4349,14 @@ function renderReports(){
   if(count) count.textContent = _reportData.length + ' call' + (_reportData.length!==1?'s':'');
   if(!tbody) return;
   if(!_reportData.length){
-    tbody.innerHTML = '<tr><td colspan="7" style="padding:40px;text-align:center;color:var(--text3)">No calls without XM in this period</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:40px;text-align:center;color:var(--text3)">No calls without XM in this period</td></tr>';
     return;
   }
   const chk = '<span style="color:var(--green);font-weight:700">✓</span>';
   tbody.innerHTML = _reportData.map(function(c, i){
     const ts = c.ts instanceof Date ? c.ts : new Date(c.ts);
-    const dt = ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}) + ' ' +
-               ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    const dt = ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
+    const tm = ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
     const acctDisplay = maskAcct(c.acctRaw||'');
     // No XM reason — use noXmReason for sales, reason for no-sales
     var noxm = c.noXmReason || c.reason || '';
@@ -4298,6 +4369,7 @@ function renderReports(){
     const tdC = 'style="padding:3px 4px;text-align:center;font-size:11px"';
     return '<tr style="'+rowBg+';border-bottom:1px solid var(--border2)">' +
       '<td style="padding:4px 5px;font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap">'+dt+'</td>' +
+      '<td style="padding:4px 5px;font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap">'+tm+'</td>' +
       '<td style="padding:4px 5px;font-family:var(--mono);font-size:11px;color:var(--blue);white-space:nowrap">'+acctDisplay+'</td>' +
       '<td '+tdC+'>'+(c.tv?chk:'')+'</td>' +
       '<td '+tdC+'>'+(c.chsi?chk:'')+'</td>' +
@@ -4312,7 +4384,8 @@ function copyReportCol(col){
   if(!_reportData.length){ _showToast('No data to copy','warn',2000); return; }
   var lines = _reportData.map(function(c){
     const ts = c.ts instanceof Date ? c.ts : new Date(c.ts);
-    if(col==='datetime') return ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'})+' '+ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    if(col==='date')  return ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
+    if(col==='time')  return ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
     if(col==='acct')  return c.acctRaw||'';
     if(col==='tv')    return c.tv ? 'X' : '';
     if(col==='chsi')  return c.chsi ? 'X' : '';
@@ -4325,7 +4398,7 @@ function copyReportCol(col){
     }
     return '';
   });
-  const labels = {datetime:'Date/Time',acct:'Account #',tv:'TV',chsi:'CHSI',cdv:'CDV',xh:'XH',noxm:'No XM Reason'};
+  const labels = {date:'Date',time:'Time',acct:'Account #',tv:'TV',chsi:'CHSI',cdv:'CDV',xh:'XH',noxm:'No XM Reason'};
   navigator.clipboard.writeText(lines.join('\n')).then(function(){
     _showToast('⎘ '+labels[col]+' copied ('+lines.length+' rows)','ok',2500);
   }).catch(function(){
