@@ -6323,13 +6323,19 @@ function buildFiscalHistoryDropdown(){
 function setHistoricalFiscal(key){
   const curKey = getFiscalKey();
   const _fc = document.getElementById('new-call-form-card');
+  const _dailyRow = document.querySelector('.stats-row.daily');
+  const _paceSummary = document.getElementById('pace-summary');
   if(key === curKey){
     _historicalFiscal = null;
     if(_fc) _fc.style.display = '';
+    if(_dailyRow) _dailyRow.style.display = '';
+    if(_paceSummary) _paceSummary.style.display = '';
     const s = loadSettings();
     GOALS.rev=s.rev;GOALS.xm=s.xm;GOALS.tv=s.tv;GOALS.chsi=s.chsi;GOALS.cdv=s.cdv;GOALS.xh=s.xh;
   } else {
     if(_fc) _fc.style.display = 'none';
+    if(_dailyRow) _dailyRow.style.display = 'none';
+    if(_paceSummary) _paceSummary.style.display = 'none';
     // Parse month from new key format e.g. xcl_goals_acq_cap4_April2026
     const parts = key.match(/([A-Za-z]+)(\d{4})$/);
     if(parts){
