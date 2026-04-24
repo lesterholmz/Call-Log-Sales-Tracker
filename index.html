@@ -4233,7 +4233,7 @@ function normalizeCall(sc){
     const day = String(sc.sched.getDate()).padStart(2,'0');
     sc.sched = yr+'-'+mo+'-'+day;
   }
-  const ie = (sc.callOutcome||sc.reason||'') === 'IE (.75)';
+  const ie = !!(sc.ie || sc.ieAdj || (sc.callOutcome||sc.reason||'') === 'IE (.75)');
   sc.chsiRgu = !sc.chsi ? 0 : ie ? 0.75 : 1;
   sc.rgus = sc.xm+(sc.tv?1:0)+sc.chsiRgu+(sc.cdv?1:0)+(sc.xh?1:0);
   sc.hasSale = sc.rgus > 0 || sc.rev > 0;
@@ -5866,6 +5866,26 @@ function cbSetOffset(mins){
     if(btns[idx]) btns[idx].classList.add('active');
   }
   cbUpdateMyTime();
+}
+
+function cbClampTime(){
+  const el = document.getElementById('f-cb-dt');
+  if(!el || !el.value) return;
+  const d = new Date(el.value);
+  if(isNaN(d)) return;
+  const h = d.getHours(), m = d.getMinutes();
+  if(h < 8){ d.setHours(8,0,0,0); }
+  else if(h >= 20){ d.setHours(20,0,0,0); }
+  // Snap minutes to nearest 15
+  const snapped = Math.round(m/15)*15;
+  if(snapped === 60){ d.setHours(d.getHours()+1,0,0,0); }
+  else { d.setMinutes(snapped,0,0); }
+  // Re-clamp after snap
+  if(d.getHours() < 8) d.setHours(8,0,0,0);
+  if(d.getHours() >= 20 && d.getMinutes() > 0) d.setHours(20,0,0,0);
+  // Format back to datetime-local string
+  const pad = n => String(n).padStart(2,'0');
+  el.value = d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
 }
 
 function cbUpdateMyTime(){
@@ -7882,7 +7902,7 @@ function launchFireworks(isXm,isTest){
   </div>
   <div class="cb-dt-row" id="cb-dt-wrap">
     <label id="cb-dt-label">Date &amp; Time <span id="cb-dt-req" style="color:var(--purple);font-size:9px">(required)</span></label>
-    <input type="datetime-local" class="cb-dt" id="f-cb-dt" oninput="cbUpdateMyTime()">
+    <input type="datetime-local" class="cb-dt" id="f-cb-dt" step="900" oninput="cbClampTime();cbUpdateMyTime()">
   </div>
   <div class="cb-tz-row" id="cb-tz-wrap">
     <label style="line-height:1.3">Customer<br>Timezone</label>
