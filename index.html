@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Call Logger v0.4.23</title>
+<title>Call Logger v0.4.24</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -143,7 +143,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .cb-phone{width:153px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;text-align:left;transition:border-color .15s,box-shadow .15s}
 .cb-phone:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
 .cb-phone::placeholder{color:var(--text3)}
-.cb-dt{width:235px;height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+.cb-dt{height:38px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 8px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+.cb-dt-date{width:130px}
+.cb-dt-time{width:120px}
 .cb-dt:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
 
 .sale-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
@@ -536,6 +538,38 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .tr-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--mono)}
 .tr-table tr:last-child td{border-bottom:none}
 .tr-table td.td-num{text-align:right;color:var(--text)}
+.tr-kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tr-kpi-card.accent-amber{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.05)}
+.tr-kpi-card.accent-green{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.05)}
+.tr-kpi-card.accent-blue{border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.05)}
+.tr-kpi-card.accent-teal{border-color:rgba(20,184,166,.3);background:rgba(20,184,166,.05)}
+.tr-kpi-label{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.tr-kpi-val{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text);line-height:1}
+.tr-kpi-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.tr-panel{background:var(--card);border:1px solid var(--border);border-radius:10px}
+.tr-legend-row{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;transition:background .15s}
+.tr-legend-row:hover{background:rgba(255,255,255,.05)}
+.c-green{color:var(--green)}.c-teal{color:var(--teal)}.c-amber{color:var(--amber)}.c-blue{color:var(--blue)}.c-red{color:var(--red)}
+/* Trends sub-tabs */
+.tr-subtab-bar{display:flex;gap:4px;padding:12px 24px 0;background:var(--surface);border-bottom:1px solid var(--border)}
+.tr-stab{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;color:var(--text3);transition:all .15s;user-select:none}
+.tr-stab:hover{color:var(--text);background:var(--border2)}
+.tr-stab.active{background:var(--blue-lt);border-color:rgba(59,130,246,.35);color:var(--blue)}
+.tr-subtab-panel{display:none;padding:16px 24px}
+.tr-subtab-panel.active{display:block}
+/* Trophy cards */
+.tr-trophy{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s}
+.tr-trophy:hover{border-color:rgba(245,158,11,.5)}
+.tr-trophy-icon{font-size:22px;margin-bottom:6px}
+.tr-trophy-label{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:3px}
+.tr-trophy-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--amber);line-height:1}
+.tr-trophy-sub{font-size:10px;color:var(--text3);margin-top:3px}
+/* Heatmap */
+.tr-heatmap-cell{border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;transition:transform .1s;cursor:default}
+.tr-heatmap-cell:hover{transform:scale(1.15)}
+/* Momentum */
+.tr-momentum{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
+.tr-momentum.up{color:var(--green)}.tr-momentum.down{color:var(--red)}.tr-momentum.flat{color:var(--text3)}
 .tr-table tr:hover td{background:var(--surface)}
 
 /* ── IE / BULK toggles ── */
@@ -796,7 +830,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 </head>
 <body>
 <div class="header">
-  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.23</span></div></div>
+  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.24</span></div></div>
   <div class="header-right">
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
@@ -811,7 +845,7 @@ Goals shown for your type+cap level">…</div>
 <!-- Tab bar -->
 <div class="tab-bar">
   <button class="tab-btn active" id="tab-tracker" onclick="switchTab('tracker')">📞 Tracker</button>
-  <button class="tab-btn" id="tab-trends" onclick="switchTab('trends')">📈 Trends</button>
+  <button class="tab-btn" id="tab-trends" onclick="switchTab('trends')">📊 Stats</button>
   <button class="tab-btn" id="tab-reports" onclick="switchTab('reports')">📋 Reports</button>
   <button class="tab-btn" id="tab-jobaid" onclick="switchTab('jobaid')">📖 Job Aids</button>
   <button class="tab-btn" id="tab-callbacks" onclick="switchTab('callbacks')">🔔 Follow-Ups</button>
@@ -1534,7 +1568,14 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 
 <!-- ══ TAB: TRENDS ══ -->
 <div class="tab-panel" id="panel-trends">
-  <div class="main" id="trends-main"></div>
+  <div class="tr-subtab-bar">
+    <div class="tr-stab active" id="tr-stab-overview" onclick="switchTrSubtab('overview')">🖥 Dashboard</div>
+    <div class="tr-stab" id="tr-stab-breakdown" onclick="switchTrSubtab('breakdown')">🔍 Breakdown</div>
+    <div class="tr-stab" id="tr-stab-trends" onclick="switchTrSubtab('trends')">📈 Trends</div>
+  </div>
+  <div class="tr-subtab-panel active" id="tr-panel-overview"></div>
+  <div class="tr-subtab-panel" id="tr-panel-breakdown"></div>
+  <div class="tr-subtab-panel" id="tr-panel-trends"></div>
 </div>
 
 <!-- ══ TAB: JOB AIDS ══ -->
@@ -2209,13 +2250,6 @@ function updatePlay(){
   const s=getSvcs();
   const hasXm = xmVal > 0;
   const hasNonXm = prods.tv || prods.chsi || prods.cdv || prods.xh;
-  // Auto-clear no-sale reason when outcome becomes a sale
-  if((hasXm || hasNonXm) && _nsState !== 'closed'){
-    _nsClose();
-    _nsPanelOpen = false;
-    colorReason();
-    updateNosaleDisplay();
-  }
   const playDisp = document.getElementById('play-display');
   const playName = document.getElementById('play-display-name');
   const playSvcs = document.getElementById('play-display-svcs');
@@ -2262,8 +2296,7 @@ function updatePlay(){
       const xmStr = xmVal > 0 ? ' · ' + xmVal + ' Mobile' + (xmVal!==1?'s':'') : '';
       playSub.textContent = rguStr + ' RGU' + (rgus!==1?'s':'') + xmStr;
     }
-    // XM sold — reset no-sale
-    if(hasXm && _nsState!=='closed'){ _nsClose(); }
+    // XM sold — no longer auto-clears no-sale reason
   } else {
     if(playDisp){ playDisp.style.display='none'; }
   }
@@ -2298,11 +2331,18 @@ function toggleCb(){
     const btn = document.getElementById('cb-toggle');
     const rect = btn.getBoundingClientRect();
     panel.style.display = 'flex';
-    const panelW = 280; // min-width
-    const maxLeft = window.innerWidth - panelW - 8;
-    panel.style.left = Math.min(rect.left, maxLeft) + 'px';
-    panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
-    panel.style.top = 'auto';
+    const panelH = panel.offsetHeight || 360;
+    const spaceAbove = rect.top - 8;
+    const spaceBelow = window.innerHeight - rect.bottom - 8;
+    if(spaceAbove >= panelH || spaceAbove >= spaceBelow){
+      panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+      panel.style.top = 'auto';
+    } else {
+      panel.style.top = (rect.bottom + 8) + 'px';
+      panel.style.bottom = 'auto';
+    }
+    panel.style.right = '8px';
+    panel.style.left = 'auto';
     // Reset type to Callback and update UI
     var typeSel = document.getElementById('f-fu-type');
     if(typeSel) typeSel.value = 'Callback';
@@ -2404,7 +2444,7 @@ function resetForm(){
     const fb = editPanelBody.querySelector('.form-body');
     if(fb){ formCard.appendChild(fb); formCard.style.display = ''; }
   }
-  ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt','f-cb-date','f-cb-time-hidden'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const _hSel=document.getElementById('f-cb-hour');if(_hSel)_hSel.selectedIndex=0;const _mSel=document.getElementById('f-cb-min');if(_mSel)_mSel.selectedIndex=0;_cbAmPm='AM';cbSetAmPm('AM');
   var fuTypeSel=document.getElementById('f-fu-type');if(fuTypeSel)fuTypeSel.value='Callback';
   setXm(0);
   updateRevTotal();
@@ -2576,6 +2616,7 @@ function _populateFormFromCall(c){
   set('f-cb-name', c.cbName  || '');
   set('f-cb-phone', c.cbPhone ? fmtPhone(c.cbPhone) : '');
   set('f-cb-dt',   c.cbTime  || '');
+  cbSetSplitFromVal(c.cbTime || '');
 
   // Follow-up type
   const fuTypeSel = document.getElementById('f-fu-type');
@@ -2894,8 +2935,46 @@ function buildFilterOptions(){
     {value:'last-week',label:'Last Week'},
   ];
   sel.innerHTML='';
-  opts.forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.textContent=o.label;sel.appendChild(opt);});
-  sel.value=activeFilter in Object.fromEntries(opts.map(o=>[o.value,1])) ? activeFilter : 'all';
+  const fi = getActiveFiscalInfo ? getActiveFiscalInfo() : getFiscalInfo();
+  const fStart = fi.fiscalStart, fEnd = fi.fiscalEnd;
+  const now = new Date();
+  const today = new Date(now); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(yesterday.getDate()-1);
+  const weekStart = new Date(today); weekStart.setDate(weekStart.getDate()-weekStart.getDay());
+  const lastWeekStart = new Date(weekStart); lastWeekStart.setDate(lastWeekStart.getDate()-7);
+  const lastWeekEnd = new Date(lastWeekStart); lastWeekEnd.setDate(lastWeekEnd.getDate()+6);
+
+  // Historical fiscal — only All Calls is relevant
+  const isHistorical = !!_historicalFiscal;
+
+  const relevant = {
+    'all': true,
+    'today':     !isHistorical && today >= fStart && today <= fEnd,
+    'yesterday': !isHistorical && yesterday >= fStart && yesterday <= fEnd,
+    'this-week': !isHistorical && weekStart <= fEnd && today >= fStart,
+    'last-week': !isHistorical && lastWeekStart <= fEnd && lastWeekEnd >= fStart,
+  };
+
+  opts.forEach(o=>{
+    const opt=document.createElement('option');
+    opt.value=o.value;
+    opt.textContent=o.label;
+    if(!relevant[o.value]){
+      opt.disabled=true;
+      opt.style.color='var(--text3)';
+      opt.textContent=o.label+' —';
+    }
+    sel.appendChild(opt);
+  });
+
+  // Default to 'all' for historical, keep current otherwise
+  if(isHistorical){
+    activeFilter='all';
+    sel.value='all';
+  } else {
+    sel.value=activeFilter in Object.fromEntries(opts.map(o=>[o.value,1])) && relevant[activeFilter] ? activeFilter : 'all';
+    if(!relevant[activeFilter]) activeFilter='all';
+  }
 }
 
 
@@ -3701,6 +3780,8 @@ function saveSettings(){
   applySettings(s);
   saveUserProfile(); // persist cap+type with settings
   updateStats();
+  cbInitTimePicker();
+  cbSetAmPm('AM');
   buildCalendar && updatePace && updatePace();
   const btn=document.querySelector('.settings-save');
   btn.textContent='✓ Saved!';btn.classList.add('saved');
@@ -3821,7 +3902,7 @@ function clearFormOnly(){
   const editPanelBody = document.getElementById('edit-panel-body');
   const formCard = document.getElementById('new-call-form-card');
   if(editPanelBody && formCard){ const fb = editPanelBody.querySelector('.form-body'); if(fb){ formCard.appendChild(fb); formCard.style.display=''; } }
-  ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt','f-cb-date','f-cb-time-hidden'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const _hSel=document.getElementById('f-cb-hour');if(_hSel)_hSel.selectedIndex=0;const _mSel=document.getElementById('f-cb-min');if(_mSel)_mSel.selectedIndex=0;_cbAmPm='AM';cbSetAmPm('AM');
   var fuTypeSel=document.getElementById('f-fu-type');if(fuTypeSel)fuTypeSel.value='Callback';
   setXm(0); updateRevTotal();
   Object.keys(prods).forEach(k=>{prods[k]=false;const el=document.getElementById('chk-'+k);if(el)el.classList.remove('checked','ie-adj');});
@@ -4007,7 +4088,7 @@ function markActivePreset(name){
 (function(){
 
   const seed3=[];
-  seed3.forEach(function(c){c.ts=new Date(c.ts);calls.push(c);});
+  const extraToday=[];[...seed3,...extraToday].forEach(function(c){c.ts=new Date(c.ts);calls.push(c);});
   // Load from local cache first for instant display
   // Cache is loaded after session is restored (see startSession/init auth block)
   render();updateStats();buildFilterOptions();
@@ -4523,207 +4604,584 @@ function copyReportCol(col){
   });
 }
 let _charts = {};
+var _trSubtab = 'overview';
+function switchTrSubtab(tab){
+  _trSubtab = tab;
+  ['overview','breakdown','trends'].forEach(t=>{
+    const sb=document.getElementById('tr-stab-'+t);
+    const sp=document.getElementById('tr-panel-'+t);
+    if(sb) sb.classList.toggle('active', t===tab);
+    if(sp) sp.classList.toggle('active', t===tab);
+  });
+  renderTrends();
+}
+
 function renderTrends(){
-  const el = document.getElementById('trends-main');
+  if(!['overview','breakdown','trends'].includes(_trSubtab)) _trSubtab='overview';
+  const el = document.getElementById('tr-panel-'+_trSubtab);
   if(!el) return;
   if(!calls.length){ el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:13px">No calls logged yet.</div>'; return; }
 
-  const fi = getFiscalInfo();
   const now = new Date();
-  const mc = calls; // all-time
+  const mc = calls;
+  const fi = getFiscalInfo();
 
-  // ── Aggregates ────────────────────────────────────────────────────────
   const sales = mc.filter(c=>c.hasSale);
+  const xmSales = sales.filter(c=>c.xm>0);
+  const nonXmSales = sales.filter(c=>c.xm===0);
+  const noSales = mc.filter(c=>!c.hasSale);
   const totalCalls = mc.length;
   const totalSales = sales.length;
   const totalRev = sales.reduce((s,c)=>s+c.rev,0);
   const totalRgus = sales.reduce((s,c)=>s+c.rgus,0);
-  const totalXm = sales.reduce((s,c)=>s+c.xm,0);
-  const totalTv = sales.filter(c=>c.tv).length;
-  const totalChsi = sales.reduce((s,c)=>s+c.chsiRgu,0);
-  const totalCdv = sales.filter(c=>c.cdv).length;
-  const totalXh = sales.filter(c=>c.xh).length;
   const closeRate = totalCalls ? (totalSales/totalCalls*100) : 0;
+  const xmAttach = totalSales ? (xmSales.length/totalSales*100) : 0;
   const arpu = totalSales ? totalRev/totalSales : 0;
-  const arpc = totalCalls ? totalRev/totalCalls : 0;
+  const fmtMon = v=>'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const pct = (n,d)=>d?(n/d*100).toFixed(1)+'%':'--';
 
-  // ── By day ────────────────────────────────────────────────────────────
   const byDate = {};
   mc.forEach(c=>{
-    const d = c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
-    if(!byDate[d]) byDate[d]={total:0,sales:0,rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0,rgus:0};
+    const d=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
+    if(!byDate[d]) byDate[d]={total:0,sales:0,xmSales:0,rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0,rgus:0,ts:c.ts};
     byDate[d].total++;
-    if(c.hasSale){byDate[d].sales++;byDate[d].rev+=c.rev;byDate[d].xm+=c.xm;if(c.tv)byDate[d].tv++;byDate[d].chsi+=c.chsiRgu;if(c.cdv)byDate[d].cdv++;if(c.xh)byDate[d].xh++;byDate[d].rgus+=c.rgus;}
+    if(c.hasSale){byDate[d].sales++;if(c.xm>0)byDate[d].xmSales++;byDate[d].rev+=c.rev;byDate[d].xm+=c.xm;if(c.tv)byDate[d].tv++;byDate[d].chsi+=c.chsiRgu;if(c.cdv)byDate[d].cdv++;if(c.xh)byDate[d].xh++;byDate[d].rgus+=c.rgus;}
   });
-  const dayKeys = Object.keys(byDate);
+  const dayKeys = Object.keys(byDate).sort((a,b)=>new Date(a)-new Date(b));
   const numDays = dayKeys.length;
-  const avgCallsDay = numDays ? (totalCalls/numDays).toFixed(1) : '—';
-  const avgRevDay = numDays ? '$'+(totalRev/numDays).toFixed(2) : '—';
-  const avgSalesDay = numDays ? (totalSales/numDays).toFixed(1) : '—';
+  const last14 = dayKeys.slice(-14);
+  const last7 = dayKeys.slice(-7);
 
-  // best day
-  const bestRevDay = dayKeys.sort((a,b)=>byDate[b].rev-byDate[a].rev)[0];
-  const bestCallDay = dayKeys.sort((a,b)=>byDate[b].total-byDate[a].total)[0];
-  dayKeys.sort((a,b)=>new Date(a)-new Date(b)); // restore order
+  const weekStart = new Date(now); weekStart.setHours(0,0,0,0); weekStart.setDate(weekStart.getDate()-weekStart.getDay());
+  const lastWeekStart = new Date(weekStart); lastWeekStart.setDate(lastWeekStart.getDate()-7);
+  const thisWeekCalls = mc.filter(c=>c.ts>=weekStart);
+  const lastWeekCalls = mc.filter(c=>c.ts>=lastWeekStart&&c.ts<weekStart);
+  const twSales = thisWeekCalls.filter(c=>c.hasSale).length;
+  const lwSales = lastWeekCalls.filter(c=>c.hasSale).length;
+  const twRev = thisWeekCalls.filter(c=>c.hasSale).reduce((s,c)=>s+c.rev,0);
+  const lwRev = lastWeekCalls.filter(c=>c.hasSale).reduce((s,c)=>s+c.rev,0);
+  const salesDelta = lwSales ? ((twSales-lwSales)/lwSales*100).toFixed(0) : null;
+  const revDelta = lwRev ? ((twRev-lwRev)/lwRev*100).toFixed(0) : null;
 
-  // ── Current fiscal ────────────────────────────────────────────────────
-  const fiscalCalls = mc.filter(c=>inFiscal(c.ts.toISOString().slice(0,10)));
+  let streak = 0;
+  const sortedDays = [...dayKeys].reverse();
+  for(let i=0;i<sortedDays.length;i++){if(byDate[sortedDays[i]].sales>0)streak++;else break;}
+
+  const fiscalCalls = mc.filter(c=>inActiveFiscalTs(c.ts));
   const fiscalSales = fiscalCalls.filter(c=>c.hasSale);
   const fiscalRev = fiscalSales.reduce((s,c)=>s+c.rev,0);
-  const fiscalRgus = fiscalSales.reduce((s,c)=>s+c.rgus,0);
-  const fiscalXm = fiscalSales.reduce((s,c)=>s+c.xm,0);
-  const fiscalTv = fiscalSales.filter(c=>c.tv).length;
-  const fiscalChsi = fiscalSales.reduce((s,c)=>s+c.chsiRgu,0);
-  const fiscalCdv = fiscalSales.filter(c=>c.cdv).length;
-  const fiscalXh = fiscalSales.filter(c=>c.xh).length;
-  const pctRev = GOALS.rev ? Math.round(fiscalRev/GOALS.rev*100) : 0;
-  const pctRgu = RGU_GOAL ? Math.round(fiscalRgus/RGU_GOAL*100) : 0;
+  const fiscalDays = dayKeys.filter(d=>{const dt=new Date(byDate[d].ts);return dt>=fi.fiscalStart&&dt<=fi.fiscalEnd;}).length;
+  const daysLeft = Math.max(0,Math.ceil((fi.fiscalEnd-now)/86400000));
+  const projRev = fiscalDays>0 ? fiscalRev+(fiscalRev/fiscalDays*daysLeft) : 0;
+  const projSales = fiscalDays>0 ? fiscalSales.length+Math.round(fiscalSales.length/fiscalDays*daysLeft) : 0;
 
-  // ── Outcome counts ────────────────────────────────────────────────────
-  const outcomes = {};
-  mc.forEach(c=>{ const k=c.callOutcome||'—'; outcomes[k]=(outcomes[k]||0)+1; });
-  const outcomeRows = Object.entries(outcomes).sort((a,b)=>b[1]-a[1]);
+  const bestRevDay = dayKeys.reduce((b,d)=>(!b||byDate[d].rev>byDate[b].rev)?d:b,null);
+  const bestCloseDay = dayKeys.filter(d=>byDate[d].total>=3).reduce((b,d)=>(!b||(byDate[d].sales/byDate[d].total)>(byDate[b].sales/byDate[b].total))?d:b,null);
+  const bestRguDay = dayKeys.reduce((b,d)=>(!b||byDate[d].rgus>byDate[b].rgus)?d:b,null);
+  const bestSalesDay = dayKeys.reduce((b,d)=>(!b||byDate[d].sales>byDate[b].sales)?d:b,null);
+  const bestCallDay = dayKeys.reduce((b,d)=>(!b||byDate[d].total>byDate[b].total)?d:b,null);
 
-  // ── Play counts ───────────────────────────────────────────────────────
-  const plays = {};
-  sales.forEach(c=>{ const k=c.playName||'Other'; plays[k]=(plays[k]||0)+1; });
-  const playRows = Object.entries(plays).sort((a,b)=>b[1]-a[1]);
+  const sparkClose = last7.map(d=>byDate[d].total?byDate[d].sales/byDate[d].total*100:0);
+  const sparkRev = last7.map(d=>byDate[d].rev);
 
-  // ── Today ─────────────────────────────────────────────────────────────
-  const todayStr = now.toDateString();
-  const todayCalls = mc.filter(c=>c.ts.toDateString()===todayStr);
-  const todaySales = todayCalls.filter(c=>c.hasSale);
-  const todayRev = todaySales.reduce((s,c)=>s+c.rev,0);
+  const byHour = {};
+  mc.forEach(c=>{const h=c.ts.getHours();if(!byHour[h])byHour[h]={total:0,sales:0,xmSales:0,rev:0};byHour[h].total++;if(c.hasSale){byHour[h].sales++;if(c.xm>0)byHour[h].xmSales++;byHour[h].rev+=c.rev;}});
+  const fmtHour=h=>{const ampm=h<12?'AM':'PM';const h12=h===0?12:h>12?h-12:h;return h12+' '+ampm;};
 
-  // ── Render ────────────────────────────────────────────────────────────
-  const fmtRev = v => v<0 ? '-$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const card = (label,val,sub,accent) =>
-    `<div class="tr-card${accent?' accent-'+accent:''}"><div class="tr-card-label">${label}</div><div class="tr-card-val">${val}</div>${sub?`<div class="tr-card-sub">${sub}</div>`:''}</div>`;
+  const byDow={0:{n:'Sun',total:0,sales:0,rev:0},1:{n:'Mon',total:0,sales:0,rev:0},2:{n:'Tue',total:0,sales:0,rev:0},3:{n:'Wed',total:0,sales:0,rev:0},4:{n:'Thu',total:0,sales:0,rev:0},5:{n:'Fri',total:0,sales:0,rev:0},6:{n:'Sat',total:0,sales:0,rev:0}};
+  mc.forEach(c=>{const dow=c.ts.getDay();byDow[dow].total++;if(c.hasSale){byDow[dow].sales++;byDow[dow].rev+=c.rev;}});
 
-  let html = '';
+  const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fiscalMonths=[];
+  for(let i=0;i<7;i++){
+    const end=new Date(fi.fiscalEnd);end.setMonth(end.getMonth()-i);
+    const start=new Date(end);start.setMonth(start.getMonth()-1);
+    const mCalls=mc.filter(c=>c.ts>=start&&c.ts<=end);
+    const mSales=mCalls.filter(c=>c.hasSale);
+    const mRev=mSales.reduce((s,c)=>s+c.rev,0);
+    const mLabel=monthNames[start.getMonth()+1]+" "+start.getFullYear();
+    fiscalMonths.push({label:mLabel,calls:mCalls.length,sales:mSales.length,rev:mRev,close:mCalls.length?(mSales.length/mCalls.length*100).toFixed(1):0});
+  }
 
-  // Today
-  html += `<div class="tr-section"><div class="tr-section-title">Today</div><div class="tr-grid">`;
-  html += card('Calls',todayCalls.length,'logged today','blue');
-  html += card('Sales',todaySales.length,todayCalls.length?(todaySales.length/todayCalls.length*100).toFixed(0)+'% close rate':'—','green');
-  html += card('Revenue',fmtRev(todayRev),'today gross','green');
-  html += card('RGUs',fmtR(todaySales.reduce((s,c)=>s+c.rgus,0)),'today','teal');
-  html += `</div></div>`;
+  const lobTv=sales.filter(c=>c.tv).length, lobChsi=sales.filter(c=>c.chsi).length;
+  const lobCdv=sales.filter(c=>c.cdv).length, lobXh=sales.filter(c=>c.xh).length;
+  const lobXm=xmSales.length, lobIe=sales.filter(c=>c.ie).length;
 
-  // This fiscal month
-  html += `<div class="tr-section"><div class="tr-section-title">This Fiscal Month</div><div class="tr-grid">`;
-  html += card('Revenue',fmtRev(fiscalRev),pctRev+'% of goal','green');
-  html += card('RGUs',fmtR(fiscalRgus),pctRgu+'% of goal','teal');
-  html += card('XM Lines',fiscalXm,'of '+GOALS.xm+' goal','teal');
-  html += card('TV',fiscalTv,'of '+GOALS.tv+' goal','blue');
-  html += card('CHSI',fmtR(fiscalChsi),'of '+GOALS.chsi+' goal','blue');
-  html += card('CDV',fiscalCdv,'of '+GOALS.cdv+' goal','blue');
-  html += card('XH',fiscalXh,'of '+GOALS.xh+' goal','blue');
-  html += card('Sales',fiscalSales.length,fiscalCalls.length?Math.round(fiscalSales.length/fiscalCalls.length*100)+'% close rate':'—','green');
-  html += `</div></div>`;
+  // ── Today stats ───────────────────────────────────────────────────────
+  const todayStr=now.toDateString();
+  const todayCalls=mc.filter(c=>c.ts.toDateString()===todayStr);
+  const todaySales=todayCalls.filter(c=>c.hasSale);
+  const todayRev=todaySales.reduce((s,c)=>s+c.rev,0);
+  const todayRgus=todaySales.reduce((s,c)=>s+c.rgus,0);
 
-  // All-time summary
-  // Rate metrics (all-time basis)
-  const chsiCR  = totalCalls ? (totalChsi/totalCalls*100).toFixed(1)+'%' : '—';
-  const xmCR    = totalCalls ? (totalXm/totalCalls*100).toFixed(1)+'%' : '—';
-  const rguCR   = totalCalls ? (totalRgus/totalCalls*100).toFixed(2) : '—';
-  const rpc     = totalCalls ? fmtR(totalRgus/totalCalls) : '—';
-  const arps    = totalSales ? fmtR(totalRgus/totalSales) : '—';
+  // ── Fiscal month stats ────────────────────────────────────────────────
+  const pctRev=GOALS.rev?Math.round(fiscalRev/GOALS.rev*100):0;
+  const fiscalRgus=fiscalSales.reduce((s,c)=>s+c.rgus,0);
+  const RGU_GOAL=GOALS.chsi+GOALS.tv+GOALS.cdv+GOALS.xh;
+  const pctRgu=RGU_GOAL?Math.round(fiscalRgus/RGU_GOAL*100):0;
+  const fiscalXm=fiscalSales.reduce((s,c)=>s+c.xm,0);
+  const fiscalTv=fiscalSales.filter(c=>c.tv).length;
+  const fiscalChsi=fiscalSales.reduce((s,c)=>s+c.chsiRgu,0);
+  const fiscalCdv=fiscalSales.filter(c=>c.cdv).length;
+  const fiscalXh=fiscalSales.filter(c=>c.xh).length;
 
-  html += `<div class="tr-section"><div class="tr-section-title">Performance Rates</div><div class="tr-grid">`;
-  const arpc2   = totalCalls ? '$'+(totalRev/totalCalls).toFixed(2) : '—';
-  const truArpu = totalRgus ? '$'+(totalRev/totalRgus).toFixed(2) : '—';
-  html += card('ARPU',truArpu,'avg revenue / RGU','amber');
-  html += card('Avg Rev/Sale','$'+arpu.toFixed(2),'avg revenue / sale','amber');
-  html += card('RPC',arpc2,'avg revenue / call','amber');
-  html += card('Avg RGU/Sale',arps,'avg RGUs / sale','teal');
-  html += card('Avg RGU/Call',rpc,'avg RGUs / call','teal');
-  html += card('CHSI CR',chsiCR,'CHSI closes / calls','blue');
-  html += card('XM CR',xmCR,'XM closes / calls','teal');
-  html += card('RGU CR',rguCR,'avg RGUs / call','blue');
-  html += `</div></div>`;
+  // ── Performance rates ─────────────────────────────────────────────────
+  const truArpu=totalRgus?fmtMon(totalRev/totalRgus):'--';
+  const rpc=totalCalls?fmtMon(totalRev/totalCalls):'--';
+  const arps=totalSales?fmtR(totalRgus/totalSales):'--';
+  const arpc2=totalCalls?fmtR(totalRgus/totalCalls):'--';
+  const chsiCR=totalCalls?(sales.filter(c=>c.chsi).length/totalCalls*100).toFixed(1)+'%':'--';
+  const xmCR=totalCalls?(xmSales.length/totalCalls*100).toFixed(1)+'%':'--';
+  const rguCR=totalCalls?(totalRgus/totalCalls).toFixed(2):'--';
 
-  // Daily averages
-  html += `<div class="tr-section"><div class="tr-section-title">Daily Averages (${numDays} active days)</div><div class="tr-grid">`;
-  html += card('Calls/Day',avgCallsDay,'avg per active day');
-  html += card('Sales/Day',avgSalesDay,'avg per active day','green');
-  html += card('Rev/Day',avgRevDay,'avg per active day','green');
-  if(bestRevDay) html += card('Best Rev Day',bestRevDay,fmtRev(byDate[bestRevDay].rev),'amber');
-  if(bestCallDay) html += card('Busiest Day',bestCallDay,byDate[bestCallDay].total+' calls','amber');
-  html += `</div></div>`;
+  // ── Daily averages ────────────────────────────────────────────────────
+  const avgCallsDay=numDays?(totalCalls/numDays).toFixed(1):'--';
+  const avgRevDay=numDays?fmtMon(totalRev/numDays):'--';
+  const avgSalesDay=numDays?(totalSales/numDays).toFixed(1):'--';
 
-  // Play breakdown table
-  if(playRows.length){
-    html += `<div class="tr-section"><div class="tr-section-title">Play Breakdown</div>
-    <div class="form-card" style="overflow:hidden"><table class="tr-table">
-    <thead><tr><th>Play</th><th style="text-align:right">Count</th><th style="text-align:right">% of Sales</th></tr></thead><tbody>`;
-    playRows.forEach(([k,v])=>{
-      html += `<tr><td>${k}</td><td class="td-num">${v}</td><td class="td-num">${totalSales?(v/totalSales*100).toFixed(1)+'%':'—'}</td></tr>`;
+  // ── No XM sales ───────────────────────────────────────────────────────
+  const nxmCalls=calls.filter(c=>c.noXmReason&&c.hasSale);
+
+  const noSaleReasons={};
+  noSales.forEach(c=>{const k=c.reason||'Unknown';noSaleReasons[k]=(noSaleReasons[k]||0)+1;});
+  const noSaleReasonRows=Object.entries(noSaleReasons).sort((a,b)=>b[1]-a[1]);
+
+  const plays={};
+  sales.forEach(c=>{const k=c.playName||'Other';plays[k]=(plays[k]||0)+1;});
+  const playRows=Object.entries(plays).sort((a,b)=>b[1]-a[1]);
+
+  const xmDist={};
+  xmSales.forEach(c=>{const k=c.xm+'L';xmDist[k]=(xmDist[k]||0)+1;});
+
+  window._trData={noSaleReasonRows,playRows,xmDist,noSales,nonXmSales,xmSales,totalCalls,totalSales,pct,fmtMon};
+
+  const momentum=(delta,label)=>{
+    if(delta===null) return '<span class="tr-momentum flat">-- '+label+'</span>';
+    const up=Number(delta)>0,flat=Number(delta)==0;
+    const arrow=up?'up':flat?'flat':'down';
+    return '<span class="tr-momentum '+arrow+'">'+(up?'↑':flat?'→':'↓')+' '+Math.abs(delta)+'% '+label+'</span>';
+  };
+
+  const barRow=(label,count,total,color)=>{
+    const w=total?(count/total*100).toFixed(0):0;
+    return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:11px;color:var(--text)">'+label+'</span><span style="font-family:var(--mono);font-size:11px;color:var(--text3)">'+count+' · '+pct(count,total)+'</span></div><div style="height:5px;background:var(--border2);border-radius:3px"><div style="height:5px;width:'+w+'%;background:'+color+';border-radius:3px;transition:width .5s .1s"></div></div></div>';
+  };
+
+  if(_trSubtab==='overview'){
+    // ── XM streak (consecutive days with ≥1 XM sale) ─────────────────
+    var xmStreak=0, xmStreakBroke=false, daysSinceXm=0;
+    for(var si=0;si<sortedDays.length;si++){
+      if(byDate[sortedDays[si]].xmSales>0){ xmStreak++; if(xmStreakBroke) break; }
+      else { if(xmStreak>0){ xmStreakBroke=true; daysSinceXm=si; } break; }
+    }
+    if(xmStreak===0){ for(var sj=0;sj<sortedDays.length;sj++){ if(byDate[sortedDays[sj]].xmSales>0) break; daysSinceXm++; } }
+
+    // ── Sales streak ───────────────────────────────────────────────────
+    var salesStreak=0, daysSinceSale=0;
+    for(var sk=0;sk<sortedDays.length;sk++){
+      if(byDate[sortedDays[sk]].sales>0) salesStreak++;
+      else { break; }
+    }
+    if(salesStreak===0){ for(var sl=0;sl<sortedDays.length;sl++){ if(byDate[sortedDays[sl]].sales>0) break; daysSinceSale++; } }
+
+    // ── Pacing vs last fiscal month ────────────────────────────────────
+    var prevFiEnd=new Date(fi.fiscalEnd); prevFiEnd.setMonth(prevFiEnd.getMonth()-1);
+    var prevFiStart=new Date(fi.fiscalStart); prevFiStart.setMonth(prevFiStart.getMonth()-1);
+    var prevSales=mc.filter(function(c){return c.ts>=prevFiStart&&c.ts<=prevFiEnd&&c.hasSale;});
+    var prevRev=prevSales.reduce(function(s,c){return s+c.rev;},0);
+    var fiscalElapsedDays=Math.max(1,Math.floor((now-fi.fiscalStart)/86400000));
+    var prevAtSamePoint=prevSales.filter(function(c){
+      var dayInMonth=Math.floor((c.ts-prevFiStart)/86400000);
+      return dayInMonth<=fiscalElapsedDays;
     });
-    html += `</tbody></table></div></div>`;
-  }
+    var prevRevAtSamePoint=prevAtSamePoint.reduce(function(s,c){return s+c.rev;},0);
+    var pacingSalesDelta=fiscalSales.length-prevAtSamePoint.length;
+    var pacingRevDelta=fiscalRev-prevRevAtSamePoint;
+    var pacingUp=pacingSalesDelta>=0;
 
-  // Outcome breakdown table
-  if(outcomeRows.length){
-    html += `<div class="tr-section"><div class="tr-section-title">Call Outcome Breakdown</div>
-    <div class="form-card" style="overflow:hidden"><table class="tr-table">
-    <thead><tr><th>Outcome</th><th style="text-align:right">Count</th><th style="text-align:right">% of Calls</th></tr></thead><tbody>`;
-    outcomeRows.forEach(([k,v])=>{
-      html += `<tr><td>${k}</td><td class="td-num">${v}</td><td class="td-num">${totalCalls?(v/totalCalls*100).toFixed(1)+'%':'—'}</td></tr>`;
-    });
-    html += `</tbody></table></div></div>`;
-  }
+    // ── XM streak messaging ────────────────────────────────────────────
+    var xmStreakColor=xmStreak>=5?'var(--amber)':xmStreak>=3?'var(--teal)':xmStreak>=1?'var(--green)':'var(--red)';
+    var xmMsg=xmStreak>=7?'🔥 On fire! Keep stacking!':xmStreak>=5?'💪 Strong run — don\'t stop now!':xmStreak>=3?'📱 Building momentum!':xmStreak>=1?'✅ XM is on — keep going!':daysSinceXm===0?'📵 No XM yet today — make it happen!':daysSinceXm===1?'⚠️ Yesterday had no XM — time to bounce back!':'🚨 '+daysSinceXm+' days without XM — priority focus!';
 
-  // Day-by-day log (last 14 active days)
-  const recentDays = Object.keys(byDate).sort((a,b)=>new Date(b)-new Date(a)).slice(0,14);
-  if(recentDays.length){
-    html += `<div class="tr-section"><div class="tr-section-title">Recent Days (last 14 active)</div>
-    <div class="form-card" style="overflow:hidden"><table class="tr-table">
-    <thead><tr><th>Date</th><th style="text-align:right">Calls</th><th style="text-align:right">Sales</th><th style="text-align:right">Close%</th><th style="text-align:right">Revenue</th><th style="text-align:right">RGUs</th><th>Units Sold</th></tr></thead><tbody>`;
-    recentDays.forEach(d=>{
-      const r = byDate[d];
-      const cr = r.total ? (r.sales/r.total*100).toFixed(0)+'%' : '—';
-      const units = [];
-      if(r.xm)   units.push(r.xm+'XM');
-      if(r.tv)   units.push(r.tv+'TV');
-      if(r.chsi) units.push(fmtR(r.chsi)+'CHSI');
-      if(r.cdv)  units.push(r.cdv+'CDV');
-      if(r.xh)   units.push(r.xh+'XH');
-      html += `<tr><td>${d}</td><td class="td-num">${r.total}</td><td class="td-num">${r.sales}</td><td class="td-num">${cr}</td><td class="td-num">${fmtRev(r.rev)}</td><td class="td-num">${fmtR(r.rgus)}</td><td style="font-size:11px;color:var(--text3);font-family:var(--mono)">${units.join(' · ')||'—'}</td></tr>`;
-    });
-    html += `</tbody></table></div></div>`;
-  }
+    // ── Sales streak messaging ─────────────────────────────────────────
+    var salesStreakColor=salesStreak>=5?'var(--amber)':salesStreak>=3?'var(--green)':salesStreak>=1?'var(--green)':'var(--red)';
+    var salesMsg=salesStreak>=7?'🏆 Week+ streak — incredible run!':salesStreak>=5?'🔥 5+ day streak — you\'re locked in!':salesStreak>=3?'✅ 3+ days selling — stay consistent!':salesStreak>=1?'✅ Selling today — keep the streak!':daysSinceSale===0?'📞 No sale yet today — next call could be it!':daysSinceSale===1?'💡 Yesterday was a no-sale day — reset today!':'⚠️ '+daysSinceSale+' days without a sale — let\'s change that!';
 
-  // ── No XM Sales section ──────────────────────────────────────────────
-  const nxmCalls = calls.filter(c => c.noXmReason && c.hasSale);
-  let nxmHtml = '';
-  if(nxmCalls.length){
-    nxmHtml = `<div class="tr-section">
-      <div class="tr-section-title">Sales Without XM (${nxmCalls.length})</div>
-      <div class="form-card" style="padding:0;overflow:hidden">
-        <div style="padding:10px 12px 0;display:flex;align-items:center;gap:8px">
-          <select class="filter-select" id="nxm-filter" onchange="renderNxmTable()">
-            <option value="all">All Time</option>
-            <option value="fiscal">This Fiscal Month</option>
-            <option value="today">Today</option>
-            <option value="yesterday">Yesterday</option>
-            <option value="this-week">This Week</option>
-          </select>
-          <span style="font-size:10px;color:var(--text3)" id="nxm-count"></span>
-        </div>
-        <div class="nxm-table-wrap">
-          <table class="nxm-table">
-            <thead><tr>
-              <th>Date</th><th>Acct / Name</th><th>Play</th><th>No XM Reason</th><th>Rev</th><th>Sched</th><th>Notes</th>
-            </tr></thead>
-            <tbody id="nxm-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>`;
+    // ── KPI card helper ────────────────────────────────────────────────
+    var kpi=function(emoji,label,id,valClass,sub,animated){
+      return '<div class="tr-kpi-card" style="padding:10px 12px">'+
+        '<div style="font-size:16px;margin-bottom:2px">'+emoji+'</div>'+
+        '<div class="tr-kpi-label">'+label+'</div>'+
+        '<div class="tr-kpi-val '+valClass+'" '+(id?'id="'+id+'"':'')+(animated?' style="font-size:16px"':' style="font-size:16px"')+'>--</div>'+
+        '<div class="tr-kpi-sub">'+sub+'</div>'+
+      '</div>';
+    };
+
+    // ── De-emphasized KPI card (CDV/XH) ───────────────────────────────
+    var kpiSmall=function(emoji,label,val,sub){
+      return '<div class="tr-kpi-card" style="padding:8px 10px;opacity:.75">'+
+        '<div style="font-size:12px;margin-bottom:1px">'+emoji+' <span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">'+label+'</span></div>'+
+        '<div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text3)">'+val+'</div>'+
+        '<div class="tr-kpi-sub">'+sub+'</div>'+
+      '</div>';
+    };
+
+    var goalBar=function(val,goal,color){
+      if(!goal) return '';
+      var w=Math.min(100,Math.round(val/goal*100));
+      return '<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:5px"><div style="height:3px;width:'+w+'%;background:'+color+';border-radius:2px;transition:width .6s"></div></div>'+
+             '<div style="font-size:9px;color:var(--text3);margin-top:2px">'+w+'% of '+goal+' goal</div>';
+    };
+
+    el.innerHTML=
+    // ── Row 1: Pacing banner ──────────────────────────────────────────
+    '<div style="padding:10px 14px;margin-bottom:10px;border-radius:10px;border:1px solid '+(pacingUp?'rgba(34,197,94,.35)':'rgba(248,113,113,.35)')+';background:'+(pacingUp?'rgba(34,197,94,.07)':'rgba(248,113,113,.07)')+'">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
+    '<div style="display:flex;align-items:center;gap:8px">'+
+    '<span style="font-size:18px">'+(pacingUp?'📈':'📉')+'</span>'+
+    '<div><div style="font-size:11px;font-weight:700;color:'+(pacingUp?'var(--green)':'var(--red)')+'">'+
+    (pacingUp?'↑ Ahead of pace':'↓ Behind pace')+' — '+Math.abs(pacingSalesDelta)+' sale'+(Math.abs(pacingSalesDelta)!==1?'s':'')+' &amp; '+fmtMon(Math.abs(pacingRevDelta))+' rev</div>'+
+    '<div style="font-size:10px;color:var(--text3)">vs same point last month (day '+fiscalElapsedDays+')</div></div></div>'+
+    '<div style="display:flex;gap:20px">'+
+    '<div style="text-align:right"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">This Month</div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text)">'+fiscalSales.length+' sales · '+fmtMon(fiscalRev)+'</div></div>'+
+    '<div style="text-align:right"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Last Month</div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text3)">'+prevAtSamePoint.length+' sales · '+fmtMon(prevRevAtSamePoint)+'</div></div>'+
+    '</div></div></div>'+
+    // ── Row 2: Streaks + Today + Week — 4 col ─────────────────────────
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">'+
+    '<div style="background:var(--card);border:1px solid '+(xmStreak>0?'rgba(20,184,166,.35)':'rgba(248,113,113,.35)')+';border-radius:10px;padding:10px 12px">'+
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:4px">📱 XM Streak</div>'+
+    '<div style="font-family:var(--mono);font-size:26px;font-weight:700;color:'+xmStreakColor+';line-height:1">'+xmStreak+'</div>'+
+    '<div style="font-size:10px;color:'+xmStreakColor+';margin-top:4px;font-weight:600;line-height:1.3">'+xmMsg+'</div></div>'+
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px">'+
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">📅 Today</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">'+
+    '<div><div style="font-size:9px;color:var(--text3)">Calls</div><div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--blue)">'+todayCalls.length+'</div></div>'+
+    '<div><div style="font-size:9px;color:var(--text3)">Sales</div><div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--green)">'+todaySales.length+'</div></div>'+
+    '<div><div style="font-size:9px;color:var(--text3)">Rev</div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--amber)">'+fmtMon(todayRev)+'</div></div>'+
+    '<div><div style="font-size:9px;color:var(--text3)">RGUs</div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal)">'+fmtR(todayRgus)+'</div></div>'+
+    '</div></div>'+
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px">'+
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">⚡ This Week</div>'+
+    '<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:4px">'+momentum(salesDelta,'sales')+momentum(revDelta,'revenue')+'</div>'+
+    '<div style="font-size:10px;color:var(--text3)">'+twSales+' sales · '+fmtMon(twRev)+'</div></div>'+
+    '</div>'+
+    // ── Row 3: Fiscal Month Goals — 6 col ─────────────────────────────
+    '<div class="tr-panel" style="padding:12px 14px;margin-bottom:10px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">🗓 Fiscal Month vs Goals</div>'+
+    '<div style="font-size:9px;color:var(--text3)">'+daysLeft+'d left · proj '+fmtMon(projRev)+'</div></div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px">'+
+    '<div style="background:var(--surface);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">💵 Rev</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green)">'+fmtMon(fiscalRev)+'</div>'+(GOALS.rev?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalRev/GOALS.rev*100))+'%;background:var(--green);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalRev/GOALS.rev*100)+'%</div>':'')+'</div>'+
+    '<div style="background:var(--surface);border:1px solid rgba(20,184,166,.25);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">📶 RGUs</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--teal)">'+fmtR(fiscalRgus)+'</div>'+(RGU_GOAL?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalRgus/RGU_GOAL*100))+'%;background:var(--teal);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalRgus/RGU_GOAL*100)+'%</div>':'')+'</div>'+
+    '<div style="background:var(--surface);border:1px solid rgba(20,184,166,.25);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">📱 XM</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--teal)">'+fiscalXm+'</div>'+(GOALS.xm?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalXm/GOALS.xm*100))+'%;background:var(--teal);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalXm/GOALS.xm*100)+'% of '+GOALS.xm+'</div>':'')+'</div>'+
+    '<div style="background:var(--surface);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">🎯 Sales</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green)">'+fiscalSales.length+'</div><div style="font-size:9px;color:var(--text3);margin-top:4px">'+(fiscalCalls.length?Math.round(fiscalSales.length/fiscalCalls.length*100)+'% CR':'--')+'</div></div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">'+
+    '<div style="background:var(--surface);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">📺 TV</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--blue)">'+fiscalTv+'</div>'+(GOALS.tv?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalTv/GOALS.tv*100))+'%;background:var(--blue);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalTv/GOALS.tv*100)+'% of '+GOALS.tv+'</div>':'')+'</div>'+
+    '<div style="background:var(--surface);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">🌐 CHSI</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--blue)">'+fmtR(fiscalChsi)+'</div>'+(GOALS.chsi?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalChsi/GOALS.chsi*100))+'%;background:var(--blue);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalChsi/GOALS.chsi*100)+'% of '+GOALS.chsi+'</div>':'')+'</div>'+
+    '<div style="background:var(--surface);border:1px solid rgba(168,85,247,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">📞 CDV</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--purple)">'+fiscalCdv+'</div>'+(GOALS.cdv?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalCdv/GOALS.cdv*100))+'%;background:var(--purple);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalCdv/GOALS.cdv*100)+'% of '+GOALS.cdv+'</div>':'')+'</div>'+
+    '<div style="background:var(--surface);border:1px solid rgba(168,85,247,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">🏠 XH</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--purple)">'+fiscalXh+'</div>'+(GOALS.xh?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalXh/GOALS.xh*100))+'%;background:var(--purple);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalXh/GOALS.xh*100)+'% of '+GOALS.xh+'</div>':'')+'</div>'+
+    '</div></div>'+
+
+    // ── Row 5: Rates | MoM | Avgs — 3 col ────────────────────────────
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">'+
+    '<div class="tr-panel" style="padding:10px 12px">'+
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">📐 Rates</div>'+
+    '<div style="display:flex;flex-direction:column;gap:5px">'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Close Rate</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--green)">'+closeRate.toFixed(1)+'%</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">XM Attach</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+xmAttach.toFixed(1)+'%</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Avg Rev/Sale</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber)">'+fmtMon(arpu)+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Avg RGU/Sale</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+arps+'</span></div>'+
+    '<div style="height:1px;background:var(--border);margin:2px 0"></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">ARPU</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber)">'+truArpu+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">RPC</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber)">'+rpc+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Avg RGU/Call</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+arpc2+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">CHSI CR</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue)">'+chsiCR+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">XM CR</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+xmCR+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">RGU CR</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue)">'+rguCR+'</span></div>'+
+    '</div></div>'+
+    '<div class="tr-panel" style="padding:10px 12px">'+
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">📆 Month-over-Month</div>'+
+    '<table style="width:100%;border-collapse:collapse">'+
+    '<thead><tr>'+['Month','Sales','CR%','Rev'].map(function(h){return '<th style="padding:3px 4px;font-size:9px;color:var(--text3);text-align:'+(h==='Month'?'left':'right')+';border-bottom:1px solid var(--border)">'+h+'</th>';}).join('')+'</tr></thead>'+
+    '<tbody>'+fiscalMonths.map(function(m,i){var isRecent=i<3;return '<tr style="'+(i>=3?'display:none':'')+'"><td style="padding:5px 4px;font-size:10px;color:'+(i===0?'var(--text)':'var(--text3)')+';font-weight:'+(i===0?'700':'400')+'" class="mom-row">'+(i>=3?'':'')+m.label+(i===0?' <span style=\'font-size:8px;color:var(--blue)\'>cur</span>':'')+'</td><td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--green)">'+m.sales+'</td><td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text)">'+m.close+'%</td><td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--amber)">'+fmtMon(m.rev)+'</td></tr>';}).join('')+'<tr id="mom-expand-row"><td colspan="4" style="padding:3px 4px;text-align:center"><span onclick="trToggleMom()" style="font-size:9px;color:var(--text3);cursor:pointer;user-select:none" id="mom-expand-btn">▼ show more</span></td></tr>'+'</tbody>'+
+    '</table></div>'+
+    '<div class="tr-panel" style="padding:10px 12px">'+
+    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">📈 Daily Averages</div>'+
+    '<div style="display:flex;flex-direction:column;gap:5px">'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Calls / Day</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text)">'+avgCallsDay+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Sales / Day</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--green)">'+avgSalesDay+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Rev / Day</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber)">'+avgRevDay+'</span></div>'+
+    (bestCallDay?'<div style="height:1px;background:var(--border);margin:2px 0"></div><div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Busiest</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text)">'+bestCallDay+'</span></div>':'')+
+    (bestRevDay?'<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Best Rev</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--amber)">'+fmtMon(byDate[bestRevDay].rev)+'</span></div>':'')+
+    (bestCloseDay?'<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Best CR</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--green)">'+pct(byDate[bestCloseDay].sales,byDate[bestCloseDay].total)+'</span></div>':'')+
+    '</div></div>'+
+    '</div>'+
+    // ── Row 6: Trophies — 4 col ───────────────────────────────────────
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'+
+    '<div class="tr-trophy" onclick="trMicroConfetti(this)"><div class="tr-trophy-icon">💰</div><div class="tr-trophy-label">Best Revenue Day</div><div class="tr-trophy-val">'+(bestRevDay?fmtMon(byDate[bestRevDay].rev):'--')+'</div><div class="tr-trophy-sub">'+(bestRevDay||'')+'</div></div>'+
+    '<div class="tr-trophy" onclick="trMicroConfetti(this)"><div class="tr-trophy-icon">🎯</div><div class="tr-trophy-label">Best Close Rate</div><div class="tr-trophy-val">'+(bestCloseDay?pct(byDate[bestCloseDay].sales,byDate[bestCloseDay].total):'--')+'</div><div class="tr-trophy-sub">'+(bestCloseDay||'')+'</div></div>'+
+    '<div class="tr-trophy" onclick="trMicroConfetti(this)"><div class="tr-trophy-icon">📶</div><div class="tr-trophy-label">Best RGU Day</div><div class="tr-trophy-val">'+(bestRguDay?fmtR(byDate[bestRguDay].rgus)+' RGUs':'--')+'</div><div class="tr-trophy-sub">'+(bestRguDay||'')+'</div></div>'+
+    '<div class="tr-trophy" onclick="trMicroConfetti(this)"><div class="tr-trophy-icon">🚀</div><div class="tr-trophy-label">Most Sales Day</div><div class="tr-trophy-val">'+(bestSalesDay?byDate[bestSalesDay].sales+' sales':'--')+'</div><div class="tr-trophy-sub">'+(bestSalesDay||'')+'</div></div>'+
+    '</div>';
+    setTimeout(function(){
+      // No kpi counter cards in new dashboard — nothing to animate
+    },50);
+
+  } else if(_trSubtab==='performance'){
+    // Recent days — card rows
+    el.innerHTML=
+    '<div class="tr-panel" style="padding:16px;margin-bottom:16px"><div class="tr-kpi-label" style="margin-bottom:10px">🗓 Recent Days (last 14 active)</div>'+
+    '<div style="display:flex;flex-direction:column;gap:4px">'+
+    [...last14].reverse().map(function(d){
+      var r=byDate[d];
+      var cr=r.total?(r.sales/r.total*100).toFixed(0):'0';
+      var crColor=Number(cr)>=50?'var(--green)':Number(cr)>=30?'var(--amber)':'var(--red)';
+      var units=[];
+      if(r.xm)units.push(r.xm+'XM');if(r.tv)units.push(r.tv+'TV');if(r.chsi)units.push(fmtR(r.chsi)+'C');if(r.cdv)units.push(r.cdv+'CDV');if(r.xh)units.push(r.xh+'XH');
+      var barW=r.total?Math.round(r.sales/r.total*100):0;
+      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'+
+        '<span style="font-family:var(--mono);font-size:11px;color:var(--text3);min-width:80px">'+d+'</span>'+
+        '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text)">'+r.sales+'/'+r.total+'</span>'+
+        '<span style="font-size:10px;font-weight:700;color:'+crColor+'">'+cr+'%</span>'+
+        '<span style="font-family:var(--mono);font-size:11px;color:var(--amber);margin-left:auto">'+fmtMon(r.rev)+'</span>'+
+        '<span style="font-family:var(--mono);font-size:11px;color:var(--teal);min-width:48px;text-align:right">'+fmtR(r.rgus)+' RGU</span>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:6px">'+
+        '<div style="flex:1;height:4px;background:var(--border2);border-radius:2px"><div style="height:4px;width:'+barW+'%;background:'+crColor+';border-radius:2px"></div></div>'+
+        '<span style="font-size:9px;color:var(--text3);font-family:var(--mono)">'+(units.join(' ')||'--')+'</span>'+
+        '</div>'+
+      '</div>';
+    }).join('')+
+    '</div></div>';
+
+  } else if(_trSubtab==='breakdown'){
+    var donutCenter='<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none"><div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);line-height:1">'+totalCalls+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Total Calls</div></div>';
+    el.innerHTML=
+    '<div style="display:grid;grid-template-columns:280px 1fr;gap:16px;margin-bottom:16px;align-items:start">'+
+    '<div class="tr-panel" style="padding:20px 16px;display:flex;flex-direction:column;align-items:center"><div class="tr-kpi-label" style="margin-bottom:12px">Call Outcomes</div><div style="position:relative;width:200px;height:200px"><canvas id="tr-donut" width="200" height="200"></canvas><div id="tr-donut-center">'+donutCenter+'</div></div>'+
+    '<div style="display:flex;flex-direction:column;gap:8px;width:100%;margin-top:14px">'+
+    '<div class="tr-legend-row" data-segment="nosale" onclick="trDrillDown(\'nosale\')" style="cursor:pointer"><div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0"></div><div style="flex:1;font-size:11px;color:var(--text)">No Sales</div><div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--red)">'+noSales.length+'</div><div style="font-size:10px;color:var(--text3);min-width:36px;text-align:right">'+pct(noSales.length,totalCalls)+'</div></div>'+
+    '<div class="tr-legend-row" data-segment="sale" onclick="trDrillDown(\'sale\')" style="cursor:pointer"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0"></div><div style="flex:1;font-size:11px;color:var(--text)">Sales (no XM)</div><div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--green)">'+nonXmSales.length+'</div><div style="font-size:10px;color:var(--text3);min-width:36px;text-align:right">'+pct(nonXmSales.length,totalCalls)+'</div></div>'+
+    '<div class="tr-legend-row" data-segment="xm" onclick="trDrillDown(\'xm\')" style="cursor:pointer"><div style="width:10px;height:10px;border-radius:50%;background:var(--teal);flex-shrink:0"></div><div style="flex:1;font-size:11px;color:var(--text)">XM Sales</div><div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+xmSales.length+'</div><div style="font-size:10px;color:var(--text3);min-width:36px;text-align:right">'+pct(xmSales.length,totalCalls)+'</div></div>'+
+    '</div><div style="font-size:9px;color:var(--text3);margin-top:10px">Click to drill down &rarr;</div></div>'+
+    '<div id="tr-drilldown" class="tr-panel" style="min-height:320px;padding:16px"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;color:var(--text3)"><div style="font-size:28px;opacity:.3">👆</div><div style="font-size:12px">Click a segment to explore</div></div></div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'+
+    '<div class="tr-panel" style="padding:16px"><div class="tr-kpi-label" style="margin-bottom:12px">📦 LOB Attach Rates (of '+totalSales+' sales)</div>'+
+    barRow('XM Lines',lobXm,totalSales,'var(--teal)')+barRow('TV',lobTv,totalSales,'var(--blue)')+barRow('CHSI',lobChsi,totalSales,'var(--blue)')+barRow('CDV',lobCdv,totalSales,'var(--purple)')+barRow('XH',lobXh,totalSales,'var(--purple)')+barRow('IE',lobIe,totalSales,'var(--amber)')+
+    '</div>'+
+    '<div class="tr-panel" style="padding:16px"><div class="tr-kpi-label" style="margin-bottom:12px">🚫 No-Sale Reasons ('+noSales.length+' total)</div>'+
+    (noSaleReasonRows.map(function(r){return barRow(r[0],r[1],noSales.length,'var(--red)');}).join('')||'<div style="color:var(--text3);font-size:12px">No data</div>')+
+    '</div></div>'+
+    '<div class="tr-panel" style="padding:16px"><div class="tr-kpi-label" style="margin-bottom:12px">🎮 Play Mix ('+totalSales+' sales)</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px">'+
+    playRows.map(function(r){var play=r[0],count=r[1];return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px"><div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px">'+play+'</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green)">'+count+'</div><div style="font-size:10px;color:var(--text3)">'+pct(count,totalSales)+'</div><div style="height:3px;background:var(--border2);border-radius:2px;margin-top:6px"><div style="height:3px;width:'+(count/totalSales*100).toFixed(0)+'%;background:var(--green);border-radius:2px"></div></div></div>';}).join('')+
+    '</div></div>'+
+    (nxmCalls.length?
+    '<div class="tr-panel" style="padding:16px;margin-top:16px"><div class="tr-kpi-label" style="margin-bottom:10px">📵 Sales Without XM ('+nxmCalls.length+')</div>'+
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+    '<select class="filter-select" id="nxm-filter" onchange="renderNxmTable()">'+
+    '<option value="all">All Time</option><option value="fiscal">This Fiscal Month</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="this-week">This Week</option>'+
+    '</select><span style="font-size:10px;color:var(--text3)" id="nxm-count"></span></div>'+
+    '<div id="nxm-tbody" style="display:flex;flex-direction:column;gap:4px"></div></div>'
+    :'');
+
+    setTimeout(function(){
+      var dCtx=document.getElementById('tr-donut');
+      if(dCtx){
+        if(_charts['tr-donut']) _charts['tr-donut'].destroy();
+        _charts['tr-donut']=new Chart(dCtx,{type:'doughnut',data:{labels:['No Sales','Sales (no XM)','XM Sales'],datasets:[
+          {data:[noSales.length,nonXmSales.length,xmSales.length],backgroundColor:['rgba(248,113,113,.85)','rgba(34,197,94,.85)','rgba(20,184,166,.85)'],borderColor:['rgba(248,113,113,1)','rgba(34,197,94,1)','rgba(20,184,166,1)'],borderWidth:2,hoverOffset:8,cutout:'55%'},
+          {data:[noSales.length,nonXmSales.length,xmSales.length],backgroundColor:['rgba(248,113,113,.2)','rgba(34,197,94,.2)','rgba(20,184,166,.2)'],borderWidth:0,cutout:'72%',weight:.4},
+        ]},options:{responsive:false,animation:{duration:600,easing:'easeInOutQuart'},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ' '+ctx.raw+' ('+pct(ctx.raw,totalCalls)+')';}}}},
+        onClick:function(e,els){if(els.length)trDrillDown(['nosale','sale','xm'][els[0].index]);},
+        onHover:function(e,els){dCtx.style.cursor=els.length?'pointer':'default';var c=document.getElementById('tr-donut-center');if(!c)return;if(els.length){var i=els[0].index;var lbs=['No Sales','Sales','XM Sales'];var vs=[noSales.length,nonXmSales.length,xmSales.length];var cs=['var(--red)','var(--green)','var(--teal)'];c.innerHTML='<div style="font-family:var(--mono);font-size:22px;font-weight:700;color:'+cs[i]+';line-height:1">'+vs[i]+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">'+lbs[i]+'</div>';}else{c.innerHTML='<div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);line-height:1">'+totalCalls+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Total Calls</div>';}}}});
+      }
+      if(nxmCalls.length) setTimeout(renderNxmTable, 60);
+    },50);
+
+  } else if(_trSubtab==='trends'){
+    // Build arrays for all trend charts
+    var trendLabels=dayKeys.slice(-30);
+    var trendClose=trendLabels.map(function(d){return byDate[d].total?+(byDate[d].sales/byDate[d].total*100).toFixed(1):0;});
+    var trendRev=trendLabels.map(function(d){return +byDate[d].rev.toFixed(2);});
+    var trendRgu=trendLabels.map(function(d){return +byDate[d].rgus.toFixed(2);});
+    var trendXm=trendLabels.map(function(d){return byDate[d].xmSales||0;});
+    var trendCalls=trendLabels.map(function(d){return byDate[d].total;});
+    var trendSales=trendLabels.map(function(d){return byDate[d].sales;});
+    var trendXmAttach=trendLabels.map(function(d){return byDate[d].sales?(byDate[d].xmSales/byDate[d].sales*100).toFixed(1):0;});
+
+    var shortLabels=trendLabels.map(function(d){return d.split('/').slice(0,2).join('/');});
+
+    var chartOpts=function(yFmt,tooltipFmt){return {responsive:true,animation:{duration:700,easing:'easeInOutQuart'},interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:tooltipFmt||function(c){return ' '+c.raw;}}}},scales:{x:{ticks:{color:'rgba(255,255,255,.35)',font:{size:8},maxRotation:50},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'rgba(255,255,255,.35)',font:{size:9},callback:yFmt||function(v){return v;}},grid:{color:'rgba(255,255,255,.06)'}}}}; };
+
+    el.innerHTML=
+    // Row 1: Close Rate — full width
+    '<div class="tr-panel" style="padding:8px 12px;margin-bottom:10px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'+
+    '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px">🎯</span><span style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Close Rate Trend</span></div>'+
+    '<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--green)">'+closeRate.toFixed(1)+'%</div></div>'+
+    '<canvas id="tr-t-close" height="65"></canvas></div>'+
+    // Row 2: Revenue bars + RGU line overlay — full width
+    '<div class="tr-panel" style="padding:8px 12px;margin-bottom:10px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'+
+    '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px">💰</span><span style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Revenue &amp; RGUs / Day</span><span style="font-size:9px;color:var(--text3)">bars=rev · line=RGUs</span></div>'+
+    '<div style="display:flex;gap:10px">'+
+    '<span style="font-size:10px;font-weight:700;color:var(--green)">'+fmtMon(totalRev)+'</span>'+
+    '<span style="font-size:10px;font-weight:700;color:rgba(59,130,246,.9)">'+fmtR(totalRgus)+' RGUs</span>'+
+    '</div></div>'+
+    '<canvas id="tr-t-rev-rgu" height="80"></canvas></div>'+
+    // Row 3: Calls vs Sales stacked — full width
+    '<div class="tr-panel" style="padding:8px 12px;margin-bottom:10px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'+
+    '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px">📞</span><span style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Calls vs Sales</span></div>'+
+    '<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue)">'+totalCalls+' calls</div></div>'+
+    '<canvas id="tr-t-calls" height="65"></canvas></div>'+
+    // Row 4: Day of Week | Power Hours
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+    '<div class="tr-panel" style="padding:8px 12px">'+
+    '<div style="margin-bottom:6px"><span style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">📅 Day of Week</span></div>'+
+    '<canvas id="tr-t-dow" height="120"></canvas></div>'+
+    '<div class="tr-panel" style="padding:8px 12px">'+
+    '<div style="margin-bottom:6px"><span style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">⏰ Power Hours</span></div>'+
+    '<canvas id="tr-t-hours" height="120"></canvas></div>'+
+    '</div>';
+
+    setTimeout(function(){
+      var xc={ticks:{color:'rgba(255,255,255,.35)',font:{size:8},maxRotation:50},grid:{color:'rgba(255,255,255,.04)'}};
+      var mkLine=function(id,data,color,yFmt,tFmt){
+        var c=document.getElementById(id); if(!c) return;
+        if(_charts[id]) _charts[id].destroy();
+        _charts[id]=new Chart(c,{type:'line',data:{labels:shortLabels,datasets:[{data:data,borderColor:color,backgroundColor:color.replace('rgb(','rgba(').replace(')',',0.1)'),fill:true,tension:0.4,pointRadius:2,pointHoverRadius:5,borderWidth:2}]},options:{responsive:true,animation:{duration:700},interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:tFmt||function(c){return ' '+c.raw;}}}},scales:{x:xc,y:{ticks:{color:'rgba(255,255,255,.35)',font:{size:9},callback:yFmt||function(v){return v;}},grid:{color:'rgba(255,255,255,.06)'}}}}});
+      };
+
+      mkLine('tr-t-close',trendClose,'rgb(34,197,94)',function(v){return v+'%';},function(c){return ' '+c.raw+'%';});
+
+      // Combined Rev bars + RGU line
+      var c2=document.getElementById('tr-t-rev-rgu');
+      if(c2){
+        if(_charts['tr-t-rev-rgu']) _charts['tr-t-rev-rgu'].destroy();
+        _charts['tr-t-rev-rgu']=new Chart(c2,{type:'bar',data:{labels:shortLabels,datasets:[
+          {label:'Revenue',data:trendRev,backgroundColor:'rgba(34,197,94,.6)',borderColor:'rgba(34,197,94,.8)',borderWidth:1,borderRadius:2,yAxisID:'y'},
+          {label:'RGUs',data:trendRgu,type:'line',borderColor:'rgba(59,130,246,.9)',backgroundColor:'transparent',tension:0.4,pointRadius:2,pointHoverRadius:5,borderWidth:2,yAxisID:'y2'},
+        ]},options:{responsive:true,animation:{duration:700},interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{color:'rgba(255,255,255,.45)',font:{size:9},boxWidth:8,padding:4}}},scales:{x:xc,y:{position:'left',ticks:{color:'rgba(34,197,94,.8)',font:{size:9},callback:function(v){return '$'+v.toFixed(0);}},grid:{color:'rgba(255,255,255,.04)'}},y2:{position:'right',ticks:{color:'rgba(59,130,246,.8)',font:{size:9},callback:function(v){return v;}},grid:{display:false}}}}});
+      }
+
+      var c6=document.getElementById('tr-t-calls');
+      if(c6){
+        if(_charts['tr-t-calls']) _charts['tr-t-calls'].destroy();
+        _charts['tr-t-calls']=new Chart(c6,{type:'bar',data:{labels:shortLabels,datasets:[
+          {label:'XM Sale',data:trendXm,backgroundColor:'rgba(59,130,246,.85)',stack:'s'},
+          {label:'Sale',data:trendLabels.map(function(d){return byDate[d].sales-byDate[d].xmSales;}),backgroundColor:'rgba(34,197,94,.7)',stack:'s'},
+          {label:'No Sale',data:trendLabels.map(function(d){return byDate[d].total-byDate[d].sales;}),backgroundColor:'rgba(248,113,113,.55)',stack:'s'},
+        ]},options:{responsive:true,animation:{duration:700},interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{color:'rgba(255,255,255,.45)',font:{size:9},boxWidth:8,padding:4}}},scales:{x:xc,y:{ticks:{color:'rgba(255,255,255,.35)',font:{size:9},stepSize:1},grid:{color:'rgba(255,255,255,.06)'}}}}});
+      }
+
+      var c4=document.getElementById('tr-t-xm');
+      if(c4){
+        if(_charts['tr-t-xm']) _charts['tr-t-xm'].destroy();
+        _charts['tr-t-xm']=new Chart(c4,{type:'bar',data:{labels:shortLabels,datasets:[{label:'XM Lines',data:trendXm,backgroundColor:'rgba(20,184,166,.75)',borderRadius:3}]},options:{responsive:true,animation:{duration:700},interaction:{mode:'index',intersect:false},plugins:{legend:{display:false}},scales:{x:xc,y:{ticks:{color:'rgba(255,255,255,.35)',font:{size:9},stepSize:1},grid:{color:'rgba(255,255,255,.06)'}}}}});
+      }
+
+      var c7=document.getElementById('tr-t-dow');
+      if(c7){
+        if(_charts['tr-t-dow']) _charts['tr-t-dow'].destroy();
+        var dowOrder=[1,2,3,4,5,6,0];
+        _charts['tr-t-dow']=new Chart(c7,{type:'bar',data:{labels:dowOrder.map(function(d){return byDow[d].n;}),datasets:[
+          {label:'Sales',data:dowOrder.map(function(d){return byDow[d].sales;}),backgroundColor:'rgba(34,197,94,.75)',borderRadius:4},
+          {label:'No Sale',data:dowOrder.map(function(d){return byDow[d].total-byDow[d].sales;}),backgroundColor:'rgba(248,113,113,.4)',borderRadius:4},
+        ]},options:{responsive:true,animation:{duration:700},interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'rgba(255,255,255,.45)',font:{size:9},boxWidth:8,padding:6}}},scales:{x:{ticks:{color:'rgba(255,255,255,.5)',font:{size:10}},grid:{display:false}},y:{ticks:{color:'rgba(255,255,255,.35)',font:{size:9},stepSize:1},grid:{color:'rgba(255,255,255,.04)'}}}}});
+      }
+
+      var c8=document.getElementById('tr-t-hours');
+      if(c8){
+        if(_charts['tr-t-hours']) _charts['tr-t-hours'].destroy();
+        var hLabels=[],hSales=[],hXmSales=[],hClose=[],hRev=[];
+        for(var hh=8;hh<=19;hh++){var hd=byHour[hh]||{total:0,sales:0,xmSales:0,rev:0};hLabels.push(fmtHour(hh));hSales.push(hd.sales-(hd.xmSales||0));hXmSales.push(hd.xmSales||0);hRev.push(+(hd.rev||0).toFixed(2));}
+        _charts['tr-t-hours']=new Chart(c8,{type:'bar',data:{labels:hLabels,datasets:[
+          {label:'Sale',data:hSales,backgroundColor:'rgba(34,197,94,.75)',borderRadius:3,stack:'s',yAxisID:'y'},
+          {label:'XM Sale',data:hXmSales,backgroundColor:'rgba(59,130,246,.85)',borderRadius:3,stack:'s',yAxisID:'y'},
+          {label:'Revenue',data:hRev,type:'line',borderColor:'rgba(34,197,94,.9)',pointRadius:2,pointHoverRadius:4,borderWidth:2,tension:0.3,yAxisID:'y2'},
+        ]},options:{responsive:true,animation:{duration:700},interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'rgba(255,255,255,.45)',font:{size:9},boxWidth:8,padding:6}}},scales:{x:{ticks:{color:'rgba(255,255,255,.4)',font:{size:8}},grid:{display:false}},y:{ticks:{color:'rgba(255,255,255,.35)',font:{size:9},stepSize:1},grid:{color:'rgba(255,255,255,.04)'}},y2:{position:'right',ticks:{color:'rgba(34,197,94,.7)',font:{size:9},callback:function(v){return '$'+v.toFixed(0);}},grid:{display:false}}}}});
+      }
+    },50);
   }
-  el.innerHTML = `<div style="padding:16px 0">${html}${nxmHtml}</div>`;
-  if(nxmCalls.length) renderNxmTable();
+}
+
+
+function trToggleMom(){
+  var rows = document.querySelectorAll('.mom-row');
+  var btn = document.getElementById('mom-expand-btn');
+  var expanded = btn && btn.dataset.expanded==='1';
+  rows.forEach(function(r){
+    var tr = r.parentElement;
+    var idx = Array.from(tr.parentElement.children).indexOf(tr);
+    if(idx>=3) tr.style.display = expanded ? 'none' : '';
+  });
+  if(btn){ btn.dataset.expanded = expanded?'':'1'; btn.textContent = expanded?'▼ show more':'▲ show less'; }
+}
+
+function trCountUp(id,from,to,duration,fmt){
+  var el=document.getElementById(id);if(!el)return;
+  var start=performance.now();
+  function step(now){var p=Math.min((now-start)/duration,1);var ease=1-Math.pow(1-p,3);el.textContent=fmt(from+(to-from)*ease);if(p<1)requestAnimationFrame(step);}
+  requestAnimationFrame(step);
+}
+
+function trSparkline(id,data,color){
+  var c=document.getElementById(id);if(!c)return;
+  if(_charts[id]) _charts[id].destroy();
+  _charts[id]=new Chart(c,{type:'line',data:{labels:data.map(function(_,i){return i;}),datasets:[{data:data,borderColor:color,borderWidth:1.5,fill:true,backgroundColor:color.replace(')',',.1)').replace('rgb','rgba'),tension:0.4,pointRadius:0}]},options:{responsive:true,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}}}});
+}
+
+function trMicroConfetti(el){
+  if(!el)return;
+  var rect=el.getBoundingClientRect();
+  var cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+  var colors=['#f59e0b','#22c55e','#14b8a6','#3b82f6','#a78bfa','#f87171'];
+  var particles=[];
+  for(var i=0;i<18;i++){var angle=(Math.PI*2*i)/18+Math.random()*.3;var speed=2+Math.random()*3;particles.push({x:cx,y:cy,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed-2,alpha:1,color:colors[i%colors.length],size:4+Math.random()*4,rot:Math.random()*360,rotV:(Math.random()-.5)*15});}
+  var canvas=document.createElement('canvas');
+  canvas.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99998;width:100%;height:100%';
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  document.body.appendChild(canvas);
+  var ctx2=canvas.getContext('2d');
+  function draw(){ctx2.clearRect(0,0,canvas.width,canvas.height);var alive=false;particles.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.alpha-=.025;p.rot+=p.rotV;if(p.alpha>0){alive=true;ctx2.save();ctx2.globalAlpha=p.alpha;ctx2.fillStyle=p.color;ctx2.translate(p.x,p.y);ctx2.rotate(p.rot*Math.PI/180);ctx2.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx2.restore();}});if(alive)requestAnimationFrame(draw);else canvas.remove();}
+  draw();
+}
+
+function trDrillDown(segment){
+  var el=document.getElementById('tr-drilldown');
+  if(!el||!window._trData)return;
+  var d=window._trData;
+  var noSaleReasonRows=d.noSaleReasonRows,playRows=d.playRows,xmDist=d.xmDist;
+  var noSales=d.noSales,nonXmSales=d.nonXmSales,xmSales=d.xmSales;
+  var totalCalls=d.totalCalls,totalSales=d.totalSales,pct=d.pct,fmtMon=d.fmtMon;
+
+  document.querySelectorAll('.tr-legend-row').forEach(function(r){r.style.background=r.dataset.segment===segment?'rgba(255,255,255,.05)':'';r.style.borderRadius='6px';});
+
+  var barRow=function(label,count,total,color){var w=total?(count/total*100).toFixed(0):0;return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:11px;color:var(--text)">'+label+'</span><span style="font-family:var(--mono);font-size:11px;color:var(--text3)">'+count+' · '+pct(count,total)+'</span></div><div style="height:5px;background:var(--border2);border-radius:3px"><div style="height:5px;width:'+w+'%;background:'+color+';border-radius:3px;transition:width .5s .1s"></div></div></div>';};
+
+  var html='';
+  if(segment==='nosale'){
+    html='<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:12px">🔴 No Sale Breakdown — '+noSales.length+' calls</div>';
+    html+=noSaleReasonRows.map(function(r){return barRow(r[0],r[1],noSales.length,'var(--red)');}).join('')||'<div style="color:var(--text3);font-size:12px">No data</div>';
+  } else if(segment==='sale'){
+    var xRev=nonXmSales.reduce(function(s,c){return s+c.rev;},0);
+    html='<div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:12px">🟢 Sales (No XM) — '+nonXmSales.length+' · '+fmtMon(xRev)+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3);margin-bottom:10px">Play mix breakdown</div>';
+    playRows.forEach(function(r){var play=r[0],count=r[1];var onlyNonXm=nonXmSales.filter(function(c){return c.playName===play;}).length;if(!onlyNonXm)return;html+=barRow(play,onlyNonXm,nonXmSales.length,'var(--green)');});
+  } else if(segment==='xm'){
+    var xmRev=xmSales.reduce(function(s,c){return s+c.rev;},0);
+    var avgXmLines=xmSales.length?(xmSales.reduce(function(s,c){return s+c.xm;},0)/xmSales.length).toFixed(1):0;
+    html='<div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:12px">🩵 XM Sales — '+xmSales.length+' · '+fmtMon(xmRev)+'</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div class="tr-kpi-card accent-teal" style="padding:8px 10px"><div class="tr-kpi-label">Avg XM Lines</div><div class="tr-kpi-val">'+avgXmLines+'</div></div><div class="tr-kpi-card accent-teal" style="padding:8px 10px"><div class="tr-kpi-label">Avg Rev / XM Sale</div><div class="tr-kpi-val" style="font-size:14px">'+(xmSales.length?fmtMon(xmRev/xmSales.length):'--')+'</div></div></div>';
+    html+='<div style="font-size:10px;color:var(--text3);margin-bottom:8px">XM line distribution</div>';
+    Object.entries(xmDist).sort(function(a,b){return b[1]-a[1];}).forEach(function(r){html+=barRow(r[0].replace('L',' line'+(r[0]==='1L'?'':'s')),r[1],xmSales.length,'var(--teal)');});
+  }
+  el.innerHTML='<div>'+html+'</div>';
 }
 
 function makeChart(id, type, labels, datasets, options){
@@ -5824,20 +6282,24 @@ function renderNxmTable(){
   else if(filter==='yesterday'){ const y=new Date(today);y.setDate(y.getDate()-1);filtered=filtered.filter(c=>c.ts>=y&&c.ts<=eod(y)); }
   else if(filter==='this-week'){ const ws=new Date(today);ws.setDate(ws.getDate()-ws.getDay());filtered=filtered.filter(c=>c.ts>=ws&&c.ts<=eod(now)); }
   if(countEl) countEl.textContent = filtered.length+' call'+(filtered.length!==1?'s':'');
-  tbody.innerHTML = filtered.length ? filtered.map(c => {
+  if(!filtered.length){
+    tbody.innerHTML='<div style="text-align:center;color:var(--text3);padding:20px;font-size:12px">No results for this period</div>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(c=>{
     const ts = c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
-    const sched = c.sched ? new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}) : '—';
-    const acct = [c.acctRaw,c.cbName].filter(Boolean).join(' · ')||'—';
-    return `<tr>
-      <td style="white-space:nowrap;font-family:var(--mono);font-size:11px">${ts}</td>
-      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.acctRaw||''}">${acct}</td>
-      <td style="font-family:var(--mono);font-size:11px">${c.playName||'—'}</td>
-      <td><span class="nxm-reason">${c.noXmReason}</span></td>
-      <td style="font-family:var(--mono)">${c.rev>0?'$'+c.rev.toFixed(2):'—'}</td>
-      <td style="font-family:var(--mono);font-size:11px">${sched}</td>
-      <td style="font-size:11px;color:var(--text3);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.notes||''}</td>
-    </tr>`;
-  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">No results for this period</td></tr>';
+    const sched = c.sched ? new Date(c.sched+'T00:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric'}) : '';
+    const acct = maskAcct(String(c.acctRaw||''));
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center">'+
+      '<span style="font-family:var(--mono);font-size:10px;color:var(--text3);min-width:90px">'+ts+'</span>'+
+      '<span style="font-family:var(--mono);font-size:11px;color:var(--text)">'+acct+'</span>'+
+      '<span style="font-size:11px;color:var(--text2)">'+( c.playName||'')+'</span>'+
+      '<span style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:600;color:var(--red)">'+c.noXmReason+'</span>'+
+      '<span style="font-family:var(--mono);font-size:11px;color:var(--amber);margin-left:auto">'+(c.rev>0?'$'+c.rev.toFixed(2):'')+'</span>'+
+      (sched?'<span style="font-size:10px;color:var(--text3)">Sched: '+sched+'</span>':'')+
+      (c.notes?'<span style="font-size:10px;color:var(--text3);font-style:italic;flex-basis:100%;margin-top:2px">'+c.notes+'</span>':'')+
+      '</div>';
+  }).join('');
 }
 
 function nsAutoSelect(){
@@ -5852,11 +6314,95 @@ function nsAutoSelect(){
   }
 }
 
+var _cbAmPm = 'AM';
+
+function cbInitTimePicker(){
+  const hourSel = document.getElementById('f-cb-hour');
+  if(!hourSel || hourSel.dataset.built) return;
+  hourSel.dataset.built = '1';
+  for(let h=1; h<=12; h++){
+    const opt = document.createElement('option');
+    opt.value = String(h);
+    opt.textContent = h;
+    hourSel.appendChild(opt);
+  }
+}
+
+function cbSetAmPm(val){
+  _cbAmPm = val;
+  const am = document.getElementById('cb-ampm-am');
+  const pm = document.getElementById('cb-ampm-pm');
+  if(am){ am.style.background = val==='AM' ? 'var(--purple)' : 'var(--surface)'; am.style.color = val==='AM' ? '#fff' : 'var(--text3)'; am.style.borderColor = 'rgba(167,139,250,.35)'; }
+  if(pm){ pm.style.background = val==='PM' ? 'var(--purple)' : 'var(--surface)'; pm.style.color = val==='PM' ? '#fff' : 'var(--text3)'; pm.style.borderColor = 'rgba(167,139,250,.35)'; }
+  cbSyncDateTime();
+}
+
+function cbBuildTimePicker(){ cbInitTimePicker(); }
+function cbToggleTimePicker(){}
+function cbCloseTimePicker(){}
+function cbCloseTimePickerOutside(){}
+function cbSetTimePickerVal(val){
+  // val = 'HH:MM' 24hr
+  cbInitTimePicker();
+  if(!val) return;
+  const [hStr, mStr] = val.split(':');
+  let h24 = parseInt(hStr)||0;
+  const m = mStr || '00';
+  const ampm = h24 < 12 ? 'AM' : 'PM';
+  const h12 = h24 === 0 ? 12 : h24 > 12 ? h24-12 : h24;
+  const hourSel = document.getElementById('f-cb-hour');
+  const minSel  = document.getElementById('f-cb-min');
+  if(hourSel) hourSel.value = String(h12);
+  if(minSel)  minSel.value  = String(parseInt(m)||0).padStart(2,'0');
+  cbSetAmPm(ampm);
+}
+
+function cbSyncDateTime(){
+  cbInitTimePicker();
+  const dateEl  = document.getElementById('f-cb-date');
+  const hourSel = document.getElementById('f-cb-hour');
+  const minSel  = document.getElementById('f-cb-min');
+  const hidEl   = document.getElementById('f-cb-dt');
+  const timeHid = document.getElementById('f-cb-time-hidden');
+  if(!dateEl || !hourSel || !minSel || !hidEl) return;
+  const h12 = parseInt(hourSel.value)||0;
+  const min = minSel.value || '00';
+  let h24 = h12;
+  if(_cbAmPm === 'AM' && h12 === 12) h24 = 0;
+  else if(_cbAmPm === 'PM' && h12 !== 12) h24 = h12 + 12;
+  const pad = n => String(n).padStart(2,'0');
+  const timeVal = pad(h24)+':'+min;
+  if(timeHid) timeHid.value = timeVal;
+  if(dateEl.value && h12 > 0){
+    hidEl.value = dateEl.value+'T'+timeVal;
+  } else {
+    hidEl.value = '';
+  }
+  cbUpdateMyTime();
+}
+
+function cbSetSplitFromVal(val){
+  if(!val) return;
+  cbInitTimePicker();
+  const parts = val.split('T');
+  const dateEl = document.getElementById('f-cb-date');
+  if(parts[0] && dateEl) dateEl.value = parts[0];
+  if(parts[1]){
+    const [hStr, mStr] = parts[1].split(':');
+    let h = parseInt(hStr)||0, m = parseInt(mStr)||0;
+    if(h < 8) h = 8; if(h > 20) h = 20;
+    const snapped = Math.min(Math.round(m/15)*15, 45);
+    const pad = n => String(n).padStart(2,'0');
+    cbSetTimePickerVal(pad(h)+':'+pad(snapped));
+  }
+}
+
 function cbSetOffset(mins){
   const d = new Date(Date.now() + mins * 60000);
   const pad = n => String(n).padStart(2,'0');
   const val = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   document.getElementById('f-cb-dt').value = val;
+  cbSetSplitFromVal(val);
   // Mark active quick btn
   document.querySelectorAll('.cb-quick-btn').forEach(b => b.classList.remove('active'));
   const offsets = {30:0,60:1,120:2,240:3,1440:4};
@@ -5866,26 +6412,6 @@ function cbSetOffset(mins){
     if(btns[idx]) btns[idx].classList.add('active');
   }
   cbUpdateMyTime();
-}
-
-function cbClampTime(){
-  const el = document.getElementById('f-cb-dt');
-  if(!el || !el.value) return;
-  const d = new Date(el.value);
-  if(isNaN(d)) return;
-  const h = d.getHours(), m = d.getMinutes();
-  if(h < 8){ d.setHours(8,0,0,0); }
-  else if(h >= 20){ d.setHours(20,0,0,0); }
-  // Snap minutes to nearest 15
-  const snapped = Math.round(m/15)*15;
-  if(snapped === 60){ d.setHours(d.getHours()+1,0,0,0); }
-  else { d.setMinutes(snapped,0,0); }
-  // Re-clamp after snap
-  if(d.getHours() < 8) d.setHours(8,0,0,0);
-  if(d.getHours() >= 20 && d.getMinutes() > 0) d.setHours(20,0,0,0);
-  // Format back to datetime-local string
-  const pad = n => String(n).padStart(2,'0');
-  el.value = d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
 }
 
 function cbUpdateMyTime(){
@@ -5955,14 +6481,14 @@ window.addEventListener('scroll', function(){
   if(!panel || !btn) return;
   const rect = btn.getBoundingClientRect();
   if(rect.top < 104){ cbOpen=false; panel.style.display='none'; document.getElementById('cb-toggle').classList.remove('active'); updateNotesState(); return; }
-  const _cbMaxLeft = window.innerWidth - 288;
-  panel.style.left   = Math.min(rect.left, _cbMaxLeft) + 'px';
+  panel.style.right  = '8px';
+  panel.style.left   = 'auto';
   panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
 }, { passive: true });
 
 function cbSetAndClose(){
   const dt = document.getElementById('f-cb-dt').value;
-  if(!dt){ flash('f-cb-dt'); return; }
+  if(!dt){ flash('f-cb-date'); flash('f-cb-time'); return; }
 
   // Convert entered time (customer tz) → user's local tz, save converted value
   const tzSel = document.getElementById('cb-tz');
@@ -5993,6 +6519,32 @@ function cbSetAndClose(){
   }
 
   cbOpen = true;
+  // Validate local time is within 8am-8pm and not in the past
+  const finalDt = document.getElementById('f-cb-dt').value;
+  if(finalDt){
+    const cbDate = new Date(finalDt);
+    const h = cbDate.getHours();
+    if(h < 8 || h >= 20){
+      flash('f-cb-date'); flash('f-cb-time-hidden'); flash('f-cb-hour'); flash('f-cb-min');
+      flash(_cbAmPm === 'AM' ? 'cb-ampm-am' : 'cb-ampm-pm');
+      _showToast('Callback time must be between 8 AM and 8 PM', 'warn', 3000);
+      cbOpen = false;
+      const panel = document.getElementById('cb-panel');
+      if(panel) panel.style.display = 'flex';
+      setTimeout(function(){ const hourSel = document.getElementById('f-cb-hour'); if(hourSel) hourSel.focus(); }, 100);
+      return;
+    }
+    if(cbDate < new Date()){
+      flash('f-cb-date'); flash('f-cb-time-hidden'); flash('f-cb-hour'); flash('f-cb-min');
+      flash(_cbAmPm === 'AM' ? 'cb-ampm-am' : 'cb-ampm-pm');
+      _showToast('Callback time cannot be in the past', 'warn', 3000);
+      cbOpen = false;
+      const panel = document.getElementById('cb-panel');
+      if(panel) panel.style.display = 'flex';
+      setTimeout(function(){ const hourSel = document.getElementById('f-cb-hour'); if(hourSel) hourSel.focus(); }, 100);
+      return;
+    }
+  }
   const panel = document.getElementById('cb-panel');
   if(panel) panel.style.display = 'none';
   document.getElementById('cb-toggle').classList.add('active');
@@ -7902,7 +8454,28 @@ function launchFireworks(isXm,isTest){
   </div>
   <div class="cb-dt-row" id="cb-dt-wrap">
     <label id="cb-dt-label">Date &amp; Time <span id="cb-dt-req" style="color:var(--purple);font-size:9px">(required)</span></label>
-    <input type="datetime-local" class="cb-dt" id="f-cb-dt" step="900" oninput="cbClampTime();cbUpdateMyTime()">
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <input type="date" class="cb-dt cb-dt-date" id="f-cb-date" oninput="cbSyncDateTime()">
+      <div style="display:flex;gap:4px;align-items:center">
+        <!-- Hour -->
+        <select id="f-cb-hour" onchange="cbSyncDateTime()" style="height:38px;width:58px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 6px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;cursor:pointer;text-align:center"></select>
+        <span style="color:var(--text3);font-weight:700;font-size:14px">:</span>
+        <!-- Minute -->
+        <select id="f-cb-min" onchange="cbSyncDateTime()" style="height:38px;width:58px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:7px;padding:0 6px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;cursor:pointer;text-align:center">
+          <option value="00">00</option>
+          <option value="15">15</option>
+          <option value="30">30</option>
+          <option value="45">45</option>
+        </select>
+        <!-- AM/PM -->
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div id="cb-ampm-am" onclick="cbSetAmPm('AM')" style="height:17px;padding:0 7px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:5px;font-size:10px;font-weight:700;color:var(--text3);cursor:pointer;display:flex;align-items:center;user-select:none;transition:all .15s">AM</div>
+          <div id="cb-ampm-pm" onclick="cbSetAmPm('PM')" style="height:17px;padding:0 7px;background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:5px;font-size:10px;font-weight:700;color:var(--text3);cursor:pointer;display:flex;align-items:center;user-select:none;transition:all .15s">PM</div>
+        </div>
+      </div>
+    </div>
+    <input type="hidden" id="f-cb-time-hidden">
+    <input type="hidden" id="f-cb-dt">
   </div>
   <div class="cb-tz-row" id="cb-tz-wrap">
     <label style="line-height:1.3">Customer<br>Timezone</label>
