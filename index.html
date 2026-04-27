@@ -2444,11 +2444,15 @@ function updateNotesState(){const b=document.getElementById('notes-badge'),ta=do
 const MOOD_EMOJIS = ['🚩','🤬','😠','😕','🤔','😐','🙂','😊','😄','🤩'];
 const MOOD_NAMES  = ['Fraud Flag','Profanity','Angry','Confused','Uncertain','Neutral','Friendly','Happy','Excited','Thrilled'];
 var _moodSliderW = 0;
+function _moodMeasure(){
+  const sl = document.getElementById('mood-slider');
+  if(sl && sl.offsetWidth > 0) _moodSliderW = sl.offsetWidth;
+}
 function _moodPos(val){
   const sl = document.getElementById('mood-slider');
   const el = document.getElementById('mood-thumb-emoji');
   if(!sl||!el) return;
-  if(!_moodSliderW) _moodSliderW = sl.offsetWidth;
+  if(!_moodSliderW) _moodMeasure();
   const pct = (+val)/9;
   const tw = 14;
   const w = _moodSliderW||200;
@@ -2475,9 +2479,8 @@ function moodSliderFocus(){
   if(sl) sl.focus();
 }
 function initMoodSlider(){
-  // Always re-measure on explicit init, but only if slider is visible
+  _moodMeasure();
   const sl = document.getElementById('mood-slider');
-  if(sl && sl.offsetWidth > 0) _moodSliderW = sl.offsetWidth;
   _moodPos(sl ? sl.value : 5);
 }
 
@@ -2951,6 +2954,14 @@ function saveEdit(){
   editState = {};
   document.getElementById('edit-panel').classList.remove('open');
   document.getElementById('edit-overlay').style.display = 'none';
+  // Restore Log Call button
+  const submitBtn = document.getElementById('submit-btn');
+  if(submitBtn){
+    submitBtn.style.opacity = '';
+    submitBtn.style.filter = '';
+    submitBtn.style.cursor = '';
+    submitBtn.onclick = logCall;
+  }
   resetForm();
 
   _editMarkCbDone = false;
@@ -3966,6 +3977,13 @@ function saveSettings(){
   cbSetAmPm('AM');
   setTimeout(initMoodSlider, 100);
   buildCalendar && updatePace && updatePace();
+  // Re-measure mood slider on window resize
+  window.addEventListener('resize', function(){
+    _moodSliderW = 0;
+    _moodMeasure();
+    const sl = document.getElementById('mood-slider');
+    if(sl) _moodPos(sl.value);
+  }, {passive:true});
   const btn=document.querySelector('.settings-save');
   btn.textContent='✓ Saved!';btn.classList.add('saved');
   _showToast(toastMsg, changedSections.length ? 'ok' : 'warn', 4000);
