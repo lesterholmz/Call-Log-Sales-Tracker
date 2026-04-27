@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Call Logger v0.4.24</title>
+<title>Call Logger v0.4.27.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -79,9 +79,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .stats-row.daily{padding-bottom:6px}
 .stats-row.monthly .stat{padding-top:10px;padding-bottom:8px}
 .stats-row.daily .stat{padding-top:6px;padding-bottom:5px}
-.main{padding:20px 12px;display:flex;flex-direction:column;gap:16px}
+.main{padding:20px 0;display:flex;flex-direction:column;gap:16px}
 .form-card{background:var(--card);border:1px solid var(--border);border-radius:12px}
-.form-header{padding:11px 18px;background:var(--card2);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between;position:relative}
+.form-header{padding:11px 18px;min-height:52px;height:52px;background:var(--card2);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between;position:relative}
 .form-header-title{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text2);display:flex;align-items:center;gap:8px}
 .form-header-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -93,7 +93,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .pill-scroll.scrolling{overflow-x:auto;scrollbar-width:none}
 .pill-scroll.scrolling::-webkit-scrollbar{display:none}
 .form-hint{font-size:11px;color:var(--text3);font-family:var(--mono)}
-.form-body{padding:14px 12px;display:flex;flex-direction:column;gap:8px}
+.form-body{padding:4px 4px 8px 4px;display:flex;flex-direction:column;gap:8px}
 .frow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
@@ -441,8 +441,8 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 /* ── Form layout: centered rows, notes aligned to row 1 width ── */
 /* Row container — centers each row and constrains width to match row 1 */
 .form-row-center{display:flex;justify-content:flex-start;width:100%}
-.frow-top{display:flex;gap:8px;align-items:flex-end;width:100%}
-.frow-notes{display:flex;gap:8px;align-items:stretch;width:100%}
+.frow-top{display:flex;gap:8px;align-items:flex-end;width:100%;padding:5px 5px 0 5px}
+.frow-notes{display:flex;gap:0;align-items:stretch;width:100%;padding-bottom:3px}
 /* 720px: notes wraps full width, cb toggle + submit stack below */
 @media(max-width:780px){
   .frow-notes{flex-wrap:wrap}
@@ -453,9 +453,9 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
   .frow-notes-actions{flex-shrink:0;display:flex;flex-direction:column;align-self:stretch}
 }
 /* Notes wrap fills the same inline width as row 1 */
-.notes-wrap{flex:0 0 250px;display:flex;flex-direction:column;gap:5px}
+.notes-wrap{flex:1;display:flex;flex-direction:column;gap:2px;align-self:stretch;padding:3px 0 3px 0;margin-left:3px;margin-right:3px}
 .notes-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
-.notes-wrap textarea{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:70px;width:100%;transition:border-color .15s,box-shadow .15s}
+.notes-wrap textarea{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:9px 12px 5px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:none;height:100%;width:100%;box-sizing:border-box;transition:border-color .15s,box-shadow .15s}
 .notes-wrap textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
 .notes-wrap textarea.cb-req-ta{border-color:rgba(167,139,250,.4)}
 .notes-wrap textarea.cb-req-ta:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(167,139,250,.15)}
@@ -568,6 +568,8 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .tr-heatmap-cell{border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;transition:transform .1s;cursor:default}
 .tr-heatmap-cell:hover{transform:scale(1.15)}
 /* Momentum */
+#mood-slider::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;background:transparent;cursor:pointer;border-radius:50%}
+#mood-slider::-moz-range-thumb{width:32px;height:32px;background:transparent;border:none;cursor:pointer;border-radius:50%}
 .tr-momentum{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
 .tr-momentum.up{color:var(--green)}.tr-momentum.down{color:var(--red)}.tr-momentum.flat{color:var(--text3)}
 .tr-table tr:hover td{background:var(--surface)}
@@ -687,7 +689,7 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .nxm-reason{font-size:11px;color:var(--red);font-weight:600}
 
 /* ── Responsive form layout ── */
-.form-left-col{display:flex;flex-direction:column;gap:3px;flex-shrink:0;width:170px}
+.form-left-col{padding:5px 5px 3px 5px;display:flex;flex-direction:column;gap:3px;flex-shrink:0;width:170px}
 .form-left-col .field input{width:100%;box-sizing:border-box}
 .notes-wrap textarea{min-height:165px;resize:vertical}
 @media(max-width:700px){
@@ -830,7 +832,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 </head>
 <body>
 <div class="header">
-  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.24</span></div></div>
+  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.27.1</span></div></div>
   <div class="header-right">
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
@@ -874,7 +876,7 @@ Goals shown for your type+cap level">…</div>
       <!-- Sales ID -->
       <div style="display:flex;align-items:center;gap:8px;padding:10px 0 12px;border-bottom:1px solid var(--border);margin-bottom:4px">
         <label style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap">Sales ID</label>
-        <input id="s-sales-id" type="text" placeholder="e.g. 61294" maxlength="10"
+        <input id="s-sales-id" type="text" placeholder="e.g. 6XXXX" maxlength="10"
           style="width:110px;height:30px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none"
           onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'"
           onchange="saveSalesId(this.value.trim().toUpperCase())" data-tip="Your Sales Sales ID — tagged on all logged calls">
@@ -1431,7 +1433,26 @@ Goals shown for your type+cap level">…</div>
 </div>
 <div class="main">
   <div class="form-card" id="new-call-form-card" oninput="updateClearVisibility()">
-    <div class="form-header"><div class="form-header-title" onclick="callStartTimer()" title="Press when call connects" style="cursor:pointer;user-select:none">Log New Call</div><div style="display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%)"><button id="call-start-btn" onclick="callStartTimer()" title="Press when call connects" class="call-start-grow" style="width:30px;height:30px;background:none;border:none;border-radius:50%;font-size:18px;color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">▶</button><span id="call-timer" style="display:none"></span></div><div style="position:relative"><button id="form-clear-btn" onclick="handleClear()" title="Clear form" class="form-clear-grow" style="width:22px;height:22px;background:none;border:none;border-radius:50%;font-size:12px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;visibility:hidden">✕</button><div id="clear-popover" style="display:none;position:absolute;right:0;top:32px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:999;min-width:160px;flex-direction:column;gap:6px"><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:0 4px 4px;border-bottom:1px solid var(--border2);margin-bottom:2px">Clear what?</div><button onclick="clearTimerOnly()" id="clear-timer-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='none'">⏱ Reset Timer</button><button onclick="clearFormOnly()" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">🗑 Clear Form</button><button onclick="clearBoth()" id="clear-both-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">⏱🗑 Clear Both</button></div></div></div>
+    <div class="form-header">
+      <div class="form-header-title" onclick="callStartTimer()" title="Press when call connects" style="cursor:pointer;user-select:none;flex-shrink:0">Log New Call</div>
+      <!-- Mood slider with emoji thumb -->
+      <div id="mood-slider-wrap" style="position:absolute;left:150px;width:280px;height:30px;top:50%;transform:translateY(-50%)">
+        <input type="range" id="mood-slider" min="0" max="9" value="5" step="1"
+          oninput="updateMoodEmoji(this.value)"
+          style="width:100%;height:4px;cursor:pointer;appearance:none;-webkit-appearance:none;background:var(--border2);border-radius:2px;outline:none;position:absolute;top:50%;margin-top:-2px;z-index:1"
+          title="Neutral">
+        <div id="mood-thumb-emoji" style="position:absolute;font-size:18px;line-height:1;pointer-events:none;transform:translateX(-50%);left:50%;top:50%;margin-top:-9px;z-index:2" title="Neutral">😐</div>
+      </div>
+      <!-- Play button + timer + clear -->
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto">
+        <button id="call-start-btn" onclick="callStartTimer()" title="Press when call connects" class="call-start-grow" style="width:30px;height:30px;background:none;border:none;border-radius:50%;font-size:18px;color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:absolute;right:75px;top:50%;transform:translateY(-50%)">▶</button>
+        <span id="call-timer" style="display:none"></span>
+        <div style="position:relative">
+          <button id="form-clear-btn" onclick="handleClear()" title="Clear form" class="form-clear-grow" style="width:22px;height:22px;background:none;border:none;border-radius:50%;font-size:12px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;visibility:hidden">✕</button>
+          <div id="clear-popover" style="display:none;position:absolute;right:0;top:32px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:999;min-width:160px;flex-direction:column;gap:6px"><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:0 4px 4px;border-bottom:1px solid var(--border2);margin-bottom:2px">Clear what?</div><button onclick="clearTimerOnly()" id="clear-timer-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='none'">⏱ Reset Timer</button><button onclick="clearFormOnly()" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">🗑 Clear Form</button><button onclick="clearBoth()" id="clear-both-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">⏱🗑 Clear Both</button></div>
+        </div>
+      </div>
+    </div>
     <div class="form-body">
       <!-- ── Row 1: XM · IE/BULK · TV/CHSI/CDV/XH │ No Sale / Play ── -->
       <div class="form-row-center">
@@ -1479,12 +1500,12 @@ $45 revenue credit per activation">
             </div>
           </div>
           <!-- Right: No Sale / Play name / No XM Sale -->
-          <div id="outcome-field-wrap" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:52px;gap:4px">
+          <div id="outcome-field-wrap" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:52px;gap:4px;padding-right:5px;position:relative">
             <!-- Single no-sale button, width fixed to fit longest label -->
             <div class="ns-toggle" id="ns-toggle" data-tip="Log a no-sale reason
-Click to select category + sub-reason" onclick="event.stopPropagation();toggleNoSale(this)" style="width:120px;height:48px;justify-content:center;display:flex;align-self:flex-end">✘ No Sale</div>
+Click to select category + sub-reason" onclick="event.stopPropagation();toggleNoSale(this)" style="width:120px;height:48px;justify-content:center;display:flex;align-self:center"><span style="color:var(--red)">✘ No Sale</span></div>
             <!-- XM celebration — shown when XM sold -->
-            <div id="xm-celebration" style="display:none;font-size:20px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-align:center;white-space:normal;max-width:100%;line-height:1.3;align-self:flex-end;padding-bottom:4px"></div>
+            <div id="xm-celebration" style="display:none;font-size:20px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-align:center;white-space:normal;max-width:100%;line-height:1.3;align-self:center;padding-bottom:4px"></div>
           </div>
         </div>
       </div>
@@ -1519,7 +1540,7 @@ Click to select category + sub-reason" onclick="event.stopPropagation();toggleNo
           <!-- Divider extending from row 1 -->
           <div class="v-div" style="align-self:stretch"></div>
           <!-- Right: sale display / pill space + actions -->
-          <div class="frow-notes-actions" style="display:flex;flex-direction:column;align-self:stretch;gap:6px;flex:1;min-width:0;overflow:hidden">
+          <div class="frow-notes-actions" style="display:flex;flex-direction:column;align-self:stretch;gap:6px;flex:1;min-width:0;overflow:hidden;padding-bottom:3px">
             <!-- Sale/outcome display area -->
             <div id="sale-display" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:60px;text-align:center;overflow:hidden">
               <!-- Sale: big play name -->
@@ -1551,6 +1572,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
       </div>
       <!-- ── CB row: expands when 📞 toggled ── -->
 
+    </div><!-- end form-body -->
     </div>
   </div>
   <div class="table-card">
@@ -1564,7 +1586,8 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
     </table>
   </div>
 </div><!-- end .main -->
-</div><!-- end panel-tracker -->
+
+
 
 <!-- ══ TAB: TRENDS ══ -->
 <div class="tab-panel" id="panel-trends">
@@ -2270,7 +2293,7 @@ function updatePlay(){
     if(xmCeleb) xmCeleb.style.display = 'none';
     if(noSaleBtn){
       noSaleBtn.style.display = 'flex';
-      noSaleBtn.textContent = hasNonXm ? '✘ No XM Sale' : '✘ No Sale';
+      noSaleBtn.innerHTML = hasNonXm ? '<span style="color:var(--red)">✘ No XM Sale</span>' : '<span style="color:var(--red)">✘ No Sale</span>';
     }
   }
 
@@ -2357,6 +2380,68 @@ function toggleCb(){
   updateNotesState();
 }
 function updateNotesState(){const b=document.getElementById('notes-badge'),ta=document.getElementById('f-notes');if(cbOpen){b.className='req-badge-p';b.textContent='required';ta.classList.add('cb-req-ta');ta.placeholder='Why is a call back needed?';}else{b.className='opt-badge';b.textContent='optional';ta.classList.remove('cb-req-ta');ta.placeholder='Optional…';}}
+const MOOD_EMOJIS = ['🚩','🤬','😠','😕','🤔','😐','🙂','😊','😄','🤩'];
+const MOOD_NAMES  = ['Fraud Flag','Profanity','Angry','Confused','Uncertain','Neutral','Friendly','Happy','Excited','Thrilled'];
+var _moodSliderW = 0;
+function _moodPos(val){
+  const sl = document.getElementById('mood-slider');
+  const el = document.getElementById('mood-thumb-emoji');
+  if(!sl||!el) return;
+  if(!_moodSliderW) _moodSliderW = sl.offsetWidth;
+  const pct = (+val)/9;
+  const tw = 14;
+  const w = _moodSliderW||200;
+  el.style.left = (tw + pct*(w - tw*2)) + 'px';
+  el.textContent = MOOD_EMOJIS[+val];
+  sl.title = MOOD_NAMES[+val] || '';
+}
+function updateMoodEmoji(val){ _moodPos(val); updateClearVisibility(); }
+function getMood(){
+  const sl = document.getElementById('mood-slider');
+  return sl ? MOOD_EMOJIS[+sl.value] : MOOD_EMOJIS[5];
+}
+function resetMood(){
+  const sl = document.getElementById('mood-slider');
+  if(sl){ sl.value = 5; _moodPos(5); }
+}
+function setMood(emoji){
+  const idx = MOOD_EMOJIS.indexOf(emoji);
+  const sl = document.getElementById('mood-slider');
+  if(sl){ sl.value = idx >= 0 ? idx : 5; _moodPos(sl.value); }
+}
+function moodSliderFocus(){
+  const sl = document.getElementById('mood-slider');
+  if(sl) sl.focus();
+}
+function initMoodSlider(){
+  _moodSliderW = 0;
+  _moodPos(document.getElementById('mood-slider')?.value||5);
+}
+
+var _moodEditW = 0;
+function _moodEditPos(val){
+  const sl = document.getElementById('mood-slider-edit');
+  const el = document.getElementById('mood-thumb-emoji-edit');
+  if(!sl||!el) return;
+  if(!_moodEditW) _moodEditW = sl.offsetWidth;
+  const pct = (+val)/9;
+  const tw = 14;
+  const w = _moodEditW||200;
+  el.style.left = (tw + pct*(w - tw*2)) + 'px';
+  el.textContent = MOOD_EMOJIS[+val];
+  sl.title = MOOD_NAMES[+val] || '';
+}
+function updateMoodEmojiEdit(val){ _moodEditPos(val); }
+function getMoodEdit(){
+  const sl = document.getElementById('mood-slider-edit');
+  return sl ? MOOD_EMOJIS[+sl.value] : MOOD_EMOJIS[5];
+}
+function setMoodEdit(emoji){
+  const idx = MOOD_EMOJIS.indexOf(emoji);
+  const sl = document.getElementById('mood-slider-edit');
+  if(sl){ sl.value = idx >= 0 ? idx : 5; _moodEditW = 0; setTimeout(function(){ _moodEditPos(sl.value); }, 50); }
+}
+
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
 function compute(c){
   if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:c.sched||'',activated:false}));
@@ -2370,7 +2455,9 @@ function compute(c){
   // Play name: XM counts as 1 service regardless of line count
   const s=[];if(c.xm>0)s.push('XM');if(c.tv)s.push('TV');if(c.chsi)s.push('CHSI');if(c.cdv)s.push('CDV');if(c.xh)s.push('XH');
   c.playName=s.length?PLAY_NAMES[Math.min(s.length,5)]:'';
-  c.callOutcome=c.hasSale?(c.noXmReason?c.playName+' · No XM: '+c.noXmReason:c.playName):(c.reason||'');
+  // Revenue-only with no-sale reason: hasSale=true (rev>0) but no LOB products and has a reason
+  const isRevOnly = c.hasSale && c.rev>0 && !c.rgus && c.reason;
+  c.callOutcome=isRevOnly?('Revenue Only · '+c.reason):c.hasSale?(c.noXmReason?c.playName+' · No XM: '+c.noXmReason:c.playName):(c.reason||'');
   return c;}
 function flash(id,rb=''){const el=document.getElementById(id);if(!el)return;el.style.borderColor='var(--red)';el.style.boxShadow='0 0 0 3px rgba(248,113,113,.2)';el.focus();setTimeout(()=>{el.style.borderColor=rb;el.style.boxShadow='';},2500);}
 function isBlankCall(){
@@ -2426,7 +2513,7 @@ function doLogCall(){
   const cbTime=(document.getElementById('f-cb-dt')&&document.getElementById('f-cb-dt').value)||'';
   const raw=document.getElementById('f-acct').value.trim();
   const c=compute({id:Date.now(),ts:_callStartTime || new Date(),acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
-    noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim()});
+    noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim(),mood:getMood()});
   calls.unshift(c);render();updateStats();checkAlerts();upsertCallToSheets(c);
   var _wasSale=isSale(); var _wasXm=xmVal>0;
   const _fk = 'xcl_goals_' + getFiscalMonth().replace(' ','');
@@ -2459,6 +2546,7 @@ function resetForm(){
   const ilbl=document.getElementById('ie-lbl');if(ilbl)ilbl.style.color='var(--text3)';
   // No sale
   _nsClose();
+  resetMood();
   const nsd=document.getElementById('nosale-display');if(nsd)nsd.style.display='none';
   // Play/CB display
   const pd=document.getElementById('play-display');if(pd)pd.style.display='none';
@@ -2491,6 +2579,14 @@ function openEdit(id, fromAlert){
   if(!c) return;
   editingId = id;
   window._editFromAlert = !!fromAlert;
+  // Grey out Log Call button during edit
+  const submitBtn = document.getElementById('submit-btn');
+  if(submitBtn){
+    submitBtn.style.opacity = '0.4';
+    submitBtn.style.filter = 'grayscale(1)';
+    submitBtn.style.cursor = 'not-allowed';
+    submitBtn.onclick = function(){ _showToast('✏️ You\'re editing a call — use Save Changes','info',2500); };
+  }
 
   // Deep-copy for cancel restoration
   _editSnapshot = JSON.parse(JSON.stringify(Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts})));
@@ -2648,7 +2744,8 @@ function _populateFormFromCall(c){
 
   // No-sale state — parse stored reason back into _nsCat/_nsSub
   _nsClose();
-  if(!c.hasSale && c.reason && c.reason !== 'NO SALE MADE'){
+  const _isRevOnly = c.hasSale && c.rev>0 && !c.rgus && c.reason;
+  if((_isRevOnly || !c.hasSale) && c.reason && c.reason !== 'NO SALE MADE'){
     const parts = c.reason.split(' > ');
     _nsCat = parts[0] || '';
     _nsSub = parts[1] || '';
@@ -2660,6 +2757,14 @@ function _populateFormFromCall(c){
     const nsToggle = document.getElementById('ns-toggle');
     if(nsToggle) nsToggle.classList.add('active');
   }
+  colorReason();
+  colorReason();
+  _nsPanelOpen = false;
+  updateNosaleDisplay();
+
+  // Mood
+  setMood(c.mood || MOOD_EMOJIS[4]);
+  setMoodEdit(c.mood || MOOD_EMOJIS[4]);
 
   // Follow-up display
   cbOpen = !!(c.cbTime || c.fuType);
@@ -2689,6 +2794,14 @@ function closeEdit(){
   _editMarkCbDone = false;
   window._editCall = null;
   window._editFromAlert = false;
+  // Restore Log Call button
+  const submitBtn = document.getElementById('submit-btn');
+  if(submitBtn){
+    submitBtn.style.opacity = '';
+    submitBtn.style.filter = '';
+    submitBtn.style.cursor = '';
+    submitBtn.onclick = logCall;
+  }
   var xmWrap = document.getElementById('edit-xm-lines');
   if(xmWrap){ xmWrap.style.display='none'; xmWrap.innerHTML=''; }
 
@@ -2717,8 +2830,9 @@ function saveEdit(){
   const baseRev  = getRevVal();
   const sched    = document.getElementById('f-sched').value;
   const notes    = document.getElementById('f-notes').value.trim();
-  const reason   = (_nsState !== 'closed' && !isSale()) ? getNoSaleReason() : '';
-  const noXmReason = (_nsState !== 'closed' && isSale() && xmVal === 0) ? getNoSaleReason() : '';
+  const isRevOnly = xmVal===0 && !prods.tv && !prods.chsi && !prods.cdv && !prods.xh && baseRev>0;
+  const reason   = (_nsState !== 'closed' && (!isSale() || isRevOnly)) ? getNoSaleReason() : '';
+  const noXmReason = (_nsState !== 'closed' && isSale() && !isRevOnly && xmVal === 0) ? getNoSaleReason() : '';
 
   c.acctRaw   = raw;
   c.sched     = sched;
@@ -2734,6 +2848,7 @@ function saveEdit(){
   c.reason    = reason;
   c.noXmReason= noXmReason;
   c.notes     = notes;
+  c.mood      = editingId ? getMoodEdit() : getMood();
   c.cbTime    = cbTime;
   c.fuType    = fuType;
   c.cbDone    = c.cbDone || false;
@@ -2884,9 +2999,13 @@ function renderReadRow(c){
 
   // Build separate pills for each element
   let outcomePills = '';
-  if(c.hasSale){
+  const isRevOnly = c.hasSale && c.rev>0 && !c.rgus;
+  if(isRevOnly){
+    outcomePills += `<span class="pill p-sale">Revenue Only</span> `;
+    if(c.reason) outcomePills += `<span class="pill p-other">${c.reason}</span> `;
+  } else if(c.hasSale){
     const lobs = [];
-    if(c.xm > 0) lobs.push(c.xm > 1 ? `XM(${c.xm})` : 'XM');
+    if(c.xm > 0) lobs.push(`<span style="color:#4169e1;font-weight:800">${c.xm > 1 ? `XM(${c.xm})` : 'XM'}</span>`);
     if(c.tv)  lobs.push('TV');
     if(c.chsi) lobs.push(c.ie?'IE':'CHSI');
     if(c.cdv) lobs.push('CDV');
@@ -2921,7 +3040,7 @@ function renderReadRow(c){
 
   const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'||(c.fuType&&!c.cbDone)?' has-callback':'');
   const acctTip = [c.cbName, c.cbPhone ? fmtPhone(c.cbPhone) : ''].filter(Boolean).join(' · ');
-  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td>${rev}</td><td>${rgu}</td><td style="max-width:0;width:40%"><div class="pill-scroll" onmouseenter="pillScrollStart(this)" onmouseleave="pillScrollStop(this)">${outcomePills}</div></td></tr>`;
+  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td>${rev}</td><td>${rgu}</td><td style="max-width:0;width:40%"><div class="pill-scroll" onmouseenter="pillScrollStart(this)" onmouseleave="pillScrollStop(this)">${c.mood&&c.mood!==MOOD_EMOJIS[4]?`<span style="font-size:13px;margin-right:3px" title="Caller mood: ${c.mood}">${c.mood}</span>`:''}${outcomePills}</div></td></tr>`;
 }
 /* ── Log filter ── */
 function buildFilterOptions(){
@@ -3782,6 +3901,7 @@ function saveSettings(){
   updateStats();
   cbInitTimePicker();
   cbSetAmPm('AM');
+  setTimeout(initMoodSlider, 100);
   buildCalendar && updatePace && updatePace();
   const btn=document.querySelector('.settings-save');
   btn.textContent='✓ Saved!';btn.classList.add('saved');
@@ -3861,7 +3981,8 @@ function callStartTimer(){
 function updateClearVisibility(){
   const btn = document.getElementById('form-clear-btn');
   if(!btn) return;
-  const show = _callStartTime !== null || !isBlankCall();
+  const moodChanged = getMood() !== MOOD_EMOJIS[5];
+  const show = _callStartTime !== null || !isBlankCall() || moodChanged;
   btn.style.visibility = show ? 'visible' : 'hidden';
 }
 function handleClear(){
@@ -3910,7 +4031,7 @@ function clearFormOnly(){
   _bulkActive=false; const bk=document.getElementById('chk-bulk');if(bk)bk.classList.remove('bulk-active');
   const blbl=document.getElementById('bulk-lbl');if(blbl)blbl.style.color='var(--text3)';
   const ilbl=document.getElementById('ie-lbl');if(ilbl)ilbl.style.color='var(--text3)';
-  _nsClose(); cbOpen=false;
+  _nsClose(); cbOpen=false; resetMood();
   const cbt=document.getElementById('cb-toggle');if(cbt)cbt.classList.remove('active');
   const cbp=document.getElementById('cb-panel');if(cbp)cbp.style.display='none';
   updateNotesState(); updatePlay(); nsAutoSelect(); syncIEVisibility();
@@ -4986,7 +5107,8 @@ function renderTrends(){
     '<option value="all">All Time</option><option value="fiscal">This Fiscal Month</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="this-week">This Week</option>'+
     '</select><span style="font-size:10px;color:var(--text3)" id="nxm-count"></span></div>'+
     '<div id="nxm-tbody" style="display:flex;flex-direction:column;gap:4px"></div></div>'
-    :'');
+    :'')+
+    '<div class="tr-panel" style="padding:16px;margin-top:16px"><div class="tr-kpi-label" style="margin-bottom:10px">😐 Caller Mood Distribution ('+mc.filter(function(c){return c.mood;}).length+' logged)</div><div id="tr-mood-panel"></div></div>';
 
     setTimeout(function(){
       var dCtx=document.getElementById('tr-donut');
@@ -5000,6 +5122,31 @@ function renderTrends(){
         onHover:function(e,els){dCtx.style.cursor=els.length?'pointer':'default';var c=document.getElementById('tr-donut-center');if(!c)return;if(els.length){var i=els[0].index;var lbs=['No Sales','Sales','XM Sales'];var vs=[noSales.length,nonXmSales.length,xmSales.length];var cs=['var(--red)','var(--green)','var(--teal)'];c.innerHTML='<div style="font-family:var(--mono);font-size:22px;font-weight:700;color:'+cs[i]+';line-height:1">'+vs[i]+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">'+lbs[i]+'</div>';}else{c.innerHTML='<div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);line-height:1">'+totalCalls+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Total Calls</div>';}}}});
       }
       if(nxmCalls.length) setTimeout(renderNxmTable, 60);
+
+      // Mood distribution
+      var moodCounts={};
+      MOOD_EMOJIS.forEach(function(e){moodCounts[e]=0;});
+      mc.forEach(function(c){if(c.mood&&moodCounts[c.mood]!==undefined)moodCounts[c.mood]++;});
+      var moodWithData=MOOD_EMOJIS.filter(function(e){return moodCounts[e]>0;});
+      if(moodWithData.length>0){
+        var moodPanel=document.getElementById('tr-mood-panel');
+        if(moodPanel){
+          var moodHtml='<div style="display:flex;align-items:flex-end;gap:6px;height:80px;padding-bottom:20px;position:relative">';
+          var maxMood=Math.max.apply(null,MOOD_EMOJIS.map(function(e){return moodCounts[e];}));
+          MOOD_EMOJIS.forEach(function(e){
+            var cnt=moodCounts[e];
+            var h=maxMood?Math.max(4,Math.round(cnt/maxMood*60)):4;
+            var colors={'🚩':'#8b0000','🤬':'var(--red)','😠':'var(--red)','😕':'var(--amber)','🤔':'var(--amber)','😐':'var(--text3)','🙂':'var(--green)','😊':'var(--green)','😄':'var(--green)','🤩':'var(--green)'};
+            moodHtml+='<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px">';
+            moodHtml+='<div style="font-size:9px;font-family:var(--mono);color:var(--text3)">'+cnt+'</div>';
+            moodHtml+='<div style="width:100%;height:'+h+'px;background:'+colors[e]+';border-radius:3px 3px 0 0;opacity:.75;transition:height .4s" title="'+e+': '+cnt+'"></div>';
+            moodHtml+='<div style="font-size:16px;margin-top:2px">'+e+'</div>';
+            moodHtml+='</div>';
+          });
+          moodHtml+='</div>';
+          moodPanel.innerHTML=moodHtml;
+        }
+      }
     },50);
 
   } else if(_trSubtab==='trends'){
@@ -8658,11 +8805,20 @@ function launchFireworks(isXm,isTest){
 
 <div id="edit-overlay" onclick="closeEdit()"></div>
 <div id="edit-panel">
-  <div class="edit-panel-header">
+  <div class="edit-panel-header" style="position:relative">
     <div class="edit-panel-title">
       ✎ Edit Call
-      <span class="edit-panel-meta" id="edit-panel-meta"></span>
     </div>
+    <!-- Mood slider — same format as new call log -->
+    <div id="mood-slider-edit-wrap" style="position:absolute;left:150px;width:280px;height:30px;top:50%;transform:translateY(-50%)">
+      <input type="range" id="mood-slider-edit" min="0" max="9" value="5" step="1"
+        oninput="updateMoodEmojiEdit(this.value)"
+        style="width:100%;height:4px;cursor:pointer;appearance:none;-webkit-appearance:none;background:var(--border2);border-radius:2px;outline:none;position:absolute;top:50%;margin-top:-2px;z-index:1"
+        title="Neutral">
+      <div id="mood-thumb-emoji-edit" style="position:absolute;font-size:18px;line-height:1;pointer-events:none;transform:translateX(-50%);left:50%;top:50%;margin-top:-9px;z-index:2" title="Neutral">😐</div>
+    </div>
+    <!-- Date pill right-aligned -->
+    <span id="edit-panel-meta" style="display:inline-flex;align-items:center;gap:5px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);border-radius:20px;padding:3px 10px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--teal);white-space:nowrap;margin-left:auto;margin-right:8px"></span>
     <button class="edit-panel-close" onclick="closeEdit()" title="Cancel (Esc)">✕</button>
   </div>
   <div class="edit-panel-body" id="edit-panel-body">
