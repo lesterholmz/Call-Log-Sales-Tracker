@@ -42,7 +42,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .filter-tab-btn{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;border-radius:5px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:var(--mono);transition:all .15s}
 .filter-tab-btn:hover{color:var(--text);border-color:var(--blue)}
 .filter-tab-btn.active{background:var(--surface);color:var(--text);border-color:var(--blue)}
-.clock{font-family:var(--mono);font-size:12px;color:var(--text3)}
+.clock{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text3)}
 .version-chip{font-size:10px;font-weight:600;letter-spacing:0.06em;font-family:var(--mono);color:var(--text3);opacity:.6}
 .month-chip{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);background:var(--amber-lt);border:1px solid rgba(245,158,11,0.25);padding:4px 12px;border-radius:20px}
 #alert-bar{display:none;position:sticky;top:52px;z-index:190;background:rgba(45,31,5,0.75);backdrop-filter:blur(6px);border-bottom:1px solid rgba(245,158,11,0.4)}
@@ -790,12 +790,65 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 }
 [data-tip]::before{display:none}
 body.tips-on [data-tip]:hover::after{opacity:1}
+/* Schedule countdown tooltip — faster + larger */
+#sched-toolbar-cd[data-tip]::after{
+  font-size:13px;font-weight:600;padding:8px 14px;
+  transition:opacity .05s;min-width:160px;
+}
 
 .role-btn{height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-family:var(--sans);font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap}
 .role-btn:hover{border-color:var(--blue);color:var(--blue)}
 .role-btn.active{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
 
 
+#sched-panel{position:fixed;z-index:9999;display:none;flex-direction:column;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:0;box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
+  width:340px;max-height:calc(100vh - 80px);overflow:hidden}
+#sched-panel .sched-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+#sched-panel .sched-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+#sched-panel .sched-body{overflow-y:auto;flex:1;padding:12px 16px}
+#sched-countdown{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:6px 10px;margin-bottom:10px}
+#sched-countdown .scd-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+#sched-countdown .scd-val{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);margin-left:auto}
+.sched-day-tab{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.sched-day-btn{flex:1;min-width:36px;height:28px;border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:var(--surface);color:var(--text3);transition:all .15s}
+.sched-day-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.sched-day-btn.today{border-color:var(--green);color:var(--green)}
+.sched-day-btn.today.active{background:var(--green);border-color:var(--green);color:#fff}
+.sched-shift-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sched-shift-row label{font-size:10px;font-weight:600;color:var(--text3);min-width:36px}
+.sched-shift-row input[type=time]{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;width:90px}
+.sched-break-row{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;margin-bottom:6px}
+.sched-break-emoji{font-size:14px;flex-shrink:0}
+.sched-break-label{font-size:10px;font-weight:600;color:var(--text);flex:1}
+.sched-break-time{font-family:var(--mono);font-size:11px;color:var(--text3);background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:2px 6px;width:76px}
+.sched-dur-sel{font-size:10px;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:2px 4px;color:var(--text2);cursor:pointer}
+.sched-break-del{width:18px;height:18px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;flex-shrink:0;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.sched-break-del:hover{color:var(--red);background:rgba(248,113,113,.1)}
+.sched-add-btn{width:100%;padding:6px;background:none;border:1px dashed var(--border2);border-radius:8px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer;margin-bottom:8px;transition:all .15s}
+.sched-add-btn:hover{border-color:var(--blue);color:var(--blue)}
+.sched-reminder-row{display:flex;align-items:center;gap:8px;padding-top:8px;border-top:1px solid var(--border)}
+.sched-save-btn{width:100%;margin-top:10px;padding:8px;background:var(--blue);border:none;border-radius:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer}
+.sched-toolbar-countdown{font-size:9px;font-weight:700;color:var(--amber);font-family:var(--mono);white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis}
+/* ── Calendar Applet ── */
+#cal-applet{position:fixed;z-index:9999;display:none;flex-direction:column;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:0;box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
+  width:280px;overflow:hidden}
+#cal-applet .cal-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
+#cal-applet .cal-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+#cal-applet .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:10px 12px}
+#cal-applet .cal-dow{font-size:9px;font-weight:700;text-align:center;color:var(--text3);padding:2px 0;letter-spacing:.05em}
+#cal-applet .cal-day{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:var(--mono);font-weight:600;cursor:default;position:relative}
+#cal-applet .cal-day.worked{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+#cal-applet .cal-day.no-calls{background:var(--surface);color:var(--text3);border:1px solid var(--border2)}
+#cal-applet .cal-day.outside{opacity:.2;color:var(--text3)}
+#cal-applet .cal-day.today{border:2px solid var(--blue);color:var(--blue)}
+#cal-applet .cal-day.future{opacity:.35;color:var(--text3)}
+#cal-applet .cal-legend{display:flex;gap:10px;padding:8px 12px;border-top:1px solid var(--border);justify-content:center}
+#cal-applet .cal-legend-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text3)}
+#cal-applet .cal-legend-dot{width:8px;height:8px;border-radius:3px}
 #calc-panel{position:fixed;z-index:9999;display:none;flex-direction:column;
   background:var(--card);border:1px solid var(--border);border-radius:14px;
   padding:14px 16px 12px;box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04);
@@ -832,26 +885,34 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 </head>
 <body>
 <div class="header">
-  <div class="brand"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.27.1</span></div></div>
-  <div class="header-right">
+  <div class="brand" style="flex:1"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.27.1</span></div></div>
+  <!-- Center: clock · type/cap pill · fiscal month chip — truly centered -->
+  <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;pointer-events:auto;white-space:nowrap">
     <div class="clock" id="clock">--:-- --</div>
     <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
-    <div class="month-chip" id="month-chip-label" data-tip="Current fiscal month
-(resets on the 22nd)
-Goals shown for your type+cap level">…</div>
+    <div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer" data-tip="Click to open fiscal calendar">…</div>
+  </div>
+  <!-- Right: countdown + settings -->
+  <div class="header-right" style="flex:1;justify-content:flex-end;gap:20px">
     <button id="pwa-install-btn" onclick="pwaInstall()" data-tip="Install App" style="display:none;align-items:center;gap:3px;height:24px;padding:0 8px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">&#x2B07; Install</button>
-    <button class="gear-btn" onclick="toggleCalc()" data-tip="Calculator">&#x1F9EE;</button>
+    <div style="position:relative">
+      <div onclick="toggleSchedPopover()" style="cursor:pointer;min-width:70px;text-align:right">
+        <span id="sched-toolbar-cd" style="font-size:14px;font-weight:700;color:var(--amber);font-family:var(--mono);white-space:nowrap;position:relative"></span>
+      </div>
+      <div id="sched-events-popover" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:9999;min-width:220px;flex-direction:column;gap:4px"></div>
+    </div>
     <button class="gear-btn" onclick="toggleSettings()" data-tip="Settings">⚙️</button>
   </div>
 </div>
 <!-- Tab bar -->
-<div class="tab-bar">
+<div class="tab-bar" style="display:flex;align-items:center">
   <button class="tab-btn active" id="tab-tracker" onclick="switchTab('tracker')">📞 Tracker</button>
   <button class="tab-btn" id="tab-trends" onclick="switchTab('trends')">📊 Stats</button>
   <button class="tab-btn" id="tab-reports" onclick="switchTab('reports')">📋 Reports</button>
   <button class="tab-btn" id="tab-jobaid" onclick="switchTab('jobaid')">📖 Job Aids</button>
   <button class="tab-btn" id="tab-callbacks" onclick="switchTab('callbacks')">🔔 Follow-Ups</button>
   <button class="tab-btn" id="tab-disputes" onclick="switchTab('disputes')">⚖ Disputes</button>
+  <button class="gear-btn" onclick="toggleCalc()" data-tip="Calculator" style="margin-left:auto;flex-shrink:0">&#x1F9EE;</button>
 </div>
 <!-- Settings Panel -->
 <div id="settings-overlay" onclick="toggleSettings()" style="display:none;position:absolute;inset:0;z-index:299;background:rgba(0,0,0,.25);backdrop-filter:blur(1px)"></div>
@@ -2414,8 +2475,10 @@ function moodSliderFocus(){
   if(sl) sl.focus();
 }
 function initMoodSlider(){
-  _moodSliderW = 0;
-  _moodPos(document.getElementById('mood-slider')?.value||5);
+  // Always re-measure on explicit init, but only if slider is visible
+  const sl = document.getElementById('mood-slider');
+  if(sl && sl.offsetWidth > 0) _moodSliderW = sl.offsetWidth;
+  _moodPos(sl ? sl.value : 5);
 }
 
 var _moodEditW = 0;
@@ -2546,7 +2609,7 @@ function resetForm(){
   const ilbl=document.getElementById('ie-lbl');if(ilbl)ilbl.style.color='var(--text3)';
   // No sale
   _nsClose();
-  resetMood();
+  setTimeout(resetMood, 50);
   const nsd=document.getElementById('nosale-display');if(nsd)nsd.style.display='none';
   // Play/CB display
   const pd=document.getElementById('play-display');if(pd)pd.style.display='none';
@@ -4031,7 +4094,7 @@ function clearFormOnly(){
   _bulkActive=false; const bk=document.getElementById('chk-bulk');if(bk)bk.classList.remove('bulk-active');
   const blbl=document.getElementById('bulk-lbl');if(blbl)blbl.style.color='var(--text3)';
   const ilbl=document.getElementById('ie-lbl');if(ilbl)ilbl.style.color='var(--text3)';
-  _nsClose(); cbOpen=false; resetMood();
+  _nsClose(); cbOpen=false; setTimeout(resetMood, 50);
   const cbt=document.getElementById('cb-toggle');if(cbt)cbt.classList.remove('active');
   const cbp=document.getElementById('cb-panel');if(cbp)cbp.style.display='none';
   updateNotesState(); updatePlay(); nsAutoSelect(); syncIEVisibility();
@@ -4410,7 +4473,7 @@ function normalizeCall(sc){
   // Backfill fuType — legacy calls with a cbTime are Callbacks
   if(!sc.fuType && sc.cbTime) sc.fuType = 'Callback';
   // Normalize cbDone — Sheets may return string 'true'/'false'
-  if(typeof sc.cbDone === 'string') sc.cbDone = sc.cbDone === 'true';
+  if(!sc.mood) sc.mood = MOOD_EMOJIS[5]; // default neutral for legacy calls
   // Normalize sched to YYYY-MM-DD — Sheets may return M/D/YYYY or other formats
   if(sc.sched && typeof sc.sched === 'string' && sc.sched.trim()){
     const raw = sc.sched.trim();
@@ -7159,7 +7222,16 @@ function setTooltips(on){
     if(_tipEl === el) return;
     _tipEl = el;
     clearTimeout(_tipTimer);
-    _tipTimer = setTimeout(function(){ showTip(el, txt); }, 4000);
+    // Schedule countdown gets instant large tooltip
+    var isSched = el.id === 'sched-toolbar-cd';
+    _tipTimer = setTimeout(function(){
+      showTip(el, txt);
+      if(isSched && _tip){
+        _tip.style.fontSize = '13px';
+        _tip.style.fontWeight = '600';
+        _tip.style.padding = '8px 14px';
+      }
+    }, isSched ? 100 : 4000);
   });
 
   document.addEventListener('mouseout', function(e){
@@ -7167,7 +7239,12 @@ function setTooltips(on){
     if(el && !el.contains(e.relatedTarget)){
       clearTimeout(_tipTimer);
       _tipEl = null;
-      if(_tip) _tip.style.opacity = '0';
+      if(_tip){
+        _tip.style.opacity = '0';
+        _tip.style.fontSize = '11px';
+        _tip.style.fontWeight = '400';
+        _tip.style.padding = '6px 10px';
+      }
     }
   });
 
@@ -7572,6 +7649,7 @@ function deleteUser(agentId){
     applySettings(loadSettings());
     updateRoleBtns(); // sync cap dropdown + ACQ/MOV buttons
     updateRoleChip();
+    schedStartTicker(); // start schedule countdown after session established
     // Set callback timezone dropdown to user's local timezone
     (function(){ const cbtz=document.getElementById('cb-tz'); if(!cbtz) return; const localTz=Intl.DateTimeFormat().resolvedOptions().timeZone; const opt=Array.from(cbtz.options).find(o=>o.value===localTz); if(opt) cbtz.value=opt.value; })();
     applySessionUI();
@@ -7769,8 +7847,15 @@ function saveSalesId(val){
               var ptob = typeof personal.ptoHistory==='string' ? JSON.parse(personal.ptoHistory) : personal.ptoHistory;
               Object.entries(ptob).forEach(function(kv){ if(kv[0].startsWith('xcl_pto_')) localStorage.setItem(kv[0],kv[1]); });
             }
+            // Restore schedule
+            if(personal.schedule){
+              var schedStr = typeof personal.schedule==='string' ? personal.schedule : JSON.stringify(personal.schedule);
+              var schedAgentId = (_session && _session.agentId) || val;
+              localStorage.setItem('xcl_schedule_' + schedAgentId, schedStr);
+            }
             applySettings(loadSettings()); // apply everything at once
             reloadGoalsForRole();
+            schedStartTicker(); // restart ticker with agent schedule
           }catch(e){}
         }
         _showToast('\u2713 Settings restored for ' + val, 'ok', 2500);
@@ -7807,6 +7892,494 @@ function updateRoleChip(){
 // ── Calculator ────────────────────────────────────────────────────────────
 var _calc = { val:'0', expr:'', op:null, prev:null, fresh:false };
 var _calcHistory = [];
+
+// ── Calendar Applet ──────────────────────────────────────────────────────────
+function toggleCalendarApplet(){
+  var p = document.getElementById('cal-applet');
+  if(!p) return;
+  if(p.style.display==='flex'){ p.style.display='none'; return; }
+  // Position below month chip
+  var chip = document.getElementById('month-chip-label');
+  if(chip){
+    var r = chip.getBoundingClientRect();
+    p.style.top  = (r.bottom+6)+'px';
+    p.style.left = r.left+'px';
+  }
+  p.style.display='flex';
+  renderCalendarApplet();
+}
+
+function renderCalendarApplet(){
+  var fi = getFiscalInfo();
+  var title = document.getElementById('cal-applet-title');
+  var grid  = document.getElementById('cal-applet-grid');
+  if(!fi||!grid) return;
+
+  // Build set of worked dates from calls
+  var workedDates = {};
+  calls.forEach(function(c){
+    var d = c.ts instanceof Date ? c.ts : new Date(c.ts);
+    var key = d.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'});
+    workedDates[key] = (workedDates[key]||0)+1;
+  });
+
+  var start = fi.fiscalStart;
+  var end   = fi.fiscalEnd;
+  var today = new Date();
+  today.setHours(0,0,0,0);
+
+  if(title) title.textContent = start.toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
+    ' – ' + end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+  // DOW headers
+  var dows = ['S','M','T','W','T','F','S'];
+  var html = dows.map(function(d){ return '<div class="cal-dow">'+d+'</div>'; }).join('');
+
+  // Find first day of week for start date
+  var cur = new Date(start);
+  var startDow = cur.getDay(); // 0=Sun
+  // Pad empty cells before start
+  for(var i=0;i<startDow;i++) html += '<div class="cal-day outside"></div>';
+
+  // Render each day of fiscal month
+  var d = new Date(start);
+  while(d <= end){
+    var key = d.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'});
+    var dn  = new Date(d); dn.setHours(0,0,0,0);
+    var isToday  = dn.getTime()===today.getTime();
+    var isFuture = dn > today;
+    var worked   = workedDates[key] > 0;
+    var cls = 'cal-day';
+    if(isToday)       cls += ' today';
+    else if(isFuture) cls += ' future';
+    else if(worked)   cls += ' worked';
+    else              cls += ' no-calls';
+    var tip = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    if(worked) tip += ' · '+workedDates[key]+' call'+(workedDates[key]!==1?'s':'');
+    html += '<div class="'+cls+'" title="'+tip+'">'+d.getDate()+'</div>';
+    d.setDate(d.getDate()+1);
+  }
+
+  grid.innerHTML = html;
+}
+
+// ── Schedule Panel ──────────────────────────────────────────────
+const SCHED_BREAK_TYPES = [
+  {emoji:'☕',label:'Break'},
+  {emoji:'🍽',label:'Lunch'},
+  {emoji:'👥',label:'Team Meeting'},
+  {emoji:'📋',label:'Coaching'},
+  {emoji:'🏛',label:'Town Hall'},
+  {emoji:'⚠️',label:'System Problem'},
+  {emoji:'✏️',label:'Custom'},
+];
+const SCHED_DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const SCHED_DAY_KEYS = ['sun','mon','tue','wed','thu','fri','sat'];
+const SCHED_DEFAULT = {
+  start:'08:00', end:'17:00',
+  breaks:[
+    {id:1, emoji:'☀️', label:'Prep', duration:10, time:'08:00', fixed:true},
+    {id:2, emoji:'☕', label:'Break', duration:15, time:'10:00', fixed:false},
+    {id:3, emoji:'🍽', label:'Lunch', duration:30, time:'13:00', fixed:false},
+    {id:4, emoji:'☕', label:'Break', duration:15, time:'15:00', fixed:false},
+  ]
+};
+
+var _schedData = {}; // keyed by day key
+var _schedViewDay = null;
+var _schedDirty = false;
+var _schedTimerInterval = null;
+var _schedRemindMins = 5;
+var _schedFiredToday = {};
+var _schedNextBreakId = 10;
+
+function schedLoad(){
+  var agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || 'guest';
+  var key = 'xcl_schedule_' + agentId;
+  try{
+    var d = JSON.parse(localStorage.getItem(key)||'{}');
+    _schedData = d.days || {};
+    _schedRemindMins = d.remindMins || 5;
+    _schedFiredToday = d.firedToday || {};
+    if(d.shiftStart) _schedData._shiftStart = d.shiftStart;
+    if(d.shiftEnd)   _schedData._shiftEnd   = d.shiftEnd;
+  } catch(e){ _schedData={}; }
+  if(!_schedData._shiftStart) _schedData._shiftStart = '08:00';
+  if(!_schedData._shiftEnd)   _schedData._shiftEnd   = '17:00';
+  SCHED_DAY_KEYS.forEach(function(k){
+    if(!_schedData[k]) _schedData[k] = JSON.parse(JSON.stringify(SCHED_DEFAULT));
+    _schedData[k].start = _schedData._shiftStart;
+    _schedData[k].end   = _schedData._shiftEnd;
+    var prep = _schedData[k].breaks.find(function(b){return b.fixed;});
+    if(prep) prep.time = _schedData._shiftStart;
+  });
+}
+
+function schedSave(){
+  var agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || 'guest';
+  var key = 'xcl_schedule_' + agentId;
+  var payload = {
+    days: _schedData,
+    remindMins: _schedRemindMins,
+    firedToday: _schedFiredToday,
+    shiftStart: _schedData._shiftStart || '08:00',
+    shiftEnd:   _schedData._shiftEnd   || '17:00',
+  };
+  localStorage.setItem(key, JSON.stringify(payload));
+  // Push to Sheets personal settings
+  if(getSheetsUrl() && agentId && agentId !== 'guest'){
+    sheetsPost({
+      action: 'saveSettings',
+      agentId: agentId,
+      personal: { schedule: JSON.stringify(payload) }
+    }).catch(function(e){ console.warn('Schedule sync failed:', e); });
+  }
+}
+
+function schedSaveReminder(){
+  var sel = document.getElementById('sched-remind-mins');
+  if(sel) _schedRemindMins = +sel.value;
+  schedSave();
+}
+
+function schedSaveShiftTimes(){
+  var start = document.getElementById('sched-start').value;
+  var end   = document.getElementById('sched-end').value;
+  _schedData._shiftStart = start;
+  _schedData._shiftEnd   = end;
+  // Update Prep time on all days
+  SCHED_DAY_KEYS.forEach(function(k){
+    if(_schedData[k]){
+      _schedData[k].start = start;
+      _schedData[k].end   = end;
+      var prep = _schedData[k].breaks.find(function(b){return b.fixed;});
+      if(prep) prep.time = start;
+    }
+  });
+  schedSave();
+}
+
+function schedSaveDay(){
+  var k = _schedViewDay;
+  if(!k) return;
+  schedSave();
+  _schedDirty = false;
+  schedStartTicker();
+  _showToast('✓ Schedule saved','ok',1500);
+}
+
+function schedDirty(){ _schedDirty = true; }
+
+function schedAddBreak(){
+  var k = _schedViewDay;
+  if(!k) return;
+  var newBreak = {id:_schedNextBreakId++, emoji:'☕', label:'Break', duration:15, time:'12:00', fixed:false};
+  _schedData[k].breaks.push(newBreak);
+  schedRenderBreaks(k);
+}
+
+function schedRemoveBreak(id){
+  var k = _schedViewDay;
+  if(!k) return;
+  _schedData[k].breaks = _schedData[k].breaks.filter(function(b){return b.id!==id;});
+  schedRenderBreaks(k);
+}
+
+function schedUpdateBreak(id, field, val){
+  var k = _schedViewDay;
+  if(!k) return;
+  var b = _schedData[k].breaks.find(function(b){return b.id===id;});
+  if(!b) return;
+  if(field==='type'){
+    var t = SCHED_BREAK_TYPES[+val];
+    if(t){ b.emoji=t.emoji; b.label=t.label==='Custom'?prompt('Label:',b.label)||b.label:t.label; }
+  } else {
+    b[field] = val;
+  }
+  schedRenderBreaks(k);
+}
+
+function schedRenderBreaks(k){
+  var el = document.getElementById('sched-breaks-list');
+  if(!el) return;
+  var breaks = _schedData[k].breaks;
+  el.innerHTML = breaks.map(function(b){
+    var fixedAttr = b.fixed ? 'disabled' : '';
+    var delBtn = b.fixed ? '' : '<button class="sched-break-del" onclick="schedRemoveBreak('+b.id+')">✕</button>';
+    var dragHandle = b.fixed ? '<span style="width:14px;flex-shrink:0"></span>' : '<span style="cursor:grab;color:var(--text3);font-size:12px;flex-shrink:0;user-select:none" draggable="false">⠿</span>';
+    var typeOpts = SCHED_BREAK_TYPES.map(function(t,i){
+      return '<option value="'+i+'"'+(t.label===b.label?' selected':'')+'>'+t.emoji+' '+t.label+'</option>';
+    }).join('');
+    var durOpts = [15,30,45].map(function(d){
+      return '<option value="'+d+'"'+(b.duration===d?' selected':'')+'>'+d+'m</option>';
+    }).join('')+'<option value="other"'+(![15,30,45].includes(b.duration)?' selected':'')+'>Other</option>';
+    var draggable = b.fixed ? '' : 'draggable="true" ondragstart="schedDragStart(event,'+b.id+')" ondragover="schedDragOver(event)" ondrop="schedDrop(event,'+b.id+')" ondragend="schedDragEnd()"';
+    return '<div class="sched-break-row" data-bid="'+b.id+'" '+draggable+'>'+
+      dragHandle+
+      '<span class="sched-break-emoji">'+b.emoji+'</span>'+
+      (b.fixed
+        ? '<span class="sched-break-label" style="color:var(--text3)">'+b.label+' (10m)</span>'
+        : '<select class="sched-dur-sel" onchange="schedUpdateBreak('+b.id+',\'type\',this.value)" style="flex:1;max-width:110px">'+typeOpts+'</select>'
+      )+
+      '<input type="time" class="sched-break-time" value="'+b.time+'" '+fixedAttr+' onchange="schedUpdateBreak('+b.id+',\'time\',this.value)">'+
+      (b.fixed ? '' : '<select class="sched-dur-sel" onchange="schedUpdateBreak('+b.id+',\'duration\',+this.value===0?prompt(\'Minutes:\',b.duration)||b.duration:+this.value)">'+durOpts+'</select>')+
+      delBtn+
+    '</div>';
+  }).join('');
+}
+
+var _schedDragId = null;
+function schedDragStart(e, id){ _schedDragId = id; e.currentTarget.style.opacity='.4'; }
+function schedDragEnd(){ document.querySelectorAll('.sched-break-row').forEach(function(r){ r.style.opacity=''; r.style.borderColor=''; }); }
+function schedDragOver(e){ e.preventDefault(); e.currentTarget.style.borderColor='var(--blue)'; }
+function schedDrop(e, targetId){
+  e.preventDefault();
+  e.currentTarget.style.borderColor='';
+  if(!_schedDragId || _schedDragId===targetId) return;
+  var k = _schedViewDay;
+  var breaks = _schedData[k].breaks;
+  var fromIdx = breaks.findIndex(function(b){return b.id===_schedDragId;});
+  var toIdx   = breaks.findIndex(function(b){return b.id===targetId;});
+  if(fromIdx<0||toIdx<0) return;
+  // Don't allow dropping before fixed (Prep)
+  if(breaks[toIdx].fixed) return;
+  var item = breaks.splice(fromIdx,1)[0];
+  // Recalculate toIdx after splice
+  toIdx = breaks.findIndex(function(b){return b.id===targetId;});
+  breaks.splice(toIdx,0,item);
+  schedRenderBreaks(k);
+  _schedDragId = null;
+}
+
+function schedRenderDayTabs(){
+  var el = document.getElementById('sched-day-tabs');
+  if(!el) return;
+  var today = SCHED_DAY_KEYS[new Date().getDay()];
+  el.innerHTML = SCHED_DAYS.map(function(d,i){
+    var k = SCHED_DAY_KEYS[i];
+    var cls = 'sched-day-btn'+(k===_schedViewDay?' active':'')+(k===today?' today':'');
+    return '<button class="'+cls+'" onclick="schedViewDay(\''+k+'\')">'+d+'</button>';
+  }).join('');
+}
+
+function schedViewDay(k){
+  _schedViewDay = k;
+  var day = _schedData[k] || JSON.parse(JSON.stringify(SCHED_DEFAULT));
+  // Use global shift times
+  var start = _schedData._shiftStart || day.start || '08:00';
+  var end   = _schedData._shiftEnd   || day.end   || '17:00';
+  document.getElementById('sched-start').value = start;
+  document.getElementById('sched-end').value   = end;
+  schedRenderDayTabs();
+  schedRenderBreaks(k);
+  var remind = document.getElementById('sched-remind-mins');
+  if(remind) remind.value = _schedRemindMins;
+}
+
+function toggleSchedPopover(){
+  var pop = document.getElementById('sched-events-popover');
+  if(!pop) return;
+  if(pop.style.display==='flex'){ pop.style.display='none'; return; }
+
+  var now = new Date();
+  var nowMins = now.getHours()*60+now.getMinutes();
+  var today = SCHED_DAY_KEYS[now.getDay()];
+  var day = _schedData[today];
+
+  if(!day){ pop.style.display='none'; return; }
+
+  var endMins = schedTimeToMins(_schedData._shiftEnd||day.end||'17:00');
+  var remaining = [];
+
+  // Check if currently in a break
+  var inBreak = null;
+  day.breaks.forEach(function(b){
+    var bStart = schedTimeToMins(b.time);
+    var bEnd = bStart + b.duration;
+    if(nowMins >= bStart && nowMins < bEnd) inBreak = b;
+    if(bStart > nowMins) remaining.push(b);
+  });
+
+  // Sort remaining by time
+  remaining.sort(function(a,b){ return schedTimeToMins(a.time)-schedTimeToMins(b.time); });
+
+  var html = '<div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:2px 6px 6px;border-bottom:1px solid var(--border);margin-bottom:4px">Today\'s Remaining Events</div>';
+
+  if(inBreak){
+    var rem = schedTimeToMins(inBreak.time) + inBreak.duration - nowMins;
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:5px 6px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:8px;margin-bottom:4px">'+
+      '<span style="font-size:14px">'+inBreak.emoji+'</span>'+
+      '<div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--amber)">'+inBreak.label+' (now)</div>'+
+      '<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">ends in '+rem+'m</div></div></div>';
+  }
+
+  if(remaining.length === 0 && !inBreak){
+    html += '<div style="font-size:11px;color:var(--text3);text-align:center;padding:8px">No more events today</div>';
+  }
+
+  remaining.forEach(function(b){
+    var bMins = schedTimeToMins(b.time);
+    var diff = bMins - nowMins;
+    var timeStr = (function(){
+      var h = Math.floor(bMins/60), m = bMins%60;
+      var ampm = h>=12?'PM':'AM'; h=h%12||12;
+      return h+':'+(m<10?'0':'')+m+' '+ampm;
+    })();
+    var diffStr = diff>=60?(Math.floor(diff/60)+'h '+(diff%60)+'m'):diff+'m';
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:8px" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
+      '<span style="font-size:14px">'+b.emoji+'</span>'+
+      '<div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--text)">'+b.label+'</div>'+
+      '<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">'+timeStr+' · '+b.duration+'m · in '+diffStr+'</div></div></div>';
+  });
+
+  // End of shift
+  if(nowMins < endMins){
+    var endDiff = endMins - nowMins;
+    var endStr = (function(){
+      var h=Math.floor(endMins/60),m=endMins%60,ampm=h>=12?'PM':'AM'; h=h%12||12;
+      return h+':'+(m<10?'0':'')+m+' '+ampm;
+    })();
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:5px 6px;border-top:1px solid var(--border);margin-top:4px">'+
+      '<span style="font-size:14px">🏁</span>'+
+      '<div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--text3)">End of Shift</div>'+
+      '<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">'+endStr+' · in '+(endDiff>=60?(Math.floor(endDiff/60)+'h '+(endDiff%60)+'m'):endDiff+'m')+'</div></div></div>';
+  }
+
+  pop.innerHTML = html;
+  pop.style.display = 'flex';
+  pop.style.flexDirection = 'column';
+
+  // Close on outside click
+  setTimeout(function(){
+    document.addEventListener('click', function _close(e){
+      if(!pop.contains(e.target) && e.target.id!=='sched-toolbar-cd'){
+        pop.style.display='none';
+        document.removeEventListener('click', _close);
+      }
+    });
+  }, 50);
+}
+
+function toggleSchedule(){
+  var p = document.getElementById('sched-panel');
+  if(!p) return;
+  if(p.style.display==='flex'){
+    p.style.display='none'; return;
+  }
+  schedLoad();
+  var today = SCHED_DAY_KEYS[new Date().getDay()];
+  _schedViewDay = today;
+  p.style.display='flex';
+  // Lock to right edge of window
+  p.style.top = '60px';
+  p.style.right = '8px';
+  p.style.left = 'auto';
+  schedViewDay(today);
+  schedUpdateCountdown();
+}
+
+// ── Countdown engine ─────────────────────────────────────────────
+function schedGetTodayBreaks(){
+  var today = SCHED_DAY_KEYS[new Date().getDay()];
+  var day = _schedData[today];
+  if(!day) return [];
+  return day.breaks.slice().sort(function(a,b){ return a.time.localeCompare(b.time); });
+}
+
+function schedTimeToMins(t){
+  if(!t) return 0;
+  var parts = t.split(':');
+  return (+parts[0])*60+(+parts[1]);
+}
+
+function schedUpdateCountdown(){
+  var now = new Date();
+  var nowMins = now.getHours()*60+now.getMinutes();
+  var today = SCHED_DAY_KEYS[now.getDay()];
+  var day = _schedData[today];
+  var cd = document.getElementById('scd-name');
+  var ct = document.getElementById('scd-time');
+  var tb = document.getElementById('sched-toolbar-cd');
+
+  if(!day){ if(cd)cd.textContent='—'; if(ct)ct.textContent='—'; return; }
+
+  var endMins   = schedTimeToMins(_schedData._shiftEnd   || day.end   || '17:00');
+  var startMins = schedTimeToMins(_schedData._shiftStart || day.start || '08:00');
+  if(nowMins >= endMins){
+    if(cd) cd.textContent='Shift complete';
+    if(ct) ct.textContent='✓';
+    if(tb){ tb.textContent='✓ Done'; tb.setAttribute('data-tip','✓ Shift complete'); }
+    return;
+  }
+  if(nowMins < startMins){
+    var diff = startMins - nowMins;
+    var txt = diff>=60?(Math.floor(diff/60)+'h '+(diff%60)+'m'):diff+'m';
+    if(cd) cd.textContent='Shift starts';
+    if(ct) ct.textContent='in '+txt;
+    if(tb){ tb.textContent='⏰ '+txt; tb.setAttribute('data-tip','⏰ Shift starts in '+txt); }
+    return;
+  }
+
+  var breaks = schedGetTodayBreaks();
+  // Check if currently in a break
+  for(var i=0;i<breaks.length;i++){
+    var b=breaks[i];
+    var bStart=schedTimeToMins(b.time);
+    var bEnd=bStart+b.duration;
+    if(nowMins>=bStart && nowMins<bEnd){
+      var rem=bEnd-nowMins;
+      if(cd) cd.textContent=b.emoji+' '+b.label;
+      if(ct) ct.textContent='ends in '+rem+'m';
+      if(tb){ tb.textContent=b.emoji+' '+rem+'m'; tb.setAttribute('data-tip',b.emoji+' '+b.label+' · '+b.duration+'m · ends in '+rem+'m'); }
+      return;
+    }
+  }
+  // Find next break
+  var next=null;
+  for(var j=0;j<breaks.length;j++){
+    var bm=schedTimeToMins(breaks[j].time);
+    if(bm>nowMins){ next=breaks[j]; break; }
+  }
+  if(next){
+    var diff2=schedTimeToMins(next.time)-nowMins;
+    var txt2=diff2>=60?(Math.floor(diff2/60)+'h '+(diff2%60)+'m'):diff2+'m';
+    // Fire reminder
+    var fkey=today+'-'+next.id;
+    if(diff2<=_schedRemindMins && !_schedFiredToday[fkey]){
+      _schedFiredToday[fkey]=true;
+      schedSave();
+      _showToast(next.emoji+' '+next.label+' in '+diff2+' min','info',8000);
+    }
+    if(cd) cd.textContent=next.emoji+' '+next.label;
+    if(ct) ct.textContent='in '+txt2;
+    if(tb){ tb.textContent=next.emoji+' '+txt2; var _nt=next.time,_nth=parseInt(_nt),_ntm=parseInt(_nt.split(':')[1])||0,_ntap=_nth>=12?'PM':'AM',_nth12=_nth%12||12; tb.setAttribute('data-tip',next.emoji+' '+next.label+' · '+_nth12+':'+(_ntm<10?'0':'')+_ntm+' '+_ntap+' · '+next.duration+'m'); }
+  } else {
+    if(cd) cd.textContent='No more breaks';
+    if(ct) ct.textContent='';
+    if(tb){ tb.textContent='—'; tb.setAttribute('data-tip','No more events today'); }
+  }
+}
+
+// Start countdown ticker
+function schedStartTicker(){
+  if(_schedTimerInterval) clearInterval(_schedTimerInterval);
+  var agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || '';
+  if(!agentId || agentId==='guest'){
+    // No session yet — update countdown with defaults only
+    schedUpdateCountdown();
+    return;
+  }
+  schedLoad();
+  schedUpdateCountdown();
+  _schedTimerInterval = setInterval(function(){
+    schedUpdateCountdown();
+    var now=new Date();
+    if(now.getHours()===0&&now.getMinutes()===0){
+      _schedFiredToday={};
+      schedSave();
+    }
+  },30000);
+}
 
 function toggleCalc(){
   var p = document.getElementById('calc-panel');
@@ -8848,5 +9421,61 @@ function launchFireworks(isXm,isTest){
 <div id="celeb-banner"></div>
 
 <div id="nosale-panel"></div>
+
+<div id="sched-panel">
+  <div class="sched-header">
+    <div class="sched-title">🕐 Shift Schedule</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button onclick="schedSaveDay()" style="font-size:9px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;letter-spacing:.06em;text-transform:uppercase">Save</button>
+      <button onclick="toggleSchedule()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;line-height:1">✕</button>
+    </div>
+  </div>
+  <div class="sched-body">
+    <!-- Countdown -->
+    <div id="sched-countdown">
+      <span class="scd-label">Next</span>
+      <span id="scd-name" style="font-size:12px;font-weight:600;color:var(--text);margin-left:6px">—</span>
+      <span class="scd-val" id="scd-time">—</span>
+    </div>
+    <!-- Day tabs -->
+    <div class="sched-day-tab" id="sched-day-tabs"></div>
+    <!-- Global shift times -->
+    <div class="sched-shift-row" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+      <label>Shift</label>
+      <input type="time" id="sched-start" onchange="schedSaveShiftTimes()">
+      <label style="margin-left:8px">to</label>
+      <input type="time" id="sched-end" onchange="schedSaveShiftTimes()">
+    </div>
+    <!-- Break slots -->
+    <div id="sched-breaks-list"></div>
+    <button class="sched-add-btn" onclick="schedAddBreak()">+ Add Segment</button>
+    <!-- Reminder lead time -->
+    <div class="sched-reminder-row">
+      <span style="font-size:10px;color:var(--text3);font-weight:600">Reminder</span>
+      <select id="sched-remind-mins" onchange="schedSaveReminder()" style="background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:3px 6px;font-size:11px;color:var(--text);margin-left:auto">
+        <option value="2">2 min before</option>
+        <option value="5" selected>5 min before</option>
+        <option value="10">10 min before</option>
+        <option value="15">15 min before</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+
+<div id="cal-applet">
+  <div class="cal-header">
+    <div class="cal-title" id="cal-applet-title">Fiscal Month</div>
+    <button onclick="document.getElementById('cal-applet').style.display='none';toggleSchedule();" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;line-height:1;margin-right:4px" title="Shift Schedule">🕐</button>
+    <button onclick="toggleCalendarApplet()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;line-height:1">✕</button>
+  </div>
+  <div class="cal-grid" id="cal-applet-grid"></div>
+  <div class="cal-legend">
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(34,197,94,.4)"></div>Worked</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--surface);border:1px solid var(--border2)"></div>No calls</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="border:2px solid var(--blue)"></div>Today</div>
+  </div>
+</div>
+
 </body>
 </html>
