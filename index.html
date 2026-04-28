@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Call Logger v0.4.27.1</title>
+<title>Call Logger v0.4.28.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -186,6 +186,28 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .td-nil{font-family:var(--mono);font-size:12px;color:var(--text3)}
 .rgu-val{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--blue)}
 .rgu-nil{font-family:var(--mono);font-size:12px;color:var(--text3)}
+/* ── Mobile Lines Sub-tab ── */
+.fu-subtab-bar{display:flex;gap:0;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:52px;z-index:150}
+.fu-stab{padding:10px 20px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.fu-stab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.fu-stab:hover:not(.active){color:var(--text)}
+.xm-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin:0 16px 12px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.xm-card:hover{border-color:var(--border2)}
+.xm-card.has-pending{border-left:3px solid var(--amber)}
+.xm-card.all-activated{border-left:3px solid var(--green);opacity:.7}
+.xm-card.all-snoozed{border-left:3px solid var(--text3);opacity:.7}
+.xm-card-header{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.xm-card-acct{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);cursor:pointer}
+.xm-card-date{font-size:10px;color:var(--text3);font-family:var(--mono);margin-left:auto}
+.xm-line-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border)}
+.xm-line-row:last-child{border-bottom:none}
+.xm-line-num{font-size:10px;font-weight:700;color:var(--text3);min-width:44px}
+.xm-line-sched{font-size:11px;font-family:var(--mono);color:var(--text2);flex:1}
+.xm-status-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.xm-status-badge.pending{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
+.xm-status-badge.activated{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.xm-status-badge.snoozed{background:var(--surface);color:var(--text3);border:1px solid var(--border2)}
+.xm-line-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
 .cb-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;font-family:var(--mono);color:var(--purple);background:var(--purple-lt);border:1px solid rgba(167,139,250,.2);padding:2px 8px;border-radius:20px}
 .cb-badge.overdue{color:var(--red);background:var(--red-lt);border-color:rgba(248,113,113,.2)}
 .cb-badge.due-soon{color:var(--amber);background:var(--amber-lt);border-color:rgba(245,158,11,.2)}
@@ -885,22 +907,21 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 </head>
 <body>
 <div class="header">
-  <div class="brand" style="flex:1"><div class="brand-logo"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name"><span>Call Logger</span> <span class="version-chip">v0.4.27.1</span></div></div>
-  <!-- Center: clock · type/cap pill · fiscal month chip — truly centered -->
-  <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;pointer-events:auto;white-space:nowrap">
-    <div class="clock" id="clock">--:-- --</div>
-    <div id="session-badge" style="font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;cursor:pointer" onclick="switchStab('goals');toggleSettings()" data-tip="Your call type and cap level&#10;Click to update in Settings"></div>
-    <div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer" data-tip="Click to open fiscal calendar">…</div>
-  </div>
-  <!-- Right: countdown + settings -->
-  <div class="header-right" style="flex:1;justify-content:flex-end;gap:20px">
-    <button id="pwa-install-btn" onclick="pwaInstall()" data-tip="Install App" style="display:none;align-items:center;gap:3px;height:24px;padding:0 8px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">&#x2B07; Install</button>
+  <!-- Left: logo + name + fiscal pill -->
+  <div class="brand" style="flex:1;display:flex;align-items:center;gap:6px"><div class="brand-logo" id="brand-logo-btn" onclick="eggClick()" style="cursor:pointer"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name" style="margin-left:-4px"><span data-tip="XCL v0.4.28.1">Call Logger</span></div><div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer;margin-left:4px" data-tip="Click to open fiscal calendar">…</div></div>
+  <!-- Center: countdown -->
+  <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;pointer-events:auto">
     <div style="position:relative">
-      <div onclick="toggleSchedPopover()" style="cursor:pointer;min-width:70px;text-align:right">
-        <span id="sched-toolbar-cd" style="font-size:14px;font-weight:700;color:var(--amber);font-family:var(--mono);white-space:nowrap;position:relative"></span>
+      <div onclick="toggleSchedPopover()" style="cursor:pointer;text-align:center">
+        <span id="sched-toolbar-cd" style="font-weight:700;color:var(--text);font-family:var(--mono);white-space:nowrap;position:relative"></span>
       </div>
-      <div id="sched-events-popover" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:9999;min-width:220px;flex-direction:column;gap:4px"></div>
+      <div id="sched-events-popover" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 6px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:9999;min-width:220px;flex-direction:column;gap:4px"></div>
     </div>
+  </div>
+  <!-- Right: clock + type/cap pill + settings -->
+  <div class="header-right" style="flex:1;justify-content:flex-end;gap:12px">
+    <button id="pwa-install-btn" onclick="pwaInstall()" data-tip="Install App" style="display:none;align-items:center;gap:3px;height:24px;padding:0 8px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">&#x2B07; Install</button>
+    <div class="clock" id="clock">--:-- --</div>
     <button class="gear-btn" onclick="toggleSettings()" data-tip="Settings">⚙️</button>
   </div>
 </div>
@@ -1840,6 +1861,14 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 
 <!-- ══ TAB: CALL BACKS ══ -->
 <div class="tab-panel" id="panel-callbacks" style="display:none">
+  <!-- Sub-tab bar -->
+  <div class="fu-subtab-bar">
+    <div class="fu-stab active" id="fu-stab-callbacks" onclick="switchFuSubtab('callbacks')">🔔 Follow-Ups</div>
+    <div class="fu-stab" id="fu-stab-mobile" onclick="switchFuSubtab('mobile')">📱 Mobile Lines</div>
+  </div>
+
+  <!-- Callbacks sub-panel -->
+  <div id="fu-panel-callbacks">
   <div style="padding:0">
     <!-- Follow-Ups header bar -->
     <div style="padding:14px 24px 12px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:92px;z-index:100">
@@ -1870,6 +1899,43 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
       <div id="cb-tab-cards" style="display:flex;flex-direction:column;gap:8px"></div>
     </div>
   </div>
+  </div><!-- end fu-panel-callbacks -->
+
+  <!-- Mobile Lines sub-panel -->
+  <div id="fu-panel-mobile" style="display:none">
+    <!-- Mobile Lines header -->
+    <div style="padding:14px 16px 10px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:92px;z-index:100;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);display:flex;align-items:center;justify-content:center;font-size:14px">📱</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);line-height:1">Mobile Lines</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px" id="xm-tab-subtitle">All XM lines sold</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <!-- Status filter -->
+        <div style="display:flex;gap:0;background:var(--card2);border:1px solid var(--border2);border-radius:7px;overflow:hidden;height:30px">
+          <button onclick="setXmFilter('all')" id="xmf-all" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff;transition:all .15s">All</button>
+          <button onclick="setXmFilter('pending')" id="xmf-pending" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">⚠ Pending</button>
+          <button onclick="setXmFilter('snoozed')" id="xmf-snoozed" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">💤 Snoozed</button>
+          <button onclick="setXmFilter('activated')" id="xmf-activated" style="padding:0 11px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Activated?</button>
+        </div>
+        <!-- Sort -->
+        <select id="xm-sort" onchange="renderMobileLines()" style="height:30px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;color:var(--text2);outline:none;cursor:pointer">
+          <option value="sale-desc">Sale Date ↓</option>
+          <option value="sale-asc">Sale Date ↑</option>
+          <option value="sched-asc">Sched Date ↑</option>
+          <option value="sched-desc">Sched Date ↓</option>
+        </select>
+        <button onclick="renderMobileLines()" style="height:30px;width:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:14px;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center" title="Refresh">↻</button>
+      </div>
+    </div>
+    <!-- Mobile lines cards -->
+    <div style="padding:16px">
+      <div id="xm-lines-cards"></div>
+    </div>
+  </div><!-- end fu-panel-mobile -->
+
 </div>
 <div class="tab-panel" id="panel-disputes">
   <div class="main">
@@ -2703,10 +2769,25 @@ function openEdit(id, fromAlert){
     if(titleEl2) titleEl2.childNodes[0].textContent = '✎ Edit Call ';
   }
 
+  // Show Callback Sale Made button if call has open callback
+  const cbSaleBtn = document.getElementById('edit-cb-sale-btn');
+  if(cbSaleBtn){
+    const hasOpenCb = !!(c.cbTime || c.fuType) && !c.cbDone;
+    cbSaleBtn.style.display = hasOpenCb ? 'inline-flex' : 'none';
+    cbSaleBtn.dataset.originId = c.id;
+    // Reset toggle state
+    _cbSaleIntent = false;
+    cbSaleBtn.style.background = 'transparent';
+    cbSaleBtn.style.color = '#f97316';
+    cbSaleBtn.style.border = '2px solid #f97316';
+  }
+
   // Open panel
   const panel = document.getElementById('edit-panel');
   panel.classList.add('open');
   document.getElementById('edit-overlay').style.display = 'block';
+  // Re-render nosale display after panel is visible (fitTextToContainer needs real dimensions)
+  setTimeout(function(){ updateNosaleDisplay(); }, 100);
 
   // Focus acct field
   setTimeout(function(){ const f = document.getElementById('f-acct'); if(f) f.focus(); }, 80);
@@ -2822,6 +2903,14 @@ function _populateFormFromCall(c){
     _nsState = 'tier1';
     const nsToggle = document.getElementById('ns-toggle');
     if(nsToggle) nsToggle.classList.add('active');
+  } else if(c.hasSale && c.xm === 0 && c.noXmReason){
+    // No XM Sale — restore noXmReason into _nsCat/_nsSub
+    const parts = c.noXmReason.split(' > ');
+    _nsCat = parts[0] || '';
+    _nsSub = parts[1] || '';
+    _nsState = 'tier2';
+    const nsToggle = document.getElementById('ns-toggle');
+    if(nsToggle) nsToggle.classList.add('active');
   }
   colorReason();
   colorReason();
@@ -2858,6 +2947,7 @@ function closeEdit(){
   editState = {};
   _editSnapshot = null;
   _editMarkCbDone = false;
+  _cbSaleIntent = false;
   window._editCall = null;
   window._editFromAlert = false;
   // Restore Log Call button
@@ -2900,9 +2990,84 @@ function saveEdit(){
   const reason   = (_nsState !== 'closed' && (!isSale() || isRevOnly)) ? getNoSaleReason() : '';
   const noXmReason = (_nsState !== 'closed' && isSale() && !isRevOnly && xmVal === 0) ? getNoSaleReason() : '';
 
+  // ── Handle Callback Sale Intent ──────────────────────────────────────────
+  if(_cbSaleIntent){
+    _cbSaleIntent = false;
+    const originId = c.id;
+
+    // Capture product/revenue values from form for the NEW callback sale record
+    const cbsBaseRev  = getRevVal();
+    const cbsXmVal    = xmVal;
+    const cbsProds    = Object.assign({}, prods);
+    const cbsIeActive = _ieActive;
+    const cbsBulk     = _bulkActive;
+    const cbsReason   = (_nsState !== 'closed' && !isSale()) ? getNoSaleReason() : '';
+    const cbsNoXmReason = (_nsState !== 'closed' && isSale() && xmVal === 0) ? getNoSaleReason() : '';
+    const cbsNotes    = document.getElementById('f-notes').value.trim();
+    const cbsMood     = getMoodEdit();
+
+    // Save ONLY non-product fields to original call
+    c.acctRaw  = raw;
+    c.sched    = sched;
+    c.notes    = cbsNotes;
+    c.cbTime   = cbTime;
+    c.fuType   = fuType;
+    c.mood     = cbsMood;
+    c.cbDone   = c.cbDone || false;
+
+    // Close edit, sync original
+    editingId = null; editState = {}; _editSnapshot = null;
+    _editMarkCbDone = false; window._editCall = null; window._editFromAlert = false;
+    const submitBtn2 = document.getElementById('submit-btn');
+    if(submitBtn2){ submitBtn2.style.opacity=''; submitBtn2.style.filter=''; submitBtn2.style.cursor=''; submitBtn2.onclick=logCall; }
+    document.getElementById('edit-panel').classList.remove('open');
+    document.getElementById('edit-overlay').style.display = 'none';
+    resetForm();
+    render(); updateStats(); upsertCallToSheets(c);
+
+    // Create callback sale record with form product values
+    var newCall = normalizeCall({
+      id: Date.now(),
+      ts: new Date(),
+      agentId: (_session ? _session.agentId : ''),
+      acctRaw: c.acctRaw || '',
+      cbName: c.cbName || '',
+      cbPhone: c.cbPhone || '',
+      notes: cbsNotes,
+      sched: new Date().toISOString().split('T')[0],
+      cbSale: true,
+      cbOriginId: originId,
+      baseRev: cbsBaseRev,
+      rev: cbsBaseRev + (cbsXmVal * XM_LINE_REV),
+      xm: cbsXmVal, tv: cbsProds.tv, chsi: cbsProds.chsi,
+      cdv: cbsProds.cdv, xh: cbsProds.xh,
+      ie: cbsIeActive, bulk: cbsBulk,
+      reason: cbsReason, noXmReason: cbsNoXmReason,
+      mood: cbsMood,
+      cbDone: false, fuType: '', cbTime: '',
+      cbSaleLogged: false,
+    });
+
+    // Mark original as having a sale logged
+    c.cbSaleLogged = true;
+    upsertCallToSheets(c);
+
+    calls.unshift(newCall);
+    render(); updateStats(); upsertCallToSheets(newCall);
+
+    // Open new callback sale in edit for user to confirm/save
+    setTimeout(function(){
+      openEdit(newCall.id);
+    }, 200);
+
+    return;
+  }
+  // ── Normal save ──────────────────────────────────────────────────────────
   c.acctRaw   = raw;
   c.sched     = sched;
   c.baseRev   = baseRev;
+  c.cbName    = cbName;
+  c.cbPhone   = cbPhone;
   c.rev       = baseRev + (xmVal * XM_LINE_REV);
   c.xm        = xmVal;
   c.tv        = prods.tv;
@@ -2977,6 +3142,8 @@ function saveEdit(){
   if(wasSaleMade){
     _showToast('💰 Sale recorded!', 'ok', 2500);
     setTimeout(function(){ launchFireworks(c.xm > 0); }, 150);
+  } else if(c.cbSale && c.cbOriginId){
+    setTimeout(function(){ promptMarkCbComplete(c.cbOriginId); }, 500);
   } else {
     _showToast('✓ Call updated', 'ok', 2000);
   }
@@ -3058,6 +3225,116 @@ function undoDelete(){
   render(); updateStats(); saveCallsCache();
   _showToast('↩ Call restored', 'ok', 2000);
 }
+var _cbSaleIntent = false;
+function toggleCbSaleIntent(){
+  const btn = document.getElementById('edit-cb-sale-btn');
+  if(!btn) return;
+  _cbSaleIntent = !_cbSaleIntent;
+  if(_cbSaleIntent){
+    // Activated — fill orange, clear products/revenue so user starts fresh
+    btn.style.background = '#f97316';
+    btn.style.color = '#fff';
+    btn.style.border = '2px solid #f97316';
+    // Clear XM, products, revenue
+    setXm(0);
+    Object.keys(prods).forEach(function(k){ prods[k]=false; const el=document.getElementById('chk-'+k); if(el)el.classList.remove('checked','ie-adj'); });
+    _ieActive=false; const ie=document.getElementById('chk-ie'); if(ie)ie.classList.remove('ie-active');
+    _bulkActive=false; const bk=document.getElementById('chk-bulk'); if(bk)bk.classList.remove('bulk-active');
+    const revEl=document.getElementById('f-rev'); if(revEl)revEl.value='';
+    updateRevTotal(); updatePlay(); _nsClose(); updateNosaleDisplay();
+  } else {
+    // Deactivated — restore outline, restore original call values from snapshot
+    btn.style.background = 'transparent';
+    btn.style.color = '#f97316';
+    btn.style.border = '2px solid #f97316';
+    if(_editSnapshot){
+      const snap = _editSnapshot;
+      setXm(snap.xm||0);
+      const revEl=document.getElementById('f-rev'); if(revEl)revEl.value=snap.baseRev||'';
+      Object.keys(prods).forEach(function(k){ prods[k]=!!snap[k]; const el=document.getElementById('chk-'+k); if(el)el.classList.toggle('checked',!!snap[k]); });
+      _ieActive=!!snap.ie; const ie=document.getElementById('chk-ie'); if(ie)ie.classList.toggle('ie-active',_ieActive);
+      _bulkActive=!!snap.bulk; const bk=document.getElementById('chk-bulk'); if(bk)bk.classList.toggle('bulk-active',_bulkActive);
+      updateRevTotal(); updatePlay();
+    }
+  }
+}
+
+function editPanelCbSale(){
+  const btn = document.getElementById('edit-cb-sale-btn');
+  const originId = btn ? +btn.dataset.originId : editingId;
+  closeEdit();
+  logCallbackSale(originId);
+}
+
+function promptMarkCbComplete(originId){
+  const origin = calls.find(function(c){ return c.id === originId; });
+  if(!origin || origin.cbDone) return;
+  var modal = document.getElementById('cb-complete-modal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'cb-complete-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:19999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5)';
+    modal.innerHTML = '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:320px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:16px">' +
+      '<div style="font-size:14px;font-weight:700;color:var(--text)">Mark Callback Complete?</div>' +
+      '<div style="font-size:12px;color:var(--text3)">The sale has been logged. Do you want to mark the original callback as complete?</div>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button id="cb-complete-yes" style="flex:1;padding:10px;background:var(--green);border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">✓ Yes, Mark Done</button>' +
+      '<button id="cb-complete-no" style="flex:1;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer">✗ Not Yet</button>' +
+      '</div></div>';
+    document.body.appendChild(modal);
+  }
+  modal.style.display = 'flex';
+  document.getElementById('cb-complete-yes').onclick = function(){
+    markCbDone(originId);
+    modal.style.display = 'none';
+    if(_activeTab==='callbacks') renderCallbacksTab();
+    _showToast('✓ Callback marked complete', 'ok', 2000);
+  };
+  document.getElementById('cb-complete-no').onclick = function(){
+    modal.style.display = 'none';
+  };
+}
+
+function logCallbackSale(originId){
+  const origin = calls.find(function(c){ return c.id === originId; });
+  if(!origin) return;
+
+  // Mark original as having a callback sale
+  origin.cbSaleLogged = true;
+  upsertCallToSheets(origin);
+
+  // Create new callback sale record
+  var newCall = normalizeCall({
+    id: Date.now(),
+    ts: new Date(),
+    agentId: (_session ? _session.agentId : ''),
+    acctRaw: origin.acctRaw || '',
+    cbName: origin.cbName || '',
+    cbPhone: origin.cbPhone || '',
+    notes: origin.notes || '',
+    sched: new Date().toISOString().split('T')[0],
+    cbSale: true,
+    cbOriginId: originId,
+    // Products blank — user fills in
+    xm: 0, tv: false, chsi: false, cdv: false, xh: false,
+    ie: false, bulk: false,
+    baseRev: 0, rev: 0, rgus: 0,
+    hasSale: false,
+    reason: '', noXmReason: '',
+    cbDone: false, fuType: '', cbTime: '',
+    mood: MOOD_EMOJIS[5],
+  });
+
+  calls.unshift(newCall);
+  render();
+  updateStats();
+  upsertCallToSheets(newCall);
+
+  // Open edit panel on the new record
+  openEdit(newCall.id);
+  _showToast('📞 Callback sale created — fill in products & save', 'info', 3000);
+}
+
 function markCbDone(id){const c=calls.find(x=>String(x.id)===String(id));if(c){c.cbDone=true;render();updateStats();checkAlerts();saveCallsCache();upsertCallToSheets(c);}}
 function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
 function fmtCb(iso){if(!iso)return'';const d=new Date(iso);return d.toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}
@@ -3073,29 +3350,15 @@ function renderReadRow(c){
 
   // Build separate pills for each element
   let outcomePills = '';
-  const isRevOnly = c.hasSale && c.rev>0 && !c.rgus;
-  if(isRevOnly){
-    outcomePills += `<span class="pill p-sale">Revenue Only</span> `;
-    if(c.reason) outcomePills += `<span class="pill p-other">${c.reason}</span> `;
-  } else if(c.hasSale){
-    const lobs = [];
-    if(c.xm > 0) lobs.push(`<span style="color:#4169e1;font-weight:800">${c.xm > 1 ? `XM(${c.xm})` : 'XM'}</span>`);
-    if(c.tv)  lobs.push('TV');
-    if(c.chsi) lobs.push(c.ie?'IE':'CHSI');
-    if(c.cdv) lobs.push('CDV');
-    if(c.xh)  lobs.push('XH');
-    const playTxt = (c.playName||'Sale') + (lobs.length ? ' | '+lobs.join(' · ') : '');
-    const pillColor = c.xm > 0 ? 'p-xm' : 'p-sale';
-    outcomePills += `<span class="pill ${pillColor}">${playTxt}</span> `;
-  } else {
-    outcomePills += `<span class="pill p-nosale">No Sale</span> `;
-    if(c.reason && c.reason !== 'NO SALE MADE'){
-      outcomePills += `<span class="pill p-other">${c.reason}</span> `;
-    } else if(c.callOutcome && !c.hasSale && c.callOutcome !== 'NO SALE MADE'){
-      outcomePills += `<span class="pill ${pillCls(c)}">${c.callOutcome}</span> `;
-    }
+  // Callback sale badge — show first, before other pills
+  if(c.cbSale){
+    outcomePills += `<span class="pill" style="background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);color:#f97316;font-weight:700">📞 Callback Sale</span> `;
   }
-  // Callback/follow-up badge — always last
+  // Original call badge if a callback sale was made from it
+  if(c.cbSaleLogged){
+    outcomePills += `<span class="pill p-other" style="color:#f97316;font-weight:700">📞→💰</span> `;
+  }
+  // Callback/follow-up badge — after cbSale badges
   let cbPill = '';
   if(c.cbTime && !c.cbDone){
     const fuTypeIcons={Callback:'📞',Collections:'💰',Construction:'🏗',Exception:'⚠'};
@@ -3107,7 +3370,29 @@ function renderReadRow(c){
     const fuTypeIcons={Collections:'💰',Construction:'🏗',Exception:'⚠'};
     cbPill = `<span class="cb-badge">${fuTypeIcons[c.fuType]||''} ${c.fuType}</span>`;
   }
-  outcomePills += cbPill;
+  outcomePills += cbPill ? cbPill + ' ' : '';
+  const isRevOnly = c.hasSale && c.rev>0 && !c.rgus;
+  if(isRevOnly){
+    outcomePills += `<span class="pill p-sale">Revenue Only</span> `;
+    if(c.reason) outcomePills += `<span class="pill p-other">${c.reason}</span> `;
+  } else if(c.hasSale){
+    const lobs = [];
+    if(c.xm > 0) lobs.push(`<span style="color:#4169e1;font-weight:800">${c.xm > 1 ? `XM(${c.xm})` : 'XM'}</span>`);
+    if(c.tv)  lobs.push('TV');
+    if(c.chsi) lobs.push(c.ie?'IE':'CHSI');
+    if(c.cdv) lobs.push('CDV');
+    if(c.xh)  lobs.push('XH');
+    const playTxt = (c.playName||'Sale') + (lobs.length ? ' |&nbsp;' + lobs.join('&nbsp;·&nbsp;') : '');
+    const pillColor = c.xm > 0 ? 'p-xm' : 'p-sale';
+    outcomePills += `<span class="pill ${pillColor}">${playTxt}</span> `;
+  } else {
+    outcomePills += `<span class="pill p-nosale">No Sale</span> `;
+    if(c.reason && c.reason !== 'NO SALE MADE'){
+      outcomePills += `<span class="pill p-other">${c.reason}</span> `;
+    } else if(c.callOutcome && !c.hasSale && c.callOutcome !== 'NO SALE MADE'){
+      outcomePills += `<span class="pill ${pillCls(c)}">${c.callOutcome}</span> `;
+    }
+  }
   if(c.hasSale && c.xm === 0 && c.noXmReason){
     outcomePills += ` <span class="pill p-other"><span style="color:var(--red);font-weight:700">No XM</span> · ${c.noXmReason}</span>`;
   }
@@ -3197,7 +3482,7 @@ function setLogFilter(val){
   render();
 }
 
-function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=allFiltered;document.getElementById('count-chip').textContent=filtered.length+' call'+(filtered.length!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="5" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}tb.innerHTML=filtered.map(renderReadRow).join('');}
+function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=allFiltered;const callCount=filtered.filter(function(c){return !c.cbSale;}).length;document.getElementById('count-chip').textContent=callCount+' call'+(callCount!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="5" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}tb.innerHTML=filtered.map(renderReadRow).join('');}
 
 function pctCls(p){return p>=1?'good':p>=.7?'ok':'warn';}
 
@@ -3349,7 +3634,7 @@ function updateStats(){
 
   // ── Filter calls for the active fiscal period ────────────────────────────
   const today = new Date().toDateString();
-  const td    = calls.filter(c => c.ts.toDateString() === today);
+  const td    = calls.filter(c => c.ts.toDateString() === today && !c.cbSale);
 
   let mc;
   if (statsView === 'installs') {
@@ -3361,7 +3646,7 @@ function updateStats(){
   }
 
   const allFiscal = calls.filter(c => inActiveFiscalTs(c.ts));
-  const mN      = statsView === 'pipeline' ? 0 : allFiscal.length;
+  const mN      = statsView === 'pipeline' ? 0 : allFiscal.filter(c=>!c.cbSale).length;
   const mSales  = statsView === 'pipeline' ? 0 : mc.filter(c => c.hasSale).length;
 
   // ── Aggregate fiscal totals ──────────────────────────────────────────────
@@ -4492,6 +4777,12 @@ function normalizeCall(sc){
   if(!sc.fuType && sc.cbTime) sc.fuType = 'Callback';
   // Normalize cbDone — Sheets may return string 'true'/'false'
   if(!sc.mood) sc.mood = MOOD_EMOJIS[5]; // default neutral for legacy calls
+  // Normalize cbSale flags
+  if(typeof sc.cbSale === 'string') sc.cbSale = sc.cbSale === 'true';
+  else sc.cbSale = !!sc.cbSale;
+  if(typeof sc.cbSaleLogged === 'string') sc.cbSaleLogged = sc.cbSaleLogged === 'true';
+  else sc.cbSaleLogged = !!sc.cbSaleLogged;
+  if(!sc.cbOriginId) sc.cbOriginId = '';
   // Normalize sched to YYYY-MM-DD — Sheets may return M/D/YYYY or other formats
   if(sc.sched && typeof sc.sched === 'string' && sc.sched.trim()){
     const raw = sc.sched.trim();
@@ -4831,8 +5122,8 @@ function renderTrends(){
   const sales = mc.filter(c=>c.hasSale);
   const xmSales = sales.filter(c=>c.xm>0);
   const nonXmSales = sales.filter(c=>c.xm===0);
-  const noSales = mc.filter(c=>!c.hasSale);
-  const totalCalls = mc.length;
+  const noSales = mc.filter(c=>!c.hasSale && !c.cbSale);
+  const totalCalls = mc.filter(c=>!c.cbSale).length;
   const totalSales = sales.length;
   const totalRev = sales.reduce((s,c)=>s+c.rev,0);
   const totalRgus = sales.reduce((s,c)=>s+c.rgus,0);
@@ -4846,7 +5137,7 @@ function renderTrends(){
   mc.forEach(c=>{
     const d=c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'});
     if(!byDate[d]) byDate[d]={total:0,sales:0,xmSales:0,rev:0,xm:0,tv:0,chsi:0,cdv:0,xh:0,rgus:0,ts:c.ts};
-    byDate[d].total++;
+    if(!c.cbSale) byDate[d].total++;
     if(c.hasSale){byDate[d].sales++;if(c.xm>0)byDate[d].xmSales++;byDate[d].rev+=c.rev;byDate[d].xm+=c.xm;if(c.tv)byDate[d].tv++;byDate[d].chsi+=c.chsiRgu;if(c.cdv)byDate[d].cdv++;if(c.xh)byDate[d].xh++;byDate[d].rgus+=c.rgus;}
   });
   const dayKeys = Object.keys(byDate).sort((a,b)=>new Date(a)-new Date(b));
@@ -4856,8 +5147,8 @@ function renderTrends(){
 
   const weekStart = new Date(now); weekStart.setHours(0,0,0,0); weekStart.setDate(weekStart.getDate()-weekStart.getDay());
   const lastWeekStart = new Date(weekStart); lastWeekStart.setDate(lastWeekStart.getDate()-7);
-  const thisWeekCalls = mc.filter(c=>c.ts>=weekStart);
-  const lastWeekCalls = mc.filter(c=>c.ts>=lastWeekStart&&c.ts<weekStart);
+  const thisWeekCalls = mc.filter(c=>c.ts>=weekStart&&!c.cbSale);
+  const lastWeekCalls = mc.filter(c=>c.ts>=lastWeekStart&&c.ts<weekStart&&!c.cbSale);
   const twSales = thisWeekCalls.filter(c=>c.hasSale).length;
   const lwSales = lastWeekCalls.filter(c=>c.hasSale).length;
   const twRev = thisWeekCalls.filter(c=>c.hasSale).reduce((s,c)=>s+c.rev,0);
@@ -4869,7 +5160,7 @@ function renderTrends(){
   const sortedDays = [...dayKeys].reverse();
   for(let i=0;i<sortedDays.length;i++){if(byDate[sortedDays[i]].sales>0)streak++;else break;}
 
-  const fiscalCalls = mc.filter(c=>inActiveFiscalTs(c.ts));
+  const fiscalCalls = mc.filter(c=>inActiveFiscalTs(c.ts)&&!c.cbSale);
   const fiscalSales = fiscalCalls.filter(c=>c.hasSale);
   const fiscalRev = fiscalSales.reduce((s,c)=>s+c.rev,0);
   const fiscalDays = dayKeys.filter(d=>{const dt=new Date(byDate[d].ts);return dt>=fi.fiscalStart&&dt<=fi.fiscalEnd;}).length;
@@ -4902,7 +5193,7 @@ function renderTrends(){
     const mSales=mCalls.filter(c=>c.hasSale);
     const mRev=mSales.reduce((s,c)=>s+c.rev,0);
     const mLabel=monthNames[start.getMonth()+1]+" "+start.getFullYear();
-    fiscalMonths.push({label:mLabel,calls:mCalls.length,sales:mSales.length,rev:mRev,close:mCalls.length?(mSales.length/mCalls.length*100).toFixed(1):0});
+    var mCallCount=mCalls.filter(function(c){return !c.cbSale;}).length;fiscalMonths.push({label:mLabel,calls:mCallCount,sales:mSales.length,rev:mRev,close:mCallCount?(mSales.length/mCallCount*100).toFixed(1):0});
   }
 
   const lobTv=sales.filter(c=>c.tv).length, lobChsi=sales.filter(c=>c.chsi).length;
@@ -4911,7 +5202,7 @@ function renderTrends(){
 
   // ── Today stats ───────────────────────────────────────────────────────
   const todayStr=now.toDateString();
-  const todayCalls=mc.filter(c=>c.ts.toDateString()===todayStr);
+  const todayCalls=mc.filter(c=>c.ts.toDateString()===todayStr&&!c.cbSale);
   const todaySales=todayCalls.filter(c=>c.hasSale);
   const todayRev=todaySales.reduce((s,c)=>s+c.rev,0);
   const todayRgus=todaySales.reduce((s,c)=>s+c.rgus,0);
@@ -8326,7 +8617,7 @@ function schedUpdateCountdown(){
   if(nowMins >= endMins){
     if(cd) cd.textContent='Shift complete';
     if(ct) ct.textContent='✓';
-    if(tb){ tb.textContent='✓ Done'; tb.setAttribute('data-tip','✓ Shift complete'); }
+    if(tb){ tb.innerHTML='<span style="font-size:18px">✓</span><span style="font-size:13px"> Shift Done</span>'; tb.setAttribute('data-tip','✓ Shift complete'); }
     return;
   }
   if(nowMins < startMins){
@@ -8334,7 +8625,7 @@ function schedUpdateCountdown(){
     var txt = diff>=60?(Math.floor(diff/60)+'h '+(diff%60)+'m'):diff+'m';
     if(cd) cd.textContent='Shift starts';
     if(ct) ct.textContent='in '+txt;
-    if(tb){ tb.textContent='⏰ '+txt; tb.setAttribute('data-tip','⏰ Shift starts in '+txt); }
+    if(tb){ tb.innerHTML='<span style="font-size:18px">⏰</span><span style="font-size:13px"> Shift in '+txt+'</span>'; tb.setAttribute('data-tip','⏰ Shift starts in '+txt); }
     return;
   }
 
@@ -8348,7 +8639,7 @@ function schedUpdateCountdown(){
       var rem=bEnd-nowMins;
       if(cd) cd.textContent=b.emoji+' '+b.label;
       if(ct) ct.textContent='ends in '+rem+'m';
-      if(tb){ tb.textContent=b.emoji+' '+rem+'m'; tb.setAttribute('data-tip',b.emoji+' '+b.label+' · '+b.duration+'m · ends in '+rem+'m'); }
+      if(tb){ tb.innerHTML='<span style="font-size:18px">'+b.emoji+'</span><span style="font-size:13px"> '+b.label+' ends '+rem+'m</span>'; tb.setAttribute('data-tip',b.emoji+' '+b.label+' · '+b.duration+'m · ends in '+rem+'m'); }
       return;
     }
   }
@@ -8370,11 +8661,11 @@ function schedUpdateCountdown(){
     }
     if(cd) cd.textContent=next.emoji+' '+next.label;
     if(ct) ct.textContent='in '+txt2;
-    if(tb){ tb.textContent=next.emoji+' '+txt2; var _nt=next.time,_nth=parseInt(_nt),_ntm=parseInt(_nt.split(':')[1])||0,_ntap=_nth>=12?'PM':'AM',_nth12=_nth%12||12; tb.setAttribute('data-tip',next.emoji+' '+next.label+' · '+_nth12+':'+(_ntm<10?'0':'')+_ntm+' '+_ntap+' · '+next.duration+'m'); }
+    if(tb){ tb.innerHTML='<span style="font-size:18px">'+next.emoji+'</span><span style="font-size:13px"> '+next.label+' in '+txt2+'</span>'; var _nt=next.time,_nth=parseInt(_nt),_ntm=parseInt(_nt.split(':')[1])||0,_ntap=_nth>=12?'PM':'AM',_nth12=_nth%12||12; tb.setAttribute('data-tip',next.emoji+' '+next.label+' · '+_nth12+':'+(_ntm<10?'0':'')+_ntm+' '+_ntap+' · '+next.duration+'m'); }
   } else {
     if(cd) cd.textContent='No more breaks';
     if(ct) ct.textContent='';
-    if(tb){ tb.textContent='—'; tb.setAttribute('data-tip','No more events today'); }
+    if(tb){ tb.innerHTML='<span style="font-size:13px">—</span>'; tb.setAttribute('data-tip','No more events today'); }
   }
 }
 
@@ -8398,6 +8689,571 @@ function schedStartTicker(){
     }
   },30000);
 }
+
+
+// ── Tetris Easter Egg ────────────────────────────────────────────────────────
+var _eggClicks=0,_eggTimer=null;
+function eggClick(){
+  _eggClicks++;
+  clearTimeout(_eggTimer);
+  _eggTimer=setTimeout(function(){_eggClicks=0;},1500);
+  if(_eggClicks>=5){_eggClicks=0;openTetris();}
+}
+
+var TET={
+  canvas:null,ctx:null,
+  nextCanvas:null,nextCtx:null,
+  rafId:null,
+  // Board: 10 wide x 20 tall
+  COLS:10,ROWS:20,
+  BLOCK:20, // px
+  board:[],
+  // Current piece
+  piece:null,
+  nextPiece:null,
+  // State
+  state:'idle', // idle,playing,paused,gameover
+  score:0,lines:0,level:1,highScore:0,
+  // Timing
+  dropInterval:800, // ms
+  lastDrop:0,
+  lastTime:0,
+  lockDelay:500,
+  lockTimer:0,
+  lockReset:false,
+  // Stats
+  combo:-1,
+  lastTetris:false,
+};
+
+// Tetrominoes — I,O,T,S,Z,J,L
+var TET_PIECES=[
+  {shape:[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],color:'#00f0f0',name:'I'},
+  {shape:[[1,1],[1,1]],color:'#f0f000',name:'O'},
+  {shape:[[0,1,0],[1,1,1],[0,0,0]],color:'#a000f0',name:'T'},
+  {shape:[[0,1,1],[1,1,0],[0,0,0]],color:'#00f000',name:'S'},
+  {shape:[[1,1,0],[0,1,1],[0,0,0]],color:'#f00000',name:'Z'},
+  {shape:[[1,0,0],[1,1,1],[0,0,0]],color:'#0000f0',name:'J'},
+  {shape:[[0,0,1],[1,1,1],[0,0,0]],color:'#f0a000',name:'L'},
+];
+
+// Score table
+var TET_SCORE=[0,100,300,500,800]; // 0,1,2,3,4 lines
+
+function tetInitBoard(){
+  TET.board=[];
+  for(var r=0;r<TET.ROWS;r++){
+    TET.board.push(new Array(TET.COLS).fill(0));
+  }
+}
+
+function tetRandomPiece(){
+  var p=TET_PIECES[Math.floor(Math.random()*TET_PIECES.length)];
+  return {
+    shape:p.shape.map(function(r){return r.slice();}),
+    color:p.color,
+    name:p.name,
+    x:Math.floor(TET.COLS/2)-Math.floor(p.shape[0].length/2),
+    y:0,
+  };
+}
+
+function tetRotate(shape){
+  var N=shape.length;
+  var M=shape[0].length;
+  var result=[];
+  for(var c=0;c<M;c++){
+    result.push([]);
+    for(var r=N-1;r>=0;r--){
+      result[c].push(shape[r][c]);
+    }
+  }
+  return result;
+}
+
+function tetCollide(piece,board,ox,oy){
+  ox=ox||0;oy=oy||0;
+  for(var r=0;r<piece.shape.length;r++){
+    for(var c=0;c<piece.shape[r].length;c++){
+      if(!piece.shape[r][c]) continue;
+      var nx=piece.x+c+ox;
+      var ny=piece.y+r+oy;
+      if(nx<0||nx>=TET.COLS||ny>=TET.ROWS) return true;
+      if(ny>=0&&board[ny][nx]) return true;
+    }
+  }
+  return false;
+}
+
+function tetLock(){
+  var p=TET.piece;
+  for(var r=0;r<p.shape.length;r++){
+    for(var c=0;c<p.shape[r].length;c++){
+      if(!p.shape[r][c]) continue;
+      var ny=p.y+r;
+      if(ny<0){tetGameOver();return;}
+      TET.board[ny][p.x+c]=p.color;
+    }
+  }
+  tetSound('lock');
+  tetClearLines();
+  TET.piece=TET.nextPiece;
+  TET.nextPiece=tetRandomPiece();
+  TET.lockTimer=0;
+  TET.lockReset=false;
+  if(tetCollide(TET.piece,TET.board)){tetGameOver();}
+  tetDrawNext();
+}
+
+function tetClearLines(){
+  var cleared=0;
+  for(var r=TET.ROWS-1;r>=0;r--){
+    if(TET.board[r].every(function(c){return c!==0;})){
+      TET.board.splice(r,1);
+      TET.board.unshift(new Array(TET.COLS).fill(0));
+      cleared++;r++;
+    }
+  }
+  if(cleared){
+    TET.combo++;
+    var base=TET_SCORE[cleared]*TET.level;
+    // Back-to-back tetris bonus
+    if(cleared===4){
+      if(TET.lastTetris) base=Math.round(base*1.5);
+      TET.lastTetris=true;
+    } else {
+      TET.lastTetris=false;
+    }
+    // Combo bonus
+    if(TET.combo>0) base+=50*TET.combo*TET.level;
+    TET.score+=base;
+    TET.lines+=cleared;
+    TET.level=Math.floor(TET.lines/10)+1;
+    TET.dropInterval=Math.max(100,800-((TET.level-1)*70));
+    tetSound('clear');
+  } else {
+    TET.combo=-1;
+    TET.lastTetris=false;
+  }
+  if(TET.score>TET.highScore) TET.highScore=TET.score;
+}
+
+function tetGhostY(){
+  var p=TET.piece;
+  var gy=p.y;
+  while(!tetCollide(p,TET.board,0,gy-p.y+1)) gy++;
+  return gy;
+}
+
+function tetHardDrop(){
+  var p=TET.piece;
+  var gy=tetGhostY();
+  var dist=gy-p.y;
+  p.y=gy;
+  TET.score+=dist*2;
+  tetLock();
+  tetSound('drop');
+}
+
+function tetSoftDrop(){
+  if(!tetCollide(TET.piece,TET.board,0,1)){
+    TET.piece.y++;
+    TET.score+=1;
+    TET.lastDrop=performance.now();
+  }
+}
+
+function tetMoveLeft(){
+  if(!tetCollide(TET.piece,TET.board,-1,0)){
+    TET.piece.x--;
+    tetResetLock();
+    tetSound('move');
+  }
+}
+function tetMoveRight(){
+  if(!tetCollide(TET.piece,TET.board,1,0)){
+    TET.piece.x++;
+    tetResetLock();
+    tetSound('move');
+  }
+}
+
+function tetRotatePiece(){
+  var p=TET.piece;
+  var rotated=tetRotate(p.shape);
+  var old=p.shape;
+  p.shape=rotated;
+  // Wall kick — try offsets
+  var kicks=[0,-1,1,-2,2];
+  var kicked=false;
+  for(var i=0;i<kicks.length;i++){
+    if(!tetCollide(p,TET.board,kicks[i],0)){
+      p.x+=kicks[i];
+      kicked=true;
+      break;
+    }
+  }
+  if(!kicked) p.shape=old;
+  else{ tetResetLock(); tetSound('rotate'); }
+}
+
+function tetResetLock(){
+  if(tetCollide(TET.piece,TET.board,0,1)){
+    TET.lockTimer=0; // reset lock delay on move
+  }
+}
+
+function tetGameOver(){
+  TET.state='gameover';
+  if(TET.score>TET.highScore){
+    TET.highScore=TET.score;
+    localStorage.setItem('xcl_tetris_high',TET.highScore);
+  }
+  localStorage.removeItem('xcl_tetris_save');
+  if(TET.rafId){cancelAnimationFrame(TET.rafId);TET.rafId=null;}
+  tetShowOverlay('GAME OVER','Score: '+TET.score+' · Press R to restart');
+  tetSound('gameover');
+}
+
+// ── Sound ─────────────────────────────────────────────────────────────────────
+var TET_AUDIO=null;
+function tetSound(type){
+  try{
+    if(!TET_AUDIO) TET_AUDIO=new(window.AudioContext||window.webkitAudioContext)();
+    var ctx=TET_AUDIO;
+    if(ctx.state==='suspended') ctx.resume();
+    var g=ctx.createGain();g.connect(ctx.destination);
+    var o=ctx.createOscillator();o.connect(g);
+    if(type==='move'){
+      o.frequency.value=220;g.gain.setValueAtTime(0.05,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.05);
+      o.start();o.stop(ctx.currentTime+0.05);
+    } else if(type==='rotate'){
+      o.frequency.value=330;g.gain.setValueAtTime(0.06,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.07);
+      o.start();o.stop(ctx.currentTime+0.07);
+    } else if(type==='lock'){
+      o.type='square';o.frequency.value=150;
+      g.gain.setValueAtTime(0.1,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.15);
+      o.start();o.stop(ctx.currentTime+0.15);
+    } else if(type==='drop'){
+      o.type='square';
+      o.frequency.setValueAtTime(300,ctx.currentTime);
+      o.frequency.setValueAtTime(150,ctx.currentTime+0.05);
+      g.gain.setValueAtTime(0.15,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);
+      o.start();o.stop(ctx.currentTime+0.12);
+    } else if(type==='clear'){
+      [261,329,392,523].forEach(function(f,i){
+        var o2=ctx.createOscillator();var g2=ctx.createGain();
+        o2.connect(g2);g2.connect(ctx.destination);
+        o2.frequency.value=f;g2.gain.setValueAtTime(0.12,ctx.currentTime+i*0.06);
+        g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.06+0.2);
+        o2.start(ctx.currentTime+i*0.06);o2.stop(ctx.currentTime+i*0.06+0.2);
+      });
+      return;
+    } else if(type==='gameover'){
+      [523,392,329,261,196].forEach(function(f,i){
+        var o2=ctx.createOscillator();var g2=ctx.createGain();
+        o2.type='sawtooth';o2.connect(g2);g2.connect(ctx.destination);
+        o2.frequency.value=f;g2.gain.setValueAtTime(0.15,ctx.currentTime+i*0.12);
+        g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.12+0.25);
+        o2.start(ctx.currentTime+i*0.12);o2.stop(ctx.currentTime+i*0.12+0.25);
+      });
+      return;
+    }
+  }catch(e){}
+}
+
+// ── Drawing ───────────────────────────────────────────────────────────────────
+function tetDrawBlock(ctx,x,y,color,alpha){
+  var B=TET.BLOCK;
+  ctx.globalAlpha=alpha||1;
+  ctx.fillStyle=color;
+  ctx.fillRect(x*B+1,y*B+1,B-2,B-2);
+  // Highlight
+  ctx.fillStyle='rgba(255,255,255,0.25)';
+  ctx.fillRect(x*B+1,y*B+1,B-2,4);
+  ctx.fillRect(x*B+1,y*B+1,4,B-2);
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.3)';
+  ctx.fillRect(x*B+1,y*B+B-5,B-2,4);
+  ctx.fillRect(x*B+B-5,y*B+1,4,B-2);
+  ctx.globalAlpha=1;
+}
+
+function tetDraw(){
+  var ctx=TET.ctx;
+  var B=TET.BLOCK;
+  // Background
+  ctx.fillStyle='#0a0a0a';
+  ctx.fillRect(0,0,TET.COLS*B,TET.ROWS*B);
+  // Grid lines
+  ctx.strokeStyle='#1a1a1a';ctx.lineWidth=1;
+  for(var r=0;r<TET.ROWS;r++){
+    ctx.beginPath();ctx.moveTo(0,r*B);ctx.lineTo(TET.COLS*B,r*B);ctx.stroke();
+  }
+  for(var c=0;c<TET.COLS;c++){
+    ctx.beginPath();ctx.moveTo(c*B,0);ctx.lineTo(c*B,TET.ROWS*B);ctx.stroke();
+  }
+
+  // Board
+  for(var row=0;row<TET.ROWS;row++){
+    for(var col=0;col<TET.COLS;col++){
+      if(TET.board[row][col]){
+        tetDrawBlock(ctx,col,row,TET.board[row][col]);
+      }
+    }
+  }
+
+  // Ghost piece
+  if(TET.piece&&TET.state==='playing'){
+    var gy=tetGhostY();
+    for(var pr=0;pr<TET.piece.shape.length;pr++){
+      for(var pc=0;pc<TET.piece.shape[pr].length;pc++){
+        if(TET.piece.shape[pr][pc]){
+          tetDrawBlock(ctx,TET.piece.x+pc,gy+pr,TET.piece.color,0.2);
+        }
+      }
+    }
+    // Current piece
+    for(var pr2=0;pr2<TET.piece.shape.length;pr2++){
+      for(var pc2=0;pc2<TET.piece.shape[pr2].length;pc2++){
+        if(TET.piece.shape[pr2][pc2]){
+          var by=TET.piece.y+pr2;
+          if(by>=0) tetDrawBlock(ctx,TET.piece.x+pc2,by,TET.piece.color);
+        }
+      }
+    }
+  }
+
+  // HUD
+  document.getElementById('tet-score').textContent=TET.score.toString().padStart(6,'0');
+  document.getElementById('tet-lines').textContent=TET.lines;
+  document.getElementById('tet-level').textContent=TET.level;
+  document.getElementById('tet-high').textContent=TET.highScore.toString().padStart(6,'0');
+}
+
+function tetDrawNext(){
+  if(!TET.nextCanvas||!TET.nextPiece) return;
+  var ctx=TET.nextCtx;
+  var B=TET.BLOCK;
+  ctx.fillStyle='#111';
+  ctx.fillRect(0,0,TET.nextCanvas.width,TET.nextCanvas.height);
+  var p=TET.nextPiece;
+  var rows=p.shape.length,cols=p.shape[0].length;
+  var ox=Math.floor((4-cols)/2),oy=Math.floor((4-rows)/2);
+  for(var r=0;r<rows;r++){
+    for(var c=0;c<cols;c++){
+      if(p.shape[r][c]){
+        var bx=(ox+c)*B*0.85+4;
+        var by=(oy+r)*B*0.85+4;
+        ctx.fillStyle=p.color;
+        ctx.fillRect(bx+1,by+1,B*0.85-2,B*0.85-2);
+        ctx.fillStyle='rgba(255,255,255,0.25)';
+        ctx.fillRect(bx+1,by+1,B*0.85-2,3);
+      }
+    }
+  }
+}
+
+function tetShowOverlay(msg,sub){
+  var ov=document.getElementById('tetris-overlay');
+  var msgEl=document.getElementById('tetris-msg');
+  var subEl=document.getElementById('tetris-sub');
+  if(ov){ov.style.display='flex';}
+  if(msgEl)msgEl.textContent=msg;
+  if(subEl)subEl.textContent=sub||'';
+}
+function tetHideOverlay(){
+  var ov=document.getElementById('tetris-overlay');
+  if(ov)ov.style.display='none';
+}
+
+// ── Game loop ─────────────────────────────────────────────────────────────────
+function tetLoop(ts){
+  TET.rafId=requestAnimationFrame(tetLoop);
+  if(TET.state!=='playing'){tetDraw();return;}
+
+  var delta=ts-(TET.lastTime||ts);
+  TET.lastTime=ts;
+
+  // Auto drop
+  if(ts-TET.lastDrop>TET.dropInterval){
+    TET.lastDrop=ts;
+    if(!tetCollide(TET.piece,TET.board,0,1)){
+      TET.piece.y++;
+    } else {
+      // Start lock delay
+      TET.lockTimer+=delta;
+      if(TET.lockTimer>=TET.lockDelay){
+        tetLock();
+      }
+    }
+  } else if(tetCollide(TET.piece,TET.board,0,1)){
+    TET.lockTimer+=delta;
+    if(TET.lockTimer>=TET.lockDelay){
+      tetLock();
+    }
+  }
+
+  tetDraw();
+}
+
+// ── Input ─────────────────────────────────────────────────────────────────────
+var TET_KEYS={};
+var TET_REPEAT={};
+var TET_REPEAT_DELAY=150;
+var TET_REPEAT_RATE=50;
+
+function tetKeyDown(e){
+  if(TET_KEYS[e.code]) return;
+  TET_KEYS[e.code]=true;
+
+  if(e.code==='Escape'){closeTetris();return;}
+  if(TET.state==='resumeprompt'){
+    if(e.code==='KeyN'){ tetStartGame(); return; }
+    else { tetLoadSave(); return; }
+  }
+  if(e.code==='KeyP'||e.code==='Escape'){
+    if(TET.state==='playing'){
+      TET.state='paused';
+      tetShowOverlay('PAUSED','Press P to resume');
+    } else if(TET.state==='paused'){
+      TET.state='playing';
+      tetHideOverlay();
+      TET.lastTime=0;
+    }
+    return;
+  }
+  if(TET.state!=='playing') return;
+
+  if(TET_AUDIO&&TET_AUDIO.state==='suspended') TET_AUDIO.resume();
+
+  switch(e.code){
+    case 'ArrowLeft': case 'KeyA': e.preventDefault(); tetMoveLeft(); tetSetRepeat(tetMoveLeft); break;
+    case 'ArrowRight':case 'KeyD': e.preventDefault(); tetMoveRight(); tetSetRepeat(tetMoveRight); break;
+    case 'ArrowDown': case 'KeyS': e.preventDefault(); tetSoftDrop(); tetSetRepeat(tetSoftDrop); break;
+    case 'ArrowUp':   case 'KeyW': e.preventDefault(); tetRotatePiece(); break;
+    case 'Space': e.preventDefault(); tetHardDrop(); break;
+  }
+}
+
+function tetKeyUp(e){
+  TET_KEYS[e.code]=false;
+  tetClearRepeat(e.code);
+}
+
+function tetSetRepeat(fn){
+  if(TET_REPEAT._timeout) clearTimeout(TET_REPEAT._timeout);
+  if(TET_REPEAT._interval) clearInterval(TET_REPEAT._interval);
+  TET_REPEAT._fn=fn;
+  TET_REPEAT._timeout=setTimeout(function(){
+    TET_REPEAT._interval=setInterval(function(){
+      if(TET.state==='playing') fn();
+    },TET_REPEAT_RATE);
+  },TET_REPEAT_DELAY);
+}
+
+function tetClearRepeat(){
+  clearTimeout(TET_REPEAT._timeout);
+  clearInterval(TET_REPEAT._interval);
+  TET_REPEAT._timeout=null;
+  TET_REPEAT._interval=null;
+}
+
+// ── Start/Open/Close ──────────────────────────────────────────────────────────
+function tetStartGame(){
+  tetInitBoard();
+  TET.score=0;TET.lines=0;TET.level=1;
+  TET.dropInterval=800;TET.lastDrop=0;TET.lastTime=0;
+  TET.lockTimer=0;TET.combo=-1;TET.lastTetris=false;
+  TET.piece=tetRandomPiece();
+  TET.nextPiece=tetRandomPiece();
+  TET.state='playing';
+  tetHideOverlay();
+  tetDrawNext();
+  if(TET.rafId){cancelAnimationFrame(TET.rafId);TET.rafId=null;}
+  TET.rafId=requestAnimationFrame(tetLoop);
+}
+
+function tetSaveGame(){
+  if(TET.state==='idle'||TET.state==='gameover') return;
+  // Pause first
+  if(TET.state==='playing'){
+    TET.state='paused';
+    tetShowOverlay('PAUSED','Game saved — press P to resume');
+  }
+  var saveData={
+    board:TET.board,
+    piece:{shape:TET.piece.shape,color:TET.piece.color,name:TET.piece.name,x:TET.piece.x,y:TET.piece.y},
+    nextPiece:{shape:TET.nextPiece.shape,color:TET.nextPiece.color,name:TET.nextPiece.name,x:TET.nextPiece.x,y:TET.nextPiece.y},
+    score:TET.score,lines:TET.lines,level:TET.level,
+    highScore:TET.highScore,
+    dropInterval:TET.dropInterval,
+    combo:TET.combo,lastTetris:TET.lastTetris,
+    savedAt:Date.now()
+  };
+  localStorage.setItem('xcl_tetris_save',JSON.stringify(saveData));
+  _showToast('💾 Game saved','ok',1800);
+}
+
+function tetLoadSave(){
+  try{
+    var raw=localStorage.getItem('xcl_tetris_save');
+    if(!raw) return false;
+    var data=JSON.parse(raw);
+    TET.board=data.board;
+    TET.piece=data.piece;
+    TET.nextPiece=data.nextPiece;
+    TET.score=data.score;TET.lines=data.lines;TET.level=data.level;
+    TET.highScore=Math.max(data.highScore||0,TET.highScore);
+    TET.dropInterval=data.dropInterval||800;
+    TET.combo=data.combo||-1;TET.lastTetris=!!data.lastTetris;
+    TET.lockTimer=0;TET.lastDrop=0;TET.lastTime=0;
+    TET.state='paused';
+    tetDrawNext();
+    tetShowOverlay('GAME RESUMED','Press P or any key to continue');
+    if(TET.rafId){cancelAnimationFrame(TET.rafId);TET.rafId=null;}
+    TET.rafId=requestAnimationFrame(tetLoop);
+    return true;
+  }catch(e){return false;}
+}
+
+function openTetris(){
+  var modal=document.getElementById('tetris-modal');
+  TET.canvas=document.getElementById('tetris-canvas');
+  TET.ctx=TET.canvas.getContext('2d');
+  TET.nextCanvas=document.getElementById('tetris-next');
+  TET.nextCtx=TET.nextCanvas.getContext('2d');
+  TET.highScore=parseInt(localStorage.getItem('xcl_tetris_high')||'0');
+  modal.style.display='flex';
+  document.addEventListener('keydown',tetKeyDown);
+  document.addEventListener('keyup',tetKeyUp);
+  // Try to resume saved game
+  var hasSave=localStorage.getItem('xcl_tetris_save');
+  if(hasSave){
+    tetInitBoard();
+    tetDraw();
+    tetShowOverlay('RESUME GAME?','P / any key = Resume · N = New Game');
+    TET.state='resumeprompt';
+    if(TET.rafId){cancelAnimationFrame(TET.rafId);TET.rafId=null;}
+    TET.rafId=requestAnimationFrame(tetLoop);
+  } else {
+    tetStartGame();
+  }
+}
+
+function closeTetris(){
+  document.getElementById('tetris-modal').style.display='none';
+  if(TET.rafId){cancelAnimationFrame(TET.rafId);TET.rafId=null;}
+  tetClearRepeat();
+  document.removeEventListener('keydown',tetKeyDown);
+  document.removeEventListener('keyup',tetKeyUp);
+  TET.state='idle';
+}
+
 
 function toggleCalc(){
   var p = document.getElementById('calc-panel');
@@ -8559,6 +9415,314 @@ function setCbTypeFilter(t){
     el.classList.toggle('active', el.dataset.type===t);
   });
   renderCallbacksTab();
+}
+
+// ── Follow-Ups Sub-tabs ──────────────────────────────────────────────────────
+var _fuSubtab = 'callbacks';
+var _xmFilter = 'all';
+
+function switchFuSubtab(tab){
+  _fuSubtab = tab;
+  ['callbacks','mobile'].forEach(function(t){
+    var st = document.getElementById('fu-stab-'+t);
+    var pn = document.getElementById('fu-panel-'+t);
+    if(st) st.classList.toggle('active', t===tab);
+    if(pn) pn.style.display = t===tab ? 'block' : 'none';
+  });
+  if(tab==='mobile') renderMobileLines();
+}
+
+function setXmFilter(f){
+  _xmFilter = f;
+  ['all','pending','snoozed','activated'].forEach(function(k){
+    var btn = document.getElementById('xmf-'+k);
+    if(!btn) return;
+    var active = k===f;
+    btn.style.background = active ? 'var(--blue)' : 'transparent';
+    btn.style.color = active ? '#fff' : 'var(--text3)';
+  });
+  renderMobileLines();
+}
+
+function xmIsActivated(line){ return !!line.activated; }
+function xmIsSnoozed(line){
+  if(!line.snoozeUntil) return false;
+  if(line.snoozeUntil === 'indefinite') return true;
+  return new Date(line.snoozeUntil) > new Date();
+}
+function xmIsPending(line){ return !xmIsActivated(line) && !xmIsSnoozed(line); }
+
+function xmActivateLine(callId, lineId){
+  var c = calls.find(function(x){ return x.id===callId; });
+  if(!c||!c.xmLines) return;
+  var line = c.xmLines.find(function(l){ return l.id===lineId; });
+  if(line){ line.activated = true; line.snoozeUntil = ''; }
+  upsertCallToSheets(c);
+  renderMobileLines();
+}
+
+function xmDeactivateLine(callId, lineId){
+  var c = calls.find(function(x){ return x.id===callId; });
+  if(!c||!c.xmLines) return;
+  var line = c.xmLines.find(function(l){ return l.id===lineId; });
+  if(line){ line.activated = false; }
+  upsertCallToSheets(c);
+  renderMobileLines();
+}
+
+function xmSnoozeLine(callId, lineId, until){
+  var c = calls.find(function(x){ return x.id===callId; });
+  if(!c||!c.xmLines) return;
+  var line = c.xmLines.find(function(l){ return l.id===lineId; });
+  if(line){ line.snoozeUntil = until; line.activated = false; }
+  upsertCallToSheets(c);
+  renderMobileLines();
+}
+
+function xmUnsnoozeLine(callId, lineId){
+  var c = calls.find(function(x){ return x.id===callId; });
+  if(!c||!c.xmLines) return;
+  var line = c.xmLines.find(function(l){ return l.id===lineId; });
+  if(line){ line.snoozeUntil = ''; }
+  upsertCallToSheets(c);
+  renderMobileLines();
+}
+
+function xmSnoozeAll(callId, until){
+  var c = calls.find(function(x){ return x.id===callId; });
+  if(!c||!c.xmLines) return;
+  c.xmLines.forEach(function(l){
+    if(!xmIsActivated(l)){ l.snoozeUntil = until; }
+  });
+  upsertCallToSheets(c);
+  renderMobileLines();
+}
+
+function xmSnoozeAllMenu(callId, btnEl){
+  var existing = document.getElementById('xm-snooze-menu');
+  if(existing){ existing.remove(); if(existing._cid===callId&&!existing._lid) return; }
+
+  var now = new Date();
+  var tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
+  var threeDays = new Date(now); threeDays.setDate(threeDays.getDate()+3);
+  var oneWeek = new Date(now); oneWeek.setDate(oneWeek.getDate()+7);
+  var fmt = function(d){ return d.toISOString().split('T')[0]; };
+
+  var menu = document.createElement('div');
+  menu.id = 'xm-snooze-menu';
+  menu._cid = callId;
+  menu.style.cssText = 'position:fixed;z-index:9999;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:2px;min-width:170px';
+
+  var opts = [
+    ['Tomorrow', fmt(tomorrow)],
+    ['3 Days', fmt(threeDays)],
+    ['1 Week', fmt(oneWeek)],
+    ['Until I Unsnooze', 'indefinite'],
+  ];
+
+  opts.forEach(function(o){
+    var btn2 = document.createElement('button');
+    btn2.textContent = '💤 ' + o[0];
+    btn2.style.cssText = 'text-align:left;padding:7px 10px;background:none;border:none;border-radius:7px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer';
+    btn2.onmouseover = function(){ this.style.background='var(--surface)'; };
+    btn2.onmouseout  = function(){ this.style.background='none'; };
+    btn2.onclick = function(e){ e.stopPropagation(); menu.remove(); xmSnoozeAll(callId, o[1]); };
+    menu.appendChild(btn2);
+  });
+
+  var r = btnEl.getBoundingClientRect();
+  menu.style.top  = (r.bottom+4)+'px';
+  menu.style.right = (window.innerWidth-r.right)+'px';
+  document.body.appendChild(menu);
+
+  setTimeout(function(){
+    document.addEventListener('click', function _close(){
+      menu.remove();
+      document.removeEventListener('click', _close);
+    });
+  }, 50);
+}
+
+function xmSnoozeMenu(callId, lineId, btnEl){
+  // Remove any existing snooze menu
+  var existing = document.getElementById('xm-snooze-menu');
+  if(existing){ existing.remove(); if(existing._cid===callId&&existing._lid===lineId) return; }
+
+  var now = new Date();
+  var tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
+  var threeDays = new Date(now); threeDays.setDate(threeDays.getDate()+3);
+  var oneWeek = new Date(now); oneWeek.setDate(oneWeek.getDate()+7);
+  var fmt = function(d){ return d.toISOString().split('T')[0]; };
+
+  var menu = document.createElement('div');
+  menu.id = 'xm-snooze-menu';
+  menu._cid = callId; menu._lid = lineId;
+  menu.style.cssText = 'position:fixed;z-index:9999;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:2px;min-width:160px';
+
+  var opts = [
+    ['Tomorrow', fmt(tomorrow)],
+    ['3 Days', fmt(threeDays)],
+    ['1 Week', fmt(oneWeek)],
+    ['Until I Unsnooze', 'indefinite'],
+  ];
+
+  opts.forEach(function(o){
+    var btn2 = document.createElement('button');
+    btn2.textContent = '💤 ' + o[0];
+    btn2.style.cssText = 'text-align:left;padding:7px 10px;background:none;border:none;border-radius:7px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer';
+    btn2.onmouseover = function(){ this.style.background='var(--surface)'; };
+    btn2.onmouseout  = function(){ this.style.background='none'; };
+    btn2.onclick = function(e){ e.stopPropagation(); menu.remove(); xmSnoozeLine(callId, lineId, o[1]); };
+    menu.appendChild(btn2);
+  });
+
+  // Position near button
+  var r = btnEl.getBoundingClientRect();
+  menu.style.top  = (r.bottom+4)+'px';
+  menu.style.left = (r.left)+'px';
+  document.body.appendChild(menu);
+
+  // Close on outside click
+  setTimeout(function(){
+    document.addEventListener('click', function _close(){
+      menu.remove();
+      document.removeEventListener('click', _close);
+    });
+  }, 50);
+}
+
+function renderMobileLines(){
+  var container = document.getElementById('xm-lines-cards');
+  var subtitle  = document.getElementById('xm-tab-subtitle');
+  if(!container) return;
+
+  var xmCalls = calls.filter(function(c){ return c.xm > 0 && c.xmLines && c.xmLines.length; });
+
+  var filtered = xmCalls.filter(function(c){
+    if(_xmFilter==='all') return true;
+    return c.xmLines.some(function(l){
+      if(_xmFilter==='pending')   return xmIsPending(l);
+      if(_xmFilter==='snoozed')   return xmIsSnoozed(l);
+      if(_xmFilter==='activated') return xmIsActivated(l);
+      return true;
+    });
+  });
+
+  var sortSel = document.getElementById('xm-sort');
+  var sort = sortSel ? sortSel.value : 'sale-desc';
+  filtered.sort(function(a,b){
+    var aDate = a.ts instanceof Date ? a.ts : new Date(a.ts);
+    var bDate = b.ts instanceof Date ? b.ts : new Date(b.ts);
+    var aSchedDate = a.xmLines[0]&&a.xmLines[0].schedDate ? new Date(a.xmLines[0].schedDate) : aDate;
+    var bSchedDate = b.xmLines[0]&&b.xmLines[0].schedDate ? new Date(b.xmLines[0].schedDate) : bDate;
+    if(sort==='sale-desc') return bDate-aDate;
+    if(sort==='sale-asc')  return aDate-bDate;
+    if(sort==='sched-asc') return aSchedDate-bSchedDate;
+    if(sort==='sched-desc') return bSchedDate-aSchedDate;
+    return 0;
+  });
+
+  if(_xmFilter==='all'){
+    filtered.sort(function(a,b){
+      return b.xmLines.some(xmIsPending) - a.xmLines.some(xmIsPending);
+    });
+  }
+
+  var totalLines=0, pendingLines=0, activatedLines=0;
+  xmCalls.forEach(function(c){
+    c.xmLines.forEach(function(l){
+      totalLines++;
+      if(xmIsActivated(l)) activatedLines++;
+      else pendingLines++;
+    });
+  });
+
+  if(subtitle) subtitle.textContent = totalLines+' lines · '+pendingLines+' pending · '+activatedLines+' activated';
+
+  if(!filtered.length){
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">'+(xmCalls.length?'No lines match this filter':'No mobile sales logged yet')+'</div>';
+    return;
+  }
+
+  var fmtDate = function(d){
+    if(!d) return '—';
+    var dt = d instanceof Date ? d : new Date(d);
+    if(isNaN(dt)) return '—';
+    return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+  };
+
+  container.innerHTML = filtered.map(function(c){
+    var saleDate  = c.ts instanceof Date ? c.ts : new Date(c.ts);
+    var hasPend   = c.xmLines.some(xmIsPending);
+    var allAct    = c.xmLines.every(xmIsActivated);
+    var pendCount = c.xmLines.filter(xmIsPending).length;
+    var actCount  = c.xmLines.filter(xmIsActivated).length;
+    var snzCount  = c.xmLines.filter(xmIsSnoozed).length;
+    var totalL    = c.xmLines.length;
+    var maskedAcct = maskAcct(c.acctRaw||c.acct||'');
+    var borderColor = hasPend?'var(--amber)':allAct?'var(--green)':'var(--text3)';
+
+    // Summary chips
+    var chips = '';
+    if(pendCount) chips += '<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.3)">⚠ '+pendCount+' pending</span> ';
+    if(snzCount)  chips += '<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--surface);color:var(--text3);border:1px solid var(--border2)">💤 '+snzCount+'</span> ';
+    if(actCount)  chips += '<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.25)">✓ '+actCount+'</span> ';
+
+    // Line rows (hidden by default)
+    var lineRows = c.xmLines.filter(function(l){
+      if(_xmFilter==='all') return true;
+      if(_xmFilter==='pending')   return xmIsPending(l);
+      if(_xmFilter==='snoozed')   return xmIsSnoozed(l);
+      if(_xmFilter==='activated') return xmIsActivated(l);
+      return true;
+    }).map(function(l, li){
+      var activated = xmIsActivated(l);
+      var snoozed   = xmIsSnoozed(l);
+      var pending   = xmIsPending(l);
+      var statusCls = activated?'activated':snoozed?'snoozed':'pending';
+      var statusTxt = activated?'✓ Activated':snoozed?'💤 Snoozed':'⚠ Pending';
+      var snoozeLabel = snoozed&&l.snoozeUntil&&l.snoozeUntil!=='indefinite'?' until '+fmtDate(l.snoozeUntil):'';
+
+      var actions = '';
+      if(pending){
+        actions += '<button onclick="event.stopPropagation();xmActivateLine('+c.id+','+l.id+')" style="height:26px;padding:0 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--green);cursor:pointer;white-space:nowrap">Activated?</button>';
+        actions += '<button onclick="event.stopPropagation();xmSnoozeMenu('+c.id+','+l.id+',this)" style="height:26px;padding:0 8px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;color:var(--text3);cursor:pointer">💤</button>';
+      } else if(snoozed){
+        actions += '<button onclick="event.stopPropagation();xmUnsnoozeLine('+c.id+','+l.id+')" style="height:26px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap">Wake</button>';
+        actions += '<button onclick="event.stopPropagation();xmActivateLine('+c.id+','+l.id+')" style="height:26px;padding:0 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--green);cursor:pointer;white-space:nowrap">Activated?</button>';
+      } else {
+        actions += '<button onclick="event.stopPropagation();xmDeactivateLine('+c.id+','+l.id+')" style="height:26px;padding:0 8px;background:transparent;border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer">✗ Undo</button>';
+      }
+
+      return '<div class="xm-line-row" style="display:flex;align-items:center;gap:8px;padding:8px 14px 8px 20px;border-top:1px solid var(--border);background:var(--surface)">'+
+        '<span style="font-size:10px;font-weight:700;color:var(--text3);min-width:44px">Line '+(li+1)+'</span>'+
+        '<span style="font-size:11px;font-family:var(--mono);color:var(--text2);flex:1">'+(l.schedDate?fmtDate(l.schedDate):'No sched')+'</span>'+
+        '<span class="xm-status-badge '+statusCls+'">'+statusTxt+snoozeLabel+'</span>'+
+        '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0">'+actions+'</div>'+
+      '</div>';
+    }).join('');
+
+    return '<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid '+borderColor+';border-radius:10px;margin-bottom:6px;overflow:hidden">'+
+      '<div onclick="var exp=this.parentElement.querySelector(\'.xm-expand\');exp.style.display=exp.style.display===\'none\'?\'\':\'none\';this.querySelector(\'.xm-chevron\').textContent=exp.style.display===\'none\'?\'▶\':\'▼\'" title="Click to expand" style="display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;user-select:none">'+
+        '<span class="xm-chevron" style="font-size:9px;color:var(--text3);flex-shrink:0">▶</span>'+
+        '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);cursor:pointer" onclick="event.stopPropagation();copyAcct(\''+((c.acctRaw||c.acct||'').replace(/'/g,"\\'"))+'\')" title="Click to copy account #">'+maskedAcct+'</span>'+
+        '<span style="font-size:9px;font-weight:700;color:var(--text3)">'+totalL+' line'+(totalL!==1?'s':'')+'</span>'+
+        '<div style="display:flex;gap:4px;align-items:center">'+chips+'</div>'+
+        '<div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">'+
+          (hasPend?'<button onclick="event.stopPropagation();xmSnoozeAllMenu('+c.id+',this)" style="height:24px;padding:0 8px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;color:var(--text3);cursor:pointer" title="Snooze all pending lines">💤</button>':'')+
+          '<span style="font-size:10px;color:var(--text3);font-family:var(--mono)">'+fmtDate(saleDate)+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="xm-expand" style="display:none">'+lineRows+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function copyAcct(acct){
+  if(!acct) return;
+  navigator.clipboard.writeText(acct).then(function(){
+    _showToast('📋 Account # copied','ok',1500);
+  }).catch(function(){});
 }
 
 function renderCallbacksTab(){
@@ -8765,9 +9929,7 @@ function renderCallbacksTab(){
         saleBtn.style.cssText='height:28px;padding:0 14px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--amber);cursor:pointer';
         saleBtn.dataset.cbid=c.id;
         saleBtn.onclick=function(){
-          var id=parseInt(this.dataset.cbid);
-          window._editSaleToday=true; // flag: set sched to today on save
-          openEdit(id);
+          logCallbackSale(parseInt(this.dataset.cbid));
         };
         btns.appendChild(saleBtn);
       }
@@ -8945,7 +10107,7 @@ function updateWindowTitle(){
     var fi = getActiveFiscalInfo();
     var todayCalls = calls.filter(function(c){
       var d = new Date(c.ts);
-      return d.toDateString() === now.toDateString() && inActiveFiscalTs(c.ts);
+      return d.toDateString() === now.toDateString() && inActiveFiscalTs(c.ts) && !c.cbSale;
     });
     var totalCalls   = todayCalls.length;
     var chsiCalls    = todayCalls.filter(function(c){ return c.chsi; }).length;
@@ -9420,6 +10582,7 @@ function launchFireworks(isXm,isTest){
   <div class="edit-panel-footer">
     <button class="submit-btn" id="edit-save-btn" onclick="saveEdit()">✓ Save Changes</button>
     <button class="e-btn cancel" onclick="closeEdit()" style="height:38px;padding:0 18px">Cancel</button>
+    <button id="edit-cb-sale-btn" onclick="toggleCbSaleIntent()" style="display:none;height:38px;padding:0 16px;background:transparent;border:2px solid #f97316;border-radius:8px;font-size:11px;font-weight:700;color:#f97316;cursor:pointer;margin-left:24px;align-items:center;justify-content:center;gap:6px;transition:all .15s">💰 Callback Sale Made</button>
     <button class="e-btn del" id="edit-del-btn" style="height:38px;padding:0 18px;margin-left:auto">Delete Call</button>
   </div>
 </div>
@@ -9495,5 +10658,58 @@ function launchFireworks(isXm,isTest){
   </div>
 </div>
 
+
+
+
+<!-- ══ TETRIS EASTER EGG ══ -->
+<div id="tetris-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.92);align-items:center;justify-content:center">
+  <div style="display:flex;gap:16px;align-items:flex-start">
+    <!-- Game board -->
+    <div style="background:#000;border:2px solid #333;border-radius:8px;padding:8px;position:relative">
+      <canvas id="tetris-canvas" width="200" height="400" style="display:block"></canvas>
+      <div id="tetris-overlay" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);border-radius:6px">
+        <div style="text-align:center;font-family:monospace">
+          <div id="tetris-msg" style="font-size:22px;font-weight:700;color:#ff0;margin-bottom:12px"></div>
+          <div id="tetris-sub" style="font-size:13px;color:#aaa"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Side panel -->
+    <div style="display:flex;flex-direction:column;gap:12px;font-family:monospace;color:#fff;min-width:100px">
+      <div>
+        <div style="font-size:10px;color:#888;letter-spacing:.1em">SCORE</div>
+        <div id="tet-score" style="font-size:22px;font-weight:700;color:#ff0">0</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#888;letter-spacing:.1em">LINES</div>
+        <div id="tet-lines" style="font-size:18px;font-weight:700">0</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#888;letter-spacing:.1em">LEVEL</div>
+        <div id="tet-level" style="font-size:18px;font-weight:700">1</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#888;letter-spacing:.1em;margin-bottom:4px">NEXT</div>
+        <canvas id="tetris-next" width="80" height="80" style="background:#111;border:1px solid #333;border-radius:4px"></canvas>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#888;letter-spacing:.1em;margin-bottom:4px">HIGH</div>
+        <div id="tet-high" style="font-size:14px;color:#aaa">0</div>
+      </div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+        <button onclick="tetStartGame()" style="padding:6px 10px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-family:monospace;font-size:11px;font-weight:700;color:#60a5fa;cursor:pointer">NEW GAME</button>
+        <button onclick="tetSaveGame()" style="padding:6px 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:6px;font-family:monospace;font-size:11px;font-weight:700;color:#4ade80;cursor:pointer">SAVE</button>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:#555;line-height:1.8">
+        ←→ Move<br>
+        ↑ Rotate<br>
+        ↓ Soft drop<br>
+        Space Hard drop<br>
+        P Pause<br>
+        ESC Close
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
