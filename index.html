@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Call Logger v0.4.29.1</title>
+<title>Call Logger v0.4.29.2</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -911,7 +911,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <body>
 <div class="header">
   <!-- Left: logo + name + fiscal pill -->
-  <div class="brand" style="flex:1;display:flex;align-items:center;gap:6px"><div class="brand-logo" id="brand-logo-btn" onclick="eggClick()" style="cursor:pointer"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name" style="margin-left:-4px"><span data-tip="XCL v0.4.29.1">Call Logger</span></div><div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer;margin-left:4px" data-tip="Click to open fiscal calendar">…</div></div>
+  <div class="brand" style="flex:1;display:flex;align-items:center;gap:6px"><div class="brand-logo" id="brand-logo-btn" onclick="eggClick()" style="cursor:pointer"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name" style="margin-left:-4px"><span data-tip="XCL v0.4.29.2">Call Logger</span></div><div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer;margin-left:4px" data-tip="Click to open fiscal calendar">…</div></div>
   <!-- Center: countdown -->
   <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;pointer-events:auto">
     <div style="position:relative">
@@ -3569,7 +3569,7 @@ function renderReadRow(c){
     }
   }
   if(c.hasSale && c.xm === 0 && c.noXmReason){
-    outcomePills += ` <span class="pill p-other"><span style="color:var(--red);font-weight:700">No XM</span> · ${c.noXmReason}</span>`;
+    outcomePills += ` <span class="pill p-other"><span style="color:var(--red);font-weight:700;margin-right:4px">No XM</span>· ${c.noXmReason}</span>`;
   }
 
   const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'||(c.fuType&&!c.cbDone)?' has-callback':'');
@@ -4961,6 +4961,18 @@ function normalizeCall(sc){
   if(!sc.cbOriginId) sc.cbOriginId = '';
   if(typeof sc.backdated==='string') sc.backdated=sc.backdated==='true';
   else sc.backdated=!!sc.backdated;
+  // Normalize xmLines — ensure activated is boolean not string, snoozeUntil is string
+  if(Array.isArray(sc.xmLines)){
+    sc.xmLines.forEach(function(l){
+      if(typeof l.activated === 'string') l.activated = l.activated === 'true';
+      else l.activated = !!l.activated;
+      if(l.snoozeUntil === undefined || l.snoozeUntil === null) l.snoozeUntil = '';
+    });
+  } else if(typeof sc.xmLines === 'string' && sc.xmLines.trim()){
+    try { sc.xmLines = JSON.parse(sc.xmLines); } catch(e) { sc.xmLines = []; }
+  } else if(!sc.xmLines){
+    sc.xmLines = [];
+  }
   // Normalize sched to YYYY-MM-DD — Sheets may return M/D/YYYY or other formats
   if(sc.sched && typeof sc.sched === 'string' && sc.sched.trim()){
     const raw = sc.sched.trim();
@@ -5030,6 +5042,8 @@ function loadFromSheets(){
 
     calls = [...localMap.values()].sort((a,b) => new Date(b.ts) - new Date(a.ts));
     render(); updateStats(); buildFilterOptions();
+    renderCallbacksTab();
+    renderMobileLines();
     saveCallsCache();
     buildFiscalHistoryDropdown();
 
