@@ -10303,6 +10303,13 @@ function renderMobileLines(){
     });
   });
 
+  // DIAGNOSTIC — open browser console (F12) to see this output
+  console.log('[XCL Mobile Lines] filter='+_xmFilter+' xmCalls='+xmCalls.length+' filtered='+filtered.length);
+  if(xmCalls.length > 0){
+    var s = xmCalls[0];
+    console.log('[XCL Mobile Lines] first call id='+s.id+' xm='+s.xm+' xmLines='+JSON.stringify(s.xmLines && s.xmLines.slice ? s.xmLines.slice(0,2) : s.xmLines)+' cbSale='+s.cbSale);
+  }
+
   var sortSel = document.getElementById('xm-sort');
   var sort = sortSel ? sortSel.value : 'sale-desc';
   filtered.sort(function(a,b){
