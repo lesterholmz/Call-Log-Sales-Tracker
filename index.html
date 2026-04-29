@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="XCL">
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=720">
-<title>Call Logger v0.4.28.1</title>
+<title>Call Logger v0.4.29.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -229,6 +229,8 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 @keyframes fadeUp{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── Settings ── */
+@keyframes dqBadgePop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+.tab-btn.tab-dragging{opacity:.5;transform:scale(0.95);transition:none!important}
 .gear-btn{background:none;border:none;cursor:pointer;font-size:16px;padding:0 2px;opacity:.5;transition:opacity .2s;line-height:1}
 .gear-btn:hover{opacity:1}
 #settings-panel{display:none;position:absolute;top:52px;right:0;bottom:0;width:360px;background:var(--card);border-left:1px solid var(--border);z-index:300;box-shadow:-4px 0 24px rgba(0,0,0,.4);flex-direction:column}
@@ -485,6 +487,7 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 /* ── Job Aid sub-tabs ── */
 .ja-panel{display:none}
 .ja-panel.active{display:block}
+#japanel-discovery.active{display:flex;flex-direction:column;height:calc(100vh - 146px);overflow:hidden}
 
 /* ── Key Phrases ── */
 .kp-section{margin-bottom:22px}
@@ -908,7 +911,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <body>
 <div class="header">
   <!-- Left: logo + name + fiscal pill -->
-  <div class="brand" style="flex:1;display:flex;align-items:center;gap:6px"><div class="brand-logo" id="brand-logo-btn" onclick="eggClick()" style="cursor:pointer"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name" style="margin-left:-4px"><span data-tip="XCL v0.4.28.1">Call Logger</span></div><div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer;margin-left:4px" data-tip="Click to open fiscal calendar">…</div></div>
+  <div class="brand" style="flex:1;display:flex;align-items:center;gap:6px"><div class="brand-logo" id="brand-logo-btn" onclick="eggClick()" style="cursor:pointer"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name" style="margin-left:-4px"><span data-tip="XCL v0.4.29.1">Call Logger</span></div><div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer;margin-left:4px" data-tip="Click to open fiscal calendar">…</div></div>
   <!-- Center: countdown -->
   <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;pointer-events:auto">
     <div style="position:relative">
@@ -1421,20 +1424,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
           <div class="bug-num">③</div>
           <div class="bug-body">
             <div class="bug-title">Dispute Reconciliation <span class="bug-badge">Planned</span></div>
-            <div class="bug-desc">A dedicated tab for reconciling disputed charges and credits against your logged sales, with side-by-side comparison and notes for escalation.</div>
-          </div>
-        </div>
-        <div class="bug-item bug-coming">
-          <div class="bug-num">④</div>
-          <div class="bug-body">
-            <div class="bug-title">Multi-User Sheets Sync <span class="bug-badge">In Progress</span></div>
-        </div>
-        <div class="bug-item bug-coming">
-          <div class="bug-num">⑤</div>
-          <div class="bug-body">
-            
-          </div>
-            <div class="bug-desc">User accounts and data scoping will be handled by Sales ID. Reps enter Sales ID only — no PIN, full access to their own data. Supervisors and Admins enter Sales ID + PIN which gates the Team tab and User Management only. CORS restrictions from local file usage are blocking Sheets user writes — resolved once hosted on HTTPS.</div>
+            <div class="bug-desc">Full reconciliation workflow in the Disputes tab — side-by-side comparison of logged sales vs. reported credits, with notes and escalation support.</div>
           </div>
         </div>
       </div>
@@ -1525,10 +1515,16 @@ body.tips-on [data-tip]:hover::after{opacity:1}
           title="Neutral">
         <div id="mood-thumb-emoji" style="position:absolute;font-size:18px;line-height:1;pointer-events:none;transform:translateX(-50%);left:50%;top:50%;margin-top:-9px;z-index:2" title="Neutral">😐</div>
       </div>
-      <!-- Play button + timer + clear -->
+      <!-- Play button + timer + backdate + clear -->
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto">
         <button id="call-start-btn" onclick="callStartTimer()" title="Press when call connects" class="call-start-grow" style="width:30px;height:30px;background:none;border:none;border-radius:50%;font-size:18px;color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:absolute;right:75px;top:50%;transform:translateY(-50%)">▶</button>
+        <button id="backdate-btn" onclick="toggleBackdate()" style="display:none;background:none;border:1px solid var(--border2);border-radius:8px;padding:3px 6px;font-size:14px;cursor:pointer;opacity:.5;transition:all .15s;line-height:1;flex-shrink:0" data-tip="Log a missed call&#10;Toggle on to set date &amp; time manually">📅</button>
         <span id="call-timer" style="display:none"></span>
+        <!-- Backdate inputs — shown when 📅 toggled, replaces timer -->
+        <div id="backdate-display" style="display:none;align-items:center;gap:6px">
+          <input type="date" id="backdate-date" style="height:24px;padding:0 6px;background:var(--surface);border:1px solid var(--amber);border-radius:7px;font-size:11px;font-weight:600;color:var(--text);outline:none;cursor:pointer;font-family:var(--mono)" onchange="updateClearVisibility()">
+          <input type="time" id="backdate-time" style="height:24px;padding:0 6px;background:var(--surface);border:1px solid var(--amber);border-radius:7px;font-size:11px;font-weight:600;color:var(--text);outline:none;cursor:pointer;font-family:var(--mono)" onchange="updateClearVisibility()">
+        </div>
         <div style="position:relative">
           <button id="form-clear-btn" onclick="handleClear()" title="Clear form" class="form-clear-grow" style="width:22px;height:22px;background:none;border:none;border-radius:50%;font-size:12px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;visibility:hidden">✕</button>
           <div id="clear-popover" style="display:none;position:absolute;right:0;top:32px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:999;min-width:160px;flex-direction:column;gap:6px"><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:0 4px 4px;border-bottom:1px solid var(--border2);margin-bottom:2px">Clear what?</div><button onclick="clearTimerOnly()" id="clear-timer-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='none'">⏱ Reset Timer</button><button onclick="clearFormOnly()" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">🗑 Clear Form</button><button onclick="clearBoth()" id="clear-both-btn" style="width:100%;text-align:left;padding:6px 8px;background:none;border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">⏱🗑 Clear Both</button></div>
@@ -1624,7 +1620,7 @@ Click to select category + sub-reason" onclick="event.stopPropagation();toggleNo
           <!-- Right: sale display / pill space + actions -->
           <div class="frow-notes-actions" style="display:flex;flex-direction:column;align-self:stretch;gap:6px;flex:1;min-width:0;overflow:hidden;padding-bottom:3px">
             <!-- Sale/outcome display area -->
-            <div id="sale-display" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:60px;text-align:center;overflow:hidden">
+            <div id="sale-display" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:60px;text-align:center;overflow:hidden;position:relative">
               <!-- Sale: big play name -->
               <div id="play-display" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;text-align:center">
                 <div id="play-display-name" style="font-family:'Orbitron',var(--mono);font-size:16px;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;opacity:.9;white-space:nowrap"></div>
@@ -1724,12 +1720,13 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 <div class="tab-panel" id="panel-jobaid">
   <!-- ── Job Aid sub-tab bar (drag to reorder) ── -->
   <div id="ja-tab-bar" style="background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 24px;gap:2px">
-    <button class="tab-btn active" id="jatab-tips"    data-ja="tips"     draggable="false">💡 Sales Tips</button>
-    <button class="tab-btn"        id="jatab-phrases" data-ja="phrases"  draggable="false">🗣 Key Phrases</button>
+    <button class="tab-btn active" id="jatab-discovery" data-ja="discovery" draggable="false">🔍 Discovery</button>
+    <button class="tab-btn"        id="jatab-tips"      data-ja="tips"      draggable="false">💡 Sales Tips</button>
+    <button class="tab-btn"        id="jatab-phrases"   data-ja="phrases"   draggable="false">🗣 Key Phrases</button>
   </div>
 
   <!-- ── Sales Tips ── -->
-  <div class="ja-panel active" id="japanel-tips">
+  <div class="ja-panel" id="japanel-tips">
     <div class="main">
       <div class="form-card">
         <div class="form-header"><div class="form-header-title">💡 Sales Tips</div></div>
@@ -1788,7 +1785,6 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">With Premium Unlimited for just $10 more, you can upgrade your device anytime with a guaranteed discount, get 4K video, international calling, and spam protection.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Connect to the most reliable 5G network and get superfast WiFi in millions of locations nationwide.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">You&#39;re covered nationwide with 5G, 4G LTE, and millions of secure Xfinity WiFi hotspots — all in one powerful network.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Who&#39;s your current mobile provider? And what does ___ lines of (that provider) cost nowadays?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
           </div>
 
           <!-- TV & STREAMING -->
@@ -1801,7 +1797,6 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Take your entertainment everywhere and on any device with the Xfinity Stream app.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">For just $20 per month, stream 125+ live TV and OnDemand channels and get Peacock Premium included with NOW TV.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get hundreds of live channels, on-demand movies, and your favorite apps all in one place with Xumo Stream Box.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Any must-have sports or shows? I&#39;m looking for suggestions — what are you watching now?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
           </div>
 
           <!-- HOME SOLUTIONS -->
@@ -1812,7 +1807,6 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get peace of mind with 24/7 on-demand urgent response, so you can get help when you need it.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Control sensors, lights, locks, and thermostats all in one place with the Xfinity app.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
 <div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Get even more peace of mind with 24/7 professional monitoring from Xfinity Home Security.</span><span class="kp-tag kp-tag-pitch">Pitch</span></div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Any home security systems? How do you protect your home?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
           </div>
 
           <!-- VOICE -->
@@ -1827,12 +1821,6 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
           <!-- DISCOVERY -->
           <div class="kp-section">
             <div class="kp-lob-header" style="color:var(--text2)">🔍 Discovery Questions (All LOBs)</div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Besides you, who else will be using the services inside the home?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Any kids? How old?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Do you own or rent your home?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">What might a typical day of using Xfinity services look like?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">Any gamers? Any streaming?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
-<div class="kp-row"><span class="kp-bullet">›</span><span class="kp-text">What devices will you be connecting to the WiFi? Any cellphones, smartwatches, or tablets?</span><span class="kp-tag kp-tag-disc">Discover</span></div>
           </div>
 
           <!-- TACTICAL LISTENING -->
@@ -1857,7 +1845,136 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
     </div>
   </div>
 
-</div>
+  <!-- ── Discovery Questions ── -->
+  <div class="ja-panel active" id="japanel-discovery">
+    <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+
+      <!-- Top header: LOB title + view toggle -->
+      <div id="dq-right-header" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid var(--border);flex-shrink:0">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="dq-right-emoji" style="font-size:20px"></span>
+          <span id="dq-right-title" style="font-size:13px;font-weight:700"></span>
+        </div>
+        <div style="display:flex;background:var(--surface);border:1px solid var(--border2);border-radius:8px;overflow:hidden">
+          <button id="dq-view-disc" onclick="dqSetView('disc')" style="padding:5px 12px;border:none;font-size:11px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff;font-family:var(--sans);transition:all .15s">🔍 Discovery</button>
+          <button id="dq-view-kp" onclick="dqSetView('kp')" style="padding:5px 12px;border:none;font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);font-family:var(--sans);transition:all .15s">🗣 Phrases</button>
+        </div>
+      </div>
+
+      <!-- Middle: LOB buttons + scrollable content -->
+      <div style="flex:1;display:flex;overflow:hidden;min-height:0">
+
+        <!-- LEFT: LOB selector -->
+        <div style="width:84px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;padding:8px 6px;border-right:1px solid var(--border);overflow-y:auto">
+          <div onclick="dqSelectLob('internet')" id="dq-sel-internet" style="background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(37,99,235,.4)" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div id="dq-badge-internet" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
+            <div style="font-size:30px;line-height:1">🌐</div>
+            <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Internet</div>
+          </div>
+          <div onclick="dqSelectLob('tv')" id="dq-sel-tv" style="background:linear-gradient(135deg,#4a1d96,#7c3aed);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(124,58,237,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div id="dq-badge-tv" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
+            <div style="font-size:30px;line-height:1">📺</div>
+            <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">TV</div>
+          </div>
+          <div onclick="dqSelectLob('security')" id="dq-sel-security" style="background:linear-gradient(135deg,#7f1d1d,#dc2626);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(220,38,38,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div id="dq-badge-security" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
+            <div style="font-size:30px;line-height:1">🏠</div>
+            <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Security</div>
+          </div>
+          <div onclick="dqSelectLob('voice')" id="dq-sel-voice" style="background:linear-gradient(135deg,#78350f,#d97706);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(217,119,6,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div id="dq-badge-voice" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
+            <div style="font-size:30px;line-height:1">📞</div>
+            <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Voice</div>
+          </div>
+          <div onclick="dqSelectLob('mobile')" id="dq-sel-mobile" style="background:linear-gradient(135deg,#0f4c4c,#0d9488);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(13,148,136,.4);opacity:.6;border:2px solid rgba(255,255,255,.12)" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div id="dq-badge-mobile" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
+            <div style="font-size:30px;line-height:1">📱</div>
+            <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Mobile</div>
+            <div style="font-size:8px;font-weight:800;color:rgba(255,255,255,.7);background:rgba(0,0,0,.2);padding:1px 5px;border-radius:10px">XM</div>
+          </div>
+
+          <!-- Sub-LOBs -->
+          <div onclick="dqSelectLob('wearables')" id="dq-sel-wearables" style2removed style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:5px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='wearables'?'1':'.6'">
+            <div id="dq-badge-wearables" style="display:none;position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;padding:0 2px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
+            <div style="font-size:18px;line-height:1">⌚</div>
+            <div style="font-size:7px;font-weight:600;color:var(--text2);text-align:center;line-height:1.2">Wearables</div>
+          </div>
+
+          <!-- Tablets -->
+          <div onclick="dqSelectLob('tablets')" id="dq-sel-tablets" style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:5px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='tablets'?'1':'.6'">
+            <div id="dq-badge-tablets" style="display:none;position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;padding:0 2px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
+            <div style="font-size:18px;line-height:1">📋</div>
+            <div style="font-size:7px;font-weight:600;color:var(--text2);text-align:center;line-height:1.2">Tablets</div>
+          </div>
+
+          <!-- Storm-Ready WiFi -->
+          <div onclick="dqSelectLob('storm')" id="dq-sel-storm" style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:5px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='storm'?'1':'.6'">
+            <div id="dq-badge-storm" style="display:none;position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;padding:0 2px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
+            <div style="font-size:18px;line-height:1">⛈️</div>
+            <div style="font-size:7px;font-weight:600;color:var(--text2);text-align:center;line-height:1.2">Storm-Ready</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Scrollable content -->
+        <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0">
+          <div id="dq-right-kp"   style="flex:1;overflow-y:auto;padding:10px 14px;display:none;flex-direction:column;gap:6px"></div>
+          <div id="dq-right-disc" style="flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
+      </div><!-- end middle row -->
+
+      <!-- FOOTER: Sticky to bottom of panel -->
+      <div style="position:sticky;bottom:0;border-top:2px solid var(--border);flex-shrink:0;background:var(--card2);z-index:10;position:relative">
+        <div style="display:flex;position:relative">
+          <button id="dq-edit-btn" onclick="dqToggleEdit()" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:14px;cursor:pointer;opacity:.25;transition:opacity .2s;padding:3px;border-radius:5px;line-height:1;z-index:1" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity=_dqEditMode?'1':'.25'" data-tip="Edit questions &amp; phrases">✏️</button>
+          <!-- Openers & General -->
+          <div style="flex:1;padding:10px 16px;border-right:1px solid var(--border)">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--green);text-transform:uppercase;margin-bottom:6px">👋 Openers &amp; General</div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:11px;color:var(--text);line-height:1.4">› I appreciate the call — we have wonderful promotions going on right now.</div>
+              <div style="font-size:11px;color:var(--text);line-height:1.4">› How can I help today?</div>
+              <div style="font-size:11px;color:var(--text);line-height:1.4">› Great news — right now we have some incredible promotions, including a free line of Xfinity Mobile for a year with most of our internet promotions.</div>
+            </div>
+          </div>
+          <!-- Tactical Listening -->
+          <div style="flex:1;padding:10px 16px">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--blue);text-transform:uppercase;margin-bottom:6px">👂 Tactical Listening</div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:11px;color:var(--text);line-height:1.4">› Stay focused — avoid interrupting.</div>
+              <div style="font-size:11px;color:var(--text);line-height:1.4">› Detect needs that align with Xfinity features.</div>
+              <div style="font-size:11px;color:var(--text);line-height:1.4">› Paraphrase key points to show understanding.</div>
+              <div style="font-size:11px;color:var(--text);line-height:1.4">› Mirror customer language to personalize your pitch.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Compliance line — full width, centered -->
+        <div style="border-top:1px solid var(--border);padding:7px 16px;text-align:center;background:rgba(59,130,246,.06)">
+          <button id="broadband-label-btn" onclick="toggleBroadbandLabel(this)" style="background:none;border:2px solid var(--blue);border-radius:8px;padding:5px 18px;font-size:12px;font-weight:600;color:var(--blue);font-style:italic;cursor:pointer;transition:all .15s;position:relative" data-active="0" data-tip="A Broadband Label shows speeds, pricing, data&#10;allowances and network management policies.&#10;Required disclosure for new internet customers.">We also keep a breakdown of features for our internet and mobile plans at xfinity.com/labels.</button>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end japanel-discovery -->
+
+  <!-- Discovery Modal -->
+  <div id="dq-modal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);align-items:center;justify-content:center" onclick="if(event.target===this)dqCloseModal()">
+    <div style="background:var(--card);border-radius:16px;width:90%;max-width:480px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.4)">
+      <!-- Modal header -->
+      <div id="dq-modal-header" style="display:flex;align-items:center;gap:12px;padding:16px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0">
+        <span id="dq-modal-emoji" style="font-size:28px"></span>
+        <div style="flex:1">
+          <div id="dq-modal-title" style="font-size:14px;font-weight:700;color:var(--text)"></div>
+          <div id="dq-modal-sub" style="font-size:10px;color:var(--text3);margin-top:1px"></div>
+        </div>
+        <button onclick="dqCloseModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0">✕</button>
+      </div>
+      <!-- Questions list -->
+      <div id="dq-modal-list" style="overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+
+</div><!-- end panel-jobaid -->
+
 
 <!-- ══ TAB: CALL BACKS ══ -->
 <div class="tab-panel" id="panel-callbacks" style="display:none">
@@ -1918,7 +2035,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
           <button onclick="setXmFilter('all')" id="xmf-all" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff;transition:all .15s">All</button>
           <button onclick="setXmFilter('pending')" id="xmf-pending" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">⚠ Pending</button>
           <button onclick="setXmFilter('snoozed')" id="xmf-snoozed" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">💤 Snoozed</button>
-          <button onclick="setXmFilter('activated')" id="xmf-activated" style="padding:0 11px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Activated?</button>
+          <button onclick="setXmFilter('activated')" id="xmf-activated" style="padding:0 11px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Activated!</button>
         </div>
         <!-- Sort -->
         <select id="xm-sort" onchange="renderMobileLines()" style="height:30px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0 8px;color:var(--text2);outline:none;cursor:pointer">
@@ -2396,6 +2513,59 @@ function colorReason(){
   if(tog) tog.classList.toggle('active',_nsState!=='closed');
 }
 function getSvcs(){const s=[];if(xmVal>0)s.push('XM');if(prods.tv)s.push('TV');if(prods.chsi)s.push('CHSI');if(prods.cdv)s.push('CDV');if(prods.xh)s.push('XH');return s;}
+var _backdateActive = false;
+
+function toggleBackdate(){
+  _backdateActive = !_backdateActive;
+  var btn = document.getElementById('backdate-btn');
+  var disp = document.getElementById('backdate-display');
+  var timer = document.getElementById('call-timer');
+
+  if(_backdateActive){
+    btn.style.opacity = '1';
+    btn.style.background = 'rgba(245,158,11,.15)';
+    btn.style.border = '1px solid var(--amber)';
+    if(timer) timer.style.display = 'none';
+    if(disp) disp.style.display = 'flex';
+  } else {
+    btn.style.opacity = '0.5';
+    btn.style.background = 'none';
+    btn.style.border = '1px solid var(--border2)';
+    var dateEl = document.getElementById('backdate-date');
+    var timeEl = document.getElementById('backdate-time');
+    if(dateEl) dateEl.value = '';
+    if(timeEl) timeEl.value = '';
+    if(disp) disp.style.display = 'none';
+    if(timer && _callStartTime) timer.style.display = 'inline-flex';
+  }
+  updateClearVisibility();
+}
+
+function getCallTimestamp(){
+  if(_backdateActive){
+    var dateEl = document.getElementById('backdate-date');
+    var timeEl = document.getElementById('backdate-time');
+    var dateVal = dateEl ? dateEl.value : '';
+    var timeVal = timeEl ? timeEl.value : '';
+    if(dateVal){
+      var dt = new Date(dateVal + (timeVal ? 'T'+timeVal : 'T12:00'));
+      if(!isNaN(dt)) return dt;
+    }
+  }
+  return _callStartTime || new Date();
+}
+
+function showBackdateBtn(){
+  var btn = document.getElementById('backdate-btn');
+  if(btn) btn.style.display = 'inline-flex';
+}
+
+function hideBackdateBtn(){
+  var btn = document.getElementById('backdate-btn');
+  if(btn) btn.style.display = 'none';
+  if(_backdateActive) toggleBackdate();
+}
+
 function updatePlay(){
   const s=getSvcs();
   const hasXm = xmVal > 0;
@@ -2576,7 +2746,7 @@ function setMoodEdit(emoji){
 
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
 function compute(c){
-  if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:c.sched||'',activated:false}));
+  if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:'',activated:false,snoozeUntil:''}));
   if(c.xm>0&&c.baseRev===undefined) c.baseRev=Math.max(0,c.rev-(c.xm*XM_LINE_REV));
   const ie=c.ie||c.reason==='IE (.75)';
   c.chsiRgu=!c.chsi?0:ie?.75:1;
@@ -2644,7 +2814,7 @@ function doLogCall(){
   const cbPhone=document.getElementById('f-cb-phone').value.trim();
   const cbTime=(document.getElementById('f-cb-dt')&&document.getElementById('f-cb-dt').value)||'';
   const raw=document.getElementById('f-acct').value.trim();
-  const c=compute({id:Date.now(),ts:_callStartTime || new Date(),acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
+  const c=compute({id:Date.now(),ts:getCallTimestamp(),backdated:_backdateActive,acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim(),mood:getMood()});
   calls.unshift(c);render();updateStats();checkAlerts();upsertCallToSheets(c);
   var _wasSale=isSale(); var _wasXm=xmVal>0;
@@ -2656,6 +2826,8 @@ function doLogCall(){
   if(_wasSale) setTimeout(function(){ launchFireworks(_wasXm); },150);
 }
 function resetForm(){
+  hideBackdateBtn();
+  dqResetAll();
   // If form-body is inside the edit panel, move it back to the form-card first
   const editPanelBody = document.getElementById('edit-panel-body');
   const formCard = document.getElementById('new-call-form-card');
@@ -3136,8 +3308,8 @@ function saveEdit(){
   upsertCallToSheets(c);
   checkAlerts();
   saveCallsCache();
-  // Refresh follow-ups tab if active, or mark stale so it re-renders on next visit
-  if(_activeTab === 'callbacks') renderCallbacksTab();
+  renderCallbacksTab();
+  renderMobileLines();
 
   if(wasSaleMade){
     _showToast('💰 Sale recorded!', 'ok', 2500);
@@ -3287,7 +3459,8 @@ function promptMarkCbComplete(originId){
   document.getElementById('cb-complete-yes').onclick = function(){
     markCbDone(originId);
     modal.style.display = 'none';
-    if(_activeTab==='callbacks') renderCallbacksTab();
+    renderCallbacksTab();
+    renderMobileLines();
     _showToast('✓ Callback marked complete', 'ok', 2000);
   };
   document.getElementById('cb-complete-no').onclick = function(){
@@ -3350,6 +3523,8 @@ function renderReadRow(c){
 
   // Build separate pills for each element
   let outcomePills = '';
+  // Backdated badge
+  if(c.backdated) outcomePills += '<span style="font-size:11px" title="Backdated call">📅</span> ';
   // Callback sale badge — show first, before other pills
   if(c.cbSale){
     outcomePills += `<span class="pill" style="background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);color:#f97316;font-weight:700">📞 Callback Sale</span> `;
@@ -4315,6 +4490,7 @@ function callStartTimer(){
   if(_callStartTime !== null) return; // already running
   _callStartTime = new Date();
   _clearPressCount = 0;
+  showBackdateBtn();
   const btn = document.getElementById('call-start-btn');
   const timerEl = document.getElementById('call-timer');
   const startStr = _callStartTime.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
@@ -4783,6 +4959,8 @@ function normalizeCall(sc){
   if(typeof sc.cbSaleLogged === 'string') sc.cbSaleLogged = sc.cbSaleLogged === 'true';
   else sc.cbSaleLogged = !!sc.cbSaleLogged;
   if(!sc.cbOriginId) sc.cbOriginId = '';
+  if(typeof sc.backdated==='string') sc.backdated=sc.backdated==='true';
+  else sc.backdated=!!sc.backdated;
   // Normalize sched to YYYY-MM-DD — Sheets may return M/D/YYYY or other formats
   if(sc.sched && typeof sc.sched === 'string' && sc.sched.trim()){
     const raw = sc.sched.trim();
@@ -4983,7 +5161,7 @@ function switchTab(tab){
   });
   if(tab==='trends') renderTrends();
   if(tab==='reports') renderReports();
-  if(tab==='disputes') buildReconFiscalOptions();
+  if(tab==='jobaid') setTimeout(dqInitPanel, 50);
   if(tab==='callbacks'){
     var tr=document.getElementById('cb-type-filter-row');
     if(tr) delete tr.dataset.rendered;
@@ -6219,6 +6397,7 @@ function switchJaTab(t){
     btn.classList.toggle('active', id===t);
     document.getElementById('japanel-'+id).classList.toggle('active', id===t);
   });
+  if(t==='discovery') setTimeout(dqInitPanel, 50);
 }
 
 /* ── Job Aid tab drag-to-reorder ── */
@@ -7710,6 +7889,9 @@ function startSession(user){
   localStorage.setItem('xcl_session', JSON.stringify({agentId:user.agentId, ts:Date.now()}));
   // Persist agentId immediately so getCallsCacheKey() and getCbKey() work correctly
   localStorage.setItem('xcl_sales_id', user.agentId);
+  // Also populate Settings Sales ID field
+  var settingsIdEl = document.getElementById('s-sales-id');
+  if(settingsIdEl && !settingsIdEl.value) settingsIdEl.value = user.agentId;
   // Cache user locally
   const cached = JSON.parse(localStorage.getItem('xcl_user_cache')||'[]');
   const idx = cached.findIndex(function(u){ return u.agentId===user.agentId; });
@@ -9255,6 +9437,496 @@ function closeTetris(){
 }
 
 
+// ── Discovery Questions ──────────────────────────────────────────────────────
+var DQ_DATA = {
+  internet: {
+    emoji:'🌐', label:'Internet', color:'#2563eb',
+    questions:[
+      {text:"How are you currently connecting to the internet — cable, fiber, or DSL?", tip:"Understand current provider and tech"},
+      {text:"How satisfied are you with your current internet speed and reliability?", tip:"Surface pain points"},
+      {text:"Do you ever notice your internet slowing down at certain times of day?", tip:"Reveal congestion — speed upsell opener"},
+      {text:"How many people in your household use the internet at the same time?", tip:"Justify higher speed tiers"},
+      {text:"What are you mainly using the internet for — streaming, working from home, gaming, video calls?", tip:"Tailor pitch to usage"},
+      {text:"Do you work from home, or have kids doing school online?", tip:"Highlight reliability and speed needs"},
+      {text:"How many devices do you typically have connected at once?", tip:"Justify whole-home WiFi / XFi Gateway"},
+      {text:"Have you ever had issues with your WiFi not reaching certain rooms?", tip:"Open door for XFi pods"},
+    ],
+    phrases:[
+      {text:"Xfinity delivers the fastest internet speeds, with plans up to 2 Gbps.", tag:"Pitch"},
+      {text:"Our XFi Gateway gives you a powerful WiFi signal throughout your whole home.", tag:"Pitch"},
+      {text:"You'll get a free XFi Gateway — no need to buy or rent a separate router.", tag:"Pitch"},
+      {text:"Xfinity Internet comes with access to millions of WiFi hotspots nationwide.", tag:"Pitch"},
+      {text:"You can monitor and control your home network right from the Xfinity app.", tag:"Pitch"},
+    ]
+  },
+  mobile: {
+    emoji:'📱', label:'Mobile (XM)', color:'#0d9488',
+    questions:[
+      {text:"How many cell phones does your household use?", tip:"Identify line count opportunity"},
+      {text:"Who is your current cell phone carrier?", tip:"Know the competition"},
+      {text:"How happy are you with your current cell phone bill?", tip:"Surface price pain — XM is usually cheaper"},
+      {text:"Do you feel like you're getting the most out of your current plan?", tip:"Open door for switching conversation"},
+      {text:"Are you on a contract with your current carrier, or month to month?", tip:"Identify switching barriers"},
+      {text:"Have you heard that Xfinity Mobile runs on the largest and most reliable network in the country?", tip:"Credibility opener"},
+      {text:"Did you know Xfinity Mobile customers automatically connect to millions of Xfinity WiFi hotspots?", tip:"Unique value differentiator"},
+      {text:"If I could show you how to cut your phone bill without changing your number or phone, would that be worth a few minutes?", tip:"Powerful transition to pitch"},
+    ],
+    phrases:[
+      {text:"Xfinity Mobile runs on the nation's largest and most reliable 5G network.", tag:"Pitch"},
+      {text:"By the Gig plans mean you only pay for what you use — no wasted data.", tag:"Pitch"},
+      {text:"Unlimited data plans start at just $30/line when you have Xfinity Internet.", tag:"Pitch"},
+      {text:"You keep your number and your phone — switching is seamless.", tag:"Pitch"},
+      {text:"Xfinity Mobile customers save an average of $400 a year versus other carriers.", tag:"Pitch"},
+      {text:"You automatically connect to millions of Xfinity WiFi hotspots — no data used.", tag:"Pitch"},
+    ]
+  },
+  tv: {
+    emoji:'📺', label:'TV', color:'#7c3aed',
+    questions:[
+      {text:"What does a typical evening of TV watching look like in your house?", tip:"Understand usage patterns"},
+      {text:"Are you big sports fans? Do you watch live TV or mostly stream?", tip:"Live TV is a key differentiator"},
+      {text:"How many TVs do you have in your home?", tip:"Multi-room opportunity"},
+      {text:"Are you paying for multiple streaming services right now?", tip:"Bundle savings angle"},
+      {text:"Do you ever feel like you're paying too much just to watch what you want?", tip:"Price consolidation opener"},
+      {text:"Is there anything you wish you could watch but can't with your current setup?", tip:"Surface unmet needs"},
+    ],
+    phrases:[
+      {text:"Get one simple, all-in price for your TV and save $10/month as an Xfinity Internet customer.", tag:"Pitch"},
+      {text:"Your first 4K TV Box and award-winning voice remote is included.", tag:"Pitch"},
+      {text:"Record your favorite shows with up to 300 hours of DVR included.", tag:"Pitch"},
+      {text:"Take your entertainment everywhere with the Xfinity Stream app.", tag:"Pitch"},
+      {text:"For just $20/month, stream 125+ live TV and OnDemand channels with NOW TV.", tag:"Pitch"},
+    ]
+  },
+  security: {
+    emoji:'🏠', label:'Home Security', color:'#dc2626',
+    questions:[
+      {text:"Do you currently have any type of home security system?", tip:"Baseline — know if switching or adding"},
+      {text:"Do you travel or leave home for extended periods?", tip:"Remote monitoring value"},
+      {text:"Would it give you peace of mind to check in on your home from your phone?", tip:"Xfinity app differentiator"},
+      {text:"Are you paying a separate monthly monitoring fee right now?", tip:"Cost consolidation angle"},
+    ],
+    phrases:[
+      {text:"Control sensors, lights, locks, and thermostats all in one place with the Xfinity app.", tag:"Pitch"},
+      {text:"Get 24/7 professional monitoring from Xfinity Home Security.", tag:"Pitch"},
+      {text:"See and speak to visitors at your door from anywhere with smart doorbell cameras.", tag:"Pitch"},
+    ]
+  },
+  voice: {
+    emoji:'📞', label:'Home Phone', color:'#d97706',
+    questions:[
+      {text:"Do you still use a home phone, or have you gone fully mobile?", tip:"Qualify the need"},
+      {text:"Do you make a lot of international calls?", tip:"Highlight unlimited calling value"},
+      {text:"Would having a dedicated home number be useful for your household?", tip:"Business or family use case"},
+    ],
+    phrases:[
+      {text:"Stay connected with friends and family across the U.S. with unlimited nationwide calling.", tag:"Pitch"},
+      {text:"Voice Premier includes unlimited international calling to 30+ countries.", tag:"Pitch"},
+    ]
+  },
+  wearables: {
+    emoji:'⌚', label:'Wearables', color:'#6366f1',
+    questions:[
+      {text:"Do you or anyone in your household use a smartwatch?", tip:"Identify connected device opportunity"},
+      {text:"Does your smartwatch have its own cellular connection, or does it rely on your phone?", tip:"Open door for standalone smartwatch line"},
+      {text:"Have you ever wanted to leave your phone behind but keep your smartwatch connected?", tip:"Highlight smartwatch line independence"},
+      {text:"How often do you use your smartwatch for fitness tracking or notifications on the go?", tip:"Lifestyle fit for smartwatch line"},
+    ],
+    phrases:[
+      {text:"Xfinity Mobile supports smartwatch lines so your watch stays connected even without your phone.", tag:"Pitch"},
+      {text:"Adding a connected watch line is a simple way to stay reachable during workouts or errands.", tag:"Pitch"},
+      {text:"A watch line on Xfinity Mobile is one of the most affordable ways to stay connected on the go.", tag:"Pitch"},
+    ]
+  },
+  tablets: {
+    emoji:'📋', label:'Tablets', color:'#8b5cf6',
+    questions:[
+      {text:"Does anyone in your household use a tablet for school, work, or entertainment?", tip:"Identify tablet data needs"},
+      {text:"Is your tablet WiFi only, or does it have its own data connection?", tip:"Surface cellular tablet opportunity"},
+      {text:"Have you ever been somewhere and wished your tablet had internet without needing a hotspot?", tip:"Pain point for cellular tablet"},
+      {text:"Do your kids use a tablet for school or streaming at home or on the go?", tip:"Family use case"},
+    ],
+    phrases:[
+      {text:"Adding a tablet line to your Xfinity Mobile plan keeps everyone connected wherever they are.", tag:"Pitch"},
+      {text:"A connected tablet line means no more hunting for WiFi or burning through your phone's hotspot.", tag:"Pitch"},
+      {text:"Tablet lines on Xfinity Mobile are flexible — pay by the gig or go unlimited.", tag:"Pitch"},
+    ]
+  },
+  storm: {
+    emoji:'⛈️', label:'Storm-Ready WiFi', color:'#0ea5e9',
+    questions:[
+      {text:"We actually have something called Storm-Ready WiFi — have you ever lost internet during a storm or power outage?", tip:"Natural intro + pain point discovery"},
+      {text:"Storm-Ready WiFi keeps you online even when the power goes out — do you work from home or have devices that need to stay connected no matter what?", tip:"Transition into stakes"},
+      {text:"With Storm-Ready WiFi the backup kicks in automatically — how long does your internet typically take to come back after an outage?", tip:"Highlight reliability gap"},
+      {text:"Storm-Ready WiFi is great for smart home devices and security cameras — do you have anything at home that really can't afford to go offline?", tip:"Personalize the need"},
+    ],
+    phrases:[
+      {text:"Storm-Ready WiFi keeps you connected during power outages using a built-in cellular backup.", tag:"Pitch"},
+      {text:"With Storm-Ready WiFi, your home internet switches to backup automatically — no action needed.", tag:"Pitch"},
+      {text:"It's peace of mind — whether it's a storm, an outage, or just a blip, you stay online.", tag:"Pitch"},
+      {text:"Storm-Ready WiFi is especially valuable for home offices, security systems, and medical devices.", tag:"Pitch"},
+    ]
+  }
+};
+
+var _dqAsked = {internet:[],mobile:[],tv:[],security:[],voice:[],wearables:[],tablets:[],storm:[]};
+var _dqCurrentLob = 'internet';
+var _dqCurrentView = 'disc';
+
+function dqHasAsked(lob){ return _dqAsked[lob] && _dqAsked[lob].length > 0; }
+
+function dqSelectLob(lob){
+  _dqCurrentLob = lob;
+  var subLobs = ['wearables','tablets','storm'];
+  ['internet','tv','security','voice','mobile','wearables','tablets','storm'].forEach(function(k){
+    var btn = document.getElementById('dq-sel-'+k);
+    if(!btn) return;
+    var isActive = k===lob;
+    var isSub = subLobs.indexOf(k)>-1;
+    btn.style.opacity = isActive ? '1' : '.6';
+    if(!isSub){
+      btn.style.outline = isActive ? '2px solid rgba(255,255,255,.4)' : 'none';
+      btn.style.outlineOffset = '2px';
+    } else {
+      btn.style.borderColor = isActive ? (DQ_DATA[lob]?DQ_DATA[lob].color:'var(--blue)') : 'var(--border2)';
+      btn.style.background  = isActive ? 'rgba(99,102,241,.12)' : 'var(--surface)';
+    }
+  });
+  var data = DQ_DATA[lob];
+  if(!data) return;
+  var emojiEl = document.getElementById('dq-right-emoji');
+  var titleEl = document.getElementById('dq-right-title');
+  if(emojiEl) emojiEl.textContent = data.emoji;
+  if(titleEl){ titleEl.textContent = data.label; titleEl.style.color = data.color; }
+  dqRenderView();
+}
+
+function dqSetView(view){
+  _dqCurrentView = view;
+  var kpBtn   = document.getElementById('dq-view-kp');
+  var discBtn = document.getElementById('dq-view-disc');
+  if(kpBtn){   kpBtn.style.background   = view==='kp'   ? 'var(--blue)' : 'transparent'; kpBtn.style.color   = view==='kp'   ? '#fff' : 'var(--text3)'; }
+  if(discBtn){ discBtn.style.background = view==='disc' ? 'var(--blue)' : 'transparent'; discBtn.style.color = view==='disc' ? '#fff' : 'var(--text3)'; }
+  dqRenderView();
+}
+
+function dqRenderView(){
+  var lob = _dqCurrentLob;
+  var data = DQ_DATA[lob];
+  var kpPanel   = document.getElementById('dq-right-kp');
+  var discPanel = document.getElementById('dq-right-disc');
+  if(!kpPanel||!discPanel) return;
+
+  var type = _dqCurrentView==='kp' ? 'phrases' : 'questions';
+
+  if(_dqCurrentView==='kp'){
+    kpPanel.style.display='flex'; discPanel.style.display='none';
+    if(_dqEditMode){
+      kpPanel.innerHTML = dqRenderEditList(lob,'phrases');
+      setTimeout(function(){ dqInitDragSort(lob,'phrases'); }, 50);
+    } else {
+      kpPanel.innerHTML = data.phrases.map(function(p){
+        var tagColor = p.tag==='Pitch'?'var(--blue)':'var(--text3)';
+        var tagBg    = p.tag==='Pitch'?'rgba(59,130,246,.1)':'var(--surface)';
+        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--surface);border-radius:8px;border-left:2px solid '+tagColor+'">'+
+          '<span style="color:var(--text3);flex-shrink:0;margin-top:1px">›</span>'+
+          '<span style="font-size:11px;color:var(--text);flex:1;line-height:1.5;font-style:italic">'+p.text+'</span>'+
+          '<span style="font-size:9px;font-weight:700;color:'+tagColor+';background:'+tagBg+';padding:2px 7px;border-radius:20px;flex-shrink:0;white-space:nowrap">'+(p.tag||'').toUpperCase()+'</span>'+
+        '</div>';
+      }).join('');
+    }
+  } else {
+    kpPanel.style.display='none'; discPanel.style.display='flex';
+    if(_dqEditMode){
+      discPanel.innerHTML = dqRenderEditList(lob,'questions');
+      setTimeout(function(){ dqInitDragSort(lob,'questions'); }, 50);
+    } else {
+      var asked = _dqAsked[lob];
+      discPanel.innerHTML = data.questions.map(function(q, i){
+        var isAsked = asked.indexOf(i)>-1;
+        return '<button onclick="dqToggleQ(\''+lob+'\','+i+',this)" data-idx="'+i+'" style="width:100%;text-align:left;padding:11px 14px;border-radius:10px;border:2px solid '+(isAsked?data.color:'var(--border)')+';background:'+(isAsked?'color-mix(in srgb,'+data.color+' 12%,var(--surface))':'var(--surface)')+';cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px">'+
+          '<span style="font-size:16px;flex-shrink:0;margin-top:1px">'+(isAsked?'✅':'⬜')+'</span>'+
+          '<div style="flex:1"><div style="font-size:12px;font-weight:'+(isAsked?'700':'500')+';color:'+(isAsked?data.color:'var(--text)')+';line-height:1.4">'+q.text+'</div>'+
+          '<div style="font-size:10px;color:var(--text3);margin-top:3px;font-style:italic">'+q.tip+'</div></div>'+
+        '</button>';
+      }).join('');
+    }
+  }
+}
+
+function dqToggleQ(lob, idx, btn){
+  var data = DQ_DATA[lob];
+  var arr = _dqAsked[lob];
+  var pos = arr.indexOf(idx);
+  if(pos > -1) arr.splice(pos, 1);
+  else arr.push(idx);
+  var isAsked = arr.indexOf(idx) > -1;
+  btn.style.borderColor = isAsked ? data.color : 'var(--border)';
+  btn.style.background  = isAsked ? 'color-mix(in srgb,'+data.color+' 12%,var(--surface))' : 'var(--surface)';
+  var iconEl = btn.querySelector('span');
+  var textEl = btn.querySelector('div div');
+  if(iconEl) iconEl.textContent = isAsked ? '✅' : '⬜';
+  if(textEl){ textEl.style.color = isAsked ? data.color : 'var(--text)'; textEl.style.fontWeight = isAsked ? '700' : '500'; }
+  dqUpdateBadge(lob);
+}
+
+function dqUpdateBadge(lob){
+  var badge = document.getElementById('dq-badge-'+lob);
+  var asked = _dqAsked[lob].length;
+  if(badge){
+    if(asked > 0){ badge.style.display='flex'; badge.textContent='✓'; }
+    else badge.style.display='none';
+  }
+}
+
+function dqResetAll(){
+  Object.keys(_dqAsked).forEach(function(lob){
+    _dqAsked[lob] = [];
+    dqUpdateBadge(lob);
+  });
+  var btn = document.getElementById('broadband-label-btn');
+  if(btn){ btn.setAttribute('data-active','0'); btn.style.background='none'; btn.style.color='var(--blue)'; btn.style.fontStyle='italic'; }
+  if(_dqCurrentView==='disc') dqRenderView();
+}
+
+function dqInitPanel(){
+  dqLoadFromStorage();
+  dqSelectLob('internet');
+  dqSetView('disc');
+}
+
+var _dqEditMode = false;
+
+function toggleBroadbandLabel(btn){
+  var active = btn.getAttribute('data-active')==='1';
+  active = !active;
+  btn.setAttribute('data-active', active?'1':'0');
+  btn.style.background = active ? 'var(--blue)' : 'none';
+  btn.style.color = active ? '#fff' : 'var(--blue)';
+  btn.style.fontStyle = active ? 'normal' : 'italic';
+  btn.setAttribute('title', active ? '✓ Broadband label shared with customer' : '');
+}
+
+function dqToggleEdit(){
+  _dqEditMode = !_dqEditMode;
+  var btn = document.getElementById('dq-edit-btn');
+  if(btn){
+    btn.style.opacity = _dqEditMode ? '1' : '.25';
+    btn.style.background = _dqEditMode ? 'rgba(59,130,246,.15)' : 'none';
+    btn.title = _dqEditMode ? 'Exit edit mode' : 'Edit questions & phrases';
+  }
+  dqRenderView();
+}
+
+function dqSaveToStorage(){
+  try{ localStorage.setItem('xcl_dq_data', JSON.stringify(DQ_DATA)); }catch(e){}
+}
+
+function dqLoadFromStorage(){
+  try{
+    var saved = localStorage.getItem('xcl_dq_data');
+    if(!saved) return;
+    var parsed = JSON.parse(saved);
+    Object.keys(parsed).forEach(function(lob){
+      if(DQ_DATA[lob]){
+        if(parsed[lob].questions) DQ_DATA[lob].questions = parsed[lob].questions;
+        if(parsed[lob].phrases)   DQ_DATA[lob].phrases   = parsed[lob].phrases;
+      }
+    });
+  }catch(e){}
+}
+
+function dqRenderEditList(lob, type){
+  var data = DQ_DATA[lob];
+  var items = data[type];
+  var color = data.color;
+  var html = '<div id="dq-edit-list" style="display:flex;flex-direction:column;gap:6px;padding-bottom:8px">';
+  items.forEach(function(item, i){
+    var sub = type==='questions' ? item.tip : (item.tag||'');
+    html += '<div data-idx="'+i+'" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px">'+
+      '<span class="dq-drag-handle" style="font-size:14px;color:var(--text3);cursor:grab;flex-shrink:0;user-select:none" title="Drag to reorder">⠿</span>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:11px;font-weight:600;color:var(--text);line-height:1.4">'+item.text+'</div>'+
+        (sub?'<div style="font-size:10px;color:var(--text3);margin-top:2px;font-style:italic">'+sub+'</div>':'')+
+      '</div>'+
+      '<button onclick="dqDeleteItem(\''+lob+'\',\''+type+'\','+i+')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;line-height:1;opacity:.5" onmouseover="this.style.opacity=1;this.style.color=\'var(--red)\'" onmouseout="this.style.opacity=.5;this.style.color=\'var(--text3)\'">✕</button>'+
+    '</div>';
+  });
+  html += '</div>';
+  var placeholder = type==='questions' ? 'Add a discovery question...' : 'Add a phrase...';
+  html += '<div style="display:flex;gap:6px;padding-top:6px;border-top:1px solid var(--border)">'+
+    '<input id="dq-new-input" placeholder="'+placeholder+'" style="flex:1;height:32px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-size:11px;color:var(--text);outline:none;font-family:var(--sans)" onkeydown="if(event.key===\'Enter\')dqAddItem(\''+lob+'\',\''+type+'\')">'+
+    '<button onclick="dqAddItem(\''+lob+'\',\''+type+'\')" style="height:32px;padding:0 14px;background:'+color+';border:none;border-radius:7px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">+ Add</button>'+
+  '</div>';
+  return html;
+}
+
+function dqDeleteItem(lob, type, idx){
+  DQ_DATA[lob][type].splice(idx, 1);
+  if(type==='questions'){
+    _dqAsked[lob] = _dqAsked[lob].filter(function(i){ return i!==idx; }).map(function(i){ return i>idx?i-1:i; });
+    dqUpdateBadge(lob);
+  }
+  dqSaveToStorage();
+  dqRenderView();
+}
+
+function dqAddItem(lob, type){
+  var inp = document.getElementById('dq-new-input');
+  if(!inp||!inp.value.trim()) return;
+  if(type==='questions'){
+    DQ_DATA[lob].questions.push({text:inp.value.trim(), tip:''});
+  } else {
+    DQ_DATA[lob].phrases.push({text:inp.value.trim(), tag:'Pitch'});
+  }
+  dqSaveToStorage();
+  dqRenderView();
+}
+
+function dqInitDragSort(lob, type){
+  var container = document.getElementById('dq-edit-list');
+  if(!container) return;
+  var dragging = null;
+  container.querySelectorAll('[data-idx]').forEach(function(row){
+    var handle = row.querySelector('.dq-drag-handle');
+    if(!handle) return;
+    handle.addEventListener('mousedown', function(e){
+      e.preventDefault();
+      dragging = row;
+      row.style.opacity='0.5';
+      row.style.boxShadow='0 4px 16px rgba(0,0,0,.3)';
+      function onMove(e){
+        var siblings = Array.from(container.querySelectorAll('[data-idx]')).filter(function(r){return r!==dragging;});
+        var after = null;
+        siblings.forEach(function(s){ if(e.clientY>s.getBoundingClientRect().top+s.getBoundingClientRect().height/2) after=s; });
+        if(after) after.after(dragging); else if(siblings.length) siblings[0].before(dragging);
+      }
+      function onUp(){
+        row.style.opacity=''; row.style.boxShadow=''; dragging=null;
+        var newOrder=Array.from(container.querySelectorAll('[data-idx]')).map(function(r){ return DQ_DATA[lob][type][+r.getAttribute('data-idx')]; });
+        DQ_DATA[lob][type]=newOrder;
+        dqSaveToStorage(); dqRenderView();
+        document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp);
+      }
+      document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onUp);
+    });
+  });
+}
+
+// ── Main Tab Bar Drag-to-Reorder ─────────────────────────────────────────────
+(function(){
+  var LOCKED = 'tab-tracker';
+  var ORDER_KEY = 'xcl_tab_order';
+
+  function getBar(){ return document.querySelector('.tab-bar'); }
+
+  function saveOrder(){
+    var bar = getBar(); if(!bar) return;
+    var order = Array.from(bar.querySelectorAll('.tab-btn[id^="tab-"]')).map(function(b){ return b.id; });
+    localStorage.setItem(ORDER_KEY, JSON.stringify(order));
+  }
+
+  function loadOrder(){
+    try{
+      var saved = JSON.parse(localStorage.getItem(ORDER_KEY));
+      if(!saved||!saved.length) return;
+      var bar = getBar(); if(!bar) return;
+      var calc = bar.querySelector('.gear-btn');
+      saved.forEach(function(id){
+        if(id===LOCKED) return;
+        var btn = document.getElementById(id);
+        if(btn) bar.insertBefore(btn, calc||null);
+      });
+    }catch(e){}
+  }
+
+  function initDrag(){
+    var bar = getBar(); if(!bar) return;
+    var dragging = null;
+    var isDragging = false, holdTimer = null;
+    var startX, startY;
+
+    bar.querySelectorAll('.tab-btn[id^="tab-"]').forEach(function(btn){
+      if(btn.id === LOCKED){ btn.title='Tracker is always first'; return; }
+
+      btn.addEventListener('mousedown', function(e){
+        startX = e.clientX; startY = e.clientY;
+        isDragging = false;
+        holdTimer = setTimeout(function(){
+          isDragging = true;
+          startDrag(btn);
+        }, 350);
+      });
+      btn.addEventListener('touchstart', function(e){
+        var t = e.touches[0];
+        startX = t.clientX; startY = t.clientY;
+        isDragging = false;
+        holdTimer = setTimeout(function(){
+          isDragging = true;
+          startDrag(btn);
+        }, 350);
+      }, {passive:true});
+      btn.addEventListener('mouseup',    function(){ clearTimeout(holdTimer); });
+      btn.addEventListener('touchend',   function(){ clearTimeout(holdTimer); });
+      btn.addEventListener('mousemove',  function(e){ if(Math.abs(e.clientX-startX)>6||Math.abs(e.clientY-startY)>6) clearTimeout(holdTimer); });
+    });
+
+    function startDrag(btn){
+      dragging = btn;
+      btn.classList.add('tab-dragging');
+
+      function getTargetBtn(x){
+        var btns = Array.from(bar.querySelectorAll('.tab-btn[id^="tab-"]')).filter(function(b){ return b!==dragging&&b.id!==LOCKED; });
+        var target = null;
+        btns.forEach(function(b){
+          var rect = b.getBoundingClientRect();
+          var mid = rect.left + rect.width/2;
+          if(x > mid) target = b;
+        });
+        return target;
+      }
+
+      function onMove(e){
+        if(!isDragging) return;
+        var x = e.clientX || (e.touches&&e.touches[0].clientX);
+        if(!x) return;
+        var after = getTargetBtn(x);
+        var tracker = document.getElementById(LOCKED);
+        var calc = bar.querySelector('.gear-btn');
+        if(after){
+          after.after(dragging);
+        } else {
+          // Insert right after tracker
+          if(tracker) tracker.after(dragging);
+        }
+      }
+
+      function onUp(){
+        if(!dragging) return;
+        dragging.classList.remove('tab-dragging');
+        dragging = null; isDragging = false;
+        saveOrder();
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onUp);
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+      document.addEventListener('touchmove', onMove, {passive:true});
+      document.addEventListener('touchend', onUp);
+    }
+  }
+
+  function init(){
+    loadOrder();
+    initDrag();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 100);
+})();
+
 function toggleCalc(){
   var p = document.getElementById('calc-panel');
   if(!p) return;
@@ -9420,6 +10092,7 @@ function setCbTypeFilter(t){
 // ── Follow-Ups Sub-tabs ──────────────────────────────────────────────────────
 var _fuSubtab = 'callbacks';
 var _xmFilter = 'all';
+var _xmExpanded = new Set();
 
 function switchFuSubtab(tab){
   _fuSubtab = tab;
@@ -9457,6 +10130,7 @@ function xmActivateLine(callId, lineId){
   if(!c||!c.xmLines) return;
   var line = c.xmLines.find(function(l){ return l.id===lineId; });
   if(line){ line.activated = true; line.snoozeUntil = ''; }
+  _xmExpanded.add(callId);
   upsertCallToSheets(c);
   renderMobileLines();
 }
@@ -9596,7 +10270,14 @@ function renderMobileLines(){
   var subtitle  = document.getElementById('xm-tab-subtitle');
   if(!container) return;
 
-  var xmCalls = calls.filter(function(c){ return c.xm > 0 && c.xmLines && c.xmLines.length; });
+  var xmCalls = calls.filter(function(c){
+    if(!c.xm || c.xm <= 0) return false;
+    // Auto-create xmLines if missing (legacy calls or parse failure)
+    if(!c.xmLines || !c.xmLines.length){
+      c.xmLines = Array.from({length:c.xm}, function(_,i){ return {id:i+1, schedDate:'', activated:false, snoozeUntil:''}; });
+    }
+    return true;
+  });
 
   var filtered = xmCalls.filter(function(c){
     if(_xmFilter==='all') return true;
@@ -9685,11 +10366,11 @@ function renderMobileLines(){
 
       var actions = '';
       if(pending){
-        actions += '<button onclick="event.stopPropagation();xmActivateLine('+c.id+','+l.id+')" style="height:26px;padding:0 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--green);cursor:pointer;white-space:nowrap">Activated?</button>';
+        actions += '<button onclick="event.stopPropagation();xmActivateLine('+c.id+','+l.id+')" style="height:26px;padding:0 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--green);cursor:pointer;white-space:nowrap">Activated!</button>';
         actions += '<button onclick="event.stopPropagation();xmSnoozeMenu('+c.id+','+l.id+',this)" style="height:26px;padding:0 8px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;color:var(--text3);cursor:pointer">💤</button>';
       } else if(snoozed){
         actions += '<button onclick="event.stopPropagation();xmUnsnoozeLine('+c.id+','+l.id+')" style="height:26px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap">Wake</button>';
-        actions += '<button onclick="event.stopPropagation();xmActivateLine('+c.id+','+l.id+')" style="height:26px;padding:0 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--green);cursor:pointer;white-space:nowrap">Activated?</button>';
+        actions += '<button onclick="event.stopPropagation();xmActivateLine('+c.id+','+l.id+')" style="height:26px;padding:0 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:10px;font-weight:700;color:var(--green);cursor:pointer;white-space:nowrap">Activated!</button>';
       } else {
         actions += '<button onclick="event.stopPropagation();xmDeactivateLine('+c.id+','+l.id+')" style="height:26px;padding:0 8px;background:transparent;border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer">✗ Undo</button>';
       }
@@ -9702,18 +10383,20 @@ function renderMobileLines(){
       '</div>';
     }).join('');
 
+    var isExp = _xmExpanded.has(c.id);
     return '<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid '+borderColor+';border-radius:10px;margin-bottom:6px;overflow:hidden">'+
-      '<div onclick="var exp=this.parentElement.querySelector(\'.xm-expand\');exp.style.display=exp.style.display===\'none\'?\'\':\'none\';this.querySelector(\'.xm-chevron\').textContent=exp.style.display===\'none\'?\'▶\':\'▼\'" title="Click to expand" style="display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;user-select:none">'+
-        '<span class="xm-chevron" style="font-size:9px;color:var(--text3);flex-shrink:0">▶</span>'+
+      '<div onclick="var exp=this.parentElement.querySelector(\'.xm-expand\');var op=exp.style.display===\'none\';exp.style.display=op?\'\':\'none\';this.querySelector(\'.xm-chevron\').textContent=op?\'▼\':\'▶\';if(op)_xmExpanded.add('+c.id+');else _xmExpanded.delete('+c.id+');" title="Click to expand" style="display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;user-select:none">'+
+        '<span class="xm-chevron" style="font-size:9px;color:var(--text3);flex-shrink:0">'+(isExp?'▼':'▶')+'</span>'+
         '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);cursor:pointer" onclick="event.stopPropagation();copyAcct(\''+((c.acctRaw||c.acct||'').replace(/'/g,"\\'"))+'\')" title="Click to copy account #">'+maskedAcct+'</span>'+
         '<span style="font-size:9px;font-weight:700;color:var(--text3)">'+totalL+' line'+(totalL!==1?'s':'')+'</span>'+
         '<div style="display:flex;gap:4px;align-items:center">'+chips+'</div>'+
         '<div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">'+
           (hasPend?'<button onclick="event.stopPropagation();xmSnoozeAllMenu('+c.id+',this)" style="height:24px;padding:0 8px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;color:var(--text3);cursor:pointer" title="Snooze all pending lines">💤</button>':'')+
+          '<button onclick="event.stopPropagation();openEdit('+c.id+')" title="Edit sale call" style="height:24px;padding:0 7px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px;line-height:1;border-radius:5px;transition:color .15s,background .15s" onmouseenter="this.style.color=\'var(--blue)\';this.style.background=\'var(--blue-glow)\'" onmouseleave="this.style.color=\'var(--text3)\';this.style.background=\'none\'">✏</button>'+
           '<span style="font-size:10px;color:var(--text3);font-family:var(--mono)">'+fmtDate(saleDate)+'</span>'+
         '</div>'+
       '</div>'+
-      '<div class="xm-expand" style="display:none">'+lineRows+'</div>'+
+      '<div class="xm-expand" style="display:'+(isExp?'block':'none')+';">'+lineRows+'</div>'+
     '</div>';
   }).join('');
 }
@@ -10126,21 +10809,6 @@ function updateWindowTitle(){
   }
 }
 
-function updateWindowTitle(){
-  try {
-    var now = new Date();
-    var todayCalls = calls.filter(function(c){
-      return new Date(c.ts).toDateString()===now.toDateString() && inActiveFiscalTs(c.ts);
-    });
-    var totalCalls = todayCalls.length;
-    var chsiCalls  = todayCalls.filter(function(c){ return c.chsi; }).length;
-    var chsiClose  = totalCalls ? Math.round(chsiCalls/totalCalls*100) : 0;
-    var xmSales    = todayCalls.reduce(function(s,c){ return s+(c.xm||0); },0);
-    var rev        = todayCalls.reduce(function(s,c){ return s+(c.rev||0); },0);
-    document.title = totalCalls+' calls · CHSI '+chsiCalls+' ('+chsiClose+'%) · XM '+xmSales+' · $'+rev.toFixed(0);
-  } catch(e){ document.title='Call Logger'; }
-}
-
 // ── Celebration Animations ────────────────────────────────────────────────
 var _celebAnim = null;
 var _celebParticles = [];
@@ -10410,7 +11078,7 @@ function launchFireworks(isXm,isTest){
     <div style="display:flex;flex-direction:column;gap:10px">
       <div>
         <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">Sales ID</label>
-        <input id="login-agent-id" type="text" placeholder="e.g. 61294" autocomplete="off" style="width:100%;height:40px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:14px;color:var(--text);outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'" onkeydown="if(event.key==='Enter')document.getElementById('login-pin').focus()">
+        <input id="login-agent-id" type="text" placeholder="e.g. 6XXXX" autocomplete="off" style="width:100%;height:40px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:14px;color:var(--text);outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'" onkeydown="if(event.key==='Enter')document.getElementById('login-pin').focus()">
       </div>
       <div>
         <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:4px">PIN</label>
