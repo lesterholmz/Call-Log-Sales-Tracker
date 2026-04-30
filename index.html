@@ -1840,36 +1840,36 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
       <div style="flex:1;display:flex;overflow:hidden;min-height:0">
 
         <!-- LEFT: LOB selector -->
-        <div style="width:84px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;padding:8px 6px;border-right:1px solid var(--border);overflow-y:auto">
+        <div style="width:84px;flex-shrink:0;display:flex;flex-direction:column;gap:3px;padding:4px 6px;border-right:1px solid var(--border);overflow-y:auto">
           <!-- Opener -->
-          <div onclick="dqSelectLob('opener')" id="dq-sel-opener" style="background:linear-gradient(135deg,#1c1917,#a16207);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(161,98,7,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div onclick="dqSelectLob('opener')" id="dq-sel-opener" style="background:linear-gradient(135deg,#1c1917,#a16207);border-radius:12px;padding:6px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(161,98,7,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
             <div id="dq-badge-opener" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:30px;line-height:1">👋</div>
-            <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Opener</div>
+            <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Call Flow</div>
           </div>
           <!-- Divider -->
-          <div style="height:1px;background:var(--border);margin:2px 4px;flex-shrink:0"></div>
-          <div onclick="dqSelectLob('internet')" id="dq-sel-internet" style="background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(37,99,235,.4)" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="height:1px;background:var(--border);margin:1px 4px;flex-shrink:0"></div>
+          <div onclick="dqSelectLob('internet')" id="dq-sel-internet" style="background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:12px;padding:6px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(37,99,235,.4)" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
             <div id="dq-badge-internet" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:30px;line-height:1">🌐</div>
             <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Internet</div>
           </div>
-          <div onclick="dqSelectLob('tv')" id="dq-sel-tv" style="background:linear-gradient(135deg,#4a1d96,#7c3aed);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(124,58,237,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div onclick="dqSelectLob('tv')" id="dq-sel-tv" style="background:linear-gradient(135deg,#4a1d96,#7c3aed);border-radius:12px;padding:6px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(124,58,237,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
             <div id="dq-badge-tv" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:30px;line-height:1">📺</div>
             <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">TV</div>
           </div>
-          <div onclick="dqSelectLob('security')" id="dq-sel-security" style="background:linear-gradient(135deg,#7f1d1d,#dc2626);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(220,38,38,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div onclick="dqSelectLob('security')" id="dq-sel-security" style="background:linear-gradient(135deg,#7f1d1d,#dc2626);border-radius:12px;padding:6px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(220,38,38,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
             <div id="dq-badge-security" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:30px;line-height:1">🏠</div>
             <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Security</div>
           </div>
-          <div onclick="dqSelectLob('voice')" id="dq-sel-voice" style="background:linear-gradient(135deg,#78350f,#d97706);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(217,119,6,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div onclick="dqSelectLob('voice')" id="dq-sel-voice" style="background:linear-gradient(135deg,#78350f,#d97706);border-radius:12px;padding:6px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(217,119,6,.4);opacity:.6" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
             <div id="dq-badge-voice" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:30px;line-height:1">📞</div>
             <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Voice</div>
           </div>
-          <div onclick="dqSelectLob('mobile')" id="dq-sel-mobile" style="background:linear-gradient(135deg,#0f4c4c,#0d9488);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(13,148,136,.4);opacity:.6;border:2px solid rgba(255,255,255,.12)" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div onclick="dqSelectLob('mobile')" id="dq-sel-mobile" style="background:linear-gradient(135deg,#0f4c4c,#0d9488);border-radius:12px;padding:6px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;box-shadow:0 3px 12px rgba(13,148,136,.4);opacity:.6;border:2px solid rgba(255,255,255,.12)" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
             <div id="dq-badge-mobile" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:30px;line-height:1">📱</div>
             <div style="font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.2">Mobile</div>
@@ -1877,21 +1877,21 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
           </div>
 
           <!-- Sub-LOBs -->
-          <div onclick="dqSelectLob('wearables')" id="dq-sel-wearables" style2removed style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:5px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='wearables'?'1':'.6'">
+          <div onclick="dqSelectLob('wearables')" id="dq-sel-wearables" style2removed style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:3px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='wearables'?'1':'.6'">
             <div id="dq-badge-wearables" style="display:none;position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;padding:0 2px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:18px;line-height:1">⌚</div>
             <div style="font-size:7px;font-weight:600;color:var(--text2);text-align:center;line-height:1.2">Wearables</div>
           </div>
 
           <!-- Tablets -->
-          <div onclick="dqSelectLob('tablets')" id="dq-sel-tablets" style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:5px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='tablets'?'1':'.6'">
+          <div onclick="dqSelectLob('tablets')" id="dq-sel-tablets" style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:3px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='tablets'?'1':'.6'">
             <div id="dq-badge-tablets" style="display:none;position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;padding:0 2px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:18px;line-height:1">📋</div>
             <div style="font-size:7px;font-weight:600;color:var(--text2);text-align:center;line-height:1.2">Tablets</div>
           </div>
 
           <!-- Storm-Ready WiFi -->
-          <div onclick="dqSelectLob('storm')" id="dq-sel-storm" style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:5px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='storm'?'1':'.6'">
+          <div onclick="dqSelectLob('storm')" id="dq-sel-storm" style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:3px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;opacity:.6" onmouseover="this.style.transform='scale(1.05)';this.style.opacity='1'" onmouseout="this.style.transform='scale(1)';this.style.opacity=_dqCurrentLob==='storm'?'1':'.6'">
             <div id="dq-badge-storm" style="display:none;position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:#22c55e;border-radius:20px;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;padding:0 2px;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dqBadgePop .2s ease">0</div>
             <div style="font-size:18px;line-height:1">⛈️</div>
             <div style="font-size:7px;font-weight:600;color:var(--text2);text-align:center;line-height:1.2">Storm-Ready</div>
@@ -9426,12 +9426,13 @@ function closeTetris(){
 // ── Discovery Questions ──────────────────────────────────────────────────────
 var DQ_DATA = {
   opener: {
-    emoji:'👋', label:'Opener', color:'#ca8a04',
+    emoji:'👋', label:'Call Flow', color:'#ca8a04',
     questions:[
       {text:"Thank you for the phone call into us today, how is your day going?", tip:"Warm greeting — build rapport immediately"},
       {text:"May I ask a few questions to get us started?", tip:"Set expectation for discovery — customer buy-in"},
       {text:"The phone number we are speaking on, is this a good contact number for you?", tip:"Confirm contact info early"},
       {text:"Is this a cell phone number or a land line?", tip:"Qualify number type — opens mobile conversation"},
+      {text:"How may I be of assistance today?", tip:"Open-ended need discovery — let the customer lead"},
     ],
     phrases:[]
   },
@@ -9662,18 +9663,52 @@ function dqRenderView(){
       }).join('');
       if(isOpener){
         var curPhone = (function(){ var el=document.getElementById('f-cb-phone'); return el?el.value:''; })();
+        var curName  = (function(){ var el=document.getElementById('f-cb-name');  return el?el.value:''; })();
+        var curNotes = (function(){ var el=document.getElementById('f-notes');     return el?el.value:''; })();
         discPanel.innerHTML +=
           '<div style="margin-top:4px;padding:10px 14px;background:var(--surface);border-radius:10px;border:1px solid var(--border2)">'+
-            '<div style="font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:6px">📞 Contact Number</div>'+
-            '<input id="dq-opener-phone" type="tel" maxlength="14" autocomplete="off" placeholder="(555) 867-5309"'+
-              ' value="'+curPhone+'"'+
-              ' oninput="dqOpenerPhoneInput(this)"'+
-              ' style="width:100%;box-sizing:border-box;background:var(--card);border:1.5px solid var(--border2);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;transition:border-color .15s"'+
-              ' onfocus="this.style.borderColor=\''+data.color+'\'"'+
-              ' onblur="this.style.borderColor=\'var(--border2)\'"'+
-            '>'+
-            '<div style="font-size:9px;color:var(--text3);margin-top:4px">Syncs to call form callback phone field</div>'+
+            '<div style="display:flex;gap:8px">'+
+              '<div style="flex:1">'+
+                '<div style="font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:5px">👤 Name</div>'+
+                '<div style="position:relative">'+
+                  '<input id="dq-opener-name" type="text" maxlength="40" autocomplete="off" placeholder="First Last"'+
+                    ' value="'+curName+'"'+
+                    ' oninput="dqOpenerNameInput(this)"'+
+                    ' style="width:100%;box-sizing:border-box;background:var(--card);border:1.5px solid var(--border2);border-radius:8px;padding:8px 32px 8px 10px;font-size:13px;color:var(--text);outline:none;transition:border-color .15s"'+
+                    ' onfocus="this.style.borderColor=\''+data.color+'\'"'+
+                    ' onblur="this.style.borderColor=\'var(--border2)\'"'+
+                  '>'+
+                  '<button onclick="copyToClip(document.getElementById(\'dq-opener-name\').value,\'Name\')" title="Copy name" style="position:absolute;right:5px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:13px;opacity:.4;padding:2px;line-height:1" onmouseover="this.style.opacity=\'1\'" onmouseout="this.style.opacity=\'.4\'">📋</button>'+
+                '</div>'+
+              '</div>'+
+              '<div style="flex:1">'+
+                '<div style="font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:5px">📞 Phone</div>'+
+                '<div style="position:relative">'+
+                  '<input id="dq-opener-phone" type="tel" maxlength="14" autocomplete="off" placeholder="(555) 867-5309"'+
+                    ' value="'+curPhone+'"'+
+                    ' oninput="dqOpenerPhoneInput(this)"'+
+                    ' style="width:100%;box-sizing:border-box;background:var(--card);border:1.5px solid var(--border2);border-radius:8px;padding:8px 32px 8px 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;transition:border-color .15s"'+
+                    ' onfocus="this.style.borderColor=\''+data.color+'\'"'+
+                    ' onblur="this.style.borderColor=\'var(--border2)\'"'+
+                  '>'+
+                  '<button onclick="copyToClip(document.getElementById(\'dq-opener-phone\').value,\'Phone\')" title="Copy phone" style="position:absolute;right:5px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:13px;opacity:.4;padding:2px;line-height:1" onmouseover="this.style.opacity=\'1\'" onmouseout="this.style.opacity=\'.4\'">📋</button>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+            '<div style="font-size:9px;color:var(--text3);margin-top:5px">Syncs to call form callback fields</div>'+
+            '<div style="margin-top:8px">'+
+              '<div style="font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:5px">📝 Notes</div>'+
+              '<textarea id="dq-opener-notes" rows="5" placeholder="Call notes..."'+
+                ' oninput="dqOpenerNotesInput(this)"'+
+                ' style="width:100%;box-sizing:border-box;background:var(--card);border:1.5px solid var(--border2);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text);outline:none;resize:none;transition:border-color .15s;font-family:var(--sans);line-height:1.4"'+
+                ' onfocus="this.style.borderColor=\''+data.color+'\'"'+
+                ' onblur="this.style.borderColor=\'var(--border2)\'"'+
+              '></textarea>'+
+            '</div>'+
           '</div>';
+        setTimeout(function(){
+          var nt=document.getElementById('dq-opener-notes'); if(nt){ var fn=document.getElementById('f-notes'); nt.value=fn?fn.value:''; }
+        },0);
       }
     }
   }
@@ -9725,8 +9760,17 @@ function dqUpdateBadge(lob){
   }
 }
 
+function dqOpenerNotesInput(el){
+  var formNotes = document.getElementById('f-notes');
+  if(formNotes) formNotes.value = el.value;
+}
+
+function dqOpenerNameInput(el){
+  var formName = document.getElementById('f-cb-name');
+  if(formName) formName.value = el.value;
+}
+
 function dqOpenerPhoneInput(el){
-  // Format + sync to call form
   onPhoneInput(el);
   var formPhone = document.getElementById('f-cb-phone');
   if(formPhone) formPhone.value = el.value;
@@ -9741,6 +9785,8 @@ function dqResetAll(){
   if(btn){ btn.setAttribute('data-active','0'); btn.style.background='none'; btn.style.color='var(--blue)'; btn.style.fontStyle='italic'; }
   var opPh = document.getElementById('dq-opener-phone');
   if(opPh) opPh.value = '';
+  var opNm = document.getElementById('dq-opener-name');
+  if(opNm) opNm.value = '';
   if(_dqCurrentView==='disc') dqRenderView();
 }
 
