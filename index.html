@@ -3781,7 +3781,8 @@ function updateStats(){
 
   // ── Filter calls for the active fiscal period ────────────────────────────
   const today = new Date().toDateString();
-  const td    = calls.filter(c => c.ts.toDateString() === today && !c.cbSale);
+  const td    = calls.filter(c => c.ts.toDateString() === today && !c.cbSale);  // call count only
+  const tdAll = calls.filter(c => c.ts.toDateString() === today);                   // RGUs/sales/rev incl cbSale
 
   let mc;
   if (statsView === 'installs') {
@@ -3854,15 +3855,15 @@ function updateStats(){
   }
 
   // ── Today stats ──────────────────────────────────────────────────────────
-  const dRev  = td.reduce((s,c) => s+c.rev, 0);
-  const dRgus = td.reduce((s,c) => s+c.rgus, 0);
-  const dXm   = td.reduce((s,c) => s+c.xm, 0);
-  const dTv   = td.filter(c => c.tv).length;
-  const dChsi = td.reduce((s,c) => s+c.chsiRgu, 0);
-  const dCdv  = td.filter(c => c.cdv).length;
-  const dXh   = td.filter(c => c.xh).length;
+  const dRev  = tdAll.reduce((s,c) => s+c.rev, 0);
+  const dRgus = tdAll.reduce((s,c) => s+c.rgus, 0);
+  const dXm   = tdAll.reduce((s,c) => s+c.xm, 0);
+  const dTv   = tdAll.filter(c => c.tv).length;
+  const dChsi = tdAll.reduce((s,c) => s+c.chsiRgu, 0);
+  const dCdv  = tdAll.filter(c => c.cdv).length;
+  const dXh   = tdAll.filter(c => c.xh).length;
   const dN    = td.length;
-  const dSales= td.filter(c => c.hasSale).length;
+  const dSales= tdAll.filter(c => c.hasSale).length;
 
   // ── Calculate remaining work days in fiscal period ───────────────────────
   const fi = getActiveFiscalInfo();
@@ -5311,12 +5312,14 @@ function renderTrends(){
 
   const weekStart = new Date(now); weekStart.setHours(0,0,0,0); weekStart.setDate(weekStart.getDate()-weekStart.getDay());
   const lastWeekStart = new Date(weekStart); lastWeekStart.setDate(lastWeekStart.getDate()-7);
-  const thisWeekCalls = mc.filter(c=>c.ts>=weekStart&&!c.cbSale);
+  const thisWeekCalls = mc.filter(c=>c.ts>=weekStart&&!c.cbSale); // call count only
   const lastWeekCalls = mc.filter(c=>c.ts>=lastWeekStart&&c.ts<weekStart&&!c.cbSale);
-  const twSales = thisWeekCalls.filter(c=>c.hasSale).length;
-  const lwSales = lastWeekCalls.filter(c=>c.hasSale).length;
-  const twRev = thisWeekCalls.filter(c=>c.hasSale).reduce((s,c)=>s+c.rev,0);
-  const lwRev = lastWeekCalls.filter(c=>c.hasSale).reduce((s,c)=>s+c.rev,0);
+  const thisWeekAll = mc.filter(c=>c.ts>=weekStart);              // incl cbSale for stats
+  const lastWeekAll = mc.filter(c=>c.ts>=lastWeekStart&&c.ts<weekStart);
+  const twSales = thisWeekAll.filter(c=>c.hasSale).length;
+  const lwSales = lastWeekAll.filter(c=>c.hasSale).length;
+  const twRev = thisWeekAll.filter(c=>c.hasSale).reduce((s,c)=>s+c.rev,0);
+  const lwRev = lastWeekAll.filter(c=>c.hasSale).reduce((s,c)=>s+c.rev,0);
   const salesDelta = lwSales ? ((twSales-lwSales)/lwSales*100).toFixed(0) : null;
   const revDelta = lwRev ? ((twRev-lwRev)/lwRev*100).toFixed(0) : null;
 
@@ -5366,8 +5369,9 @@ function renderTrends(){
 
   // ── Today stats ───────────────────────────────────────────────────────
   const todayStr=now.toDateString();
-  const todayCalls=mc.filter(c=>c.ts.toDateString()===todayStr&&!c.cbSale);
-  const todaySales=todayCalls.filter(c=>c.hasSale);
+  const todayCalls=mc.filter(c=>c.ts.toDateString()===todayStr&&!c.cbSale); // call count only
+  const todayAll=mc.filter(c=>c.ts.toDateString()===todayStr);              // incl cbSale for stats
+  const todaySales=todayAll.filter(c=>c.hasSale);
   const todayRev=todaySales.reduce((s,c)=>s+c.rev,0);
   const todayRgus=todaySales.reduce((s,c)=>s+c.rgus,0);
 
@@ -7079,6 +7083,10 @@ function cbSetSplitFromVal(val){
     const pad = n => String(n).padStart(2,'0');
     cbSetTimePickerVal(pad(h)+':'+pad(snapped));
   }
+  // Restore original value — cbSetTimePickerVal triggers cbSyncDateTime
+  // which overwrites f-cb-dt with snapped time; preserve the real stored value
+  const hidEl = document.getElementById('f-cb-dt');
+  if(hidEl) hidEl.value = val;
 }
 
 function cbSetOffset(mins){
@@ -8829,11 +8837,11 @@ function schedUpdateCountdown(){
     }
     if(cd) cd.textContent=next.emoji+' '+next.label;
     if(ct) ct.textContent='in '+txt2;
-    if(tb){ tb.innerHTML='<span style="font-size:18px">'+next.emoji+'</span><span style="font-size:13px"> '+next.label+' in '+txt2+'</span>'; var _nt=next.time,_nth=parseInt(_nt),_ntm=parseInt(_nt.split(':')[1])||0,_ntap=_nth>=12?'PM':'AM',_nth12=_nth%12||12; tb.setAttribute('data-tip',next.emoji+' '+next.label+' · '+_nth12+':'+(_ntm<10?'0':'')+_ntm+' '+_ntap+' · '+next.duration+'m'); }
+    if(tb){ tb.innerHTML='<span style="font-size:18px">'+next.emoji+'</span><span style="font-size:13px"> '+next.label+' in '+txt2+'</span>'; var _nt=next.time,_nth=parseInt(_nt),_ntm=parseInt(_nt.split(':')[1])||0,_ntap=_nth>=12?'PM':'AM',_nth12=_nth%12||12; }
   } else {
     if(cd) cd.textContent='No more breaks';
     if(ct) ct.textContent='';
-    if(tb){ tb.innerHTML='<span style="font-size:13px">—</span>'; tb.setAttribute('data-tip','No more events today'); }
+    if(tb){ tb.innerHTML='<span style="font-size:13px">—</span>'; }
   }
 }
 
@@ -10894,12 +10902,16 @@ function updateWindowTitle(){
     var todayCalls = calls.filter(function(c){
       var d = new Date(c.ts);
       return d.toDateString() === now.toDateString() && inActiveFiscalTs(c.ts) && !c.cbSale;
-    });
+    }); // call count only
+    var todayAllCalls = calls.filter(function(c){
+      var d = new Date(c.ts);
+      return d.toDateString() === now.toDateString() && inActiveFiscalTs(c.ts);
+    }); // incl cbSale for stats
     var totalCalls   = todayCalls.length;
-    var chsiCalls    = todayCalls.filter(function(c){ return c.chsi; }).length;
+    var chsiCalls    = todayAllCalls.filter(function(c){ return c.chsi; }).length;
     var chsiClose    = totalCalls ? Math.round(chsiCalls/totalCalls*100) : 0;
-    var xmSales      = todayCalls.reduce(function(s,c){ return s+(c.xm||0); }, 0);
-    var rev          = todayCalls.reduce(function(s,c){ return s+(c.rev||0); }, 0);
+    var xmSales      = todayAllCalls.reduce(function(s,c){ return s+(c.xm||0); }, 0);
+    var rev          = todayAllCalls.reduce(function(s,c){ return s+(c.rev||0); }, 0);
     var parts = [
       totalCalls + (totalCalls===1?' call':' calls'),
       'CHSI ' + chsiCalls + ' (' + chsiClose + '%)',
