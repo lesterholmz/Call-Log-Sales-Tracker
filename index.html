@@ -5913,23 +5913,6 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter' && editingId && e.target.tagName!=='TEXTAREA' && e.target.tagName!=='SELECT'){ saveEdit(); return; }
 });
 
-(function(){
-  var W=720, H=900;
-  var isPopup = window.opener || window.name === "xfinity_logger";
-  if(!isPopup){
-    var left = Math.round((screen.width - W) / 2);
-    var top  = Math.round((screen.height - H) / 2);
-    var popup = window.open(
-      window.location.href,
-      "xfinity_logger",
-      "width="+W+",height="+H+",left="+left+",top="+top+
-      ",menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=no"
-    );
-    if(popup){ window.close(); }
-  } else {
-    try{ document.documentElement.requestFullscreen(); }catch(e){}
-  }
-})();
 
 /* ── Settings ── */
 // Fiscal month: starts 22nd, so if today >= 22 we're in next calendar month's fiscal period
@@ -6837,7 +6820,9 @@ function loadFromSheets(){
     const myId = getCurrentAgentId();
     const allSheetCalls = (d.calls||[]).map(normalizeCall);
     // Only accept calls that belong to this user, or have no agentId (legacy/backfilled)
-    const sheetCalls = allSheetCalls.filter(c => !c.agentId || String(c.agentId) === String(myId));
+    // Case-insensitive + trimmed to handle sheet formatting differences (e.g. 'A12345' vs 'a12345')
+    const myIdNorm = String(myId).trim().toLowerCase();
+    const sheetCalls = allSheetCalls.filter(c => !c.agentId || String(c.agentId).trim().toLowerCase() === myIdNorm);
     const sheetMap   = new Map(sheetCalls.map(c => [String(c.id), c]));
     const localMap   = new Map(calls.map(c  => [String(c.id),  c]));
 
@@ -12655,7 +12640,12 @@ function renderCallbacksTab(){
   var el=document.getElementById('cb-tab-cards');
   if(!el) return;
   if(!filtered.length){
-    el.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🔔</div><div>No follow-ups match this filter</div></div>';
+    // Count open callbacks that exist but are hidden by the current filter
+    var openCount = typeFiltered.filter(function(c){ var s=getCbStatus(c); return s && s !== 'done'; }).length;
+    var hiddenMsg = (filter !== 'open' && filter !== 'all' && openCount > 0)
+      ? '<div style="margin-top:4px;font-size:12px">'+openCount+' open callback'+(openCount!==1?'s':'')+' hidden by this filter &nbsp;·&nbsp; <span onclick="setCbTabFilter(\'open\')" style="color:var(--blue);cursor:pointer;text-decoration:underline">Show open</span></div>'
+      : '';
+    el.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🔔</div><div>No follow-ups match this filter</div>'+hiddenMsg+'</div>';
     return;
   }
 
@@ -12918,27 +12908,6 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').catch(function(){});
   });
 }
-var _pwaPrompt = null;
-window.addEventListener('beforeinstallprompt', function(e){
-  e.preventDefault();
-  _pwaPrompt = e;
-  var btn = document.getElementById('pwa-install-btn');
-  if(btn) btn.style.display = 'flex';
-});
-window.addEventListener('appinstalled', function(){
-  _pwaPrompt = null;
-  var btn = document.getElementById('pwa-install-btn');
-  if(btn) btn.style.display = 'none';
-  _showToast('\u2713 App installed!', 'ok', 3000);
-});
-function pwaInstall(){
-  if(!_pwaPrompt) return;
-  _pwaPrompt.prompt();
-  _pwaPrompt.userChoice.then(function(r){
-    if(r.outcome === 'accepted') _pwaPrompt = null;
-  });
-}
-
 // ── Dynamic window title ──────────────────────────────────────────────────
 function updateWindowTitle(){
   try {
@@ -15426,5 +15395,29 @@ window.phonesimInit = phonesimInit;
   };
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') xm6CloseLightbox(); });
 })();
+
+<!-- ── PWA Install button (restored) ── -->
+<script>
+var _pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  _pwaPrompt = e;
+  var btn = document.getElementById('pwa-install-btn');
+  if(btn) btn.style.display = 'flex';
+});
+window.addEventListener('appinstalled', function(){
+  _pwaPrompt = null;
+  var btn = document.getElementById('pwa-install-btn');
+  if(btn) btn.style.display = 'none';
+  _showToast('✓ App installed!', 'ok', 3000);
+});
+function pwaInstall(){
+  if(!_pwaPrompt) return;
+  _pwaPrompt.prompt();
+  _pwaPrompt.userChoice.then(function(r){
+    if(r.outcome === 'accepted') _pwaPrompt = null;
+  });
+}
+</script>
 </script></body>
 </html>
