@@ -6830,6 +6830,15 @@ function loadFromSheets(){
     let pulled = 0;
     sheetMap.forEach((sc, id) => {
       if(!localMap.has(id)){ localMap.set(id, sc); pulled++; }
+      else {
+        // Sheet wins for all fields, but rescue callback data if sheet lost it
+        const lc = localMap.get(id);
+        if(!sc.cbTime  && lc.cbTime)  sc.cbTime  = lc.cbTime;
+        if(!sc.fuType  && lc.fuType)  sc.fuType  = lc.fuType;
+        if(!sc.cbName  && lc.cbName)  sc.cbName  = lc.cbName;
+        if(!sc.cbPhone && lc.cbPhone) sc.cbPhone = lc.cbPhone;
+        localMap.set(id, sc);
+      }
     });
     let pushed = 0;
     localMap.forEach((lc, id) => {
@@ -9466,8 +9475,27 @@ function inActiveFiscalTs(ts){
   return ts >= fi.fiscalStart && ts <= endOfLastDay;
 }
 
-function saveCallsCache(){ /* cache disabled — Sheets is source of truth */ }
-function loadCallsCache(){ return []; }
+function saveCallsCache(){
+  var key = getCallsCacheKey();
+  if(!key) return;
+  try {
+    var data = calls.map(function(c){
+      return Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts});
+    });
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch(e){}
+}
+function loadCallsCache(){
+  var key = getCallsCacheKey();
+  if(!key) return [];
+  try {
+    var raw = localStorage.getItem(key);
+    if(!raw) return [];
+    var arr = JSON.parse(raw);
+    if(!Array.isArray(arr)) return [];
+    return arr.map(function(c){ c.ts = c.ts ? new Date(c.ts) : new Date(); return c; });
+  } catch(e){ return []; }
+}
 
 function setTooltips(on){
   document.body.classList.toggle('tips-on', on);
@@ -9763,6 +9791,7 @@ function doLogout(){
   const cacheKey = getCallsCacheKey(); // get key before clearing session
   _session = null;
   localStorage.removeItem('xcl_session');
+  localStorage.removeItem('xcl_sales_id');
   localStorage.removeItem('xcl_calls_cache'); // legacy key cleanup
   localStorage.removeItem(cacheKey);
   calls = [];
