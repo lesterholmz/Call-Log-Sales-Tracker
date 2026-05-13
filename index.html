@@ -2595,6 +2595,50 @@ body.tips-on [data-tip]:hover::after{opacity:1}
  }
 
 /* ── END Phone Sim ── */
+
+/* =========================================================================
+   PORT INFO TAB
+   ========================================================================= */
+.port-info-layout{max-width:940px;margin:0 auto;padding:20px 24px}
+.port-search-wrap{position:relative;margin-bottom:22px}
+.port-search-wrap>svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.port-search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:14px;padding:11px 14px 11px 40px;outline:none;transition:border-color .15s}
+.port-search-input:focus{border-color:var(--blue)}
+.port-search-input::placeholder{color:var(--text3)}
+.port-section{margin-bottom:26px}
+.port-section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.carrier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:10px}
+.carrier-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:12px;overflow:hidden}
+.carrier-card[hidden]{display:none}
+.carrier-header{padding:12px 14px;display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none;-webkit-user-select:none;transition:background .12s}
+.carrier-header:hover{background:rgba(255,255,255,.03)}
+.carrier-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.carrier-name{font-size:14px;font-weight:700;color:var(--text);flex:1;letter-spacing:-.1px}
+.carrier-badge{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;background:var(--card2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;white-space:nowrap}
+.carrier-chevron{color:var(--text3);transition:transform .2s;flex-shrink:0}
+.carrier-card.expanded .carrier-chevron{transform:rotate(90deg)}
+.carrier-body{display:none;border-top:1px solid var(--border);padding:14px;flex-direction:column;gap:16px}
+.carrier-card.expanded .carrier-body{display:flex}
+.carrier-block{display:flex;flex-direction:column;gap:6px}
+.carrier-section-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px}
+.carrier-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.carrier-desc strong{color:var(--text);font-weight:600}
+.carrier-desc em{color:var(--blue);font-style:normal;font-weight:500}
+.nav-path{display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;padding:8px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px}
+.nav-path-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;width:100%;margin-bottom:5px}
+.nav-step{font-size:11.5px;font-weight:500;color:var(--text2);background:var(--card);border:1px solid var(--border);border-radius:4px;padding:2px 8px;white-space:nowrap}
+.nav-step.target{color:var(--blue);border-color:rgba(59,130,246,.5);background:rgba(59,130,246,.07);font-weight:600}
+.nav-sep{font-size:10px;color:var(--text3)}
+.carrier-alt{font-size:12px;color:var(--text3);line-height:1.55;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px}
+.carrier-alt strong{color:var(--text2);font-weight:600}
+.carrier-alt em{color:var(--blue);font-style:normal}
+.carrier-note{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-left:3px solid var(--amber);border-radius:6px;padding:9px 11px;font-size:12.5px;color:var(--text2);line-height:1.5}
+.carrier-note strong{color:var(--amber);font-weight:600}
+.carrier-note em{color:var(--text);font-style:normal}
+.carrier-alert{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-left:3px solid var(--red);border-radius:6px;padding:9px 11px;font-size:12.5px;color:var(--text2);line-height:1.5}
+.carrier-alert strong{color:var(--red);font-weight:600}
+.carrier-alert em{color:var(--text);font-style:normal}
+.port-no-results{text-align:center;color:var(--text3);padding:48px 0;font-size:14px;display:none}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Russo+One&family=Rajdhani:wght@700&family=Exo+2:wght@700&family=Bebas+Neue&family=Righteous&family=Boogaloo&family=Black+Ops+One&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -3416,6 +3460,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
     <button class="tab-btn"        id="jatab-tips"      data-ja="tips"      draggable="false">📶 XM 6.0</button>
     <button class="tab-btn"        id="jatab-phonesim"  data-ja="phonesim"  draggable="false">📲 Phone Sim</button>
     <button class="tab-btn"        id="jatab-channels"  data-ja="channels"  draggable="false">📺 Channels</button>
+    <button class="tab-btn"        id="jatab-portinfo"  data-ja="portinfo"  draggable="false">🔌 Port Info</button>
   </div>
 
   <!-- ── XM 6.0 Plans ── -->
@@ -3734,6 +3779,16 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
     </div>
   </div>
 
+  <div class="ja-panel" id="japanel-portinfo">
+    <div class="port-info-layout">
+      <div class="port-search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        <input class="port-search-input" id="port-search" type="text" placeholder="Search carrier…" autocomplete="off" spellcheck="false">
+      </div>
+      <div id="port-no-results" class="port-no-results">No carriers match — try a different name.</div>
+    </div>
+  </div><!-- end japanel-portinfo -->
+
 </div><!-- end panel-jobaid -->
 
 
@@ -3906,6 +3961,9 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
   </div>
   </div>
 </div><!-- end panel-disputes -->
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -6982,6 +7040,7 @@ function switchTab(tab){
   if(tab==='trends') renderTrends();
   if(tab==='reports') renderReports();
   if(tab==='jobaid') setTimeout(dqInitPanel, 50);
+  if(tab==='jobaid' && _activeJaTab==='portinfo') renderPortInfo();
   if(tab==='callbacks'){
     var tr=document.getElementById('cb-type-filter-row');
     if(tr) delete tr.dataset.rendered;
@@ -8229,6 +8288,7 @@ function switchJaTab(t){
   });
   if(t==='discovery') setTimeout(dqInitPanel, 50);
   if(t==='channels')  setTimeout(chInitPanel, 20);
+  if(t==='portinfo')  renderPortInfo();
   if(t==='phonesim')  setTimeout(function(){ if(window.phonesimInit) window.phonesimInit(); }, 20);
 }
 
@@ -12239,6 +12299,7 @@ var _cbTypeFilter = 'all'; // 'all' | 'Callback' | 'Collections' | 'Construction
 
 function setCbTabFilter(f){
   _cbTabFilter = f;
+  // Top buttons only cover open/overdue/due-today/all — clear all if a summary chip filter is active
   ['open','overdue','due-today','all'].forEach(function(k){
     var b = document.getElementById('cbtf-'+k);
     if(!b) return;
@@ -12608,11 +12669,13 @@ function renderCallbacksTab(){
   var filtered = typeFiltered.filter(function(c){
     var s = getCbStatus(c);
     if(s === null) return false; // no fuType and no parseable cbTime — truly nothing to show
-    if(filter==='open') return s !== 'done';
-    if(filter==='overdue') return s==='overdue';
-    if(filter==='due-today') return s==='due-today'||s==='due-soon';
-    if(filter==='due-soon') return s==='due-soon';
-    return true;
+    if(filter==='open')      return s !== 'done';
+    if(filter==='overdue')   return s === 'overdue';
+    if(filter==='due-today') return s === 'due-today' || s === 'due-soon';
+    if(filter==='due-soon')  return s === 'due-soon';
+    if(filter==='pending')   return s === 'pending';
+    if(filter==='done')      return s === 'done';
+    return true; // 'all'
   });
 
   filtered.sort(function(a,b){
@@ -12636,13 +12699,15 @@ function renderCallbacksTab(){
       {label:'Done', key:'done', color:'#22c55e', bg:'rgba(34,197,94,.1)'},
     ];
     summEl.innerHTML = strips.map(function(s){
-      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-right:1px solid var(--border);cursor:pointer;background:'+s.bg+';transition:filter .15s" onclick="setCbTabFilter(\''+s.key+'\')" title="Filter: '+s.label+'">'+
+      var isActive = filter === s.key;
+      var activeBorder = isActive ? ';box-shadow:inset 0 -2px 0 '+s.color+';filter:brightness(1.25)' : '';
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-right:1px solid var(--border);cursor:pointer;background:'+s.bg+';transition:filter .15s'+activeBorder+'" onclick="setCbTabFilter(\''+s.key+'\')" title="Filter: '+s.label+(isActive?' (active)':'')+'">'+
         '<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:'+s.color+';line-height:1">'+counts[s.key]+'</div>'+
-        '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-top:2px">'+s.label+'</div>'+
+        '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:'+(isActive?s.color:'var(--text3)')+';margin-top:2px">'+s.label+'</div>'+
       '</div>';
-    }).join('')+'<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;cursor:pointer" onclick="setCbTabFilter(\'all\')" title="Show all">'+
+    }).join('')+'<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;cursor:pointer'+(filter==='all'?';box-shadow:inset 0 -2px 0 var(--blue)':'')+'" onclick="setCbTabFilter(\'all\')" title="Show all">'+
       '<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text2);line-height:1">'+typeFiltered.length+'</div>'+
-      '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-top:2px">Total</div>'+
+      '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:'+(filter==='all'?'var(--blue)':'var(--text3)')+';margin-top:2px">Total</div>'+
     '</div>';
   }
 
@@ -15448,5 +15513,360 @@ function pwaInstall(){
   });
 }
 </script>
+
+<script>
+/* =========================================================================
+   PORT INFO — carrier data, rendering, collapse & search
+   ========================================================================= */
+(function () {
+
+var _portInfoRendered = false;
+
+var CHEVRON = '<svg class="carrier-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,1 6,6 1.5,11"/></svg>';
+
+var CARRIERS = [
+  // ── POSTPAID BIG 3 ──────────────────────────────────────────────────────
+  {
+    name:'Verizon', color:'#cd040b', badge:'Postpaid', section:'postpaid',
+    sectionLabel:'Postpaid — Big 3', keywords:'verizon postpaid mybusiness',
+    acctDesc:'The account number appears in the upper-right header of every paper and digital bill. In the My Verizon app it is shown at the top of the Account Overview page.',
+    acctPaths:[
+      {label:'App', steps:['My Verizon App','Account tab (bottom)','Edit Profile and Settings','Account Details']},
+      {label:'Web', steps:['verizon.com','My Profile','Account Details']},
+    ],
+    acctAlt:'<strong>Phone:</strong> Dial <em>*611</em> (free from Verizon) or <em>800-922-0204</em>',
+    pinDesc:'The Number Transfer PIN is a <strong>6-digit code</strong> valid for <strong>7 days</strong>. Only an <strong>Account Owner or Manager</strong> can generate it — authorized users cannot. The PIN is generated on demand (not pre-assigned). <strong>Important:</strong> if the customer has <em>Number Lock</em> enabled, they must disable it before the transfer can proceed.',
+    pinPaths:[
+      {label:'App', steps:['My Verizon App','Account tab (bottom)','Edit Profile and Settings','Number Transfer PIN','Generate PIN']},
+      {label:'Web', steps:['verizon.com','My Profile','Number Transfer PIN']},
+      {label:'Business customers', steps:['My Business Wireless portal','Line Overview','Device Information','Number Transfer PIN']},
+    ],
+    pinAlt:'<strong>Dial #PORT</strong> from the Verizon phone being transferred → follow prompts to generate PIN automatically<br><strong>Phone:</strong> <em>*611</em> or <em>800-922-0204</em>',
+    notes:[
+      {type:'alert',text:'<strong>Number Lock:</strong> If the customer has Number Lock enabled on their line, the transfer will be blocked. They must log in to My Verizon and disable Number Lock <em>before</em> attempting to port.'},
+      {type:'note',text:'<strong>Account Owner/Manager only:</strong> Authorized users on the account cannot generate the Transfer PIN — it must be the Account Owner or a Manager. If the caller is an authorized user, they need to have the owner/manager complete this step.'},
+      {type:'note',text:'<strong>Not the same as Account PIN:</strong> Verizon\'s Number Transfer PIN is separate from the customer-service Account PIN. Customers often confuse the two — make sure they are generating the Number Transfer PIN specifically.'},
+    ],
+  },
+  {
+    name:'T-Mobile', color:'#e20074', badge:'Postpaid', section:'postpaid',
+    sectionLabel:'Postpaid — Big 3', keywords:'t-mobile tmobile tlife postpaid',
+    acctDesc:'The account number is a <strong>9-digit</strong> number. Find it in the T-Life app under Profile, or on any T-Mobile paper/PDF bill in the upper section.',
+    acctPaths:[
+      {label:'T-Life App', steps:['T-Life App','Manage tab (bottom)','⚙ Settings (top right)','Profile','Account Number']},
+      {label:'Web', steps:['t-mobile.com','My Account','Profile','Account Information']},
+    ],
+    acctAlt:'<strong>Phone:</strong> Dial <em>611</em> from a T-Mobile device, or <em>800-937-8997</em>',
+    pinDesc:'The Transfer PIN is <strong>6 digits</strong> and is valid for <strong>7 days</strong> after generation. It does <em>not</em> exist until the customer creates one — they must do this <em>before</em> calling Xfinity. The PIN must be generated on the T-Mobile network (<strong>turn off Wi-Fi first</strong>). Only the <strong>Primary Account Holder</strong> can generate it. You will need both the Account Number and this 6-digit PIN to complete the port.',
+    pinPaths:[
+      {label:'T-Life App (verified ✓)', steps:['T-Life App','Turn off Wi-Fi first','Manage tab (bottom)','⚙ Settings (top right)','Permissions &amp; controls','Transfer PIN','Get a transfer PIN']},
+      {label:'Web', steps:['t-mobile.com','My Account','Profile','Security','Set Transfer PIN']},
+    ],
+    pinAlt:'<strong>Phone:</strong> Dial <em>611</em> or <em>800-937-8997</em> — T-Mobile reps can set the PIN over the phone with identity verification',
+    notes:[
+      {type:'alert',text:'<strong>Primary Account Holder only:</strong> Only the primary account holder\'s credentials can generate the Transfer PIN. If the caller is an authorized user (not the primary), they will need to have the account holder complete this step.'},
+      {type:'alert',text:'<strong>Wi-Fi must be OFF:</strong> The T-Life app will fail to generate the PIN if the device is on Wi-Fi. Have the customer disable Wi-Fi and connect to the T-Mobile cellular network before trying.'},
+      {type:'note',text:'<strong>Sprint migration accounts:</strong> Some older accounts migrated from Sprint may use the last 4 digits of SSN as the PIN if none was ever set — worth trying if the customer insists they\'ve never created one.'},
+    ],
+  },
+  {
+    name:'AT&amp;T', color:'#00a8e0', badge:'Postpaid', section:'postpaid',
+    sectionLabel:'Postpaid — Big 3', keywords:'at&t att postpaid',
+    acctDesc:'The AT&amp;T account number is a <strong>12-digit</strong> number (sometimes formatted as XXXXXXXXXX-XXXXX on bills). It appears on the first page of every AT&amp;T bill and in the myAT&amp;T app under Account Details.',
+    acctPaths:[
+      {label:'App', steps:['myAT&amp;T App','More tab (bottom right)','Manage Profile','Account Details']},
+      {label:'Web', steps:['att.com','Profile','Account Information']},
+    ],
+    acctAlt:'<strong>Phone:</strong> Dial <em>611</em> from an AT&amp;T device, or <em>800-331-0500</em>',
+    pinDesc:'AT&amp;T calls this the <strong>Number Transfer PIN</strong>. It is valid for <strong>4 days</strong> (business accounts get 14 days). Must be requested by the <strong>primary account holder</strong>. Do <em>not</em> cancel AT&amp;T service until the transfer is complete. Also check that <strong>Wireless Account Lock is turned off</strong> — if it is on, the port will be blocked.',
+    pinPaths:[
+      {label:'App', steps:['myAT&amp;T App','More tab (bottom right)','Manage Profile','People &amp; Permissions','Transfer phone number','Request a new PIN']},
+      {label:'Web', steps:['att.com','Profile','People &amp; Permissions','Wireless','Transfer phone number']},
+    ],
+    pinAlt:'<strong>Dial *PORT</strong> (or <em>*7678</em>) from the AT&amp;T phone → follow prompts → PIN sent via text<br><strong>Phone:</strong> <em>611</em> or <em>800-331-0500</em>',
+    notes:[
+      {type:'alert',text:'<strong>Wireless Account Lock:</strong> If the customer has Wireless Account Lock enabled, the port will fail. They must log in to myAT&amp;T and turn it off <em>before</em> initiating the transfer.'},
+      {type:'alert',text:'<strong>Do not cancel early:</strong> The customer should <em>not</em> cancel their AT&amp;T service before the port completes — the number must still be active on AT&amp;T for the transfer to go through.'},
+      {type:'note',text:'<strong>Primary account holder only:</strong> Authorized users cannot request the Number Transfer PIN. If the caller is not the primary holder, they need to have the primary holder complete this step.'},
+      {type:'note',text:'<strong>PIN valid 4 days</strong> (consumer) or <strong>14 days</strong> (business). If it expires before the port completes, a new one must be generated.'},
+    ],
+  },
+
+  // ── MAJOR PREPAID ────────────────────────────────────────────────────────
+  {
+    name:'Boost Mobile', color:'#f7931e', badge:'Prepaid', section:'prepaid',
+    sectionLabel:'Major Prepaid', keywords:'boost mobile prepaid',
+    acctDesc:'For most Boost customers the <strong>10-digit mobile phone number</strong> is used as the account number for porting. Some accounts show a separate account number in the profile — check the app to confirm which applies.',
+    acctPaths:[
+      {label:'App', steps:['My Boost App','👤 Account icon','My Account','Account Information']},
+      {label:'Web', steps:['boostvip.com','Sign in','My Account','Account Information']},
+    ],
+    acctAlt:'<strong>Phone:</strong> <em>833-502-6678</em><br><strong>Email:</strong> Order or activation confirmation email also contains account details',
+    pinDesc:'The Transfer PIN is the <strong>4-digit account PIN</strong> set when the account was created. This same PIN is used for customer service identity verification. It can be viewed or changed under Account Settings in the My Boost app.',
+    pinPaths:[
+      {label:'App', steps:['My Boost App','My Account','Account Settings','Change PIN']},
+      {label:'Web', steps:['boostvip.com','My Account','Account Settings']},
+    ],
+    pinAlt:'<strong>Phone:</strong> <em>833-502-6678</em>',
+    notes:[{type:'note',text:'<strong>Forgotten PIN:</strong> Reset online at <em>boostvip.com</em> using SSN verification — takes effect immediately. Resetting over the phone also requires knowing the current PIN or providing the last 4 digits of SSN.'}],
+  },
+  {
+    name:'Metro by T-Mobile', color:'#6e2585', badge:'Prepaid', section:'prepaid',
+    sectionLabel:'Major Prepaid', keywords:'metro t-mobile metropcs prepaid',
+    acctDesc:'The account number is shown in the My Metro app under Account Information. It also appears on any Metro paper or digital bills. For most accounts it is a <strong>9–10 digit number</strong> distinct from the phone number.',
+    acctPaths:[
+      {label:'App', steps:['My Metro App','Account tab','Account Information']},
+      {label:'Web', steps:['mymetro.com','Sign in','My Account','Account Summary']},
+    ],
+    acctAlt:'<strong>Phone:</strong> <em>888-863-8768</em>',
+    pinDesc:'The Transfer PIN is the <strong>4-digit account PIN</strong> created at activation — the same PIN used when calling Metro customer service. The customer can view or update it in the My Metro app or on the website.',
+    pinPaths:[
+      {label:'App', steps:['My Metro App','Account tab','Update my PIN']},
+      {label:'Web', steps:['mymetro.com','My Account','Update PIN']},
+    ],
+    pinAlt:'<strong>Phone:</strong> <em>888-863-8768</em> — PIN can be reset with last 4 of SSN or email verification',
+    notes:[],
+  },
+  {
+    name:'Cricket Wireless', color:'#00b140', badge:'Prepaid', section:'prepaid',
+    sectionLabel:'Major Prepaid', keywords:'cricket wireless prepaid',
+    acctDesc:'The Cricket account number is a <strong>9-digit</strong> number visible in the myCricket app under Account Information and on paper or email bills. Look for "Account Number" specifically — it is different from the phone number.',
+    acctPaths:[
+      {label:'App', steps:['myCricket App','My Account','Account Information']},
+      {label:'Web', steps:['cricketwireless.com','My Account','Account Summary']},
+    ],
+    acctAlt:'<strong>Phone:</strong> <em>800-274-2538</em> (1-800-CRICKET)',
+    pinDesc:'The Transfer PIN is the <strong>account PIN</strong> set at signup, between <strong>4 and 8 digits</strong>. It is the same PIN the customer uses to authenticate when calling Cricket customer service. It can be viewed or updated in the myCricket app.',
+    pinPaths:[
+      {label:'App', steps:['myCricket App','My Account','Account Info','Account PIN']},
+      {label:'Web', steps:['cricketwireless.com','My Account','Account Information','View / Update PIN']},
+    ],
+    pinAlt:'<strong>Phone:</strong> <em>800-274-2538</em> — PIN reset requires SSN or date of birth verification',
+    notes:[],
+  },
+  {
+    name:'Consumer Cellular', color:'#005da0', badge:'Prepaid', section:'prepaid',
+    sectionLabel:'Major Prepaid', keywords:'consumer cellular prepaid',
+    acctDesc:'Consumer Cellular account numbers are <strong>8 digits</strong> and displayed on the Account Summary page after signing in. The number also appears on every paper and email bill in the billing header.',
+    acctPaths:[
+      {label:'Web', steps:['consumercellular.com','My Account','Account Summary']},
+    ],
+    acctAlt:'<strong>Phone:</strong> <em>888-345-5509</em> — M–F 9am–9pm CT, Sat–Sun 9am–7pm CT',
+    pinDesc:'The Transfer PIN is the <strong>account PIN</strong> (typically 4 digits) set when the account was created. It can be found or updated in the account portal under Security Settings.',
+    pinPaths:[
+      {label:'Web', steps:['consumercellular.com','My Account','Security Settings','Update PIN']},
+    ],
+    pinAlt:'<strong>Phone:</strong> <em>888-345-5509</em> — support can verify identity and assist with PIN retrieval during business hours',
+    notes:[{type:'note',text:'<strong>App limitation:</strong> The Consumer Cellular mobile app has limited account management features. PIN retrieval and changes are easiest on the desktop website or by calling support directly.'}],
+  },
+  {
+    name:'Straight Talk', color:'#e31837', badge:'Prepaid', section:'prepaid',
+    sectionLabel:'Major Prepaid', keywords:'straight talk straighttalk prepaid',
+    acctDesc:'The account number is shown in the My Account section after signing in on the Straight Talk website. It also appears on order confirmation and activation emails.',
+    acctPaths:[
+      {label:'Web', steps:['straighttalk.com','Sign In','My Account','Account Information']},
+    ],
+    acctAlt:'<strong>Email:</strong> Activation or order confirmation email contains account details<br><strong>Phone:</strong> <em>877-430-2355</em> (7am–midnight ET daily)',
+    pinDesc:'The default Transfer PIN is the <strong>last 4 digits of the account holder\'s SSN</strong>. If the customer created a custom PIN during account setup, that custom PIN takes precedence. The PIN can be managed under account security settings on the website.',
+    pinPaths:[
+      {label:'Web', steps:['straighttalk.com','Sign In','My Account','Security','PIN Management']},
+    ],
+    pinAlt:'<strong>Try first:</strong> Last 4 of SSN — works for most accounts by default<br><strong>Phone:</strong> <em>877-430-2355</em> for assistance',
+    notes:[],
+  },
+
+  // ── MVNOs & OTHERS ───────────────────────────────────────────────────────
+  {
+    name:'Visible', color:'#ee0979', badge:'Verizon MVNO', section:'mvno',
+    sectionLabel:'MVNOs &amp; Others', keywords:'visible verizon mvno',
+    acctDesc:'The Visible account number is in the Visible app under About my plan. It is a unique identifier separate from the phone number, required for all port-out requests.',
+    acctPaths:[
+      {label:'App', steps:['Visible App','Account tab (bottom)','About my plan','Account number']},
+      {label:'Web', steps:['visible.com','Sign in','Account','Account details']},
+    ],
+    acctAlt:'',
+    pinDesc:'Visible calls this the <strong>Port-Out PIN</strong>. <strong>It does not exist by default</strong> — the customer must explicitly set it under Profile → Transfer Number. Once a port is initiated by Xfinity, this PIN cannot be set retroactively.',
+    pinPaths:[
+      {label:'App — do BEFORE calling Xfinity', steps:['Visible App','Account tab','Profile','Transfer Number','Set Transfer PIN']},
+      {label:'Web', steps:['visible.com','Account','Profile','Transfer Number']},
+    ],
+    pinAlt:'',
+    notes:[{type:'alert',text:'<strong>Must be done first:</strong> The Port-Out PIN must be set <em>before</em> the port begins. Once Xfinity starts the activation, Visible will not allow the PIN to be added or changed. If the customer has not set it yet, pause now and have them do it before continuing.'}],
+  },
+  {
+    name:'Mint Mobile', color:'#00b300', badge:'T-Mobile MVNO', section:'mvno',
+    sectionLabel:'MVNOs &amp; Others', keywords:'mint mobile mvno t-mobile',
+    acctDesc:'The Mint Mobile account number is on the Mint website under Account → My Number. It is also visible in the Mint app under Account details.',
+    acctPaths:[
+      {label:'Web', steps:['mintmobile.com','Sign In','Account','My Number','Account Number']},
+      {label:'App', steps:['Mint App','Account','Account details']},
+    ],
+    acctAlt:'',
+    pinDesc:'Mint Mobile provides a <strong>time-limited Transfer PIN</strong> generated on demand — there is no static PIN. The customer clicks Generate PIN and must use it <em>immediately</em>. The PIN typically expires within <strong>24 hours</strong>.',
+    pinPaths:[
+      {label:'Web', steps:['mintmobile.com','Sign In','Account','Transfer PIN','Generate PIN']},
+      {label:'App', steps:['Mint App','Account','Transfer PIN','Generate']},
+    ],
+    pinAlt:'',
+    notes:[{type:'note',text:'<strong>Timing:</strong> Have the customer generate the Transfer PIN <em>right before</em> you initiate the port — do not generate it in advance. If it expires before use, they will need to generate a new one.'}],
+  },
+  {
+    name:'Google Fi', color:'#4285f4', badge:'MVNO', section:'mvno',
+    sectionLabel:'MVNOs &amp; Others', keywords:'google fi mvno',
+    acctDesc:'The Google Fi account number is shown on the fi.google.com website under Account settings. It typically starts with "01" followed by digits. <strong>Note:</strong> the account number may not be visible in the Google Fi mobile app — use the website.',
+    acctPaths:[
+      {label:'Web only', steps:['fi.google.com','Account (top right)','Account details']},
+    ],
+    acctAlt:'',
+    pinDesc:'Google Fi provides a <strong>Transfer PIN</strong> generated on demand, valid for <strong>30 days</strong>. This must be done from the fi.google.com website. <strong>Google Fi has no customer service phone line</strong> — all support is handled online via chat.',
+    pinPaths:[
+      {label:'Web only', steps:['fi.google.com','Account','Transfer your number','Get a Transfer PIN']},
+    ],
+    pinAlt:'<strong>Chat support:</strong> fi.google.com/about/support (no phone line)',
+    notes:[
+      {type:'note',text:'<strong>Online only:</strong> If the customer needs help, they must use Google Fi\'s online chat — there is no phone number for Google Fi support.'},
+      {type:'note',text:'<strong>Email confirmation:</strong> Google Fi sends a confirmation email when a Transfer PIN is generated. The PIN is valid for 30 days from generation.'},
+    ],
+  },
+  {
+    name:'US Cellular', color:'#0063b1', badge:'Postpaid', section:'mvno',
+    sectionLabel:'MVNOs &amp; Others', keywords:'us cellular uscellular postpaid',
+    acctDesc:'The US Cellular account number is displayed in the My Account section on their website and in the US Cellular app. It also appears on every paper or email bill.',
+    acctPaths:[
+      {label:'App', steps:['US Cellular App','My Account','Account Information']},
+      {label:'Web', steps:['uscellular.com','My Account','Account Information']},
+    ],
+    acctAlt:'<strong>Phone:</strong> <em>888-944-9400</em>',
+    pinDesc:'The Transfer PIN is the <strong>account PIN</strong> set at activation. US Cellular often defaults this to the <strong>last 4 digits of SSN</strong> if no custom PIN was set. The customer can view or change it on the website under security settings.',
+    pinPaths:[
+      {label:'Web', steps:['uscellular.com','My Account','Security','Account PIN']},
+    ],
+    pinAlt:'<strong>Default if unsure:</strong> Last 4 of SSN<br><strong>Phone:</strong> <em>888-944-9400</em>',
+    notes:[],
+  },
+  {
+    name:'Spectrum Mobile', color:'#0073d1', badge:'Charter MVNO', section:'mvno',
+    sectionLabel:'MVNOs &amp; Others', keywords:'spectrum mobile charter mvno',
+    acctDesc:'The Spectrum Mobile account number is in My Account on the Spectrum website and in the Spectrum app under the Mobile section. It also appears on monthly bills.',
+    acctPaths:[
+      {label:'Web', steps:['spectrummobile.com','My Account','Account details']},
+      {label:'App', steps:['Spectrum App','Mobile','Account']},
+    ],
+    acctAlt:'<strong>Phone:</strong> <em>855-707-7328</em>',
+    pinDesc:'The Transfer PIN is the <strong>account PIN</strong> set when the Spectrum Mobile account was created. It can be viewed or changed in Account Settings on the website.',
+    pinPaths:[
+      {label:'Web', steps:['spectrummobile.com','My Account','Account Settings','Security PIN']},
+    ],
+    pinAlt:'<strong>Phone:</strong> <em>855-707-7328</em>',
+    notes:[{type:'note',text:'<strong>Spectrum Internet bundle:</strong> If the customer has forgotten their PIN, they may be able to reset it through their main Spectrum account at <em>spectrum.com</em> — Spectrum Mobile is tied to the Spectrum Internet account.'}],
+  },
+  {
+    name:'Tracfone / Total by Verizon', color:'#003087', badge:'Prepaid', section:'mvno',
+    sectionLabel:'MVNOs &amp; Others', keywords:'tracfone total wireless verizon walmart prepaid',
+    acctDesc:'The account number is shown in My Account on the carrier website. For some Tracfone accounts the phone number itself is used as the account identifier. The activation or order confirmation email also contains account details.',
+    acctPaths:[
+      {label:'Tracfone', steps:['tracfone.com','Sign In','My Account','Account Information']},
+      {label:'Total by Verizon', steps:['totalwireless.com','Sign In','My Account','Account Information']},
+    ],
+    acctAlt:'<strong>Tracfone phone:</strong> <em>800-867-7183</em><br><strong>Total by Verizon:</strong> <em>877-480-3705</em>',
+    pinDesc:'The default Transfer PIN is the <strong>last 4 digits of the account holder\'s SSN</strong>. If a custom PIN was created during account setup, that PIN takes precedence. The PIN can be managed in the account security settings on the website.',
+    pinPaths:[
+      {label:'Tracfone Web', steps:['tracfone.com','My Account','Profile','Security','PIN']},
+    ],
+    pinAlt:'<strong>Default if unsure:</strong> Try last 4 of SSN<br><strong>Tracfone:</strong> <em>800-867-7183</em> · <strong>Total:</strong> <em>877-480-3705</em>',
+    notes:[],
+  },
+];
+
+function renderNavPath(p) {
+  var html = '<div class="nav-path"><div class="nav-path-label">' + p.label + '</div>';
+  p.steps.forEach(function (s, i) {
+    if (i > 0) html += '<span class="nav-sep">›</span>';
+    html += '<span class="nav-step' + (i === p.steps.length - 1 ? ' target' : '') + '">' + s + '</span>';
+  });
+  return html + '</div>';
+}
+
+function renderCarrierCard(c) {
+  var paths = function (arr) { return arr ? arr.map(renderNavPath).join('') : ''; };
+  var notes = (c.notes || []).map(function (n) {
+    return '<div class="carrier-' + n.type + '">' + n.text + '</div>';
+  }).join('');
+  return '<div class="carrier-card" data-carrier="' + c.keywords + '" style="border-left-color:' + c.color + '">' +
+    '<div class="carrier-header">' +
+      '<span class="carrier-dot" style="background:' + c.color + '"></span>' +
+      '<span class="carrier-name">' + c.name + '</span>' +
+      '<span class="carrier-badge">' + c.badge + '</span>' +
+      CHEVRON +
+    '</div>' +
+    '<div class="carrier-body">' +
+      '<div class="carrier-block">' +
+        '<div class="carrier-section-title">Account Number</div>' +
+        '<div class="carrier-desc">' + c.acctDesc + '</div>' +
+        paths(c.acctPaths) +
+        (c.acctAlt ? '<div class="carrier-alt">' + c.acctAlt + '</div>' : '') +
+      '</div>' +
+      '<div class="carrier-block">' +
+        '<div class="carrier-section-title">Transfer PIN</div>' +
+        '<div class="carrier-desc">' + c.pinDesc + '</div>' +
+        paths(c.pinPaths) +
+        (c.pinAlt ? '<div class="carrier-alt">' + c.pinAlt + '</div>' : '') +
+      '</div>' +
+      notes +
+    '</div>' +
+  '</div>';
+}
+
+function renderPortInfo() {
+  if (_portInfoRendered) return;
+  var panel = document.getElementById('japanel-portinfo');
+  if (!panel) return;
+  panel.querySelectorAll('.port-section').forEach(function (el) { el.remove(); });
+  var layout = panel.querySelector('.port-info-layout');
+  if (!layout) return;
+  var sections = {}, order = [];
+  CARRIERS.forEach(function (c) {
+    if (!sections[c.section]) { sections[c.section] = { label: c.sectionLabel, cards: [] }; order.push(c.section); }
+    sections[c.section].cards.push(c);
+  });
+  order.forEach(function (key) {
+    var sec = sections[key];
+    var div = document.createElement('div');
+    div.className = 'port-section';
+    div.innerHTML = '<div class="port-section-label">' + sec.label + '</div>' +
+      '<div class="carrier-grid">' + sec.cards.map(renderCarrierCard).join('') + '</div>';
+    layout.appendChild(div);
+  });
+  _portInfoRendered = true;
+}
+
+// Collapse / expand on header click (delegated)
+document.addEventListener('click', function (e) {
+  var h = e.target.closest('.carrier-header');
+  if (h) h.closest('.carrier-card').classList.toggle('expanded');
+});
+
+// Search — filter + auto-expand matches
+var $portSearch = document.getElementById('port-search');
+if ($portSearch) {
+  $portSearch.addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    var visible = 0;
+    document.querySelectorAll('.carrier-card').forEach(function (card) {
+      var match = !q || ((card.dataset.carrier || '') + ' ' + card.textContent).toLowerCase().includes(q);
+      card.hidden = !match;
+      if (match) { visible++; if (q) card.classList.add('expanded'); }
+      else card.classList.remove('expanded');
+    });
+    document.querySelectorAll('.port-section').forEach(function (sec) {
+      sec.style.display = Array.from(sec.querySelectorAll('.carrier-card')).some(function (c) { return !c.hidden; }) ? '' : 'none';
+    });
+    var $nr = document.getElementById('port-no-results');
+    if ($nr) $nr.style.display = visible === 0 ? 'block' : 'none';
+  });
+}
+
+  window.renderPortInfo = renderPortInfo;
+}());
 </script></body>
 </html>
