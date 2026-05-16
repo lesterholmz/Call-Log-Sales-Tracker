@@ -3216,7 +3216,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 (Base + XM activations)">$0</div><div class="stat-achieve" id="m-rev-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-rev-pct">0%</span><span id="m-rev-lbl">of $6,870</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rev-bar"></div><div class="goal-bar-over" id="m-rev-over"></div></div><span class="stat-pace" id="m-rev-pace"></span></div>
     <div class="stat"><div class="stat-label">RGUs</div><div class="stat-val c-blue" id="m-rgus" data-tip="Revenue Generating Units
 (XM lines each=1, TV=1, CHSI=1 or 0.75 IE, CDV=1, XH=1)">0</div><div class="stat-achieve" id="m-rgus-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-rgus-pct">0%</span><span id="m-rgus-lbl">of 123</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-rgus-bar"></div><div class="goal-bar-over" id="m-rgus-over"></div></div><span class="stat-pace" id="m-rgus-pace"></span></div>
-    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm" data-tip="XM mobile lines sold this period">0</div><div class="stat-achieve" id="m-xm-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span id="m-xm-lbl">of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
+    <div class="stat"><div class="stat-label">XM Lines</div><div class="stat-val c-teal" id="m-xm" data-tip="XM mobile lines sold this period">0</div><div id="m-xm-breakdown" style="font-size:9px;color:var(--text3);margin-top:1px;font-weight:600"></div><div class="stat-achieve" id="m-xm-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-xm-pct">0%</span><span id="m-xm-lbl">of 13</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-xm-bar"></div><div class="goal-bar-over" id="m-xm-over"></div></div><span class="stat-pace" id="m-xm-pace"></span></div>
     <div class="stat"><div class="stat-label">TV</div><div class="stat-val c-blue" id="m-tv" data-tip="TV packages sold this period">0</div><div class="stat-achieve" id="m-tv-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-tv-pct">0%</span><span id="m-tv-lbl">of 23</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-tv-bar"></div><div class="goal-bar-over" id="m-tv-over"></div></div><span class="stat-pace" id="m-tv-pace"></span></div>
     <div class="stat"><div class="stat-label">CHSI</div><div class="stat-val c-blue" id="m-chsi" data-tip="Internet (CHSI) units sold
 (IE accounts = 0.75 RGU)">0</div><div class="stat-achieve" id="m-chsi-achieve"></div><div class="stat-pct"><span class="pct-val warn" id="m-chsi-pct">0%</span><span id="m-chsi-lbl">of 82</span></div><div class="goal-bar-track"><div class="goal-bar-fill" id="m-chsi-bar"></div><div class="goal-bar-over" id="m-chsi-over"></div></div><span class="stat-pace" id="m-chsi-pace"></span></div>
@@ -4608,7 +4608,7 @@ function setMoodEdit(emoji){
 
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
 function compute(c){
-  if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:'',activated:false,snoozeUntil:''}));
+  if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:'',activated:false,snoozeUntil:'',type:'phone'}));
   if(c.xm>0&&c.baseRev===undefined) c.baseRev=Math.max(0,c.rev-(c.xm*XM_LINE_REV));
   const ie=c.ie||c.reason==='IE (.75)';
   c.chsiRgu=!c.chsi?0:ie?.75:1;
@@ -4844,9 +4844,18 @@ function renderEditXmLines(c){
     '<div style="font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--teal);margin-bottom:10px">📱 XM Line Activation Dates</div>'+
     '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
     lines.map(function(line){
+      var lt = line.type || 'phone';
+      var tbtn = function(k, icon){
+        var active = k === lt;
+        var bg  = active ? (k==='phone'?'var(--teal)':k==='tablet'?'#8b5cf6':'#6366f1') : 'transparent';
+        var col = active ? '#fff' : 'var(--text3)';
+        return '<button id="exm-tbtn-'+k+'-'+line.id+'" onclick="editXmSetType('+line.id+',\''+k+'\')" style="height:24px;padding:0 7px;border:none;cursor:pointer;font-size:12px;transition:background .12s;background:'+bg+';color:'+col+'">'+icon+'</button>';
+      };
       return '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">'+
         '<div style="font-size:9px;color:var(--text3);font-weight:600">Line '+line.id+'</div>'+
+        '<input type="hidden" id="exm-type-'+line.id+'" value="'+lt+'">' +
         '<div style="display:flex;gap:6px;align-items:center">'+
+        '<div style="display:flex;background:var(--card2);border:1px solid var(--border2);border-radius:6px;overflow:hidden;flex-shrink:0">'+tbtn('phone','📱')+tbtn('tablet','📓')+tbtn('watch','⌚')+'</div>'+
           '<input type="date" id="exm-date-'+line.id+'" value="'+(line.schedDate||'')+'" '+
             'style="height:28px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none" '+
             'onchange="editXmLineUpdate()">'+
@@ -4881,6 +4890,18 @@ function editXmLineUpdate(){
       ' · Total: <span style="color:var(--green);font-weight:700;font-family:var(--mono)">$'+total.toFixed(2)+'</span>' +
       ' · <span style="color:var(--teal)">'+activated+'/'+xm+' activated</span>';
   }
+}
+
+function editXmSetType(lineId, t){
+  var inp = document.getElementById('exm-type-'+lineId);
+  if(inp) inp.value = t;
+  ['phone','tablet','watch'].forEach(function(k){
+    var btn = document.getElementById('exm-tbtn-'+k+'-'+lineId);
+    if(!btn) return;
+    var active = k === t;
+    btn.style.background = active ? (k==='phone'?'var(--teal)':k==='tablet'?'#8b5cf6':'#6366f1') : 'transparent';
+    btn.style.color = active ? '#fff' : 'var(--text3)';
+  });
 }
 
 function _populateFormFromCall(c){
@@ -5129,7 +5150,8 @@ function saveEdit(){
     c.xmLines = Array.from({length: xmVal}, (_, i) => ({
       id: i + 1,
       schedDate: c.xmLines && c.xmLines[i] ? c.xmLines[i].schedDate : (sched || ''),
-      activated: c.xmLines && c.xmLines[i] ? c.xmLines[i].activated : false
+      activated: c.xmLines && c.xmLines[i] ? c.xmLines[i].activated : false,
+      type: c.xmLines && c.xmLines[i] ? (c.xmLines[i].type || 'phone') : 'phone'
     }));
   }
   // Read per-line dates and activation from the edit panel inputs
@@ -5138,6 +5160,8 @@ function saveEdit(){
     var actEl  = document.getElementById('exm-act-'+line.id);
     if(dateEl) line.schedDate = dateEl.value;
     if(actEl)  line.activated = actEl.checked;
+    var typeEl = document.getElementById('exm-type-'+line.id);
+    if(typeEl) line.type = typeEl.value || 'phone';
   });
 
   compute(c);
@@ -5720,6 +5744,17 @@ function updateStats(){
   document.getElementById('m-rgus').textContent = fmtR(mRgus);
   document.getElementById('m-xm').textContent = mXm;
   setStat('m-xm', mXm, GOALS.xm);
+  (function(){
+    var phones=0,tablets=0,watches=0;
+    calls.forEach(function(cc){
+      if(!cc.xmLines) return;
+      cc.xmLines.forEach(function(l){
+        var t=l.type||'phone'; if(t==='tablet')tablets++; else if(t==='watch')watches++; else phones++;
+      });
+    });
+    var el=document.getElementById('m-xm-breakdown');
+    if(el) el.textContent=(tablets||watches)?('📱'+phones+(watches?' · ⌚'+watches:'')+(tablets?' · 📓'+tablets:'')):''; 
+  })();
   const _xmLbl=document.getElementById('m-xm-lbl'); if(_xmLbl) _xmLbl.textContent='of '+GOALS.xm;
   const _tvLbl=document.getElementById('m-tv-lbl'); if(_tvLbl) _tvLbl.textContent='of '+GOALS.tv;
   const _chsiLbl=document.getElementById('m-chsi-lbl'); if(_chsiLbl) _chsiLbl.textContent='of '+GOALS.chsi;
@@ -6819,6 +6854,7 @@ function normalizeCall(sc){
       if(typeof l.activated === 'string') l.activated = l.activated === 'true';
       else l.activated = !!l.activated;
       if(l.snoozeUntil === undefined || l.snoozeUntil === null) l.snoozeUntil = '';
+      if(!l.type) l.type = 'phone';
     });
   } else if(typeof sc.xmLines === 'string' && sc.xmLines.trim()){
     try { sc.xmLines = JSON.parse(sc.xmLines); } catch(e) { sc.xmLines = []; }
@@ -12539,16 +12575,22 @@ function renderMobileLines(){
     });
   }
 
-  var totalLines=0, pendingLines=0, activatedLines=0;
+  var totalLines=0, pendingLines=0, activatedLines=0, phoneCount=0, tabletCount=0, watchCount=0;
   xmCalls.forEach(function(c){
     c.xmLines.forEach(function(l){
       totalLines++;
       if(xmIsActivated(l)) activatedLines++;
       else pendingLines++;
+      var t = l.type || 'phone';
+      if(t==='tablet') tabletCount++; else if(t==='watch') watchCount++; else phoneCount++;
     });
   });
 
-  if(subtitle) subtitle.textContent = totalLines+' lines · '+pendingLines+' pending · '+activatedLines+' activated';
+  var typeBreak = '';
+  if(tabletCount || watchCount){
+    typeBreak = ' · 📱 '+phoneCount+(watchCount?' · ⌚ '+watchCount:'')+(tabletCount?' · 📓 '+tabletCount:'');
+  }
+  if(subtitle) subtitle.textContent = totalLines+' lines'+typeBreak+' · '+pendingLines+' pending · '+activatedLines+' activated';
 
   if(!filtered.length){
     container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">'+(xmCalls.length?'No lines match this filter':'No mobile sales logged yet')+'</div>';
@@ -12606,7 +12648,7 @@ function renderMobileLines(){
       }
 
       return '<div class="xm-line-row" style="display:flex;align-items:center;gap:8px;padding:8px 14px 8px 20px;border-top:1px solid var(--border);background:var(--surface)">'+
-        '<span style="font-size:10px;font-weight:700;color:var(--text3);min-width:44px">Line '+(li+1)+'</span>'+
+        '<span style="font-size:10px;font-weight:700;color:var(--text3);min-width:44px">'+(l.type==='tablet'?'📓':l.type==='watch'?'⌚':'📱')+' Line '+(li+1)+'</span>'+
         '<span style="font-size:11px;font-family:var(--mono);color:var(--text2);flex:1">'+(l.schedDate?fmtDate(l.schedDate):'No sched')+'</span>'+
         '<span class="xm-status-badge '+statusCls+'">'+statusTxt+snoozeLabel+'</span>'+
         '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0">'+actions+'</div>'+
@@ -12702,7 +12744,7 @@ function renderCallbacksTab(){
       var isActive = filter === s.key;
       var activeBorder = isActive ? ';box-shadow:inset 0 -2px 0 '+s.color+';filter:brightness(1.25)' : '';
       return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-right:1px solid var(--border);cursor:pointer;background:'+s.bg+';transition:filter .15s'+activeBorder+'" onclick="setCbTabFilter(\''+s.key+'\')" title="Filter: '+s.label+(isActive?' (active)':'')+'">'+
-        '<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:'+s.color+';line-height:1">'+counts[s.key]+'</div>'+
+        '<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:'+s.color+';line-height:1">'+(s.key==='due-today'?counts['due-today']+counts['due-soon']:counts[s.key])+'</div>'+
         '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:'+(isActive?s.color:'var(--text3)')+';margin-top:2px">'+s.label+'</div>'+
       '</div>';
     }).join('')+'<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;cursor:pointer'+(filter==='all'?';box-shadow:inset 0 -2px 0 var(--blue)':'')+'" onclick="setCbTabFilter(\'all\')" title="Show all">'+
@@ -12752,6 +12794,23 @@ function renderCallbacksTab(){
   };
 
   el.innerHTML='';
+
+  // Warn when overdue items exist in the full callback set but are hidden by the active tab
+  // filter (e.g. 'pending', 'due-today') or the active type filter (e.g. 'Exception').
+  // Alerts fire without any filter, so users would see the alert but find nothing in the tab.
+  var overdueInAll  = cbCalls.filter(function(c){ return getCbStatus(c) === 'overdue'; }).length;
+  var overdueShown  = filtered.filter(function(c){ return getCbStatus(c) === 'overdue'; }).length;
+  var overdueHidden = overdueInAll - overdueShown;
+  if(overdueHidden > 0){
+    var noticeDiv = document.createElement('div');
+    noticeDiv.style.cssText = 'padding:9px 14px;background:rgba(248,113,113,.09);border:1px solid rgba(248,113,113,.35);border-radius:9px;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--red)';
+    noticeDiv.innerHTML =
+      '<span style="font-size:15px;flex-shrink:0">⚠</span>'+
+      '<span><strong>'+overdueHidden+' overdue follow-up'+(overdueHidden!==1?'s':'')+' hidden</strong> by the active filter</span>'+
+      '<span onclick="setCbTypeFilter(\'all\');setCbTabFilter(\'open\')" style="margin-left:auto;cursor:pointer;color:var(--blue);font-weight:700;text-decoration:underline;font-size:11px;white-space:nowrap;flex-shrink:0">Show all open ↗</span>';
+    el.appendChild(noticeDiv);
+  }
+
   filtered.forEach(function(c){
     var status=getCbStatus(c);
     var cbDate=c.cbTime?new Date(c.cbTime):null;
@@ -12787,6 +12846,7 @@ function renderCallbacksTab(){
       // ── Collapsed header — always visible, click to expand ──
       '<div class="fu-card-header" onclick="toggleFuCard(\''+cardId+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;flex-wrap:nowrap;min-width:0">'+
         '<span style="font-size:11px;font-weight:700;color:'+sc.accent+';flex-shrink:0">'+sc.icon+' '+sc.label+'</span>'+
+        '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:'+ftc.bg+';border:1px solid '+ftc.border+';color:'+ftc.color+';flex-shrink:0;white-space:nowrap">'+(fuTypeIcons[fuType]||'')+' '+fuType+'</span>'+
         (timeLeft?'<span style="font-size:10px;font-weight:600;color:'+sc.accent+';white-space:nowrap;flex-shrink:0">'+timeLeft+'</span>':'')+
         '<span style="font-size:11px;color:var(--text2);white-space:nowrap;flex-shrink:0;font-family:var(--mono)">'+cbFmt+'</span>'+
         '<span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;flex-shrink:0">'+(c.cbName||'—')+'</span>'+
