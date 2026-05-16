@@ -7087,6 +7087,7 @@ function switchTab(tab){
   if(tab==='callbacks'){
     var tr=document.getElementById('cb-type-filter-row');
     if(tr) delete tr.dataset.rendered;
+    switchFuSubtab('callbacks');
     renderCallbacksTab();
   }
 }
@@ -7952,8 +7953,18 @@ function downloadReconCSV(){
 
 function openCallFromAlert(id){
   document.getElementById('alert-bar').classList.remove('visible');
-  if(_activeTab !== 'callbacks') switchTab('callbacks');
-  if(_cbTabFilter === 'done') setCbTabFilter('open');
+  var needsRender = false;
+  if(_activeTab !== 'callbacks'){
+    switchTab('callbacks');
+  } else {
+    needsRender = true;
+  }
+  if(_cbTabFilter !== 'open'){ _cbTabFilter = 'open'; needsRender = true; }
+  if(_cbTypeFilter !== 'all'){ _cbTypeFilter = 'all'; needsRender = true; }
+  if(needsRender){
+    switchFuSubtab('callbacks');
+    renderCallbacksTab();
+  }
   setTimeout(function(){
     var card=document.getElementById('fu-outer-'+id);
     if(card){
