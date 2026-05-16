@@ -12871,7 +12871,7 @@ function renderCallbacksTab(){
         (timeLeft?'<span style="font-size:10px;font-weight:600;color:'+sc.accent+';white-space:nowrap;flex-shrink:0">'+timeLeft+'</span>':'')+
         '<span style="font-size:11px;color:var(--text2);white-space:nowrap;flex-shrink:0;font-family:var(--mono)">'+cbFmt+'</span>'+
         '<span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;flex-shrink:0">'+(c.cbName||'—')+'</span>'+
-        (c.notes?'<span style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1">'+c.notes.split('\n')[0]+'</span>':'<span style="flex:1"></span>')+
+        (c.notes?'<span style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1">'+String(c.notes).split('\n')[0]+'</span>':'<span style="flex:1"></span>')+
         '<span id="fu-chevron-'+c.id+'" style="color:var(--text3);font-size:12px;flex-shrink:0;transition:transform .2s">▾</span>'+
       '</div>'+
       // ── Expanded body — hidden by default ──
