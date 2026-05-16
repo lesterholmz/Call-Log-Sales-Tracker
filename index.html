@@ -3820,6 +3820,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
           <button onclick="setCbTabFilter('all')" id="cbtf-all" style="padding:0 11px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">All</button>
         </div>
         <button onclick="renderCallbacksTab()" style="height:30px;width:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:14px;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center" title="Refresh">↻</button>
+        <button onclick="showFuDiag()" style="height:30px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer" title="Diagnostic info">🔍 Diag</button>
         <button onclick="if(window._lastCbDoneId){undoCbDone(window._lastCbDoneId);window._lastCbDoneId=null;}" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">↩ Undo</button>
       </div>
     </div>
@@ -12829,7 +12830,9 @@ function renderCallbacksTab(){
     el.appendChild(noticeDiv);
   }
 
+  var _renderErrors = [];
   filtered.forEach(function(c){
+    try {
     var status=getCbStatus(c);
     var cbDate=c.cbTime?new Date(c.cbTime):null;
     var cbFmt=cbDate&&!isNaN(cbDate)?
@@ -12978,9 +12981,51 @@ function renderCallbacksTab(){
     var reschedTarget = card.querySelector('div[style*="padding:12px 16px"]') || card.querySelector('.fu-card-body') || card;
     reschedTarget.appendChild(reschedPanel);
     el.appendChild(card);
+    } catch(e) { _renderErrors.push('id='+c.id+' err='+e.message); }
   });
+
+  if(_renderErrors.length){
+    var errDiv=document.createElement('div');
+    errDiv.style.cssText='padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.4);border-radius:8px;margin-top:8px;font-size:11px;color:var(--red);white-space:pre-wrap;font-family:var(--mono)';
+    errDiv.textContent='Render errors ('+_renderErrors.length+'):\n'+_renderErrors.join('\n');
+    el.appendChild(errDiv);
+  }
 }
 
+
+function showFuDiag(){
+  var now=new Date();
+  var todayStr=now.toDateString();
+  function gs(c){
+    if(c.cbDone) return 'done';
+    if(!c.cbTime||c.cbTime==='') return c.fuType?'pending':null;
+    var t=new Date(c.cbTime);
+    if(isNaN(t)) t=new Date(typeof c.cbTime==='string'?c.cbTime.replace(' ','T'):c.cbTime);
+    if(isNaN(t)) return c.fuType?'pending':null;
+    var d=(t-now)/60000;
+    if(d<0) return 'overdue';
+    if(d<=30) return 'due-soon';
+    if(t.toDateString()===todayStr) return 'due-today';
+    return 'pending';
+  }
+  var cbCalls=calls.filter(function(c){ return (c.fuType&&c.fuType!=='')||(c.cbTime&&c.cbTime!==''); });
+  var typeFiltered=_cbTypeFilter==='all'?cbCalls:cbCalls.filter(function(c){ return c.fuType===_cbTypeFilter; });
+  var filtered=typeFiltered.filter(function(c){ var s=gs(c); if(s===null)return false; var f=_cbTabFilter||'open'; if(f==='open')return s!=='done'; if(f==='overdue')return s==='overdue'; if(f==='due-today')return s==='due-today'||s==='due-soon'; if(f==='due-soon')return s==='due-soon'; if(f==='pending')return s==='pending'; if(f==='done')return s==='done'; return true; });
+  var rows=filtered.slice(0,10).map(function(c){ return '  id='+c.id+' status='+gs(c)+' fuType='+(c.fuType||'—')+' cbDone='+c.cbDone+' cbTime='+JSON.stringify(c.cbTime); }).join('\n');
+  var panelEl=document.getElementById('fu-panel-callbacks');
+  var panelVis=panelEl?panelEl.style.display:'?';
+  var msg=[
+    'calls total: '+calls.length,
+    'cbCalls (has cbTime or fuType): '+cbCalls.length,
+    'typeFiltered (_cbTypeFilter='+_cbTypeFilter+'): '+typeFiltered.length,
+    'filtered (_cbTabFilter='+(_cbTabFilter||'open')+'): '+filtered.length,
+    'fu-panel-callbacks display: "'+panelVis+'"',
+    'el (#cb-tab-cards) exists: '+(!!document.getElementById('cb-tab-cards')),
+    'filtered items (first 10):',
+    rows||'  (none)'
+  ].join('\n');
+  alert(msg);
+}
 
 function undoCbDone(id){
   var c = calls.find(function(x){ return String(x.id)===String(id); });
