@@ -6832,6 +6832,13 @@ function deleteCallFromSheets(id) {
 /* ── loadFromSheets: pull-only on startup ───────────────────────────────── */
 function normalizeCall(sc){
   if(!(sc.ts instanceof Date)) sc.ts = sc.ts ? new Date(sc.ts) : new Date();
+  // Normalize fuType — Sheets may return different casing or extra whitespace.
+  // Map any recognised variant to the canonical form before the backfill check.
+  if(sc.fuType && typeof sc.fuType === 'string'){
+    var _ftRaw = sc.fuType.trim();
+    var _ftMap = {callback:'Callback',collections:'Collections',construction:'Construction',exception:'Exception'};
+    sc.fuType = _ftMap[_ftRaw.toLowerCase()] || _ftRaw;
+  }
   // Backfill fuType — legacy calls with a cbTime are Callbacks
   if(!sc.fuType && sc.cbTime) sc.fuType = 'Callback';
   // Normalize cbDone — Sheets may return string 'true'/'false'
