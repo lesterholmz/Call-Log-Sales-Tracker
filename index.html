@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="viewport" content="width=720">
-<title>Call Logger v0.4.29.4</title>
+<title>Call Logger v0.5.16.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -565,10 +565,9 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .cb-input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(248,113,113,.15)}
 
 /* ── Log search ── */
-.log-search-wrap{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border2);border-radius:7px;height:30px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
-.log-search-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
+.log-search-wrap{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border2);border-radius:7px;height:30px;overflow:hidden}
 .log-search-icon{padding:0 6px 0 8px;font-size:11px;color:var(--text3);flex-shrink:0}
-.log-search-input{background:none;border:none;outline:none;font-family:var(--mono);font-size:11px;color:var(--text);width:130px;padding:0}
+.log-search-input{background:none;border:none;outline:none;font-family:var(--mono);font-size:11px;color:var(--text);width:16ch;padding:0}
 .log-search-input::placeholder{color:var(--text3)}
 .log-search-clear{display:none;background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 8px;line-height:1;height:100%}
 .log-search-clear:hover{color:var(--red)}
@@ -2646,7 +2645,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 <body>
 <div class="header">
   <!-- Left: logo + name + fiscal pill -->
-  <div class="brand" style="flex:1;display:flex;align-items:center;gap:6px"><div class="brand-logo" id="brand-logo-btn" onclick="eggClick()" style="cursor:pointer"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name" style="margin-left:-4px"><span data-tip="XCL v0.4.29.4">Call Logger</span></div><div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer;margin-left:4px" data-tip="Click to open fiscal calendar">…</div></div>
+  <div class="brand" style="flex:1;display:flex;align-items:center;gap:6px"><div class="brand-logo" id="brand-logo-btn" onclick="eggClick()" style="cursor:pointer"><svg viewBox="0 0 30 30" width="30" height="30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="7" fill="#4169E1"/><line x1="21" y1="9" x2="9" y2="21" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><line x1="9" y1="9" x2="22" y2="24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="brand-name" style="margin-left:-4px"><span data-tip="XCL v0.5.16.1">Call Logger</span></div><div class="month-chip" id="month-chip-label" onclick="toggleCalendarApplet()" style="cursor:pointer;margin-left:4px" data-tip="Click to open fiscal calendar">…</div></div>
   <!-- Center: countdown -->
   <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;pointer-events:auto">
     <div style="position:relative">
@@ -3200,7 +3199,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 </div>
 
 <div id="sync-toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
-<div id="alert-bar"><div class="alert-inner"><div class="alert-icon">🔔</div><div class="alert-content"><div class="alert-title">Follow-Up Alert</div><div class="alert-items" id="alert-items"></div></div><button class="alert-dismiss" onclick="dismissAlerts()">Dismiss</button></div></div>
+<div id="alert-bar"><div class="alert-inner"><div class="alert-icon">🔔</div><div class="alert-content"><div class="alert-title">Follow-Up Alert</div><div class="alert-items" id="alert-items"></div></div><button class="alert-dismiss" onmousedown="window._adT=setTimeout(function(){window._adT=null;dismissUntilNext();},1000)" onmouseup="if(window._adT){clearTimeout(window._adT);window._adT=null;dismissAlerts();}" onmouseleave="if(window._adT){clearTimeout(window._adT);window._adT=null;}" ontouchstart="event.preventDefault();window._adT=setTimeout(function(){window._adT=null;dismissUntilNext();},1000)" ontouchend="event.preventDefault();if(window._adT){clearTimeout(window._adT);window._adT=null;dismissAlerts();}">Dismiss</button></div></div>
 <div id="resurfaced-banner"><span style="font-size:14px">↻</span><span class="rs-msg" id="rs-msg"></span><button class="rs-dismiss" onclick="dismissResurfaced()">Dismiss</button></div>
 <!-- ══ TAB: TRACKER ══ -->
 <div class="tab-panel active" id="panel-tracker">
@@ -3249,7 +3248,7 @@ body.tips-on [data-tip]:hover::after{opacity:1}
           oninput="updateMoodEmoji(this.value)"
           style="width:100%;height:4px;cursor:pointer;appearance:none;-webkit-appearance:none;background:var(--border2);border-radius:2px;outline:none;position:absolute;top:50%;margin-top:-2px;z-index:1"
           title="Neutral">
-        <div id="mood-thumb-emoji" style="position:absolute;font-size:18px;line-height:1;pointer-events:none;transform:translateX(-50%);left:50%;top:50%;margin-top:-9px;z-index:2" title="Neutral">😐</div>
+        <div id="mood-thumb-emoji" style="position:absolute;font-size:18px;line-height:1;pointer-events:none;transform:translateX(-50%);left:153.8px;top:50%;margin-top:-9px;z-index:2" title="Neutral">😐</div>
       </div>
       <!-- Play button + timer + backdate + clear -->
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto">
@@ -3391,8 +3390,8 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
   </div>
   <div class="table-card">
     <div class="table-header">
-      <div class="table-title">Call Log <span style="font-size:10px;color:var(--text3);font-weight:400;margin-left:6px">— click any row to edit</span></div>
-      <div class="table-actions"><div class="log-search-wrap"><span class="log-search-icon">🔍</span><input class="log-search-input" id="log-search" type="text" placeholder="Search acct #…" oninput="setLogSearch(this.value)" autocomplete="off" spellcheck="false"><button class="log-search-clear" id="log-search-clear" onclick="clearLogSearch()" title="Clear">✕</button></div><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
+      <div class="table-title">Call Log</div>
+      <div class="table-actions"><div id="xm-device-filter-row" style="display:flex;gap:4px;margin-right:24px"></div><div class="log-search-wrap"><span class="log-search-icon">🔍</span><input class="log-search-input" id="log-search" type="text" placeholder="Search acct #…" oninput="setLogSearch(this.value)" autocomplete="off" spellcheck="false"><button class="log-search-clear" id="log-search-clear" onclick="clearLogSearch()" title="Clear">✕</button></div><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
     </div>
     <table>
       <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th></tr></thead>
@@ -3820,8 +3819,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
           <button onclick="setCbTabFilter('all')" id="cbtf-all" style="padding:0 11px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">All</button>
         </div>
         <button onclick="renderCallbacksTab()" style="height:30px;width:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:14px;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center" title="Refresh">↻</button>
-        <button onclick="showFuDiag()" style="height:30px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer" title="Diagnostic info">🔍 Diag</button>
-        <button onclick="if(window._lastCbDoneId){undoCbDone(window._lastCbDoneId);window._lastCbDoneId=null;}" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">↩ Undo</button>
+<button onclick="if(window._lastCbDoneId){undoCbDone(window._lastCbDoneId);window._lastCbDoneId=null;}" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">↩ Undo</button>
       </div>
     </div>
     <!-- Summary strip -->
@@ -4101,12 +4099,13 @@ let _userCallType='acq',_userCapLevel=2;
 let _session=null; // {agentId, name, role, callType, capLevel, supervisorId}
 let _userList=[]; // cached from sheets
 let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='today',_logSearch='',_activeTab='tracker',_historicalFiscal=null;
+var _xmDeviceFilter = new Set(); // empty = all; elements: 'phone','watch','tablet'
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});},1000);
 function checkAlerts(){
   const now=Date.now();if(now<alertDismissed)return;
   const windows=window._alertWindows||[15];
   const a=calls.filter(c=>{
-    if(!c.cbTime||c.cbDone)return false;
+    if(!c.cbTime||c.cbDone||c.mood===MOOD_EMOJIS[0])return false;
     if(c.cbSnoozeUntil&&new Date(c.cbSnoozeUntil)>new Date(now))return false;
     const ms=new Date(c.cbTime).getTime()-now;
     if(ms<0)return true;
@@ -4185,6 +4184,29 @@ function rawPhone(v){return v.replace(/\D/g,'');}
 document.getElementById('f-cb-phone').addEventListener('input',function(){onPhoneInput(this);});
 
 function dismissAlerts(){alertDismissed=Date.now()+15*60000;document.getElementById('alert-bar').classList.remove('visible');}
+
+function dismissUntilNext(){
+  var now=Date.now();
+  var maxW=Math.max.apply(null,window._alertWindows||[15]);
+  var future=calls.filter(function(c){
+    if(!c.cbTime||c.cbDone||c.mood===MOOD_EMOJIS[0])return false;
+    if(c.cbSnoozeUntil&&new Date(c.cbSnoozeUntil)>new Date(now))return false;
+    return new Date(c.cbTime).getTime()>now;
+  });
+  future.sort(function(a,b){return new Date(a.cbTime)-new Date(b.cbTime);});
+  var next=future[0];
+  if(next){
+    var fireAt=new Date(next.cbTime).getTime()-maxW*60000;
+    alertDismissed=Math.max(fireAt,now+60000);
+    var t=new Date(next.cbTime);
+    var timeStr=t.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    _showToast('🔕 Snoozed until '+timeStr+' callback','ok',3000);
+  } else {
+    alertDismissed=now+8*60*60000;
+    _showToast('🔕 No upcoming callbacks — snoozed 8 hours','ok',3000);
+  }
+  document.getElementById('alert-bar').classList.remove('visible');
+}
 function checkResurfaced(){
   if(window._resurfacedDismissed) return;
   const banner=document.getElementById('resurfaced-banner');
@@ -4542,20 +4564,14 @@ function toggleCb(){
 function updateNotesState(){const b=document.getElementById('notes-badge'),ta=document.getElementById('f-notes');if(cbOpen){b.className='req-badge-p';b.textContent='required';ta.classList.add('cb-req-ta');ta.placeholder='Why is a call back needed?';}else{b.className='opt-badge';b.textContent='optional';ta.classList.remove('cb-req-ta');ta.placeholder='Optional…';}}
 const MOOD_EMOJIS = ['🚩','🤬','😠','😕','🤔','😐','🙂','😊','😄','🤩'];
 const MOOD_NAMES  = ['Fraud Flag','Profanity','Angry','Confused','Uncertain','Neutral','Friendly','Happy','Excited','Thrilled'];
-var _moodSliderW = 0;
-function _moodMeasure(){
-  const sl = document.getElementById('mood-slider');
-  if(sl && sl.offsetWidth > 0) _moodSliderW = sl.offsetWidth;
-}
+var TABLET_ICON = '<img src="data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 34"><rect width="24" height="34" rx="3.5" fill="#4a4a4a"/><circle cx="12" cy="1.8" r="0.7" fill="#666"/><rect x="1.5" y="3.5" width="21" height="26" rx="1.5" fill="#f0f0f0"/><rect x="2.5" y="4.5" width="4" height="4" rx="0.8" fill="#7dd3e8"/><rect x="7.5" y="4.5" width="4" height="4" rx="0.8" fill="#f5943c"/><rect x="12.5" y="4.5" width="4" height="4" rx="0.8" fill="#7dd3e8"/><rect x="17.5" y="4.5" width="4" height="4" rx="0.8" fill="#3dcfb3"/><rect x="2.5" y="9.5" width="4" height="4" rx="0.8" fill="#3dcfb3"/><rect x="7.5" y="9.5" width="4" height="4" rx="0.8" fill="#7dd3e8"/><rect x="12.5" y="9.5" width="4" height="4" rx="0.8" fill="#f48cac"/><rect x="17.5" y="9.5" width="4" height="4" rx="0.8" fill="#f5943c"/><rect x="2.5" y="14.5" width="4" height="4" rx="0.8" fill="#f5be5c"/><rect x="7.5" y="14.5" width="4" height="4" rx="0.8" fill="#4c8ff0"/><rect x="12.5" y="14.5" width="4" height="4" rx="0.8" fill="#7dd3e8"/><rect x="17.5" y="14.5" width="4" height="4" rx="0.8" fill="#4c8ff0"/><rect x="2.5" y="19.5" width="4" height="4" rx="0.8" fill="#3dcfb3"/><rect x="7.5" y="19.5" width="4" height="4" rx="0.8" fill="#f5be5c"/><rect x="12.5" y="19.5" width="4" height="4" rx="0.8" fill="#3dcfb3"/><rect x="2.5" y="24.5" width="4" height="4" rx="0.8" fill="#7dd3e8"/><rect x="7.5" y="24.5" width="4" height="4" rx="0.8" fill="#f48cac"/><rect x="12.5" y="24.5" width="4" height="4" rx="0.8" fill="#4c8ff0"/><rect x="17.5" y="24.5" width="4" height="4" rx="0.8" fill="#3dcfb3"/><circle cx="12" cy="31.5" r="1.5" fill="#777"/></svg>')+'" style="height:1.1em;vertical-align:-0.2em;display:inline-block" alt="tablet">';
+// Precomputed emoji positions for val 0-9: 16 + (val/9)*248, wrapper=280px, thumb=32px
+const _MOOD_POS = [16,43.6,71.1,98.7,126.2,153.8,181.3,208.9,236.4,264];
 function _moodPos(val){
   const sl = document.getElementById('mood-slider');
   const el = document.getElementById('mood-thumb-emoji');
   if(!sl||!el) return;
-  if(!_moodSliderW) _moodMeasure();
-  const pct = (+val)/9;
-  const tw = 14;
-  const w = _moodSliderW||200;
-  el.style.left = (tw + pct*(w - tw*2)) + 'px';
+  el.style.left = _MOOD_POS[+val] + 'px';
   el.textContent = MOOD_EMOJIS[+val];
   sl.title = MOOD_NAMES[+val] || '';
 }
@@ -4578,21 +4594,15 @@ function moodSliderFocus(){
   if(sl) sl.focus();
 }
 function initMoodSlider(){
-  _moodMeasure();
   const sl = document.getElementById('mood-slider');
   _moodPos(sl ? sl.value : 5);
 }
 
-var _moodEditW = 0;
 function _moodEditPos(val){
   const sl = document.getElementById('mood-slider-edit');
   const el = document.getElementById('mood-thumb-emoji-edit');
   if(!sl||!el) return;
-  if(!_moodEditW) _moodEditW = sl.offsetWidth;
-  const pct = (+val)/9;
-  const tw = 14;
-  const w = _moodEditW||200;
-  el.style.left = (tw + pct*(w - tw*2)) + 'px';
+  el.style.left = _MOOD_POS[+val] + 'px';
   el.textContent = MOOD_EMOJIS[+val];
   sl.title = MOOD_NAMES[+val] || '';
 }
@@ -4604,12 +4614,12 @@ function getMoodEdit(){
 function setMoodEdit(emoji){
   const idx = MOOD_EMOJIS.indexOf(emoji);
   const sl = document.getElementById('mood-slider-edit');
-  if(sl){ sl.value = idx >= 0 ? idx : 5; _moodEditW = 0; setTimeout(function(){ _moodEditPos(sl.value); }, 50); }
+  if(sl){ sl.value = idx >= 0 ? idx : 5; setTimeout(function(){ _moodEditPos(sl.value); }, 50); }
 }
 
 function isSale(){return xmVal>0||prods.tv||prods.chsi||prods.cdv||prods.xh;}
 function compute(c){
-  if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:'',activated:false,snoozeUntil:'',type:'phone'}));
+  if(c.xm>0&&!c.xmLines) c.xmLines=Array.from({length:c.xm},(_,i)=>({id:i+1,schedDate:'',activated:false,snoozeUntil:'',type:'phone',phoneNumber:''}));
   if(c.xm>0&&c.baseRev===undefined) c.baseRev=Math.max(0,c.rev-(c.xm*XM_LINE_REV));
   const ie=c.ie||c.reason==='IE (.75)';
   c.chsiRgu=!c.chsi?0:ie?.75:1;
@@ -4679,7 +4689,7 @@ function doLogCall(){
   const raw=document.getElementById('f-acct').value.trim();
   const c=compute({id:Date.now(),ts:getCallTimestamp(),backdated:_backdateActive,acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim(),mood:getMood()});
-  calls.unshift(c);render();updateStats();checkAlerts();upsertCallToSheets(c);
+  calls.unshift(c);_xmDeviceFilter.clear();updateXmDeviceChips();render();updateStats();checkAlerts();upsertCallToSheets(c);
   var _wasSale=isSale(); var _wasXm=xmVal>0;
   const _fk = 'xcl_goals_' + getFiscalMonth().replace(' ','');
   if(!localStorage.getItem(_fk)) localStorage.setItem(_fk, JSON.stringify({registeredAt: Date.now()}));
@@ -4856,7 +4866,7 @@ function renderEditXmLines(c){
         '<div style="font-size:9px;color:var(--text3);font-weight:600">Line '+line.id+'</div>'+
         '<input type="hidden" id="exm-type-'+line.id+'" value="'+lt+'">' +
         '<div style="display:flex;gap:6px;align-items:center">'+
-        '<div style="display:flex;background:var(--card2);border:1px solid var(--border2);border-radius:6px;overflow:hidden;flex-shrink:0">'+tbtn('phone','📱')+tbtn('tablet','📓')+tbtn('watch','⌚')+'</div>'+
+        '<div style="display:flex;background:var(--card2);border:1px solid var(--border2);border-radius:6px;overflow:hidden;flex-shrink:0">'+tbtn('phone','📱')+tbtn('watch','⌚')+tbtn('tablet',TABLET_ICON)+'</div>'+
           '<input type="date" id="exm-date-'+line.id+'" value="'+(line.schedDate||'')+'" '+
             'style="height:28px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none" '+
             'onchange="editXmLineUpdate()">'+
@@ -4864,6 +4874,12 @@ function renderEditXmLines(c){
             '<input type="checkbox" id="exm-act-'+line.id+'" '+(line.activated?'checked':'')+' '+
               'style="accent-color:var(--teal)" onchange="editXmLineUpdate()"> Activated'+
           '</label>'+
+        '</div>'+
+        '<div id="exm-phone-row-'+line.id+'" style="display:'+(lt==='phone'?'flex':'none')+';align-items:center;gap:6px">'+
+          '<span style="font-size:10px;color:var(--text3);flex-shrink:0">📞</span>'+
+          '<input type="tel" id="exm-phone-'+line.id+'" value="'+(line.phoneNumber||'')+'" placeholder="Phone number" '+
+            'style="height:26px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;width:130px" '+
+            'oninput="this.value=fmtPhone(this.value)">'+
         '</div>'+
       '</div>';
     }).join('')+
@@ -4903,6 +4919,8 @@ function editXmSetType(lineId, t){
     btn.style.background = active ? (k==='phone'?'var(--teal)':k==='tablet'?'#8b5cf6':'#6366f1') : 'transparent';
     btn.style.color = active ? '#fff' : 'var(--text3)';
   });
+  var phoneRow = document.getElementById('exm-phone-row-'+lineId);
+  if(phoneRow) phoneRow.style.display = t === 'phone' ? 'flex' : 'none';
 }
 
 function _populateFormFromCall(c){
@@ -5152,7 +5170,9 @@ function saveEdit(){
       id: i + 1,
       schedDate: c.xmLines && c.xmLines[i] ? c.xmLines[i].schedDate : (sched || ''),
       activated: c.xmLines && c.xmLines[i] ? c.xmLines[i].activated : false,
-      type: c.xmLines && c.xmLines[i] ? (c.xmLines[i].type || 'phone') : 'phone'
+      type: c.xmLines && c.xmLines[i] ? (c.xmLines[i].type || 'phone') : 'phone',
+      phoneNumber: c.xmLines && c.xmLines[i] ? (c.xmLines[i].phoneNumber || '') : '',
+      snoozeUntil: c.xmLines && c.xmLines[i] ? (c.xmLines[i].snoozeUntil || '') : ''
     }));
   }
   // Read per-line dates and activation from the edit panel inputs
@@ -5163,6 +5183,8 @@ function saveEdit(){
     if(actEl)  line.activated = actEl.checked;
     var typeEl = document.getElementById('exm-type-'+line.id);
     if(typeEl) line.type = typeEl.value || 'phone';
+    var phoneEl = document.getElementById('exm-phone-'+line.id);
+    if(phoneEl) line.phoneNumber = phoneEl.value.trim();
   });
 
   compute(c);
@@ -5202,7 +5224,7 @@ function saveEdit(){
     _showToast('💰 Sale recorded!', 'ok', 2500);
     setTimeout(function(){ launchFireworks(c.xm > 0); }, 150);
   } else if(c.cbSale && c.cbOriginId){
-    setTimeout(function(){ promptMarkCbComplete(c.cbOriginId); }, 500);
+    setTimeout(function(){ set2ndSwing(c.cbOriginId); }, 500);
   } else {
     _showToast('✓ Call updated', 'ok', 2000);
   }
@@ -5231,6 +5253,12 @@ function delCall(id){
     const _fc = document.getElementById('new-call-form-card');
     if(_fb && _fc){ _fc.appendChild(_fb); _fc.style.display = ''; }
     editingId = null; editState = {};
+    _editMarkCbDone = false; _cbSaleIntent = false;
+    window._editCall = null; window._editFromAlert = false;
+    var _xmW = document.getElementById('edit-xm-lines');
+    if(_xmW){ _xmW.style.display='none'; _xmW.innerHTML=''; }
+    const _subBtn = document.getElementById('submit-btn');
+    if(_subBtn){ _subBtn.style.opacity=''; _subBtn.style.filter=''; _subBtn.style.cursor=''; _subBtn.onclick=logCall; }
     document.getElementById('edit-panel').classList.remove('open');
     document.getElementById('edit-overlay').style.display = 'none';
     resetForm();
@@ -5396,6 +5424,61 @@ function logCallbackSale(originId){
 }
 
 function markCbDone(id){const c=calls.find(x=>String(x.id)===String(id));if(c){c.cbDone=true;render();updateStats();checkAlerts();saveCallsCache();upsertCallToSheets(c);}}
+
+function logNoAnswer(id){
+  var c=calls.find(function(x){return String(x.id)===String(id);});
+  if(!c||c.cbDone) return;
+  c.cbAttempts=(c.cbAttempts||0)+1;
+  saveCallsCache(); upsertCallToSheets(c);
+  _showToast('📵 Attempt #'+c.cbAttempts+' logged','ok',2000);
+  setTimeout(renderCallbacksTab,300);
+}
+
+function set2ndSwing(id){
+  var c=calls.find(function(x){return String(x.id)===String(id);});
+  if(!c||c.cbDone) return;
+  c.cb2ndSwing=true;
+  saveCallsCache(); upsertCallToSheets(c);
+  _showToast('📋 Create a 2nd Swing Ticket to close this follow-up','warn',4000);
+  setTimeout(renderCallbacksTab,300);
+}
+
+function revert2ndSwing(id){
+  var c=calls.find(function(x){return String(x.id)===String(id);});
+  if(!c) return;
+  c.cb2ndSwing=false;
+  saveCallsCache(); upsertCallToSheets(c);
+  setTimeout(renderCallbacksTab,300);
+}
+
+function clearRedFlag(id){
+  var c=calls.find(function(x){return String(x.id)===String(id);});
+  if(!c) return;
+  c.mood=MOOD_EMOJIS[5];
+  saveCallsCache(); upsertCallToSheets(c);
+  _showToast('✓ Payments confirmed — follow-up closed','ok',2500);
+  render(); setTimeout(renderCallbacksTab,300);
+}
+
+function markChargeback(id){
+  var c=calls.find(function(x){return String(x.id)===String(id);});
+  if(!c) return;
+  c.chargedBack=true;
+  c.cb2ndSwing=true;
+  saveCallsCache(); upsertCallToSheets(c);
+  _showToast('💸 Chargeback recorded — sale removed from stats','warn',3500);
+  render(); updateStats(); setTimeout(renderCallbacksTab,300);
+}
+
+function markException(id){
+  var c=calls.find(function(x){return String(x.id)===String(id);});
+  if(!c) return;
+  c.isException=true;
+  c.cb2ndSwing=true;
+  saveCallsCache(); upsertCallToSheets(c);
+  _showToast('⚠️ Exception recorded — sale excluded from stats','warn',3500);
+  render(); updateStats(); setTimeout(renderCallbacksTab,300);
+}
 function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
 function fmtCb(iso){if(!iso)return'';const d=new Date(iso);return d.toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}
 function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=new Date(c.cbTime).getTime()-Date.now();if(ms<0)return'overdue';const maxW=Math.max(...(window._alertWindows||[15]));if(ms<maxW*60000)return'due-soon';return'pending';}
@@ -5441,7 +5524,17 @@ function renderReadRow(c){
     if(c.reason) outcomePills += `<span class="pill p-other">${c.reason}</span> `;
   } else if(c.hasSale){
     const lobs = [];
-    if(c.xm > 0) lobs.push(`<span style="color:#4169e1;font-weight:800">${c.xm > 1 ? `XM(${c.xm})` : 'XM'}</span>`);
+    if(c.xm > 0){
+      var _xmLbl;
+      if(c.xmLines && c.xmLines.length){
+        var _ph=0,_wa=0,_ta=0;
+        c.xmLines.forEach(function(l){ if(l.type==='watch')_wa++; else if(l.type==='tablet')_ta++; else _ph++; });
+        _xmLbl=(_ph?'📱'+(_ph>1?'x'+_ph:''):'')+(_wa?'⌚'+(_wa>1?'x'+_wa:''):'')+(_ta?TABLET_ICON+(_ta>1?'x'+_ta:''):'');
+      } else {
+        _xmLbl = c.xm > 1 ? '📱x'+c.xm : '📱';
+      }
+      lobs.push('<span style="color:#4169e1;font-weight:800">'+_xmLbl+'</span>');
+    }
     if(c.tv)  lobs.push('TV');
     if(c.chsi) lobs.push(c.ie?'IE':'CHSI');
     if(c.cdv) lobs.push('CDV');
@@ -5463,7 +5556,7 @@ function renderReadRow(c){
 
   const trCls='read-row'+(st==='overdue'||st==='due-soon'?' callback-due':st==='pending'||(c.fuType&&!c.cbDone)?' has-callback':'');
   const acctTip = [c.cbName, c.cbPhone ? fmtPhone(c.cbPhone) : ''].filter(Boolean).join(' · ');
-  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td>${rev}</td><td>${rgu}</td><td style="max-width:0;width:40%"><div class="pill-scroll" onmouseenter="pillScrollStart(this)" onmouseleave="pillScrollStop(this)">${c.mood&&c.mood!==MOOD_EMOJIS[4]?`<span style="font-size:13px;margin-right:3px" title="Caller mood: ${c.mood}">${c.mood}</span>`:''}${outcomePills}</div></td></tr>`;
+  return`<tr class="${trCls}" onclick="openEdit(${c.id})"><td><span class="td-time">${ds} ${ts}</span></td><td class="td-acct"${acctTip?' title="'+acctTip+'"':''}><span style="font-family:var(--mono);letter-spacing:.04em">${maskAcct(c.acctRaw||c.acct)}</span></td><td>${rev}</td><td>${rgu}</td><td style="max-width:0;width:40%"><div class="pill-scroll" onmouseenter="pillScrollStart(this)" onmouseleave="pillScrollStop(this)">${c.mood&&c.mood!==MOOD_EMOJIS[4]?`<span style="font-size:13px;margin-right:3px" title="Caller mood: ${c.mood}">${c.mood}</span>`:''}${c.chargedBack?'<span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:10px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.4);color:#f87171;letter-spacing:.03em;margin-right:3px">Chargeback!</span>':''}${c.isException?'<span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:10px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.4);color:#f59e0b;letter-spacing:.03em;margin-right:3px">Exception!</span>':''}${outcomePills}</div></td></tr>`;
 }
 /* ── Log filter ── */
 function buildFilterOptions(){
@@ -5517,26 +5610,35 @@ function buildFilterOptions(){
     sel.value=activeFilter in Object.fromEntries(opts.map(o=>[o.value,1])) && relevant[activeFilter] ? activeFilter : 'all';
     if(!relevant[activeFilter]) activeFilter='all';
   }
+  updateXmDeviceChips();
 }
 
 
 function getFilteredCalls(){
   // Filter by active fiscal period (current or historical)
   let base = calls.filter(c => inActiveFiscalTs(c.ts));
-  if(activeFilter==='all') return _logSearch ? base.filter(c=>String(c.acctRaw||c.acct||'').includes(_logSearch)) : base;
-  const now=new Date();
-  const sod=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
-  const eod=d=>{const x=new Date(d);x.setHours(23,59,59,999);return x;};
-  const today=sod(now);
-  let from,to;
-  if(activeFilter==='today'){from=today;to=eod(now);}
-  else if(activeFilter==='yesterday'){const y=new Date(today);y.setDate(y.getDate()-1);from=y;to=eod(y);}
-  else if(activeFilter==='this-week'){from=sod(now);from.setDate(from.getDate()-from.getDay());to=eod(now);}
-  else if(activeFilter==='last-week'){const lws=new Date(today);lws.setDate(lws.getDate()-lws.getDay()-7);const lwe=new Date(lws);lwe.setDate(lwe.getDate()+6);from=lws;to=eod(lwe);}
-
-  else return calls;
-  let res = calls.filter(c=>c.ts>=from&&c.ts<=to);
-  if(_logSearch) res=res.filter(c=>String(c.acctRaw||c.acct||'').includes(_logSearch));
+  let res;
+  if(activeFilter==='all'){
+    res = _logSearch ? base.filter(c=>String(c.acctRaw||c.acct||'').includes(_logSearch)) : base;
+  } else {
+    const now=new Date();
+    const sod=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
+    const eod=d=>{const x=new Date(d);x.setHours(23,59,59,999);return x;};
+    const today=sod(now);
+    let from,to;
+    if(activeFilter==='today'){from=today;to=eod(now);}
+    else if(activeFilter==='yesterday'){const y=new Date(today);y.setDate(y.getDate()-1);from=y;to=eod(y);}
+    else if(activeFilter==='this-week'){from=sod(now);from.setDate(from.getDate()-from.getDay());to=eod(now);}
+    else if(activeFilter==='last-week'){const lws=new Date(today);lws.setDate(lws.getDate()-lws.getDay()-7);const lwe=new Date(lws);lwe.setDate(lwe.getDate()+6);from=lws;to=eod(lwe);}
+    else { res=calls; }
+    if(!res){ res=calls.filter(c=>c.ts>=from&&c.ts<=to); if(_logSearch) res=res.filter(c=>String(c.acctRaw||c.acct||'').includes(_logSearch)); }
+  }
+  if(_xmDeviceFilter.size>0){
+    res=res.filter(function(c){
+      if(!c.xmLines||!c.xmLines.length) return false;
+      return c.xmLines.some(function(l){ return _xmDeviceFilter.has(l.type||'phone'); });
+    });
+  }
   return res;
 }
 
@@ -5544,6 +5646,21 @@ function setLogFilter(val){
   activeFilter=val;
   const sel=document.getElementById('log-filter');
   render();
+}
+function setXmDeviceFilter(type){
+  if(type==='all'){ _xmDeviceFilter.clear(); }
+  else { if(_xmDeviceFilter.has(type)) _xmDeviceFilter.delete(type); else _xmDeviceFilter.add(type); }
+  updateXmDeviceChips();
+  render();
+}
+function updateXmDeviceChips(){
+  var row=document.getElementById('xm-device-filter-row');
+  if(!row) return;
+  var chips=[{key:'all',label:'All'},{key:'phone',label:'📱'},{key:'watch',label:'⌚'},{key:'tablet',label:TABLET_ICON}];
+  row.innerHTML=chips.map(function(ch){
+    var active=ch.key==='all'?_xmDeviceFilter.size===0:_xmDeviceFilter.has(ch.key);
+    return '<button onclick="setXmDeviceFilter(\''+ch.key+'\')" style="height:24px;padding:0 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid '+(active?'var(--blue)':'var(--border2)')+';background:'+(active?'var(--blue-lt)':'var(--surface)')+';color:'+(active?'var(--blue)':'var(--text3)')+'">'+ch.label+'</button>';
+  }).join('');
 }
 
 function render(){const tb=document.getElementById('log-body');const allFiltered=getFilteredCalls();const filtered=allFiltered;const callCount=filtered.filter(function(c){return !c.cbSale;}).length;document.getElementById('count-chip').textContent=callCount+' call'+(callCount!==1?'s':'');if(!filtered.length){tb.innerHTML='<tr><td colspan="5" class="empty">'+(activeFilter==='all'?'No calls logged yet':'No calls for this period')+'</td></tr>';return;}tb.innerHTML=filtered.map(renderReadRow).join('');}
@@ -5703,7 +5820,7 @@ function updateStats(){
 
   let mc;
   if (statsView === 'installs') {
-    mc = calls.filter(c => c.hasSale && inActiveFiscal(c.sched));
+    mc = calls.filter(c => c.hasSale && inActiveFiscal(c.sched) && !c.isException);
   } else if (statsView === 'pipeline') {
     mc = calls.filter(c => c.hasSale && inNextFiscal(c.sched));
   } else {
@@ -5754,7 +5871,7 @@ function updateStats(){
       });
     });
     var el=document.getElementById('m-xm-breakdown');
-    if(el) el.textContent=(tablets||watches)?('📱'+phones+(watches?' · ⌚'+watches:'')+(tablets?' · 📓'+tablets:'')):''; 
+    if(el) el.innerHTML=(tablets||watches)?('📱'+phones+(watches?' · ⌚'+watches:'')+(tablets?' · '+TABLET_ICON+tablets:'')):'';
   })();
   const _xmLbl=document.getElementById('m-xm-lbl'); if(_xmLbl) _xmLbl.textContent='of '+GOALS.xm;
   const _tvLbl=document.getElementById('m-tv-lbl'); if(_tvLbl) _tvLbl.textContent='of '+GOALS.tv;
@@ -6320,14 +6437,8 @@ function saveSettings(){
   cbInitTimePicker();
   cbSetAmPm('AM');
   setTimeout(initMoodSlider, 100);
+  updateXmDeviceChips();
   buildCalendar && updatePace && updatePace();
-  // Re-measure mood slider on window resize
-  window.addEventListener('resize', function(){
-    _moodSliderW = 0;
-    _moodMeasure();
-    const sl = document.getElementById('mood-slider');
-    if(sl) _moodPos(sl.value);
-  }, {passive:true});
   const btn=document.querySelector('.settings-save');
   btn.textContent='✓ Saved!';btn.classList.add('saved');
   _showToast(toastMsg, changedSections.length ? 'ok' : 'warn', 4000);
@@ -6854,6 +6965,14 @@ function normalizeCall(sc){
   if(typeof sc.cbSaleLogged === 'string') sc.cbSaleLogged = sc.cbSaleLogged === 'true';
   else sc.cbSaleLogged = !!sc.cbSaleLogged;
   if(!sc.cbOriginId) sc.cbOriginId = '';
+  if(typeof sc.cbAttempts === 'string') sc.cbAttempts = parseInt(sc.cbAttempts, 10) || 0;
+  else sc.cbAttempts = sc.cbAttempts || 0;
+  if(typeof sc.cb2ndSwing === 'string') sc.cb2ndSwing = sc.cb2ndSwing === 'true';
+  else sc.cb2ndSwing = !!sc.cb2ndSwing;
+  if(typeof sc.chargedBack === 'string') sc.chargedBack = sc.chargedBack === 'true';
+  else sc.chargedBack = !!sc.chargedBack;
+  if(typeof sc.isException === 'string') sc.isException = sc.isException === 'true';
+  else sc.isException = !!sc.isException;
   if(typeof sc.backdated==='string') sc.backdated=sc.backdated==='true';
   else sc.backdated=!!sc.backdated;
   // Normalize xmLines — ensure activated is boolean not string, snoozeUntil is string
@@ -6863,6 +6982,7 @@ function normalizeCall(sc){
       else l.activated = !!l.activated;
       if(l.snoozeUntil === undefined || l.snoozeUntil === null) l.snoozeUntil = '';
       if(!l.type) l.type = 'phone';
+      if(l.phoneNumber === undefined || l.phoneNumber === null) l.phoneNumber = '';
     });
   } else if(typeof sc.xmLines === 'string' && sc.xmLines.trim()){
     try { sc.xmLines = JSON.parse(sc.xmLines); } catch(e) { sc.xmLines = []; }
@@ -7953,7 +8073,7 @@ function downloadReconCSV(){
 }
 
 function openCallFromAlert(id){
-  document.getElementById('alert-bar').classList.remove('visible');
+  dismissAlerts();
   var needsRender = false;
   if(_activeTab !== 'callbacks'){
     switchTab('callbacks');
@@ -7972,6 +8092,8 @@ function openCallFromAlert(id){
       card.scrollIntoView({behavior:'smooth',block:'center'});
       card.style.boxShadow='0 0 0 2px var(--amber)';
       setTimeout(function(){ card.style.boxShadow=''; }, 1800);
+      var body=document.getElementById('fucard-'+id);
+      if(body && body.style.display==='none') toggleFuCard('fucard-'+id);
     }
   }, 150);
 }
@@ -12607,9 +12729,9 @@ function renderMobileLines(){
 
   var typeBreak = '';
   if(tabletCount || watchCount){
-    typeBreak = ' · 📱 '+phoneCount+(watchCount?' · ⌚ '+watchCount:'')+(tabletCount?' · 📓 '+tabletCount:'');
+    typeBreak = ' · 📱 '+phoneCount+(watchCount?' · ⌚ '+watchCount:'')+(tabletCount?' · '+TABLET_ICON+' '+tabletCount:'');
   }
-  if(subtitle) subtitle.textContent = totalLines+' lines'+typeBreak+' · '+pendingLines+' pending · '+activatedLines+' activated';
+  if(subtitle) subtitle.innerHTML = totalLines+' lines'+typeBreak+' · '+pendingLines+' pending · '+activatedLines+' activated';
 
   if(!filtered.length){
     container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">'+(xmCalls.length?'No lines match this filter':'No mobile sales logged yet')+'</div>';
@@ -12667,7 +12789,7 @@ function renderMobileLines(){
       }
 
       return '<div class="xm-line-row" style="display:flex;align-items:center;gap:8px;padding:8px 14px 8px 20px;border-top:1px solid var(--border);background:var(--surface)">'+
-        '<span style="font-size:10px;font-weight:700;color:var(--text3);min-width:44px">'+(l.type==='tablet'?'📓':l.type==='watch'?'⌚':'📱')+' Line '+(li+1)+'</span>'+
+        '<span style="font-size:10px;font-weight:700;color:var(--text3);min-width:44px">'+(l.type==='tablet'?TABLET_ICON:l.type==='watch'?'⌚':'📱')+' Line '+(li+1)+'</span>'+
         '<span style="font-size:11px;font-family:var(--mono);color:var(--text2);flex:1">'+(l.schedDate?fmtDate(l.schedDate):'No sched')+'</span>'+
         '<span class="xm-status-badge '+statusCls+'">'+statusTxt+snoozeLabel+'</span>'+
         '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0">'+actions+'</div>'+
@@ -12706,6 +12828,8 @@ function renderCallbacksTab(){
 
   function getCbStatus(c){
     if(c.cbDone) return 'done';
+    // Active red flag (🚩 mood, not yet resolved) — treat as pending
+    if(c.mood === MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing) return 'pending';
     // No time set — if it has a fuType it's a pending non-timed follow-up
     if(!c.cbTime || c.cbTime === '') return c.fuType ? 'pending' : null;
     var t = new Date(c.cbTime);
@@ -12714,14 +12838,14 @@ function renderCallbacksTab(){
     if(isNaN(t)) return c.fuType ? 'pending' : null;
     var diff = (t - now)/60000;
     if(diff < 0) return 'overdue';
-    if(diff <= 30) return 'due-soon';
+    if(diff <= 240) return 'due-soon';
     if(t.toDateString()===todayStr) return 'due-today';
     return 'pending';
   }
 
-  // Include any call that has a fuType OR a cbTime
+  // Include any call that has a fuType OR a cbTime OR is a red flag (any age)
   var cbCalls = calls.filter(function(c){
-    return (c.fuType && c.fuType !== '') || (c.cbTime && c.cbTime !== '');
+    return (c.fuType && c.fuType !== '') || (c.cbTime && c.cbTime !== '') || c.mood === MOOD_EMOJIS[0];
   });
 
   // Apply type filter
@@ -12730,12 +12854,20 @@ function renderCallbacksTab(){
   var filtered = typeFiltered.filter(function(c){
     var s = getCbStatus(c);
     if(s === null) return false; // no fuType and no parseable cbTime — truly nothing to show
+    // Active red flags are exclusive to the red-flag filter until 40 days post-sale
+    var isActiveRedFlag = c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone;
+    if(isActiveRedFlag){
+      if(filter==='red-flag') return true;
+      return Math.floor((now - c.ts) / 86400000) >= 40;
+    }
     if(filter==='open')      return s !== 'done';
     if(filter==='overdue')   return s === 'overdue';
     if(filter==='due-today') return s === 'due-today' || s === 'due-soon';
     if(filter==='due-soon')  return s === 'due-soon';
-    if(filter==='pending')   return s === 'pending';
-    if(filter==='done')      return s === 'done';
+    if(filter==='pending')    return s === 'pending';
+    if(filter==='done')       return s === 'done';
+    if(filter==='2nd-swing')  return c.cb2ndSwing && !c.cbDone;
+    if(filter==='red-flag')   return isActiveRedFlag;
     return true; // 'all'
   });
 
@@ -12748,8 +12880,13 @@ function renderCallbacksTab(){
   });
 
   // Summary strip
-  var counts={overdue:0,'due-soon':0,'due-today':0,pending:0,done:0};
-  typeFiltered.forEach(function(c){ var s=getCbStatus(c); if(s && counts[s]!==undefined) counts[s]++; });
+  var counts={overdue:0,'due-soon':0,'due-today':0,pending:0,done:0,'2nd-swing':0,'red-flag':0};
+  typeFiltered.forEach(function(c){
+    var s=getCbStatus(c);
+    if(s && counts[s]!==undefined) counts[s]++;
+    if(c.cb2ndSwing && !c.cbDone) counts['2nd-swing']++;
+    if(c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone) counts['red-flag']++;
+  });
   var summEl=document.getElementById('cb-tab-summary');
   if(summEl){
     var strips=[
@@ -12757,6 +12894,8 @@ function renderCallbacksTab(){
       {label:'Due Soon', key:'due-soon', color:'#f59e0b', bg:'rgba(245,158,11,.1)'},
       {label:'Due Today', key:'due-today', color:'#38bdf8', bg:'rgba(56,189,248,.1)'},
       {label:'Pending', key:'pending', color:'var(--text3)', bg:'transparent'},
+      {label:'Red Flag', key:'red-flag', color:'#f87171', bg:'rgba(248,113,113,.1)'},
+      {label:'2nd Swing', key:'2nd-swing', color:'#f59e0b', bg:'rgba(245,158,11,.1)'},
       {label:'Done', key:'done', color:'#22c55e', bg:'rgba(34,197,94,.1)'},
     ];
     summEl.innerHTML = strips.map(function(s){
@@ -12852,6 +12991,13 @@ function renderCallbacksTab(){
       unknown:   {accent:'var(--text3)', bg:'var(--card)',           border:'var(--border)',       strip:'#475569',icon:'—',label:'Unknown'},
     }[status]||{accent:'var(--text3)',bg:'var(--card)',border:'var(--border)',strip:'#475569',icon:'?',label:'?'};
 
+    if(c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone){
+      sc={accent:'var(--red)',bg:'rgba(248,113,113,.06)',border:'rgba(248,113,113,.35)',strip:'#f87171',icon:'🚩',label:'Red Flag'};
+    }
+    if(c.cb2ndSwing && !c.cbDone){
+      sc={accent:'var(--amber)',bg:'rgba(245,158,11,.06)',border:'rgba(245,158,11,.35)',strip:'#f59e0b',icon:'📋',label:'2nd Swing'};
+    }
+
     var logDate=c.ts?c.ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
     var fuType = c.fuType || 'Callback';
     var ftc = fuTypeColors[fuType]||fuTypeColors.Callback;
@@ -12868,11 +13014,14 @@ function renderCallbacksTab(){
       '<div class="fu-card-header" onclick="toggleFuCard(\''+cardId+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;flex-wrap:nowrap;min-width:0">'+
         '<span style="font-size:11px;font-weight:700;color:'+sc.accent+';flex-shrink:0">'+sc.icon+' '+sc.label+'</span>'+
         '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:'+ftc.bg+';border:1px solid '+ftc.border+';color:'+ftc.color+';flex-shrink:0;white-space:nowrap">'+(fuTypeIcons[fuType]||'')+' '+fuType+'</span>'+
+        (c.cbAttempts>0?'<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber);flex-shrink:0;white-space:nowrap">📵 '+c.cbAttempts+'</span>':'')+
+        (c.cb2ndSwing&&!c.cbDone?'<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber);flex-shrink:0;white-space:nowrap">📋 2nd Swing</span>':'')+
+        (c.mood===MOOD_EMOJIS[0]&&!c.chargedBack&&!c.isException&&!c.cb2ndSwing&&c.ts?(function(){var days=Math.floor((now-new Date(c.ts))/86400000);return '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);flex-shrink:0;white-space:nowrap">'+days+'d since sale</span>';})():'')+
         (timeLeft?'<span style="font-size:10px;font-weight:600;color:'+sc.accent+';white-space:nowrap;flex-shrink:0">'+timeLeft+'</span>':'')+
         '<span style="font-size:11px;color:var(--text2);white-space:nowrap;flex-shrink:0;font-family:var(--mono)">'+cbFmt+'</span>'+
         '<span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;flex-shrink:0">'+(c.cbName||'—')+'</span>'+
         (c.notes?'<span style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1">'+String(c.notes).split('\n')[0]+'</span>':'<span style="flex:1"></span>')+
-        '<span id="fu-chevron-'+c.id+'" style="color:var(--text3);font-size:12px;flex-shrink:0;transition:transform .2s">▾</span>'+
+        '<span id="fu-chevron-'+c.id+'" style="color:var(--text3);font-size:16px;flex-shrink:0;transition:transform .2s;line-height:1">▾</span>'+
       '</div>'+
       // ── Expanded body — hidden by default ──
       '<div id="'+cardId+'" style="display:none;border-top:1px solid '+sc.border+'">'+
@@ -12914,29 +13063,75 @@ function renderCallbacksTab(){
     }
 
     var btns=card.querySelector('#cbcard-btns-'+c.id);
-    if(status!=='done'){
-      var doneBtn=document.createElement('button');
-      doneBtn.innerHTML='✓ Mark Done';
-      doneBtn.style.cssText='height:28px;padding:0 14px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;letter-spacing:.02em';
-      doneBtn.dataset.cbid=c.id;
-      doneBtn.onclick=function(){
+    if(c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone){
+      // ── Active Red Flag state ──
+      var payOkBtn=document.createElement('button');
+      payOkBtn.innerHTML='✓ Payments OK';
+      payOkBtn.style.cssText='height:28px;padding:0 14px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer';
+      payOkBtn.dataset.cbid=c.id;
+      payOkBtn.onclick=function(){ clearRedFlag(this.dataset.cbid); };
+      btns.appendChild(payOkBtn);
+
+      var cbBtn=document.createElement('button');
+      cbBtn.innerHTML='💸 Mark Chargeback';
+      cbBtn.style.cssText='height:28px;padding:0 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--red);cursor:pointer';
+      cbBtn.dataset.cbid=c.id;
+      cbBtn.onclick=function(){ markChargeback(this.dataset.cbid); };
+      btns.appendChild(cbBtn);
+
+      var excBtn=document.createElement('button');
+      excBtn.innerHTML='⚠️ Exception';
+      excBtn.style.cssText='height:28px;padding:0 14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--amber);cursor:pointer';
+      excBtn.dataset.cbid=c.id;
+      excBtn.onclick=function(){ markException(this.dataset.cbid); };
+      btns.appendChild(excBtn);
+
+    } else if(c.cb2ndSwing && !c.cbDone){
+      // ── 2nd Swing state ──
+      var ticketBtn=document.createElement('button');
+      ticketBtn.innerHTML='✓ 2nd Swing Done';
+      ticketBtn.style.cssText='height:28px;padding:0 14px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;letter-spacing:.02em';
+      ticketBtn.dataset.cbid=c.id;
+      ticketBtn.onclick=function(){
         var id=this.dataset.cbid;
         markCbDone(id); window._lastCbDoneId=id;
+        _showToast('✓ Follow-up complete','ok',2500);
         setTimeout(renderCallbacksTab,300);
-        _showToast('✓ Marked done — click Undo to revert','ok',5000);
       };
-      btns.appendChild(doneBtn);
+      btns.appendChild(ticketBtn);
+
+      var reopenBtn=document.createElement('button');
+      reopenBtn.innerHTML='↩ Reopen';
+      reopenBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
+      reopenBtn.dataset.cbid=c.id;
+      reopenBtn.onclick=function(){ revert2ndSwing(this.dataset.cbid); };
+      btns.appendChild(reopenBtn);
+
+    } else if(status!=='done'){
+      // ── Open / attempting state ──
+      var closeLabel = (c.cbAttempts >= 1) ? '🏃 Move On' : '✓ Mark Done';
+      var closeBtn=document.createElement('button');
+      closeBtn.innerHTML=closeLabel;
+      closeBtn.style.cssText='height:28px;padding:0 14px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;letter-spacing:.02em';
+      closeBtn.dataset.cbid=c.id;
+      closeBtn.onclick=function(){ set2ndSwing(this.dataset.cbid); };
+      btns.appendChild(closeBtn);
 
       if(c.fuType==='Callback'||!c.fuType){
         var saleBtn=document.createElement('button');
         saleBtn.innerHTML='💰 Sale Made';
         saleBtn.style.cssText='height:28px;padding:0 14px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--amber);cursor:pointer';
         saleBtn.dataset.cbid=c.id;
-        saleBtn.onclick=function(){
-          logCallbackSale(parseInt(this.dataset.cbid));
-        };
+        saleBtn.onclick=function(){ logCallbackSale(parseInt(this.dataset.cbid)); };
         btns.appendChild(saleBtn);
       }
+
+      var noAnsBtn=document.createElement('button');
+      noAnsBtn.innerHTML='📵 No Answer';
+      noAnsBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
+      noAnsBtn.dataset.cbid=c.id;
+      noAnsBtn.onclick=function(){ logNoAnswer(this.dataset.cbid); };
+      btns.appendChild(noAnsBtn);
 
       var reschedBtn=document.createElement('button');
       reschedBtn.innerHTML='🕒 Reschedule';
@@ -12947,15 +13142,14 @@ function renderCallbacksTab(){
         if(row) row.style.display=row.style.display==='flex'?'none':'flex';
       };
       btns.appendChild(reschedBtn);
+
     } else {
-      // Done — show Mark Undone
+      // ── Done state ──
       var undoneBtn=document.createElement('button');
       undoneBtn.innerHTML='↩ Mark Undone';
       undoneBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
       undoneBtn.dataset.cbid=c.id;
-      undoneBtn.onclick=function(){
-        undoCbDone(this.dataset.cbid);
-      };
+      undoneBtn.onclick=function(){ undoCbDone(this.dataset.cbid); };
       btns.appendChild(undoneBtn);
     }
 
@@ -12993,39 +13187,6 @@ function renderCallbacksTab(){
 }
 
 
-function showFuDiag(){
-  var now=new Date();
-  var todayStr=now.toDateString();
-  function gs(c){
-    if(c.cbDone) return 'done';
-    if(!c.cbTime||c.cbTime==='') return c.fuType?'pending':null;
-    var t=new Date(c.cbTime);
-    if(isNaN(t)) t=new Date(typeof c.cbTime==='string'?c.cbTime.replace(' ','T'):c.cbTime);
-    if(isNaN(t)) return c.fuType?'pending':null;
-    var d=(t-now)/60000;
-    if(d<0) return 'overdue';
-    if(d<=30) return 'due-soon';
-    if(t.toDateString()===todayStr) return 'due-today';
-    return 'pending';
-  }
-  var cbCalls=calls.filter(function(c){ return (c.fuType&&c.fuType!=='')||(c.cbTime&&c.cbTime!==''); });
-  var typeFiltered=_cbTypeFilter==='all'?cbCalls:cbCalls.filter(function(c){ return c.fuType===_cbTypeFilter; });
-  var filtered=typeFiltered.filter(function(c){ var s=gs(c); if(s===null)return false; var f=_cbTabFilter||'open'; if(f==='open')return s!=='done'; if(f==='overdue')return s==='overdue'; if(f==='due-today')return s==='due-today'||s==='due-soon'; if(f==='due-soon')return s==='due-soon'; if(f==='pending')return s==='pending'; if(f==='done')return s==='done'; return true; });
-  var rows=filtered.slice(0,10).map(function(c){ return '  id='+c.id+' status='+gs(c)+' fuType='+(c.fuType||'—')+' cbDone='+c.cbDone+' cbTime='+JSON.stringify(c.cbTime); }).join('\n');
-  var panelEl=document.getElementById('fu-panel-callbacks');
-  var panelVis=panelEl?panelEl.style.display:'?';
-  var msg=[
-    'calls total: '+calls.length,
-    'cbCalls (has cbTime or fuType): '+cbCalls.length,
-    'typeFiltered (_cbTypeFilter='+_cbTypeFilter+'): '+typeFiltered.length,
-    'filtered (_cbTabFilter='+(_cbTabFilter||'open')+'): '+filtered.length,
-    'fu-panel-callbacks display: "'+panelVis+'"',
-    'el (#cb-tab-cards) exists: '+(!!document.getElementById('cb-tab-cards')),
-    'filtered items (first 10):',
-    rows||'  (none)'
-  ].join('\n');
-  alert(msg);
-}
 
 function undoCbDone(id){
   var c = calls.find(function(x){ return String(x.id)===String(id); });
@@ -15446,7 +15607,7 @@ window.phonesimInit = phonesimInit;
         oninput="updateMoodEmojiEdit(this.value)"
         style="width:100%;height:4px;cursor:pointer;appearance:none;-webkit-appearance:none;background:var(--border2);border-radius:2px;outline:none;position:absolute;top:50%;margin-top:-2px;z-index:1"
         title="Neutral">
-      <div id="mood-thumb-emoji-edit" style="position:absolute;font-size:18px;line-height:1;pointer-events:none;transform:translateX(-50%);left:50%;top:50%;margin-top:-9px;z-index:2" title="Neutral">😐</div>
+      <div id="mood-thumb-emoji-edit" style="position:absolute;font-size:18px;line-height:1;pointer-events:none;transform:translateX(-50%);left:153.8px;top:50%;margin-top:-9px;z-index:2" title="Neutral">😐</div>
     </div>
     <!-- Date pill right-aligned -->
     <span id="edit-panel-meta" style="display:inline-flex;align-items:center;gap:5px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);border-radius:20px;padding:3px 10px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--teal);white-space:nowrap;margin-left:auto;margin-right:8px"></span>
@@ -15461,7 +15622,7 @@ window.phonesimInit = phonesimInit;
     <button class="submit-btn" id="edit-save-btn" onclick="saveEdit()">✓ Save Changes</button>
     <button class="e-btn cancel" onclick="closeEdit()" style="height:38px;padding:0 18px">Cancel</button>
     <button id="edit-cb-sale-btn" onclick="toggleCbSaleIntent()" style="display:none;height:38px;padding:0 16px;background:transparent;border:2px solid #f97316;border-radius:8px;font-size:11px;font-weight:700;color:#f97316;cursor:pointer;margin-left:24px;align-items:center;justify-content:center;gap:6px;transition:all .15s">💰 Callback Sale Made</button>
-    <button class="e-btn del" id="edit-del-btn" style="height:38px;padding:0 18px;margin-left:auto">Delete Call</button>
+    <button class="e-btn del" id="edit-del-btn" style="height:38px;width:38px;padding:0;margin-left:auto;font-size:16px" title="Delete call">🗑</button>
   </div>
 </div>
 
