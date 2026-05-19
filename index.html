@@ -632,6 +632,21 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .tr-momentum{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
 .tr-momentum.up{color:var(--green)}.tr-momentum.down{color:var(--red)}.tr-momentum.flat{color:var(--text3)}
 .tr-table tr:hover td{background:var(--surface)}
+/* ── Dashboard Overview: arc rings ── */
+.arc-wrap-sm{position:relative;width:40px;height:40px;flex-shrink:0}
+.arc-svg-sm{width:40px;height:40px;transform:rotate(-90deg)}
+.arc-track-sm{fill:none;stroke:var(--border2);stroke-width:3.5}
+.arc-fill-sm{fill:none;stroke-width:3.5;stroke-linecap:round;transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s ease}
+.arc-center-sm{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.arc-pct-sm{font-family:var(--mono);font-size:9px;font-weight:700;line-height:1;transition:color .4s}
+/* ── Dashboard Overview: milestone pills ── */
+.ms-pill{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.03em;padding:1px 5px;border-radius:3px;border:1px solid var(--border2);color:var(--text3);transition:all .35s ease}
+.ms-pill.unlocked{border-color:var(--gold,#fbbf24);color:var(--gold,#fbbf24);background:rgba(251,191,36,.1);box-shadow:0 0 5px rgba(251,191,36,.25)}
+.ms-pill.near{border-color:var(--amber);color:var(--amber);background:rgba(245,158,11,.08)}
+/* ── Dashboard Overview: performance table ── */
+.perf-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(38,49,71,.5)}
+.perf-row:last-child{border-bottom:none}
+.perf-lbl{font-size:11px;color:var(--text3)}
 
 /* ── IE / BULK toggles ── */
 #ie-wrap{transition:opacity .15s}
@@ -7486,7 +7501,7 @@ function renderTrends(){
   };
 
   if(_trSubtab==='overview'){
-    // ── XM streak (consecutive days with ≥1 XM sale) ─────────────────
+    // ── XM streak ─────────────────────────────────────────────────────
     var xmStreak=0, xmStreakBroke=false, daysSinceXm=0;
     for(var si=0;si<sortedDays.length;si++){
       if(byDate[sortedDays[si]].xmSales>0){ xmStreak++; if(xmStreakBroke) break; }
@@ -7494,21 +7509,12 @@ function renderTrends(){
     }
     if(xmStreak===0){ for(var sj=0;sj<sortedDays.length;sj++){ if(byDate[sortedDays[sj]].xmSales>0) break; daysSinceXm++; } }
 
-    // ── Sales streak ───────────────────────────────────────────────────
-    var salesStreak=0, daysSinceSale=0;
-    for(var sk=0;sk<sortedDays.length;sk++){
-      if(byDate[sortedDays[sk]].sales>0) salesStreak++;
-      else { break; }
-    }
-    if(salesStreak===0){ for(var sl=0;sl<sortedDays.length;sl++){ if(byDate[sortedDays[sl]].sales>0) break; daysSinceSale++; } }
-
     // ── Pacing vs last fiscal month ────────────────────────────────────
     var prevFiEnd=new Date(fi.fiscalEnd); prevFiEnd.setMonth(prevFiEnd.getMonth()-1);
     var prevFiStart=new Date(fi.fiscalStart); prevFiStart.setMonth(prevFiStart.getMonth()-1);
-    var prevSales=mc.filter(function(c){return c.ts>=prevFiStart&&c.ts<=prevFiEnd&&c.hasSale;});
-    var prevRev=prevSales.reduce(function(s,c){return s+c.rev;},0);
+    var prevSalesList=mc.filter(function(c){return c.ts>=prevFiStart&&c.ts<=prevFiEnd&&c.hasSale;});
     var fiscalElapsedDays=Math.max(1,Math.floor((now-fi.fiscalStart)/86400000));
-    var prevAtSamePoint=prevSales.filter(function(c){
+    var prevAtSamePoint=prevSalesList.filter(function(c){
       var dayInMonth=Math.floor((c.ts-prevFiStart)/86400000);
       return dayInMonth<=fiscalElapsedDays;
     });
@@ -7517,134 +7523,239 @@ function renderTrends(){
     var pacingRevDelta=fiscalRev-prevRevAtSamePoint;
     var pacingUp=pacingSalesDelta>=0;
 
-    // ── XM streak messaging ────────────────────────────────────────────
+    // ── XM streak color + messaging ───────────────────────────────────
     var xmStreakColor=xmStreak>=5?'var(--amber)':xmStreak>=3?'var(--teal)':xmStreak>=1?'var(--green)':'var(--red)';
     var xmMsg=xmStreak>=7?'🔥 On fire! Keep stacking!':xmStreak>=5?'💪 Strong run — don\'t stop now!':xmStreak>=3?'📱 Building momentum!':xmStreak>=1?'✅ XM is on — keep going!':daysSinceXm===0?'📵 No XM yet today — make it happen!':daysSinceXm===1?'⚠️ Yesterday had no XM — time to bounce back!':'🚨 '+daysSinceXm+' days without XM — priority focus!';
 
-    // ── Sales streak messaging ─────────────────────────────────────────
-    var salesStreakColor=salesStreak>=5?'var(--amber)':salesStreak>=3?'var(--green)':salesStreak>=1?'var(--green)':'var(--red)';
-    var salesMsg=salesStreak>=7?'🏆 Week+ streak — incredible run!':salesStreak>=5?'🔥 5+ day streak — you\'re locked in!':salesStreak>=3?'✅ 3+ days selling — stay consistent!':salesStreak>=1?'✅ Selling today — keep the streak!':daysSinceSale===0?'📞 No sale yet today — next call could be it!':daysSinceSale===1?'💡 Yesterday was a no-sale day — reset today!':'⚠️ '+daysSinceSale+' days without a sale — let\'s change that!';
+    // ── Today derived stats ────────────────────────────────────────────
+    var todayXm=todaySales.reduce(function(s,c){return s+c.xm;},0);
+    var todayChsi=todaySales.reduce(function(s,c){return s+c.chsiRgu;},0);
+    var todayTv=todaySales.filter(function(c){return c.tv;}).length;
+    var todayCdv=todaySales.filter(function(c){return c.cdv;}).length;
+    var todayXh=todaySales.filter(function(c){return c.xh;}).length;
 
-    // ── KPI card helper ────────────────────────────────────────────────
-    var kpi=function(emoji,label,id,valClass,sub,animated){
-      return '<div class="tr-kpi-card" style="padding:10px 12px">'+
-        '<div style="font-size:16px;margin-bottom:2px">'+emoji+'</div>'+
-        '<div class="tr-kpi-label">'+label+'</div>'+
-        '<div class="tr-kpi-val '+valClass+'" '+(id?'id="'+id+'"':'')+(animated?' style="font-size:16px"':' style="font-size:16px"')+'>--</div>'+
-        '<div class="tr-kpi-sub">'+sub+'</div>'+
+    // ── Fiscal month performance rates ────────────────────────────────
+    var mClose=fiscalCalls.length?pct(fiscalSales.length,fiscalCalls.length):'--';
+    var fiscalXmSales=fiscalSales.filter(function(c){return c.xm>0;});
+    var mAttach=fiscalSales.length?pct(fiscalXmSales.length,fiscalSales.length):'--';
+    var mArpu=fiscalSales.length?fmtMon(fiscalRev/fiscalSales.length):'--';
+    var mRpc=fiscalCalls.length?fmtMon(fiscalRev/fiscalCalls.length):'--';
+    var mRgsSale=fiscalSales.length?fmtR(fiscalRgus/fiscalSales.length):'--';
+    var mRgsCall=fiscalCalls.length?fmtR(fiscalRgus/fiscalCalls.length):'--';
+    var mChsiSales=fiscalSales.filter(function(c){return c.chsi;}).length;
+    var mChsiCr=fiscalCalls.length?pct(mChsiSales,fiscalCalls.length):'--';
+    var mXmCr=fiscalCalls.length?pct(fiscalXmSales.length,fiscalCalls.length):'--';
+    var mRguCr=fiscalCalls.length?fmtR(fiscalRgus/fiscalCalls.length):'--';
+    var mArpu2=fiscalRgus?fmtMon(fiscalRev/fiscalRgus):'--';
+
+    // ── Today performance rates ───────────────────────────────────────
+    var tClose=todayCalls.length?pct(todaySales.length,todayCalls.length):'--';
+    var todayXmSales=todaySales.filter(function(c){return c.xm>0;});
+    var tAttach=todaySales.length?pct(todayXmSales.length,todaySales.length):'--';
+    var tArpu=todaySales.length?fmtMon(todayRev/todaySales.length):'--';
+    var tRpc=todayCalls.length?fmtMon(todayRev/todayCalls.length):'--';
+    var tRgsSale=todaySales.length?fmtR(todayRgus/todaySales.length):'--';
+    var tRgsCall=todayCalls.length?fmtR(todayRgus/todayCalls.length):'--';
+    var tChsiSales=todaySales.filter(function(c){return c.chsi;}).length;
+    var tChsiCr=todayCalls.length?pct(tChsiSales,todayCalls.length):'--';
+    var tXmCr=todayCalls.length?pct(todayXmSales.length,todayCalls.length):'--';
+    var tRguCr=todayCalls.length?fmtR(todayRgus/todayCalls.length):'--';
+    var tArpu2=todayRgus?fmtMon(todayRev/todayRgus):'--';
+
+    // ── Helpers ───────────────────────────────────────────────────────
+    var ARC_CIRC=100.53;
+    var scColor=function(p){return p>=1?'var(--green)':p>=0.82?'var(--amber)':'var(--red)';};
+    var scClass=function(p){return p>=1?'good':p>=0.82?'ok':'warn';};
+
+    var arcCard=function(pfx,emoji,label,mVal,goal,tVal,fmtFn,showMs){
+      var pv=goal?mVal/goal:0; var col=scColor(pv);
+      var ms='';
+      if(showMs) ms='<div style="display:flex;gap:3px;margin-top:4px">'+
+        '<span class="ms-pill" id="ms-115-'+pfx+'">'+Math.round(goal*1.15)+' · 115%</span>'+
+        '<span class="ms-pill" id="ms-130-'+pfx+'">'+Math.round(goal*1.30)+' · 130%</span>'+
+        '<span class="ms-pill" id="ms-150-'+pfx+'">'+Math.round(goal*1.50)+' · 150%</span></div>';
+      return '<div class="tr-card" style="border-color:'+col+'33;padding:8px 10px">'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+        '<div class="arc-wrap-sm"><svg class="arc-svg-sm" viewBox="0 0 40 40">'+
+          '<circle class="arc-track-sm" cx="20" cy="20" r="16"/>'+
+          '<circle class="arc-fill-sm" id="arc-'+pfx+'" cx="20" cy="20" r="16" stroke-dasharray="'+ARC_CIRC+'" stroke-dashoffset="'+ARC_CIRC+'"/></svg>'+
+          '<div class="arc-center-sm"><span class="arc-pct-sm" id="arc-'+pfx+'-pct">0%</span></div></div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px">'+emoji+' '+label+'</div>'+
+          '<div style="font-family:var(--mono);font-size:15px;font-weight:700;color:'+col+';line-height:1">'+fmtFn(mVal)+'</div>'+
+          '<div style="font-size:8px;color:var(--text3);margin-top:2px">of '+fmtFn(goal)+' · <span style="color:'+col+';font-weight:600">+'+fmtFn(tVal)+' today</span></div>'+
+        '</div></div>'+ms+'</div>';
+    };
+
+    var stdCard=function(pfx,emoji,label,mVal,goal,tVal,fmtFn){
+      var pv=goal?mVal/goal:0; var col=scColor(pv); var cls=scClass(pv);
+      var w=Math.min(100,Math.round(pv*100));
+      return '<div class="tr-card" style="border-color:'+col+'33;padding:8px 10px">'+
+        '<div style="font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px">'+emoji+' '+label+'</div>'+
+        '<div style="font-family:var(--mono);font-size:15px;font-weight:700;color:'+col+';line-height:1;margin-bottom:2px">'+fmtFn(mVal)+'</div>'+
+        '<div style="font-size:8px;color:var(--text3);margin-bottom:3px">of '+fmtFn(goal)+' · <span style="color:'+col+';font-weight:600">+'+fmtFn(tVal)+' today</span></div>'+
+        '<div class="goal-bar-track" style="margin-top:3px"><div class="goal-bar-fill" style="width:'+w+'%;background:'+col+'"></div></div>'+
+        '<div style="display:flex;align-items:center;gap:4px;margin-top:3px">'+
+          '<span class="pct-val '+cls+'" style="font-size:9px">'+Math.round(pv*100)+'%</span>'+
+          (pv>=1?'<span style="font-size:8px;font-weight:700;color:var(--green);background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);padding:1px 4px;border-radius:3px">✓ MET</span>':'')+
+        '</div></div>';
+    };
+
+    var perfRow=function(label,mVal,tVal,higherBetter){
+      if(higherBetter===undefined) higherBetter=true;
+      var mNum=parseFloat(mVal), tNum=parseFloat(tVal);
+      var compare=higherBetter?(tNum>=mNum):(tNum<=mNum);
+      var tCol=(isNaN(mNum)||isNaN(tNum))?'var(--text3)':compare?'var(--green)':'var(--amber)';
+      return '<div class="perf-row"><span class="perf-lbl">'+label+'</span>'+
+        '<div style="display:flex;gap:0;align-items:center">'+
+          '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:'+tCol+';text-align:right;min-width:64px">'+tVal+'</span>'+
+          '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text2);text-align:right;min-width:64px">'+mVal+'</span>'+
+        '</div></div>';
+    };
+    var mRow=function(label,mVal){
+      return '<div class="perf-row"><span class="perf-lbl">'+label+'</span>'+
+        '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text2);text-align:right;min-width:64px">'+mVal+'</span>'+
       '</div>';
     };
 
-    // ── De-emphasized KPI card (CDV/XH) ───────────────────────────────
-    var kpiSmall=function(emoji,label,val,sub){
-      return '<div class="tr-kpi-card" style="padding:8px 10px;opacity:.75">'+
-        '<div style="font-size:12px;margin-bottom:1px">'+emoji+' <span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">'+label+'</span></div>'+
-        '<div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text3)">'+val+'</div>'+
-        '<div class="tr-kpi-sub">'+sub+'</div>'+
-      '</div>';
-    };
+    var secLbl=function(t){return '<div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px;padding:0 2px;margin-bottom:8px"><span>'+t+'</span><span style="flex:1;height:1px;background:var(--border);display:inline-block"></span></div>';};
 
-    var goalBar=function(val,goal,color){
-      if(!goal) return '';
-      var w=Math.min(100,Math.round(val/goal*100));
-      return '<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:5px"><div style="height:3px;width:'+w+'%;background:'+color+';border-radius:2px;transition:width .6s"></div></div>'+
-             '<div style="font-size:9px;color:var(--text3);margin-top:2px">'+w+'% of '+goal+' goal</div>';
-    };
+    var hdr='<div style="display:flex;justify-content:space-between;margin-bottom:8px">'+
+      '<span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Metric</span>'+
+      '<div style="display:flex;gap:0">'+
+        '<span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);min-width:64px;text-align:right">Today</span>'+
+        '<span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);min-width:64px;text-align:right">Month</span>'+
+      '</div></div>';
 
     el.innerHTML=
-    // ── Row 1: Pacing banner ──────────────────────────────────────────
-    '<div style="padding:10px 14px;margin-bottom:10px;border-radius:10px;border:1px solid '+(pacingUp?'rgba(34,197,94,.35)':'rgba(248,113,113,.35)')+';background:'+(pacingUp?'rgba(34,197,94,.07)':'rgba(248,113,113,.07)')+'">'+
-    '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
-    '<div style="display:flex;align-items:center;gap:8px">'+
-    '<span style="font-size:18px">'+(pacingUp?'📈':'📉')+'</span>'+
-    '<div><div style="font-size:11px;font-weight:700;color:'+(pacingUp?'var(--green)':'var(--red)')+'">'+
-    (pacingUp?'↑ Ahead of pace':'↓ Behind pace')+' — '+Math.abs(pacingSalesDelta)+' sale'+(Math.abs(pacingSalesDelta)!==1?'s':'')+' &amp; '+fmtMon(Math.abs(pacingRevDelta))+' rev</div>'+
-    '<div style="font-size:10px;color:var(--text3)">vs same point last month (day '+fiscalElapsedDays+')</div></div></div>'+
-    '<div style="display:flex;gap:20px">'+
-    '<div style="text-align:right"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">This Month</div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text)">'+fiscalSales.length+' sales · '+fmtMon(fiscalRev)+'</div></div>'+
-    '<div style="text-align:right"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Last Month</div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text3)">'+prevAtSamePoint.length+' sales · '+fmtMon(prevRevAtSamePoint)+'</div></div>'+
+    // ── 1. Pacing banner ──────────────────────────────────────────────
+    '<div style="padding:6px 12px;margin-bottom:10px;border-radius:8px;border:1px solid '+(pacingUp?'rgba(34,197,94,.35)':'rgba(248,113,113,.35)')+';background:'+(pacingUp?'rgba(34,197,94,.07)':'rgba(248,113,113,.07)')+'">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">'+
+    '<div style="display:flex;align-items:center;gap:6px;min-width:0">'+
+    '<span style="font-size:13px;flex-shrink:0">'+(pacingUp?'📈':'📉')+'</span>'+
+    '<span style="font-size:11px;font-weight:700;color:'+(pacingUp?'var(--green)':'var(--red)')+';white-space:nowrap">'+(pacingUp?'↑ Ahead':'↓ Behind')+' — '+Math.abs(pacingSalesDelta)+' sale'+(Math.abs(pacingSalesDelta)!==1?'s':'')+' &amp; '+fmtMon(Math.abs(pacingRevDelta))+'</span>'+
+    '<span style="font-size:10px;color:var(--text3);white-space:nowrap">· day '+fiscalElapsedDays+' · '+daysLeft+'d left · proj '+fmtMon(projRev)+'</span>'+
+    '</div>'+
+    '<div style="display:flex;gap:16px;flex-shrink:0">'+
+    '<div style="text-align:right"><div style="font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">This Mo</div><div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text)">'+fiscalSales.length+' sales · '+fmtMon(fiscalRev)+'</div></div>'+
+    '<div style="text-align:right"><div style="font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Last Mo</div><div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text3)">'+prevAtSamePoint.length+' sales · '+fmtMon(prevRevAtSamePoint)+'</div></div>'+
     '</div></div></div>'+
-    // ── Row 2: Streaks + Today + Week — 4 col ─────────────────────────
-    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">'+
-    '<div style="background:var(--card);border:1px solid '+(xmStreak>0?'rgba(20,184,166,.35)':'rgba(248,113,113,.35)')+';border-radius:10px;padding:10px 12px">'+
-    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:4px">📱 XM Streak</div>'+
-    '<div style="font-family:var(--mono);font-size:26px;font-weight:700;color:'+xmStreakColor+';line-height:1">'+xmStreak+'</div>'+
-    '<div style="font-size:10px;color:'+xmStreakColor+';margin-top:4px;font-weight:600;line-height:1.3">'+xmMsg+'</div></div>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px">'+
-    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">📅 Today</div>'+
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">'+
-    '<div><div style="font-size:9px;color:var(--text3)">Calls</div><div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--blue)">'+todayCalls.length+'</div></div>'+
-    '<div><div style="font-size:9px;color:var(--text3)">Sales</div><div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--green)">'+todaySales.length+'</div></div>'+
-    '<div><div style="font-size:9px;color:var(--text3)">Rev</div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--amber)">'+fmtMon(todayRev)+'</div></div>'+
-    '<div><div style="font-size:9px;color:var(--text3)">RGUs</div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal)">'+fmtR(todayRgus)+'</div></div>'+
-    '</div></div>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px">'+
-    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">⚡ This Week</div>'+
-    '<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:4px">'+momentum(salesDelta,'sales')+momentum(revDelta,'revenue')+'</div>'+
-    '<div style="font-size:10px;color:var(--text3)">'+twSales+' sales · '+fmtMon(twRev)+'</div></div>'+
+    // ── 2. Fiscal Month Goals — Row 1 (4-col arc + std) ───────────────
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px">'+
+    arcCard('rgu','📶','Total RGUs',fiscalRgus,RGU_GOAL,todayRgus,fmtR,true)+
+    arcCard('rev','💵','Revenue',fiscalRev,GOALS.rev,todayRev,fmtMon,false)+
+    stdCard('xm','📱','XM Lines',fiscalXm,GOALS.xm,todayXm,String)+
+    stdCard('chsi','🌐','Internet',fiscalChsi,GOALS.chsi,todayChsi,fmtR)+
     '</div>'+
-    // ── Row 3: Fiscal Month Goals — 6 col ─────────────────────────────
-    '<div class="tr-panel" style="padding:12px 14px;margin-bottom:10px">'+
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
-    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">🗓 Fiscal Month vs Goals</div>'+
-    '<div style="font-size:9px;color:var(--text3)">'+daysLeft+'d left · proj '+fmtMon(projRev)+'</div></div>'+
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px">'+
-    '<div style="background:var(--surface);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">💵 Rev</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green)">'+fmtMon(fiscalRev)+'</div>'+(GOALS.rev?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalRev/GOALS.rev*100))+'%;background:var(--green);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalRev/GOALS.rev*100)+'%</div>':'')+'</div>'+
-    '<div style="background:var(--surface);border:1px solid rgba(20,184,166,.25);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">📶 RGUs</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--teal)">'+fmtR(fiscalRgus)+'</div>'+(RGU_GOAL?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalRgus/RGU_GOAL*100))+'%;background:var(--teal);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalRgus/RGU_GOAL*100)+'%</div>':'')+'</div>'+
-    '<div style="background:var(--surface);border:1px solid rgba(20,184,166,.25);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">📱 XM</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--teal)">'+fiscalXm+'</div>'+(GOALS.xm?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalXm/GOALS.xm*100))+'%;background:var(--teal);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalXm/GOALS.xm*100)+'% of '+GOALS.xm+'</div>':'')+'</div>'+
-    '<div style="background:var(--surface);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">🎯 Sales</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green)">'+fiscalSales.length+'</div><div style="font-size:9px;color:var(--text3);margin-top:4px">'+(fiscalCalls.length?Math.round(fiscalSales.length/fiscalCalls.length*100)+'% CR':'--')+'</div></div>'+
+    // ── 2. Fiscal Month Goals — Row 2 (3 goal + XM streak + This Week) ─
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr) 1.4fr 1.4fr;gap:8px;margin-bottom:10px">'+
+    stdCard('tv','📺','TV',fiscalTv,GOALS.tv,todayTv,String)+
+    stdCard('cdv','📞','CDV',fiscalCdv,GOALS.cdv,todayCdv,String)+
+    stdCard('xh','🏠','XH',fiscalXh,GOALS.xh,todayXh,String)+
+    '<div class="tr-card" style="border-color:'+(xmStreak>0?'rgba(20,184,166,.35)':'rgba(248,113,113,.3)')+';padding:8px 10px">'+
+    '<div style="font-size:8px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:4px">📱 XM Streak</div>'+
+    '<div style="font-family:var(--mono);font-size:28px;font-weight:700;color:'+xmStreakColor+';line-height:1">'+xmStreak+'</div>'+
+    '<div style="font-size:9px;color:'+xmStreakColor+';margin-top:4px;font-weight:600;line-height:1.3">'+xmMsg+'</div></div>'+
+    '<div class="tr-card" style="padding:8px 10px">'+
+    '<div style="font-size:8px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:5px">⚡ This Week</div>'+
+    '<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:4px">'+momentum(salesDelta,'sales')+momentum(revDelta,'rev')+'</div>'+
+    '<div style="font-size:9px;color:var(--text3)">'+twSales+' sales · '+fmtMon(twRev)+'</div></div>'+
     '</div>'+
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">'+
-    '<div style="background:var(--surface);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">📺 TV</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--blue)">'+fiscalTv+'</div>'+(GOALS.tv?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalTv/GOALS.tv*100))+'%;background:var(--blue);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalTv/GOALS.tv*100)+'% of '+GOALS.tv+'</div>':'')+'</div>'+
-    '<div style="background:var(--surface);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">🌐 CHSI</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--blue)">'+fmtR(fiscalChsi)+'</div>'+(GOALS.chsi?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalChsi/GOALS.chsi*100))+'%;background:var(--blue);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalChsi/GOALS.chsi*100)+'% of '+GOALS.chsi+'</div>':'')+'</div>'+
-    '<div style="background:var(--surface);border:1px solid rgba(168,85,247,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">📞 CDV</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--purple)">'+fiscalCdv+'</div>'+(GOALS.cdv?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalCdv/GOALS.cdv*100))+'%;background:var(--purple);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalCdv/GOALS.cdv*100)+'% of '+GOALS.cdv+'</div>':'')+'</div>'+
-    '<div style="background:var(--surface);border:1px solid rgba(168,85,247,.2);border-radius:8px;padding:8px 10px"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">🏠 XH</div><div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--purple)">'+fiscalXh+'</div>'+(GOALS.xh?'<div style="height:3px;background:var(--border2);border-radius:2px;margin-top:4px"><div style="height:3px;width:'+Math.min(100,Math.round(fiscalXh/GOALS.xh*100))+'%;background:var(--purple);border-radius:2px"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px">'+Math.round(fiscalXh/GOALS.xh*100)+'% of '+GOALS.xh+'</div>':'')+'</div>'+
-    '</div></div>'+
-
-    // ── Row 5: Rates | MoM | Avgs — 3 col ────────────────────────────
-    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">'+
-    '<div class="tr-panel" style="padding:10px 12px">'+
-    '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">📐 Rates</div>'+
-    '<div style="display:flex;flex-direction:column;gap:5px">'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Close Rate</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--green)">'+closeRate.toFixed(1)+'%</span></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">XM Attach</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+xmAttach.toFixed(1)+'%</span></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Avg Rev/Sale</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber)">'+fmtMon(arpu)+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Avg RGU/Sale</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+arps+'</span></div>'+
-    '<div style="height:1px;background:var(--border);margin:2px 0"></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">ARPU</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber)">'+truArpu+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">RPC</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber)">'+rpc+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Avg RGU/Call</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+arpc2+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">CHSI CR</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue)">'+chsiCR+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">XM CR</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+xmCR+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">RGU CR</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue)">'+rguCR+'</span></div>'+
-    '</div></div>'+
+    // ── 3. Performance ────────────────────────────────────────────────
+    (todayCalls.length>0?
+      '<div class="tr-panel" style="padding:8px 14px;margin-bottom:10px">'+
+      '<div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:0">'+
+      '<div style="padding-right:16px">'+hdr+
+      perfRow('Close Rate',mClose,tClose)+
+      perfRow('XM Attach %',mAttach,tAttach)+
+      perfRow('CHSI Close %',mChsiCr,tChsiCr)+
+      perfRow('XM Close %',mXmCr,tXmCr)+
+      perfRow('Avg Rev / Sale',mArpu,tArpu)+
+      '</div>'+
+      '<div style="background:var(--border);margin:0 16px"></div>'+
+      '<div style="padding-left:0">'+hdr+
+      perfRow('Rev / Call (RPC)',mRpc,tRpc)+
+      perfRow('Avg RGU / Sale',mRgsSale,tRgsSale)+
+      perfRow('Avg RGU / Call',mRgsCall,tRgsCall)+
+      perfRow('RGU CR',mRguCr,tRguCr)+
+      perfRow('ARPU',mArpu2,tArpu2)+
+      '</div></div></div>'
+    :
+      '<div class="tr-panel" style="padding:8px 14px;margin-bottom:10px">'+
+      '<div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:0">'+
+      '<div style="padding-right:16px">'+
+      '<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Month</span></div>'+
+      mRow('Close Rate',mClose)+
+      mRow('XM Attach %',mAttach)+
+      mRow('CHSI Close %',mChsiCr)+
+      mRow('XM Close %',mXmCr)+
+      mRow('Avg Rev / Sale',mArpu)+
+      '</div>'+
+      '<div style="background:var(--border);margin:0 16px"></div>'+
+      '<div style="padding-left:0">'+
+      '<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Month</span></div>'+
+      mRow('Rev / Call (RPC)',mRpc)+
+      mRow('Avg RGU / Sale',mRgsSale)+
+      mRow('Avg RGU / Call',mRgsCall)+
+      mRow('RGU CR',mRguCr)+
+      mRow('ARPU',mArpu2)+
+      '</div></div></div>'
+    )+
+    // ── 4. MoM + Daily Averages ───────────────────────────────────────
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'+
     '<div class="tr-panel" style="padding:10px 12px">'+
     '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">📆 Month-over-Month</div>'+
-    '<table style="width:100%;border-collapse:collapse">'+
-    '<thead><tr>'+['Month','Sales','CR%','Rev'].map(function(h){return '<th style="padding:3px 4px;font-size:9px;color:var(--text3);text-align:'+(h==='Month'?'left':'right')+';border-bottom:1px solid var(--border)">'+h+'</th>';}).join('')+'</tr></thead>'+
-    '<tbody>'+fiscalMonths.map(function(m,i){var isRecent=i<3;return '<tr style="'+(i>=3?'display:none':'')+'"><td style="padding:5px 4px;font-size:10px;color:'+(i===0?'var(--text)':'var(--text3)')+';font-weight:'+(i===0?'700':'400')+'" class="mom-row">'+(i>=3?'':'')+m.label+(i===0?' <span style=\'font-size:8px;color:var(--blue)\'>cur</span>':'')+'</td><td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--green)">'+m.sales+'</td><td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text)">'+m.close+'%</td><td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--amber)">'+fmtMon(m.rev)+'</td></tr>';}).join('')+'<tr id="mom-expand-row"><td colspan="4" style="padding:3px 4px;text-align:center"><span onclick="trToggleMom()" style="font-size:9px;color:var(--text3);cursor:pointer;user-select:none" id="mom-expand-btn">▼ show more</span></td></tr>'+'</tbody>'+
-    '</table></div>'+
+    '<table style="width:100%;border-collapse:collapse"><thead><tr>'+
+    ['Month','Sales','CR%','Rev'].map(function(h){return '<th style="padding:3px 4px;font-size:9px;color:var(--text3);text-align:'+(h==='Month'?'left':'right')+';border-bottom:1px solid var(--border)">'+h+'</th>';}).join('')+
+    '</tr></thead><tbody>'+
+    fiscalMonths.map(function(m,i){return '<tr style="'+(i>=3?'display:none':'')+'">'+
+      '<td style="padding:5px 4px;font-size:10px;color:'+(i===0?'var(--text)':'var(--text3)')+';font-weight:'+(i===0?700:400)+'">'+m.label+(i===0?' <span style=\'font-size:8px;color:var(--blue)\'>cur</span>':'')+'</td>'+
+      '<td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--green)">'+m.sales+'</td>'+
+      '<td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text)">'+m.close+'%</td>'+
+      '<td style="padding:5px 4px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--amber)">'+fmtMon(m.rev)+'</td></tr>';}).join('')+
+    '<tr id="mom-expand-row"><td colspan="4" style="padding:3px 4px;text-align:center"><span onclick="trToggleMom()" style="font-size:9px;color:var(--text3);cursor:pointer;user-select:none" id="mom-expand-btn">▼ show more</span></td></tr>'+
+    '</tbody></table></div>'+
     '<div class="tr-panel" style="padding:10px 12px">'+
     '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">📈 Daily Averages</div>'+
     '<div style="display:flex;flex-direction:column;gap:5px">'+
     '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Calls / Day</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text)">'+avgCallsDay+'</span></div>'+
     '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Sales / Day</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--green)">'+avgSalesDay+'</span></div>'+
     '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Rev / Day</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber)">'+avgRevDay+'</span></div>'+
-    (bestCallDay?'<div style="height:1px;background:var(--border);margin:2px 0"></div><div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Busiest</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text)">'+bestCallDay+'</span></div>':'')+
-    (bestRevDay?'<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Best Rev</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--amber)">'+fmtMon(byDate[bestRevDay].rev)+'</span></div>':'')+
-    (bestCloseDay?'<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Best CR</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--green)">'+pct(byDate[bestCloseDay].sales,byDate[bestCloseDay].total)+'</span></div>':'')+
-    '</div></div>'+
-    '</div>'+
-    // ── Row 6: Trophies — 4 col ───────────────────────────────────────
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">RGU / Day</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal)">'+(fiscalDays>0?fmtR(fiscalRgus/fiscalDays):'--')+'</span></div>'+
+    '<div style="height:1px;background:var(--border);margin:2px 0"></div>'+
+    (bestRevDay?'<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Best Rev Day</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--amber)">'+fmtMon(byDate[bestRevDay].rev)+' <span style="color:var(--text3);font-weight:400">'+bestRevDay+'</span></span></div>':'')+
+    (bestCloseDay?'<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Best Close Day</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--green)">'+pct(byDate[bestCloseDay].sales,byDate[bestCloseDay].total)+' <span style="color:var(--text3);font-weight:400">'+bestCloseDay+'</span></span></div>':'')+
+    (bestRguDay?'<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Best RGU Day</span><span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--teal)">'+fmtR(byDate[bestRguDay].rgus)+' <span style="color:var(--text3);font-weight:400">'+bestRguDay+'</span></span></div>':'')+
+    (bestCallDay?'<div style="display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--text3)">Days Worked</span><span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text)">'+fiscalDays+'</span></div>':'')+
+    '</div></div></div>'+
+    // ── 5. Records ────────────────────────────────────────────────────
+    secLbl('Records')+
     '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'+
     '<div class="tr-trophy" onclick="trMicroConfetti(this)"><div class="tr-trophy-icon">💰</div><div class="tr-trophy-label">Best Revenue Day</div><div class="tr-trophy-val">'+(bestRevDay?fmtMon(byDate[bestRevDay].rev):'--')+'</div><div class="tr-trophy-sub">'+(bestRevDay||'')+'</div></div>'+
     '<div class="tr-trophy" onclick="trMicroConfetti(this)"><div class="tr-trophy-icon">🎯</div><div class="tr-trophy-label">Best Close Rate</div><div class="tr-trophy-val">'+(bestCloseDay?pct(byDate[bestCloseDay].sales,byDate[bestCloseDay].total):'--')+'</div><div class="tr-trophy-sub">'+(bestCloseDay||'')+'</div></div>'+
     '<div class="tr-trophy" onclick="trMicroConfetti(this)"><div class="tr-trophy-icon">📶</div><div class="tr-trophy-label">Best RGU Day</div><div class="tr-trophy-val">'+(bestRguDay?fmtR(byDate[bestRguDay].rgus)+' RGUs':'--')+'</div><div class="tr-trophy-sub">'+(bestRguDay||'')+'</div></div>'+
     '<div class="tr-trophy" onclick="trMicroConfetti(this)"><div class="tr-trophy-icon">🚀</div><div class="tr-trophy-label">Most Sales Day</div><div class="tr-trophy-val">'+(bestSalesDay?byDate[bestSalesDay].sales+' sales':'--')+'</div><div class="tr-trophy-sub">'+(bestSalesDay||'')+'</div></div>'+
     '</div>';
+
     setTimeout(function(){
-      // No kpi counter cards in new dashboard — nothing to animate
-    },50);
+      var revPct=GOALS.rev?fiscalRev/GOALS.rev:0;
+      var rguPct=RGU_GOAL?fiscalRgus/RGU_GOAL:0;
+      var scC=function(p){return p>=1?'var(--green)':p>=0.82?'var(--amber)':'var(--red)';};
+      var animArc2=function(id,pv,color){
+        var ae=document.getElementById(id); if(!ae)return;
+        var capped=Math.min(pv,1.08);
+        ae.style.stroke=color;
+        ae.style.strokeDashoffset=Math.max(ARC_CIRC-capped*ARC_CIRC,0);
+        var pe=document.getElementById(id+'-pct');
+        if(pe){pe.textContent=Math.round(pv*100)+'%';pe.style.color=color;}
+      };
+      animArc2('arc-rgu',rguPct,scC(rguPct));
+      animArc2('arc-rev',revPct,scC(revPct));
+      var setMs=function(id,state){var e=document.getElementById(id);if(!e)return;e.className='ms-pill'+(state?' '+state:'');};
+      setMs('ms-115-rgu',rguPct>=1.15?'unlocked':rguPct>=1.05?'near':'');
+      setMs('ms-130-rgu',rguPct>=1.30?'unlocked':rguPct>=1.20?'near':'');
+      setMs('ms-150-rgu',rguPct>=1.50?'unlocked':rguPct>=1.40?'near':'');
+    },80);
 
   } else if(_trSubtab==='performance'){
     // Recent days — card rows
