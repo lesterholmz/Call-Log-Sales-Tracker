@@ -71,8 +71,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .stat{padding:10px 0 8px 0;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;transition:background .5s ease;position:relative}.stat-pace{position:absolute;top:4px;right:4px;font-size:14px;font-weight:700;font-family:var(--mono);line-height:1}
 .stat:first-child{padding-left:0;min-width:90px}.stat:last-child{border-right:none}
 .stat-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
-.stats-row.monthly .stat-val{font-family:var(--mono);font-size:clamp(11px,1.4vw,17px);font-weight:600;color:var(--text);line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.stats-row.daily .stat-val{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--text);line-height:1}
+.stats-row.monthly .stat-val{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.stats-row.daily .stat-val{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);line-height:1}
 .stat-val.c-blue{color:var(--blue)}.stat-val.c-green{color:var(--green)}.stat-val.c-amber{color:var(--amber)}.stat-val.c-teal{color:var(--teal)}
 .stat-pct{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px;margin-top:auto;flex-wrap:nowrap;padding-top:4px}
 .pct-val{font-family:var(--mono);font-size:10px;font-weight:700;min-width:32px}
@@ -171,6 +171,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .count-chip{font-family:var(--mono);font-size:11px;color:var(--blue);background:var(--blue-lt);padding:3px 10px;border-radius:20px;font-weight:600}
 .export-btn{height:30px;padding:0 14px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--teal);cursor:pointer}
 .export-btn:hover{background:rgba(20,184,166,.2)}
+.ds-badge{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono);padding:2px 7px;border-radius:4px;}
+.ds-pending{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.25);}
+.ds-disputed{background:rgba(59,130,246,.12);color:var(--blue);border:1px solid rgba(59,130,246,.25);}
+.ds-resolved{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25);}
+.ds-denied{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25);}
+.ds-select{font-size:10px;font-family:var(--mono);background:var(--card);border:1px solid var(--border2);border-radius:4px;padding:2px 4px;color:var(--text2);cursor:pointer;outline:none;}
+.dispute-note-cell{font-size:10px;color:var(--text3);font-family:var(--mono);cursor:pointer;min-width:100px;}
+.dispute-note-cell:hover{color:var(--text2);}
+.recon-subtab-btn{font-size:11px;font-weight:600;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:var(--sans);transition:all .15s;white-space:nowrap;}
+.recon-subtab-btn:hover{color:var(--text);border-color:var(--blue);}
+.recon-subtab-btn.active{background:var(--surface);color:var(--text);border-color:var(--blue);}
+.sched-update-btn{font-size:10px;font-family:var(--mono);background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:4px;padding:2px 6px;color:var(--blue);cursor:pointer;white-space:nowrap;}
+.sched-update-btn:hover{background:rgba(59,130,246,.2);}
 .filter-select{height:30px;padding:0 10px;background:var(--card2);border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text);cursor:pointer;outline:none;transition:border-color .15s,box-shadow .15s}
 .filter-select:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-glow)}
 .filter-select.active{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);font-weight:600}
@@ -3887,32 +3900,22 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
 <div class="tab-panel" id="panel-disputes">
   <div class="main">
 
-    <div class="form-card">
-      <div class="form-header"><div class="form-header-title">📋 How It Works</div></div>
-      <div style="display:flex;border-top:1px solid var(--border)">
-        <div style="flex:1;padding:14px 16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
-          <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center">1</div>
-          <div style="font-size:12px;font-weight:600;color:var(--text)">Upload Excel / CSV</div>
-          <div style="font-size:11px;color:var(--text3);line-height:1.5">Export your completed orders from the system. Supports .xlsx, .xls, and .csv.</div>
-        </div>
-        <div style="flex:1;padding:14px 16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
-          <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center">2</div>
-          <div style="font-size:12px;font-weight:600;color:var(--text)">Map Acct # Column</div>
-          <div style="font-size:11px;color:var(--text3);line-height:1.5">Pick which column in the export contains the account number to match against your log.</div>
-        </div>
-        <div style="flex:1;padding:14px 16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
-          <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center">3</div>
-          <div style="font-size:12px;font-weight:600;color:var(--text)">Select Fiscal Month</div>
-          <div style="font-size:11px;color:var(--text3);line-height:1.5">Choose the 22nd–22nd period. Only sales scheduled in that window are compared.</div>
-        </div>
-        <div style="flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:6px">
-          <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);color:var(--blue);font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center">4</div>
-          <div style="font-size:12px;font-weight:600;color:var(--text)">Review & Download</div>
-          <div style="font-size:11px;color:var(--text3);line-height:1.5">Results appear inline — every logged sale marked Found or Missing. Download CSV to file a dispute.</div>
-        </div>
-      </div>
+    <!-- Sub-tab bar -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;padding:4px 0 2px">
+      <button class="recon-subtab-btn active" id="rst-completed" onclick="setReconType('completed')">✓ Completed</button>
+      <button class="recon-subtab-btn" id="rst-cancelled" onclick="setReconType('cancelled')">✗ Cancelled</button>
+      <button class="recon-subtab-btn" id="rst-exceptions" onclick="setReconType('exceptions')">⚠ Exceptions</button>
+      <button class="recon-subtab-btn" id="rst-revenues" onclick="setReconType('revenues')">$ Revenues</button>
+      <button class="recon-subtab-btn" id="rst-open" onclick="setReconType('open')">◷ Open Orders</button>
     </div>
 
+    <!-- Context card -->
+    <div class="form-card">
+      <div class="form-header"><div class="form-header-title" id="recon-ctx-title">📋 Completed Sales</div></div>
+      <div id="recon-ctx-body" style="padding:14px 18px;font-size:12px;color:var(--text3);line-height:1.6"></div>
+    </div>
+
+    <!-- Setup card -->
     <div class="form-card">
       <div class="form-header">
         <div class="form-header-title">⚙ Reconciliation Setup</div>
@@ -3921,7 +3924,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
       <div class="form-body">
         <div class="frow">
           <div class="field" style="flex:1;min-width:260px">
-            <label>Excel / CSV Export File</label>
+            <label>Export File (.xlsx / .csv)</label>
             <input type="file" id="recon-file" accept=".xlsx,.xls,.csv" onchange="onReconFile(this)" style="background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;height:38px;font-size:12px;color:var(--text2);cursor:pointer">
           </div>
           <div class="field" style="min-width:220px">
@@ -3931,48 +3934,85 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
             </select>
           </div>
           <div class="field" style="align-self:flex-end">
-            <button class="submit-btn" id="recon-run-btn" onclick="runReconciliation()" disabled style="opacity:.5;cursor:not-allowed">▶ Run Reconciliation</button>
+            <button class="submit-btn" id="recon-run-btn" onclick="runReconciliation()" disabled style="opacity:.5;cursor:not-allowed">▶ Run</button>
           </div>
         </div>
-        <div id="recon-col-section" style="display:none;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;display:none;flex-direction:column;gap:8px">
-          <div style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Map Account # Column</div>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <select id="recon-acct-col" onchange="onReconColChange()" style="background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);height:34px;outline:none;cursor:pointer;min-width:200px">
-              <option value="">— select column —</option>
-            </select>
-            <span id="recon-col-preview" style="font-size:10px;color:var(--text3);font-family:var(--mono)"></span>
+
+        <div id="recon-col-section" style="display:none;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;flex-direction:column;gap:12px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">Map Export Columns</div>
+          <div style="display:flex;flex-wrap:wrap;gap:12px">
+
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:10px;font-weight:600;color:var(--text2)">Account # <span style="color:var(--red)">*</span></div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <select id="recon-acct-col" onchange="onReconColChange('acct')" style="background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);height:34px;outline:none;cursor:pointer;min-width:180px">
+                  <option value="">— select column —</option>
+                </select>
+                <span id="recon-acct-preview" style="font-size:10px;color:var(--text3);font-family:var(--mono)"></span>
+              </div>
+            </div>
+
+            <div id="recon-rev-field" style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:10px;font-weight:600;color:var(--text2)">Revenue <span style="color:var(--text3)">(optional)</span></div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <select id="recon-rev-col" onchange="onReconColChange('rev')" style="background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);height:34px;outline:none;cursor:pointer;min-width:180px">
+                  <option value="">— not mapped —</option>
+                </select>
+                <span id="recon-rev-preview" style="font-size:10px;color:var(--text3);font-family:var(--mono)"></span>
+              </div>
+            </div>
+
+            <div id="recon-sched-field" style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:10px;font-weight:600;color:var(--text2)" id="recon-sched-label">Sched Date <span style="color:var(--text3)">(optional)</span></div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <select id="recon-sched-col" onchange="onReconColChange('sched')" style="background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);height:34px;outline:none;cursor:pointer;min-width:180px">
+                  <option value="">— not mapped —</option>
+                </select>
+                <span id="recon-sched-preview" style="font-size:10px;color:var(--text3);font-family:var(--mono)"></span>
+              </div>
+            </div>
+
+            <div id="recon-extra-field" style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:10px;font-weight:600;color:var(--text2)" id="recon-extra-label">Extra Info <span style="color:var(--text3)">(optional)</span></div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <select id="recon-extra-col" onchange="onReconColChange('extra')" style="background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 10px;font-family:var(--mono);font-size:12px;color:var(--text);height:34px;outline:none;cursor:pointer;min-width:180px">
+                  <option value="">— not mapped —</option>
+                </select>
+                <span id="recon-extra-preview" style="font-size:10px;color:var(--text3);font-family:var(--mono)"></span>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Results card -->
     <div class="form-card" id="recon-results-card" style="display:none">
       <div class="form-header">
         <div class="form-header-title">📊 Results</div>
       </div>
       <div id="recon-summary" style="display:flex;gap:20px;flex-wrap:wrap;padding:14px 18px;background:var(--card2);border-bottom:1px solid var(--border)"></div>
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 18px;background:var(--card2);border-bottom:1px solid var(--border)">
-        <button class="export-btn" onclick="downloadReconCSV()">↓ Download Report CSV</button>
-        <div style="display:flex;gap:4px;margin-left:auto">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 18px;background:var(--card2);border-bottom:1px solid var(--border);flex-wrap:wrap">
+        <button class="export-btn" onclick="downloadReconCSV()">↓ Download CSV</button>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-left:auto">
           <button class="filter-tab-btn active" id="rtab-all" onclick="setReconTab('all')">All</button>
-          <button class="filter-tab-btn" id="rtab-missing" onclick="setReconTab('missing')">Missing Only</button>
-          <button class="filter-tab-btn" id="rtab-found" onclick="setReconTab('found')">Found Only</button>
+          <button class="filter-tab-btn" id="rtab-flagged" onclick="setReconTab('flagged')">Flagged</button>
+          <button class="filter-tab-btn" id="rtab-clean" onclick="setReconTab('clean')">Clean</button>
+          <button class="filter-tab-btn" id="rtab-pending" onclick="setReconTab('pending')">Pending</button>
+          <button class="filter-tab-btn" id="rtab-disputed" onclick="setReconTab('disputed')">Disputed</button>
+          <button class="filter-tab-btn" id="rtab-resolved" onclick="setReconTab('resolved')">Resolved</button>
+          <button class="filter-tab-btn" id="rtab-denied" onclick="setReconTab('denied')">Denied</button>
         </div>
       </div>
-      <table style="width:100%;border-collapse:collapse">
-        <thead><tr style="background:var(--card2);border-bottom:1px solid var(--border)">
-          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left;white-space:nowrap">Date Logged</th>
-          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Acct #</th>
-          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Play</th>
-          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">RGUs</th>
-          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Revenue</th>
-          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Sched</th>
-          <th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left">Status</th>
-        </tr></thead>
-        <tbody id="recon-table-body"></tbody>
-      </table>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;min-width:700px">
+          <thead><tr id="recon-thead-row" style="background:var(--card2);border-bottom:1px solid var(--border)"></tr></thead>
+          <tbody id="recon-table-body"></tbody>
+        </table>
+      </div>
+    </div>
 
-  </div>
   </div>
 </div><!-- end panel-disputes -->
 
@@ -7226,6 +7266,10 @@ function switchTab(tab){
     switchFuSubtab('callbacks');
     renderCallbacksTab();
   }
+  if(tab==='disputes'){
+    buildReconFiscalOptions();
+    setReconType(_reconType);
+  }
 }
 
 /* ── Reports ── */
@@ -8047,24 +8091,117 @@ function makeChart(id, type, labels, datasets, options){
 }
 
 /* ── Disputes / Reconciliation ── */
-let _reconRows=[], _reconCols=[], _reconResults=[], _reconTabFilter='all';
+let _reconRows=[], _reconCols=[], _reconResults=[], _reconTabFilter='all', _reconFiscalLabel='';
+let _disputes={}, _reconType='completed';
 
+/* ── Type configuration ──────────────────────────────────────────────────── */
+const RECON_TYPES={
+  completed:{
+    label:'Completed Sales',
+    description:'Match your logged sales against the <strong>Completed Sales</strong> export. <strong>Flagged (✗)</strong> = not found — dispute for credit. <strong>Clean (✓)</strong> = sale was processed. If the Finalize Date differs from your logged sched date and other data matches, an <strong>Update Sched</strong> button appears.',
+    flaggedLabel:'Not in Export', cleanLabel:'Found – Completed',
+    flagged:r=>!r.found, clean:r=>r.found,
+    flaggedColor:'var(--red)', cleanColor:'var(--green)',
+    flaggedBg:'rgba(248,113,113,.04)', cleanBg:'rgba(34,197,94,.03)',
+    defaultCols:{acct:'Customer ID', rev:'Rate', sched:'Finalize Date', extra:'Finalize Date'},
+    extraLabel:'Finalize Date', schedLabel:'Finalize Date',
+    allowSchedUpdate:true,
+  },
+  cancelled:{
+    label:'Canceled Orders',
+    description:'Match your logged sales against the <strong>Canceled Orders</strong> export. <strong>Flagged (✗)</strong> = your sale was cancelled — investigate or dispute. <strong>Clean (✓)</strong> = not in cancellations.',
+    flaggedLabel:'Found – Cancelled', cleanLabel:'Not Cancelled',
+    flagged:r=>r.found, clean:r=>!r.found,
+    flaggedColor:'var(--red)', cleanColor:'var(--green)',
+    flaggedBg:'rgba(248,113,113,.04)', cleanBg:'rgba(34,197,94,.03)',
+    defaultCols:{acct:'Customer ID', rev:'', sched:'Date Of Cancelation', extra:'Cancel Reason'},
+    extraLabel:'Cancel Reason', schedLabel:'Cancel Date',
+    allowSchedUpdate:false,
+  },
+  exceptions:{
+    label:'Exceptions',
+    description:'Match your logged sales against the <strong>Exceptions</strong> export. <strong>Flagged (✗)</strong> = flagged as an exception (excluded from goals). <strong>Clean (✓)</strong> = not flagged.',
+    flaggedLabel:'Flagged as Exception', cleanLabel:'Not an Exception',
+    flagged:r=>r.found, clean:r=>!r.found,
+    flaggedColor:'var(--amber)', cleanColor:'var(--green)',
+    flaggedBg:'rgba(245,158,11,.04)', cleanBg:'rgba(34,197,94,.03)',
+    defaultCols:{acct:'Customer ID', rev:'Net Revenues', sched:'', extra:'Exception Reason'},
+    extraLabel:'Exception Reason', schedLabel:'',
+    allowSchedUpdate:false,
+  },
+  revenues:{
+    label:'Revenues',
+    description:'Match your logged sales against the <strong>Revenues</strong> export. <strong>Flagged (✗)</strong> = revenue missing or amount mismatch. <strong>Clean (✓)</strong> = credited and matches. <code>Action Taken: Pay</code> = payout confirmed.',
+    flaggedLabel:'Missing / Mismatch', cleanLabel:'Revenue Credited',
+    flagged:r=>!r.found||(r.revMatch===false),
+    clean:r=>r.found&&r.revMatch!==false,
+    flaggedColor:'var(--red)', cleanColor:'var(--green)',
+    flaggedBg:'rgba(248,113,113,.04)', cleanBg:'rgba(34,197,94,.03)',
+    defaultCols:{acct:'Customer ID', rev:'Order Net Revenue', sched:'', extra:'Action Taken'},
+    extraLabel:'Action Taken', schedLabel:'',
+    allowSchedUpdate:false,
+  },
+  open:{
+    label:'Open Orders',
+    description:'Match your logged sales against the <strong>Open Orders</strong> export. <strong>Flagged</strong> = order is still open / not yet completed. If <em>Scheduled For</em> is available and differs from your logged date, an <strong>Update Sched</strong> button appears.',
+    flaggedLabel:'Still Open', cleanLabel:'Not in Open Orders',
+    flagged:r=>r.found, clean:r=>!r.found,
+    flaggedColor:'var(--blue)', cleanColor:'var(--text2)',
+    flaggedBg:'rgba(59,130,246,.03)', cleanBg:'transparent',
+    defaultCols:{acct:'Customer ID', rev:'', sched:'Scheduled For', extra:'Scheduled For'},
+    extraLabel:'Scheduled For', schedLabel:'Scheduled For',
+    allowSchedUpdate:true,
+  },
+};
+
+function setReconType(type){
+  _reconType=type;
+  ['completed','cancelled','exceptions','revenues','open'].forEach(t=>{
+    const btn=document.getElementById('rst-'+t);
+    if(btn)btn.classList.toggle('active',t===type);
+  });
+  const cfg=RECON_TYPES[type];
+  const ctxTitle=document.getElementById('recon-ctx-title');
+  const ctxBody=document.getElementById('recon-ctx-body');
+  if(ctxTitle)ctxTitle.textContent='📋 '+cfg.label;
+  if(ctxBody)ctxBody.innerHTML=cfg.description;
+  const extraLabel=document.getElementById('recon-extra-label');
+  if(extraLabel)extraLabel.innerHTML=(cfg.extraLabel||'Extra Info')+' <span style="color:var(--text3)">(optional)</span>';
+  const schedLabel=document.getElementById('recon-sched-label');
+  if(schedLabel)schedLabel.innerHTML=(cfg.schedLabel||'Sched Date')+' <span style="color:var(--text3)">(optional)</span>';
+  _reconResults=[];_reconRows=[];_reconCols=[];
+  const rf=document.getElementById('recon-file');if(rf)rf.value='';
+  hideReconMapper();setReconStatus('');checkReconReady();
+  document.getElementById('recon-results-card').style.display='none';
+}
+
+/* ── Dispute persistence ─────────────────────────────────────────────────── */
+function getDisputeKey(){
+  const agentId=localStorage.getItem('xcl_sales_id')||'anon';
+  const sel=document.getElementById('recon-fiscal');
+  return 'xcl_disputes_'+agentId+'_'+(sel?.value||'global')+'_'+_reconType;
+}
+function loadDisputes(){try{_disputes=JSON.parse(localStorage.getItem(getDisputeKey())||'{}');}catch{_disputes={};}}
+function saveDisputes(){try{localStorage.setItem(getDisputeKey(),JSON.stringify(_disputes));}catch{}}
+
+/* ── Fiscal period options ───────────────────────────────────────────────── */
 function buildReconFiscalOptions(){
-  const sel = document.getElementById('recon-fiscal');
-  if(!sel||sel.options.length>1) return;
-  const now = new Date(), seen = new Set();
+  const sel=document.getElementById('recon-fiscal');
+  if(!sel||sel.options.length>1)return;
+  const now=new Date(),seen=new Set();
   for(let i=0;i<12;i++){
     let fs,fe;
     if(i===0&&now.getDate()>=22){fs=new Date(now.getFullYear(),now.getMonth(),22);fe=new Date(now.getFullYear(),now.getMonth()+1,22);}
     else{const ref=new Date(now.getFullYear(),now.getMonth()-i,1);fs=new Date(ref.getFullYear(),ref.getMonth()-1,22);fe=new Date(ref.getFullYear(),ref.getMonth(),22);}
     if(fs>now)continue;
     const key=fs.getTime()+'_'+fe.getTime();
-    if(seen.has(key))continue; seen.add(key);
+    if(seen.has(key))continue;seen.add(key);
     const label=fs.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' – '+new Date(fe.getTime()-86400000).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     const opt=document.createElement('option');opt.value=key;opt.dataset.fs=fs.getTime();opt.dataset.fe=fe.getTime();opt.textContent=label;sel.appendChild(opt);
   }
 }
 
+/* ── File upload ─────────────────────────────────────────────────────────── */
 function onReconFile(input){
   const file=input.files[0];
   if(!file){_reconRows=[];_reconCols=[];hideReconMapper();setReconStatus('');checkReconReady();return;}
@@ -8078,13 +8215,13 @@ function onReconFile(input){
         const parse=l=>l.split(',').map(v=>v.replace(/^"|"$/g,'').trim());
         _reconCols=parse(lines[0]);
         _reconRows=lines.slice(1).map(l=>{const vals=parse(l);const row={};_reconCols.forEach((c,i)=>row[c]=vals[i]||'');return row;});
-      } else {
+      }else{
         const wb=XLSX.read(e.target.result,{type:'array'});
         const data=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
         _reconRows=data;_reconCols=data.length?Object.keys(data[0]):[];
       }
       if(!_reconCols.length){setReconStatus('⚠ No columns found');return;}
-      setReconStatus(`✓ ${_reconRows.length.toLocaleString()} rows · ${_reconCols.length} cols`);
+      setReconStatus('✓ '+_reconRows.length.toLocaleString()+' rows · '+_reconCols.length+' cols','var(--green)');
       populateReconMapper();checkReconReady();
     }catch(err){setReconStatus('✗ '+err.message);_reconRows=[];_reconCols=[];hideReconMapper();checkReconReady();}
   };
@@ -8093,24 +8230,45 @@ function onReconFile(input){
 
 function setReconStatus(msg,color='var(--text3)'){const el=document.getElementById('recon-status');if(el){el.textContent=msg;el.style.color=color;}}
 
+/* ── Column mapper ───────────────────────────────────────────────────────── */
+function _colOpts(required){
+  return`<option value="">${required?'— select column —':'— not mapped —'}</option>`+_reconCols.map(c=>`<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
+}
+
 function populateReconMapper(){
   const sec=document.getElementById('recon-col-section');
-  const sel=document.getElementById('recon-acct-col');
-  if(!sec||!sel)return;
+  if(!sec)return;
   sec.style.display='flex';
-  sel.innerHTML='<option value="">— select column —</option>'+_reconCols.map(c=>`<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
-  const guess=_reconCols.find(c=>/acct|account|order|cust/i.test(c));
-  if(guess){sel.value=guess;onReconColChange();}
+  document.getElementById('recon-acct-col').innerHTML=_colOpts(true);
+  document.getElementById('recon-rev-col').innerHTML=_colOpts(false);
+  document.getElementById('recon-sched-col').innerHTML=_colOpts(false);
+  document.getElementById('recon-extra-col').innerHTML=_colOpts(false);
+  const defaults=RECON_TYPES[_reconType].defaultCols;
+  function applyDefault(elId,defaultName){
+    if(!defaultName)return;
+    const el=document.getElementById(elId);
+    if(!el)return;
+    const match=_reconCols.find(c=>c===defaultName)||_reconCols.find(c=>c.toLowerCase()===defaultName.toLowerCase());
+    if(match)el.value=match;
+  }
+  applyDefault('recon-acct-col',defaults.acct);
+  applyDefault('recon-rev-col',defaults.rev);
+  applyDefault('recon-sched-col',defaults.sched);
+  applyDefault('recon-extra-col',defaults.extra);
+  ['acct','rev','sched','extra'].forEach(onReconColChange);
 }
 
 function hideReconMapper(){const sec=document.getElementById('recon-col-section');if(sec)sec.style.display='none';}
 
-function onReconColChange(){
-  const col=document.getElementById('recon-acct-col').value;
-  const preview=document.getElementById('recon-col-preview');
-  if(!col||!_reconRows.length){if(preview)preview.textContent='';checkReconReady();return;}
-  const samples=[...new Set(_reconRows.slice(0,10).map(r=>String(r[col]||'').trim()))].filter(Boolean).slice(0,4);
-  if(preview)preview.textContent=samples.length?'e.g. '+samples.join(', '):'(empty)';
+function onReconColChange(field){
+  const col=document.getElementById('recon-'+field+'-col')?.value||'';
+  const preview=document.getElementById('recon-'+field+'-preview');
+  if(preview){
+    if(col&&_reconRows.length){
+      const samples=[...new Set(_reconRows.slice(0,15).map(r=>String(r[col]||'').trim()))].filter(Boolean).slice(0,3);
+      preview.textContent=samples.length?'e.g. '+samples.join(', '):'(empty)';
+    }else{preview.textContent='';}
+  }
   checkReconReady();
 }
 
@@ -8121,65 +8279,288 @@ function checkReconReady(){
   btn.disabled=!ready;btn.style.opacity=ready?'1':'.5';btn.style.cursor=ready?'pointer':'not-allowed';
 }
 
+/* ── Reconciliation engine ───────────────────────────────────────────────── */
 function runReconciliation(){
-  const acctCol=document.getElementById('recon-acct-col').value;
+  const acctCol=document.getElementById('recon-acct-col')?.value;
+  const revCol=document.getElementById('recon-rev-col')?.value||'';
+  const schedCol=document.getElementById('recon-sched-col')?.value||'';
+  const extraCol=document.getElementById('recon-extra-col')?.value||'';
   const fiscalSel=document.getElementById('recon-fiscal');
   const opt=fiscalSel.options[fiscalSel.selectedIndex];
   if(!acctCol||!opt.value)return;
   const fs=new Date(+opt.dataset.fs),fe=new Date(+opt.dataset.fe);
+  _reconFiscalLabel=opt.textContent;
+  loadDisputes();
+
   const norm=v=>String(v||'').replace(/\s/g,'').replace(/^0+/,'').toUpperCase();
-  const excelAccts=new Set(_reconRows.map(r=>norm(r[acctCol])).filter(Boolean));
+  const normNum=v=>{const n=parseFloat(String(v||'').replace(/[$,\s]/g,''));return isNaN(n)?null:n;};
+  const normDate=v=>{
+    if(!v)return null;
+    const s=String(v).trim();
+    if(s.toLowerCase()==='not available'||s===''||s==='-')return null;
+    if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+    if(/^\d{5}$/.test(s)){const d=new Date(Math.round((parseInt(s,10)-25569)*86400000));return isNaN(d.getTime())?null:d.toISOString().slice(0,10);}
+    const d=new Date(s);
+    return isNaN(d.getTime())?null:d.toISOString().slice(0,10);
+  };
+
+  const exportSet=new Set();
+  const exportMap=new Map();
+  _reconRows.forEach(r=>{
+    const a=norm(r[acctCol]);
+    if(!a)return;
+    exportSet.add(a);
+    if(!exportMap.has(a))exportMap.set(a,r);
+  });
+
   const sales=calls.filter(c=>{if(!c.hasSale||!c.sched)return false;const d=new Date(c.sched+'T00:00:00');return d>=fs&&d<fe;});
   if(!sales.length){setReconStatus('⚠ No logged sales found for that fiscal period','var(--amber)');return;}
+
   _reconResults=sales.map(c=>{
     const acct=norm(c.acctRaw||c.acct);
-    const found=acct&&excelAccts.has(acct);
-    return{ts:c.ts,dateLogged:c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}),time:c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),acct:c.acctRaw||c.acct||'—',play:c.playName||'—',rgus:fmtR(c.rgus),rev:c.rev?'$'+c.rev.toFixed(2):'—',sched:c.sched||'—',found};
-  }).sort((a,b)=>a.found-b.found);
-  renderReconResults(opt.textContent);
+    const found=!!(acct&&exportSet.has(acct));
+    const exportRow=found?exportMap.get(acct):null;
+    const d=_disputes[c.id]||null;
+
+    let exportRev=null,revMatch=null;
+    if(revCol&&exportRow){
+      exportRev=normNum(exportRow[revCol]);
+      if(exportRev!==null)revMatch=Math.abs(exportRev-(c.rev||0))<0.015;
+    }
+
+    let exportSched=null,schedMatch=null;
+    if(schedCol&&exportRow){
+      exportSched=normDate(exportRow[schedCol]);
+      if(exportSched!==null)schedMatch=exportSched===(c.sched||'');
+    }
+
+    const extraVal=extraCol&&exportRow?String(exportRow[extraCol]||'').trim():'';
+
+    return{
+      callId:c.id,
+      ts:c.ts,
+      dateLogged:c.ts.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'2-digit'}),
+      time:c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}),
+      acctRaw:c.acctRaw||c.acct||'—',
+      play:c.playName||'—',
+      loggedRev:c.rev||0,
+      rev:c.rev?'$'+c.rev.toFixed(2):'—',
+      sched:c.sched||'—',
+      found,
+      exportRev:exportRev!==null?'$'+exportRev.toFixed(2):null,
+      exportSched,
+      revMatch,
+      schedMatch,
+      extraVal,
+      disputeStatus:d?.status||null,
+      disputeNote:d?.note||'',
+    };
+  });
+
+  const cfg=RECON_TYPES[_reconType];
+  _reconResults.sort((a,b)=>(cfg.flagged(a)?0:1)-(cfg.flagged(b)?0:1)||a.ts-b.ts);
+  renderReconResults(_reconFiscalLabel);
 }
 
+/* ── Results rendering ───────────────────────────────────────────────────── */
 function renderReconResults(label){
-  const total=_reconResults.length,missing=_reconResults.filter(r=>!r.found).length,found=total-missing;
-  document.getElementById('recon-summary').innerHTML=`
-    <div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:var(--blue)">${total}</div><div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Total Logged</div></div>
-    <div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:var(--green)">${found}</div><div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Found in Export</div></div>
-    <div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:var(--red)">${missing}</div><div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Missing from Export</div></div>
-    <div style="margin-left:auto;align-self:center;font-size:11px;color:var(--text3);font-family:var(--mono);text-align:right">${label}</div>`;
+  const cfg=RECON_TYPES[_reconType];
+  const total=_reconResults.length;
+  const flaggedCount=_reconResults.filter(cfg.flagged).length;
+  const cleanCount=total-flaggedCount;
+  const revAtRisk=_reconResults.filter(r=>!r.found).reduce((s,r)=>s+r.loggedRev,0);
+  const revMismatches=_reconResults.filter(r=>r.found&&r.revMatch===false).length;
+  const dPending=_reconResults.filter(r=>r.disputeStatus==='pending').length;
+  const dDisputed=_reconResults.filter(r=>r.disputeStatus==='disputed').length;
+  const dResolved=_reconResults.filter(r=>r.disputeStatus==='resolved').length;
+  const dDenied=_reconResults.filter(r=>r.disputeStatus==='denied').length;
+
+  const stat=(val,lbl,color)=>`<div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:${color}">${val}</div><div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">${lbl}</div></div>`;
+  const badges=[dPending?`<span class="ds-badge ds-pending">${dPending} pending</span>`:'',dDisputed?`<span class="ds-badge ds-disputed">${dDisputed} disputed</span>`:'',dResolved?`<span class="ds-badge ds-resolved">${dResolved} resolved</span>`:'',dDenied?`<span class="ds-badge ds-denied">${dDenied} denied</span>`:''].filter(Boolean).join(' ');
+
+  document.getElementById('recon-summary').innerHTML=
+    stat(total,'Total Logged','var(--blue)')+
+    stat(cleanCount,cfg.cleanLabel,cfg.cleanColor)+
+    stat(flaggedCount,cfg.flaggedLabel,cfg.flaggedColor)+
+    (revAtRisk>0&&_reconType!=='open'?stat('$'+revAtRisk.toFixed(2),'Revenue at Risk','var(--red)'):'')+
+    (revMismatches>0?stat(revMismatches,'Rev Mismatches','var(--amber)'):'')+
+    `<div style="margin-left:auto;align-self:flex-start;display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${label}</div>${badges}</div>`;
+
+  const hasRev=!!document.getElementById('recon-rev-col')?.value;
+  const hasSched=!!document.getElementById('recon-sched-col')?.value;
+  const hasExtra=!!document.getElementById('recon-extra-col')?.value;
+  const th=t=>`<th style="padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:left;white-space:nowrap">${t}</th>`;
+  document.getElementById('recon-thead-row').innerHTML=
+    th('Date Logged')+th('Acct #')+th('Play')+th('Revenue')+th('Sched')+
+    (hasRev?th('Export Rev'):'')+
+    (hasSched?th(RECON_TYPES[_reconType].schedLabel||'Export Sched'):'')+
+    (hasExtra?th(RECON_TYPES[_reconType].extraLabel):'')+
+    th('Status')+th('Note');
+
   document.getElementById('recon-results-card').style.display='block';
   renderReconTable();
 }
 
 function renderReconTable(){
   const body=document.getElementById('recon-table-body');
-  const filtered=_reconTabFilter==='all'?_reconResults:_reconTabFilter==='missing'?_reconResults.filter(r=>!r.found):_reconResults.filter(r=>r.found);
-  if(!filtered.length){body.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3);font-size:13px">No results for this filter</td></tr>`;return;}
-  body.innerHTML=filtered.map(r=>`<tr style="border-bottom:1px solid var(--border);background:${r.found?'rgba(34,197,94,.03)':'rgba(248,113,113,.04)'}">
-    <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text3)">${r.dateLogged} ${r.time}</td>
-    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">${r.acctRaw}</td>
-    <td style="padding:8px 14px;font-size:12px;color:var(--text2)">${r.play}</td>
-    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${r.rgus}</td>
-    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${r.rev}</td>
-    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${r.sched}</td>
-    <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;font-weight:600;color:${r.found?'var(--green)':'var(--red)'}">${r.found?'✓ Found':'✗ Missing'}</td>
-  </tr>`).join('');
+  const cfg=RECON_TYPES[_reconType];
+  const filters={
+    all:()=>true, flagged:cfg.flagged, clean:cfg.clean,
+    pending:r=>r.disputeStatus==='pending',
+    disputed:r=>r.disputeStatus==='disputed',
+    resolved:r=>r.disputeStatus==='resolved',
+    denied:r=>r.disputeStatus==='denied',
+  };
+  const filtered=_reconResults.filter(filters[_reconTabFilter]||filters.all);
+
+  if(!filtered.length){
+    body.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text3);font-size:13px">No results for this filter</td></tr>`;
+    return;
+  }
+
+  const hasRev=!!document.getElementById('recon-rev-col')?.value;
+  const hasSched=!!document.getElementById('recon-sched-col')?.value;
+  const hasExtra=!!document.getElementById('recon-extra-col')?.value;
+
+  body.innerHTML=filtered.map(r=>{
+    const flagged=cfg.flagged(r);
+    const revMis=r.revMatch===false;
+    const canUpdateSched=cfg.allowSchedUpdate&&r.found&&r.exportSched&&r.schedMatch===false&&r.revMatch!==false;
+
+    const revCell=hasRev&&r.exportRev!=null
+      ?`<div>${r.rev}</div><div style="font-size:9px;color:${revMis?'var(--amber)':'var(--text3)'}">export: ${r.exportRev}${revMis?' ⚠':''}</div>`
+      :r.rev;
+
+    let schedCell=r.sched;
+    if(hasSched&&r.exportSched!=null){
+      if(r.schedMatch===false){
+        schedCell=`<div>${r.sched}</div><div style="font-size:9px;color:var(--amber)">export: ${r.exportSched} ⚠</div>`
+          +(canUpdateSched?`<button class="sched-update-btn" onclick="updateCallSched(${r.callId},'${r.exportSched}')">→ Update to ${r.exportSched}</button>`:'');
+      }else{
+        schedCell=`<div>${r.sched}</div><div style="font-size:9px;color:var(--text3)">export: ${r.exportSched} ✓</div>`;
+      }
+    }
+
+    const statusCell=`<div style="display:flex;flex-direction:column;gap:5px">
+      <span style="font-family:var(--mono);font-size:11px;font-weight:600;color:${flagged?cfg.flaggedColor:cfg.cleanColor}">${flagged?'✗':'✓'} ${flagged?cfg.flaggedLabel:cfg.cleanLabel}</span>
+      ${flagged?`<select class="ds-select" onchange="setDisputeStatus(${r.callId},this.value||null)">
+        <option value="">— status —</option>
+        <option value="pending"${r.disputeStatus==='pending'?' selected':''}>Pending</option>
+        <option value="disputed"${r.disputeStatus==='disputed'?' selected':''}>Disputed</option>
+        <option value="resolved"${r.disputeStatus==='resolved'?' selected':''}>Resolved</option>
+        <option value="denied"${r.disputeStatus==='denied'?' selected':''}>Denied</option>
+      </select>${r.disputeStatus?`<span class="ds-badge ds-${r.disputeStatus}">${r.disputeStatus}</span>`:''}`:``}
+    </div>`;
+
+    const noteCell=flagged
+      ?`<div class="dispute-note-cell" id="dnote-${r.callId}" onclick="editDisputeNote(${r.callId})">${r.disputeNote||`<span style="font-style:italic;color:var(--text3)">add note…</span>`}</div>`
+      :`<span style="color:var(--text3);font-size:10px">—</span>`;
+
+    const rowBg=flagged?cfg.flaggedBg:cfg.cleanBg;
+    return`<tr style="border-bottom:1px solid var(--border);background:${rowBg}${revMis?';box-shadow:inset 3px 0 0 var(--amber)':''}">
+      <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap">${r.dateLogged}<br><span style="font-size:10px">${r.time}</span></td>
+      <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--blue)">${r.acctRaw}</td>
+      <td style="padding:8px 14px;font-size:12px;color:var(--text2)">${r.play}</td>
+      <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)${revMis?';background:rgba(245,158,11,.07)':''}">${revCell}</td>
+      <td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${schedCell}</td>
+      ${hasRev?`<td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${r.exportRev??'—'}</td>`:''}
+      ${hasSched?`<td style="padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--text2)">${r.exportSched??'—'}</td>`:''}
+      ${hasExtra?`<td style="padding:8px 14px;font-size:11px;color:var(--text3);font-family:var(--mono)">${r.extraVal||'—'}</td>`:''}
+      <td style="padding:8px 14px">${statusCell}</td>
+      <td style="padding:8px 14px;max-width:180px">${noteCell}</td>
+    </tr>`;
+  }).join('');
 }
 
 function setReconTab(t){
   _reconTabFilter=t;
-  ['all','missing','found'].forEach(v=>document.getElementById('rtab-'+v).classList.toggle('active',v===t));
+  ['all','flagged','clean','pending','disputed','resolved','denied'].forEach(v=>{
+    const btn=document.getElementById('rtab-'+v);
+    if(btn)btn.classList.toggle('active',v===t);
+  });
   renderReconTable();
 }
 
+/* ── Sched date update ───────────────────────────────────────────────────── */
+function updateCallSched(callId,newSched){
+  const call=calls.find(c=>c.id===callId);
+  if(!call)return;
+  call.sched=newSched;
+  saveCallsCache();
+  const r=_reconResults.find(x=>x.callId===callId);
+  if(r){r.sched=newSched;r.schedMatch=true;}
+  renderReconTable();
+}
+
+/* ── Dispute status & notes ──────────────────────────────────────────────── */
+function setDisputeStatus(callId,status){
+  if(!status){delete _disputes[callId];}
+  else{
+    if(!_disputes[callId])_disputes[callId]={status:'',note:'',updatedAt:''};
+    _disputes[callId].status=status;
+    _disputes[callId].updatedAt=new Date().toISOString();
+  }
+  saveDisputes();
+  const r=_reconResults.find(x=>x.callId===callId);
+  if(r)r.disputeStatus=status||null;
+  renderReconResults(_reconFiscalLabel);
+}
+
+function setDisputeNote(callId,note){
+  if(!_disputes[callId])_disputes[callId]={status:null,note:'',updatedAt:''};
+  _disputes[callId].note=note;
+  _disputes[callId].updatedAt=new Date().toISOString();
+  saveDisputes();
+}
+
+function editDisputeNote(callId){
+  const el=document.getElementById('dnote-'+callId);
+  if(!el)return;
+  const r=_reconResults.find(x=>x.callId===callId);
+  const ta=document.createElement('textarea');
+  Object.assign(ta.style,{width:'160px',height:'60px',fontSize:'10px',fontFamily:'var(--mono)',background:'var(--card)',border:'1px solid var(--border2)',borderRadius:'4px',padding:'4px 6px',color:'var(--text)',resize:'vertical',display:'block'});
+  ta.value=r?.disputeNote||'';ta.placeholder='Add note…';
+  el.innerHTML='';el.appendChild(ta);ta.focus();
+  ta.onblur=function(){
+    const note=ta.value.trim();
+    setDisputeNote(callId,note);
+    if(r)r.disputeNote=note;
+    el.innerHTML=note||`<span style="font-style:italic;color:var(--text3)">add note…</span>`;
+  };
+  ta.onkeydown=function(e){if(e.key==='Escape')ta.blur();};
+}
+
+/* ── CSV export ──────────────────────────────────────────────────────────── */
 function downloadReconCSV(){
   if(!_reconResults.length)return;
-  const label=document.getElementById('recon-fiscal').options[document.getElementById('recon-fiscal').selectedIndex].textContent;
-  const total=_reconResults.length,missing=_reconResults.filter(r=>!r.found).length;
-  const headers=['Date Logged','Time','Acct #','Play','RGUs','Revenue','Sched Date','Status'];
-  const lines=[`# Order Reconciliation Report`,`# Fiscal Period: ${label}`,`# Generated: ${new Date().toLocaleString()}`,`# Total: ${total} | Found: ${total-missing} | Missing: ${missing}`,`#`,
-    headers.map(h=>`"${h}"`).join(','),
-    ..._reconResults.map(r=>[r.dateLogged,r.time,r.acctRaw,r.play,r.rgus,r.rev,r.sched,r.found?'Found':'MISSING'].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','))];
-  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'})),download:`disputes_${label.replace(/[^a-z0-9]/gi,'_').toLowerCase()}.csv`});
+  const cfg=RECON_TYPES[_reconType];
+  const label=_reconFiscalLabel||'unknown';
+  const flaggedCount=_reconResults.filter(cfg.flagged).length;
+  const hasRev=!!document.getElementById('recon-rev-col')?.value;
+  const hasSched=!!document.getElementById('recon-sched-col')?.value;
+  const hasExtra=!!document.getElementById('recon-extra-col')?.value;
+  const esc=v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`;
+  const headers=['Date Logged','Time','Acct #','Play','Revenue (Logged)','Sched Date (Logged)'];
+  if(hasRev)headers.push('Export Revenue');
+  if(hasSched)headers.push(cfg.schedLabel||'Export Sched');
+  if(hasExtra)headers.push(cfg.extraLabel);
+  headers.push('Status','Dispute Status','Note');
+  const lines=[
+    `# ${cfg.label} Reconciliation`,
+    `# Fiscal Period: ${label}`,
+    `# Generated: ${new Date().toLocaleString()}`,
+    `# Total: ${_reconResults.length} | ${cfg.cleanLabel}: ${_reconResults.length-flaggedCount} | ${cfg.flaggedLabel}: ${flaggedCount}`,`#`,
+    headers.map(esc).join(','),
+    ..._reconResults.map(r=>{
+      const row=[r.dateLogged,r.time,r.acctRaw,r.play,r.rev,r.sched];
+      if(hasRev)row.push(r.exportRev??'');
+      if(hasSched)row.push(r.exportSched??'');
+      if(hasExtra)row.push(r.extraVal);
+      row.push(cfg.flagged(r)?cfg.flaggedLabel:cfg.cleanLabel,r.disputeStatus||'',r.disputeNote);
+      return row.map(esc).join(',');
+    })
+  ];
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'})),download:`${_reconType}_${label.replace(/[^a-z0-9]/gi,'_').toLowerCase()}.csv`});
   a.click();URL.revokeObjectURL(a.href);
 }
 
