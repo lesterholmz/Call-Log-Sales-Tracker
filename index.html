@@ -19,7 +19,7 @@
 //   2026-09-14, 3rd release → 0.9.14.3     2027-01-05, 1st release → 0.101.5.1     2028-01-05 → 0.201.5.1
 // The page title, the "Call Logger" brand tooltip, and the Settings header read from it.
 var APP_UPDATED = '2026-09-15';
-var APP_BUILD   = 1;
+var APP_BUILD   = 2;
 var APP_VERSION = (function(date, build){
   var p = date.split('-');
   var month = (parseInt(p[0], 10) - 2026) * 100 + parseInt(p[1], 10);
@@ -73,6 +73,68 @@ if(XCL_VIEW){
   if(XCL_VIEW.talk) document.documentElement.classList.add('xcl-view-talk');
 }
 window.addEventListener('hashchange', function(){ location.reload(); });
+
+// ── One window per kind ──────────────────────────────────────────────────────
+// Every window ('main', 'log', 'talk', 'log+talk') announces itself on load. If an older window of the same
+// kind answers, this newer copy is a duplicate: it closes itself (or shows a notice if the browser won't let it)
+// and never starts syncing, alerts, or reminders. Startup work that must run in only one copy waits on
+// xclWhenPrimary(fn), which runs fn once this window is confirmed to be the only one of its kind.
+var XCL_CH = ('BroadcastChannel' in window) ? new BroadcastChannel('xcl-sync') : null;
+var XCL_WINDOW_KIND = XCL_VIEW ? XCL_VIEW_KIND : 'main';
+var XCL_INSTANCE = XCL_WINDOW_KIND + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+var XCL_STARTED = Date.now();
+var XCL_IS_DUPLICATE = false;
+var _xclPrimaryDecided = false, _xclPrimaryCbs = [];
+function xclWhenPrimary(fn){
+  if(!_xclPrimaryDecided) _xclPrimaryCbs.push(fn);
+  else if(!XCL_IS_DUPLICATE) fn();
+}
+function _xclDecidePrimary(isDuplicate){
+  if(_xclPrimaryDecided) return;
+  _xclPrimaryDecided = true;
+  XCL_IS_DUPLICATE = isDuplicate;
+  var cbs = _xclPrimaryCbs; _xclPrimaryCbs = [];
+  if(isDuplicate){ xclCloseDuplicate(); return; }
+  cbs.forEach(function(fn){ try{ fn(); }catch(e){ console.error(e); } });
+}
+function xclCloseDuplicate(){
+  try{ window.close(); }catch(e){}
+  // Browsers only allow closing windows a script or the taskbar opened; otherwise cover this copy with a notice.
+  setTimeout(function(){
+    if(window.closed) return;
+    var show = function(){
+      var label = XCL_VIEW ? XCL_VIEW_LABEL : 'The Call Logger tracker';
+      var el = document.createElement('div');
+      el.id = 'xcl-duplicate-notice';
+      el.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:rgba(10,15,30,.94);font-family:var(--sans,sans-serif)';
+      el.innerHTML = '<div style="max-width:360px;text-align:center;background:var(--card,#161e30);border:1px solid var(--border2,#2e3d56);border-radius:14px;padding:22px 24px;color:var(--text,#e2e8f0)">'+
+        '<div style="font-size:26px;margin-bottom:8px">🪟</div>'+
+        '<div style="font-size:15px;font-weight:700;margin-bottom:6px">' + label + ' is already open</div>'+
+        '<div style="font-size:12px;color:var(--text3,#94a3b8);line-height:1.5;margin-bottom:14px">Use the window that was already open. This copy is paused so nothing gets logged or synced twice.</div>'+
+        '<button onclick="window.close()" style="height:32px;padding:0 16px;background:var(--blue,#3b82f6);border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">Close this window</button></div>';
+      document.body.appendChild(el);
+    };
+    if(document.body) show(); else document.addEventListener('DOMContentLoaded', show);
+  }, 400);
+}
+if(XCL_CH){
+  XCL_CH.addEventListener('message', function(ev){
+    var m = ev.data || {};
+    if(m.type === 'claim' && m.kind === XCL_WINDOW_KIND && m.inst !== XCL_INSTANCE && !XCL_IS_DUPLICATE){
+      var iAmOlder = XCL_STARTED < m.started || (XCL_STARTED === m.started && XCL_INSTANCE < m.inst);
+      if(iAmOlder){
+        XCL_CH.postMessage({type:'claim-taken', kind:m.kind, to:m.inst, by:XCL_INSTANCE});
+        try{ window.focus(); }catch(e){}   // may be ignored by the OS; the duplicate still closes
+      }
+    } else if(m.type === 'claim-taken' && m.to === XCL_INSTANCE){
+      _xclDecidePrimary(true);
+    }
+  });
+  XCL_CH.postMessage({type:'claim', kind:XCL_WINDOW_KIND, inst:XCL_INSTANCE, started:XCL_STARTED});
+  setTimeout(function(){ _xclDecidePrimary(false); }, 900);
+} else {
+  _xclDecidePrimary(false);
+}
 
 document.title = XCL_VIEW ? XCL_VIEW_LABEL + ' · XCL' : 'Call Logger v' + APP_VERSION;
 document.addEventListener('DOMContentLoaded', function(){
@@ -180,6 +242,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:v
 .field label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
 .field input,.field select{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);height:38px;outline:none;transition:border-color .15s,box-shadow .15s}
 .field input::placeholder,.field textarea::placeholder{color:var(--text3)}
+/* Talk Track inputs: same size as the call form's fields */
+.tt-in{box-sizing:border-box;height:38px;background:var(--card);border:1px solid var(--border2);border-radius:7px;padding:0 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+.tt-in::placeholder{color:var(--text3)}
+.tt-in:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
 .field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
 .field textarea{background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:38px;transition:border-color .15s,box-shadow .15s}
 .field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
@@ -4469,12 +4535,12 @@ function checkAlerts(){
     alertBar.classList.add('visible');
   }
 }
-if(!XCL_VIEW) setInterval(checkAlerts, 30000); // alerts run in the full tracker only
+if(!XCL_VIEW) xclWhenPrimary(function(){ setInterval(checkAlerts, 30000); }); // alerts run in one full tracker only
 document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});
 function fmtPhone(raw){
   // Strip country code: +1 or leading 1 before a 10-digit number
   let d = raw.replace(/\D/g,'');
-  if(d.length === 11 && d[0] === '1') d = d.slice(1);
+  if(d.length >= 11 && d[0] === '1') d = d.slice(1); // US area codes never start with 1
   d = d.slice(0,10);
   if(d.length<4) return d;
   if(d.length<7) return`(${d.slice(0,3)}) ${d.slice(3)}`;
@@ -4488,6 +4554,22 @@ function onPhoneInput(el){
 }
 function rawPhone(v){return v.replace(/\D/g,'');}
 document.getElementById('f-cb-phone').addEventListener('input',function(){onPhoneInput(this);});
+
+// Paste into any phone field: format the pasted number instead of letting maxlength cut off "+1 (555) 867-5309"
+function onPhonePaste(e){
+  const el=e.target;
+  if(!el||el.tagName!=='INPUT'||!(el.type==='tel'||el.id==='f-cb-phone'))return;
+  const text=(e.clipboardData&&e.clipboardData.getData('text'))||'';
+  if(!/\d/.test(text))return;
+  e.preventDefault();
+  const v=el.value, s=el.selectionStart??v.length, en=el.selectionEnd??v.length;
+  // A full number replaces the field; a partial one is inserted where the caret is
+  el.value=fmtPhone(text.replace(/\D/g,'').length>=10 ? text : v.slice(0,s)+text+v.slice(en));
+  el.setSelectionRange(el.value.length,el.value.length);
+  const W=el.ownerDocument.defaultView||window;
+  el.dispatchEvent(new W.Event('input',{bubbles:true}));   // runs the field's own sync (form, Talk Track, opener)
+}
+document.addEventListener('paste',onPhonePaste,true);
 
 function dismissAlerts(){alertDismissed=Date.now()+15*60000;document.getElementById('alert-bar').classList.remove('visible');}
 
@@ -5027,7 +5109,7 @@ function logCallFeedback(){
 // (used when an edit or delete of a past call finishes mid-call).
 function resetForm(opts){
   var keepProgress = !!(opts && opts.keepCallProgress);
-  hideBackdateBtn();
+  if(!keepProgress) hideBackdateBtn();   // an edit mid-call keeps the current call's backdate
   if(!keepProgress) dqResetAll();
   // If form-body is inside the edit panel, move it back to the form-card first
   const editPanelBody = document.getElementById('edit-panel-body');
@@ -5037,7 +5119,6 @@ function resetForm(opts){
     if(fb){ formCard.appendChild(fb); formCard.style.display = ''; }
   }
   ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-dt','f-cb-date','f-cb-time-hidden'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const _hSel=document.getElementById('f-cb-hour');if(_hSel)_hSel.selectedIndex=0;const _mSel=document.getElementById('f-cb-min');if(_mSel)_mSel.selectedIndex=0;_cbAmPm='AM';cbSetAmPm('AM');
-  if(keepProgress && _tt && _tt.carrier) ttNotesCarrier(_tt.carrier);
   var fuTypeSel=document.getElementById('f-fu-type');if(fuTypeSel)fuTypeSel.value='Callback';
   setXm(0);
   updateRevTotal();
@@ -5052,7 +5133,7 @@ function resetForm(opts){
   const ilbl=document.getElementById('ie-lbl');if(ilbl)ilbl.style.color='var(--text3)';
   // No sale
   _nsClose();
-  setTimeout(resetMood, 50);
+  if(!keepProgress) setTimeout(resetMood, 50);
   const nsd=document.getElementById('nosale-display');if(nsd)nsd.style.display='none';
   // Play/CB display
   const pd=document.getElementById('play-display');if(pd)pd.style.display='none';
@@ -5071,18 +5152,77 @@ function resetForm(opts){
   const cbmt=document.getElementById('cb-mytime');if(cbmt)cbmt.textContent='';
   updateNotesState();
   updatePlay();
-  resetCallTimer();
+  if(!keepProgress) resetCallTimer();   // an edit mid-call keeps the current call's timer running
   _clearPressCount = 0;
   updateClearVisibility();
   nsAutoSelect();
   syncIEVisibility();
+  if(keepProgress){
+    // Back from editing a past call: put the call in progress back, then refresh its Talk Track notes block
+    if(_editDraft) _restoreFormDraft(_editDraft);
+    if(_tt) ttNotesSync();
+  }
+  _editDraft = null;
 }
 var _editSnapshot = null; // deep copy of call before edit — restored on cancel
 var _editMarkCbDone = false; // set true when opened via Sale Made — marks follow-up done on save
 
+// The call in progress, set aside while the shared form shows a past call being edited.
+// Captured by openEdit, restored by resetForm({keepCallProgress:true}) when the edit closes, saves, or deletes.
+var _editDraft = null;
+var DRAFT_VALUE_IDS  = ['f-acct','f-sched','f-rev','f-notes','f-cb-name','f-cb-phone','f-cb-date','f-cb-time-hidden','f-cb-dt','f-fu-type'];
+var DRAFT_SELECT_IDS = ['f-cb-hour','f-cb-min','cb-tz'];
+
+function _captureFormDraft(){
+  const gid = id => document.getElementById(id);
+  const d = {values:{}, selects:{}};
+  DRAFT_VALUE_IDS.forEach(id => { const el = gid(id); if(el) d.values[id] = el.value; });
+  DRAFT_SELECT_IDS.forEach(id => { const el = gid(id); if(el) d.selects[id] = el.selectedIndex; });
+  d.cbAmPm = _cbAmPm;
+  d.xm = xmVal;
+  d.prods = Object.assign({}, prods);
+  d.ie = _ieActive;
+  d.bulk = _bulkActive;
+  d.ns = {state:_nsState, cat:_nsCat, sub:_nsSub};
+  d.cbOpen = cbOpen;
+  const sl = gid('mood-slider'); d.mood = sl ? sl.value : null;
+  const mt = gid('cb-mytime');   d.cbMyTime = mt ? mt.textContent : '';
+  return d;
+}
+
+function _restoreFormDraft(d){
+  const gid = id => document.getElementById(id);
+  DRAFT_SELECT_IDS.forEach(id => { const el = gid(id); if(el && d.selects[id] >= 0) el.selectedIndex = d.selects[id]; });
+  DRAFT_VALUE_IDS.forEach(id => { const el = gid(id); if(el && d.values[id] !== undefined) el.value = d.values[id]; });
+  cbSetAmPm(d.cbAmPm || 'AM');                          // re-syncs the callback date/time from the pickers
+  const dt = gid('f-cb-dt'); if(dt && d.values['f-cb-dt'] !== undefined) dt.value = d.values['f-cb-dt'];
+  setXm(d.xm || 0);
+  Object.keys(prods).forEach(k => {
+    prods[k] = !!d.prods[k];
+    const el = gid('chk-' + k); if(el) el.classList.toggle('checked', prods[k]);
+  });
+  _ieActive = !!d.ie;
+  const ie = gid('chk-ie'); if(ie) ie.classList.toggle('ie-active', _ieActive);
+  const ieLbl = gid('ie-lbl'); if(ieLbl) ieLbl.style.color = _ieActive ? 'var(--green)' : 'var(--text3)';
+  _bulkActive = !!d.bulk;
+  const bk = gid('chk-bulk'); if(bk) bk.classList.toggle('bulk-active', _bulkActive);
+  const bkLbl = gid('bulk-lbl'); if(bkLbl) bkLbl.style.color = _bulkActive ? 'var(--blue)' : 'var(--text3)';
+  _nsState = d.ns.state || 'closed'; _nsCat = d.ns.cat || ''; _nsSub = d.ns.sub || ''; _nsPanelOpen = false;
+  colorReason(); updateNosaleDisplay();
+  cbOpen = !!d.cbOpen;
+  const cbt = gid('cb-toggle'); if(cbt) cbt.classList.toggle('active', cbOpen);
+  if(cbOpen) onFuTypeChange();
+  const mt = gid('cb-mytime'); if(mt) mt.textContent = d.cbMyTime || '';
+  updateCbDisplay();
+  const sl = gid('mood-slider'); if(sl && d.mood != null){ sl.value = d.mood; _moodPos(d.mood); }
+  const op = gid('dq-opener-notes'); if(op) op.value = d.values['f-notes'] || '';
+  syncProds(); updateNotesState(); updateRevTotal(); updatePlay(); updateClearVisibility(); syncIEVisibility();
+}
+
 function openEdit(id, fromAlert){
   const c = calls.find(x => x.id === id);
   if(!c) return;
+  if(!editingId) _editDraft = _captureFormDraft();   // switching straight to another past call keeps the original draft
   editingId = id;
   window._editFromAlert = !!fromAlert;
   // Grey out Log Call button during edit
@@ -7115,7 +7255,7 @@ function markActivePreset(name){
   function schedFiscalRefresh(){setTimeout(()=>{document.getElementById('month-chip-label').textContent=getFiscalMonth();schedFiscalRefresh();},msToMidnight());}
   loadColorSettings();
   schedFiscalRefresh();
-  if(!XCL_VIEW) setTimeout(loadFromSheets, 500); // compact windows never sync; the full tracker does
+  if(!XCL_VIEW) xclWhenPrimary(function(){ setTimeout(loadFromSheets, 500); }); // compact windows and duplicate trackers never sync
   window.addEventListener('scroll',function(){
     const btn=document.getElementById('back-to-top');
     if(btn) btn.classList.toggle('visible', window.scrollY > 200);
@@ -11518,7 +11658,7 @@ function deleteUser(agentId){
     applySettings(loadSettings());
     updateRoleBtns(); // sync cap dropdown + ACQ/MOV buttons
     updateRoleChip();
-    if(!XCL_VIEW) schedStartTicker(); // start schedule countdown after session established
+    if(!XCL_VIEW) xclWhenPrimary(schedStartTicker); // start schedule countdown (one tracker only)
     // Set callback timezone dropdown to user's local timezone
     (function(){ const cbtz=document.getElementById('cb-tz'); if(!cbtz) return; const localTz=Intl.DateTimeFormat().resolvedOptions().timeZone; const opt=Array.from(cbtz.options).find(o=>o.value===localTz); if(opt) cbtz.value=opt.value; })();
     applySessionUI();
@@ -11532,14 +11672,14 @@ function deleteUser(agentId){
       setSheetsStatus('↻ Loading from Sheets…', 'var(--text3)');
     }
     // Prompt for Sales ID if never set
-    if(!savedId){ showSalesIdPrompt(); }
+    if(!savedId){ xclWhenPrimary(showSalesIdPrompt); }
     else {
       // Nudge user to set cap level if never configured
       if(localStorage.getItem('xcl_cap_not_set')){
         _showToast('\u26a0 Set your Cap Level in Settings \u2192 Goals before logging calls', 'warn', 6000);
         localStorage.removeItem('xcl_cap_not_set');
       }
-      loadFromSheets();
+      xclWhenPrimary(loadFromSheets);
     }
   }, 50);
 })();
@@ -13750,10 +13890,63 @@ function promoResetDefaults(){
 // Mobile + NOW TV pricing is fixed here; internet tiers come from promoList().
 var TT_PRICING = {nowTv:20, firstLineAfter:30, line:30, tablet:20, watch:10, accCap:35, protect:15};
 
+// Most popular TV packages (monthly, added to the internet price). inPlus genres come with TV Plus and TV Premium.
+var TT_TV = {
+  packages:[
+    {id:'core',    chip:'TV Core',          say:'TV Core',             price:65,  incGenres:false},
+    {id:'plus',    chip:'TV Plus',          say:'TV Plus',             price:105, incGenres:true},
+    {id:'premium', chip:'TV Premium w/RSN', say:'TV Premium with RSN', price:135, incGenres:true}
+  ],
+  genres:[
+    {id:'family', chip:'Family',        say:'Family',        price:10,   inPlus:true},
+    {id:'ent',    chip:'Entertainment', say:'Entertainment', price:17,   inPlus:true},
+    {id:'sep',    chip:'SEP',           say:'SEP',           price:9.95, inPlus:false, needsPlus:true}
+  ],
+  boxExtra:14   // first TV box is included; each additional box
+};
+
 var _tt = null;
 function ttResetState(){
   _tt = {path:'A', plan:'streamers', tier:null, alt:false, done:{}, collapsed:{},
-         calc:{bill:'', phones:'', tablets:'', watches:'', protect:''}, carrier:'', carrierOther:false};
+         calc:{bill:'', phones:0, tablets:0, watches:0, protect:0}, phoneType:'', tvBoxes:0,
+         tvPkg:'', tvGenres:{},
+         carrier:'', carrierOther:false, name:'', phone:''};
+}
+
+// Chosen TV package + genres that still apply (Family/Entertainment drop off with Plus or Premium)
+function ttTvPick(){
+  var pkg = TT_TV.packages.filter(function(p){ return p.id === _tt.tvPkg; })[0] || null;
+  var genres = pkg ? TT_TV.genres.filter(function(g){ return _tt.tvGenres[g.id] && ttTvGenreState(g, pkg) === 'open'; }) : [];
+  var extraBoxes = pkg ? Math.max((_tt.tvBoxes || 0) - 1, 0) : 0, boxCost = extraBoxes * TT_TV.boxExtra;
+  var price = (pkg ? pkg.price : 0) + genres.reduce(function(s, g){ return s + g.price; }, 0) + boxCost;
+  return {pkg:pkg, genres:genres, extraBoxes:extraBoxes, boxCost:boxCost, price:Math.round(price * 100) / 100};
+}
+function ttTvName(sayForm){
+  var t = ttTvPick();
+  if(!t.pkg) return '';
+  var key = sayForm ? 'say' : 'chip';
+  var names = t.genres.map(function(g){ return g[key]; });
+  var spoken = names.length > 1 ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] : names[0];
+  return t.pkg[key] + (names.length ? (sayForm ? ', plus ' + spoken : ' + ' + names.join(', ')) : '');
+}
+// 'open' (can pick) · 'included' (comes with the package) · 'locked' (no package yet, or needs TV Plus / TV Premium)
+function ttTvGenreState(g, pkg){
+  if(!pkg) return 'locked';
+  if(pkg.incGenres && g.inPlus) return 'included';
+  if(g.needsPlus && !pkg.incGenres) return 'locked';
+  return 'open';
+}
+function ttSetTvPkg(id){
+  _tt.tvPkg = _tt.tvPkg === id ? '' : id;
+  var pkg = TT_TV.packages.filter(function(p){ return p.id === _tt.tvPkg; })[0] || null;
+  TT_TV.genres.forEach(function(g){ if(ttTvGenreState(g, pkg) !== 'open') delete _tt.tvGenres[g.id]; }); // drop add-ons the new package can't take
+  ttNotesSync(); ttRenderView();
+}
+function ttToggleTvGenre(id){
+  var g = TT_TV.genres.filter(function(x){ return x.id === id; })[0];
+  if(!g || ttTvGenreState(g, ttTvPick().pkg) !== 'open') return;
+  _tt.tvGenres[id] = !_tt.tvGenres[id];
+  ttNotesSync(); ttRenderView();
 }
 ttResetState();
 
@@ -13766,10 +13959,13 @@ function ttEff(){
 function ttMoney(n){ return '$' + Math.round(n).toLocaleString(); }
 function ttYears(n){ return n + (n === 1 ? ' year' : ' years'); }
 function ttInt(v){ v = parseInt(v, 10); return isFinite(v) && v > 0 ? v : 0; }
+// Bill is free text ("$180", "179.99", "1,200") → a number
+function ttBillNum(v){ v = parseFloat(String(v || '').replace(/[^0-9.]/g, '')); return isFinite(v) && v > 0 ? v : 0; }
+function ttBillText(n){ return '$' + (Math.round(n) === n ? n.toLocaleString() : n.toFixed(2)); }
 
 function ttCalc(){
   var c = _tt.calc;
-  var bill = ttInt(c.bill), phones = ttInt(c.phones), tablets = ttInt(c.tablets), watches = ttInt(c.watches);
+  var bill = ttBillNum(c.bill), phones = ttInt(c.phones), tablets = ttInt(c.tablets), watches = ttInt(c.watches);
   var prot = Math.min(ttInt(c.protect), phones);
   var acc = Math.min(tablets*TT_PRICING.tablet + watches*TT_PRICING.watch, TT_PRICING.accCap);
   var y1 = TT_PRICING.line*Math.max(phones-1, 0) + acc + TT_PRICING.protect*prot;
@@ -13782,20 +13978,23 @@ function ttCalc(){
 function ttPlanPrice(plan){
   var e = ttEff();
   if(plan === 'streamers') return ttMoney(e.price + TT_PRICING.nowTv);
-  if(plan === 'tv') return '$___';
+  if(plan === 'tv'){ var tv = ttTvPick(); return tv.pkg ? ttBillText(Math.round((e.price + tv.price) * 100) / 100) : '$___'; }
   return ttMoney(e.price);
 }
 
 function ttCtx(){
   var e = ttEff(), c = ttCalc(), plan = _tt.plan;
   return {
-    planName: plan === 'streamers' ? e.say+' for streamers' : plan === 'tv' ? e.say+' with [TV tier]' : e.say,
+    planName: plan === 'streamers' ? e.say+' for streamers' : plan === 'tv' ? e.say+' and '+(ttTvName(true) || '[TV package]') : e.say,
+    tvName: ttTvPick().pkg ? ttTvPick().pkg.say : '[TV package]',
     tierSay: e.say, speed: e.speed, years: e.years, price: ttPlanPrice(plan),
     streamersPrice: ttPlanPrice('streamers'), internetPrice: ttPlanPrice('internet'),
     tvExtra: plan === 'tv' ? ', plus [the channels or sports they mentioned]' : '',
     carrierWith: _tt.carrier ? ' with ' + _tt.carrier : '',
     bill: c.bill ? ttMoney(c.bill) : '$___', xmY1: ttMoney(c.y1), saveY1: ttMoney(Math.max(c.save1, 0)),
-    pk: e.peacockYears, pkYears: ttYears(e.peacockYears), accCap: ttMoney(TT_PRICING.accCap), calc: c
+    pk: e.peacockYears, pkYears: ttYears(e.peacockYears),
+    pkLine: e.peacockYears ? 'You also get ' + ttYears(e.peacockYears) + ' of Peacock Premium included.' : '', // Gig and above only
+    accCap: ttMoney(TT_PRICING.accCap), calc: c
   };
 }
 
@@ -13809,31 +14008,53 @@ var TT_DATA = [
     {label:'Set expectations', say:"May I ask a few questions to be certain we are getting the correct internet speed setup?"}
   ]},
   {id:'disc', emoji:'🔍', label:'Discovery', color:'#2563eb', lines:[
-    {label:'WiFi usage', hero:[['wifi-needs',0]], say:"Great. So **how do you use your WiFi** at home? Do you **work from home**? Are we **streaming** a lot? How about **gaming**?"},
+    {label:'WiFi usage', hero:[['wifi-needs',0]], say:"Great. So **how do you use your WiFi** at home?\n**Working from home**, **streaming**, **gaming**?"},
+    {label:'Household', hero:[['wifi-needs',1]], say:"And **who else in the home will be using** the internet with you?"},
     {label:'Connected devices', hero:[['wifi-needs',2]], say:"Roughly **how many devices do you connect to** the **home WiFi**? **TVs**, **laptops**, **gaming systems**, **Alexa**, **security** cameras?"},
     {label:'Mobile devices', hero:[['wifi-needs',3]], say:"**What about mobile devices**? How many phones are on the WiFi at home?", note:"Note the number of phones. It sets up the mobile pitch later."},
     {label:'TV question · the planned no', widget:'tvq', say:"And speaking of TVs, are you interested in any traditional TV, like the local broadcast channels or cable?"},
     {label:'Streaming follow-up', show:function(){ return _tt.path === 'A'; }, say:"Yeah, most people have moved to streaming. What are you mostly watching on?"},
     {label:'Streaming follow-up', show:function(){ return _tt.path === 'A'; }, say:"Do you catch anything live, like sports, news, or big events?", note:"Note live content for the walkthrough. Don't pitch NOW TV or Peacock here."},
     {label:'TV follow-up', show:function(){ return _tt.path === 'B'; }, say:"What channels or shows matter most to you?"},
-    {label:'TV follow-up', show:function(){ return _tt.path === 'B'; }, say:"Do you watch a lot of live sports?", note:"Use these answers to choose the TV tier."},
-    {label:'Household', hero:[['wifi-needs',1]], say:"And **who else in the home will be using** the internet with you?"}
+    {label:'TV follow-up', show:function(){ return _tt.path === 'B'; }, say:"Do you watch a lot of live sports?", note:"Use these answers to choose the TV package above."}
   ]},
   {id:'plan', emoji:'🌐', label:'Internet plan', color:'#2563eb', lines:[
     {label:'Plan · benefits · tailor', widget:'tiers', hero:[['wifi-pitch',0],['wifi-pitch',1],['wifi-pitch',2]],
-     say:"**Based on what you've shared**, **the plan I'd recommend** is our {planName}. That's {speed}, and you get unlimited data and the Xfinity Gateway included at no cost, plus a {years}-year price lock with no contract. So you've got **the most reliable WiFi** and **whole home coverage** for all those devices{tvExtra}. All together, it's {price} a month. **With how you're using your WiFi**, **this plan really lines up with what you need day to day**.",
-     note:"Don't pause to ask \"How does that sound?\" Go straight into mobile."}
+     say:"**Based on what you've shared**, **the plan I'd recommend** is our {planName}.\nThat's {speed}, with unlimited data and the Xfinity Gateway included at no cost.\nSo you've got **the most reliable WiFi** and **whole home coverage** for all those devices{tvExtra}.\n{pkLine}\nPlus a {years}-year price lock with no contract.\n[[mobile]]\n[[price]]\n**With how you're using your WiFi**, the {tierSay} **lines up with your day to day needs**.",
+     // [[key]] lines have alternate wordings (from Xfinity's own offer language); ⇄ cycles them and the choice is remembered.
+     options:{
+       mobile:[
+         {label:'Included', say:"And it comes with an Xfinity Mobile line included, unlimited, free for a full year."},
+         {label:'Try it free', say:"You can also try a line of Xfinity Mobile free for a year, with unlimited data."},
+         {label:'Bring your phone', say:"It also comes with a free Xfinity Mobile line for a year, unlimited, and you can bring the phone you already have."}
+       ],
+       price:[
+         {label:"It's", say:"It's ~~{price} a month +tax~~."},
+         {label:"You'd be at", say:"You'd be at ~~{price} a month +tax~~."},
+         {label:'Same price', show:function(){ return _tt.plan === 'internet'; }, say:"Your price is ~~{price} a month +tax~~, and it stays the same for {years} years."}
+       ]
+     },
+     // Price pushback usually comes right when the price is first said, so it's handled inside this card.
+     objection:[
+       {show:function(){ return _tt.plan === 'tv'; },
+        say:"I hear you. A lot of my customers who want live TV go with our {tierSay} for streamers instead. You still get live channels, the same {speed} and {years}-year price lock, and it's {streamersPrice} a month."},
+       {show:function(){ return _tt.plan === 'streamers'; },
+        say:"Totally fair. We can do {tierSay} at {internetPrice}. Same {speed}, unlimited data, and {years}-year price lock, and it still comes with your first mobile line free for the year."},
+       {show:function(){ return _tt.plan === 'internet'; },
+        tip:"Mobile pricing stays the same at every step. Keep the focus on the first line free and their savings."}
+     ],
+     note:"No pushback on price? Don't pause to ask \"How does that sound?\" Go straight into mobile."}
   ]},
   {id:'mdisc', emoji:'📱', label:'Mobile discovery', color:'#0d9488', lines:[
     {label:'Bridge', hero:[['mobile-needs',0]], say:"Before we wrap up, let's take a quick look at your phones. **Let's explore how Xfinity Mobile could cut your bill in half**, with **reliable speed and coverage**, **saving your whole home money**."},
     {label:'Provider', widget:'carrier', hero:[['mobile-needs',1]], say:"**Who's your current mobile provider**?"},
-    {label:'Pricing', hero:[['mobile-needs',2]], say:"And **how much is your current mobile bill**? **Does that include device protection**?"},
+    {label:'Pricing', widget:'bill', hero:[['mobile-needs',2]], say:"And **how much is your current mobile bill**? **Does that include device protection**?"},
     {label:'Lines', widget:'calc', hero:[['mobile-needs',3]], say:"**How many lines do you have**, **including any watches or tablets**?"},
     {label:'Repeat the bill back', say:"Okay, so{carrierWith} you're at about {bill} a month.", note:"Pause and let it sink in."}
   ]},
   {id:'mpitch', emoji:'🎯', label:'Mobile pitch', color:'#0d9488', lines:[
     {label:'Recommend it', hero:[['mobile-pitch',0]], say:"**I'd recommend Xfinity Mobile** for **the savings and the flexibility**. You can keep your phones and your numbers, or pick up new ones."},
-    {label:'The hook', say:"And your internet already comes with your first line. **Xfinity Mobile includes your first line free when bundled with internet**, unlimited, at no cost for the whole first year."},
+    {label:'The hook', say:"Like I mentioned, your internet already comes with your first line. **Xfinity Mobile includes your first line free when bundled with internet**, unlimited, at no cost for the whole first year."},
     {label:'Benefits', hero:[['mobile-pitch',1]], say:"**You get reliable 5G**, plus **access to millions of Xfinity WiFi hotspots**. **Great coverage**, **faster speeds**, **more value**."},
     {label:'Accessories and protection', show:function(ctx){ return ctx.calc.tablets || ctx.calc.watches || ctx.calc.prot; },
      say:"Your watches and tablets are capped at {accCap} a month total, and if you protect your phones, they're covered at no extra cost."},
@@ -13841,16 +14062,9 @@ var TT_DATA = [
      say:"**Since savings matter to you**, let me show you what that looks like. You're at {bill}{carrierWith} now. With us, you'd be at {xmY1} this first year. That's **{saveY1} back in your pocket**, and **you save every month**."},
     {label:'Invite + choice', say:"Let's get your phones set up too. Are we keeping the ones you have, or picking out new ones?"}
   ]},
-  {id:'fallback', emoji:'↘️', label:'If they bring up price', color:'#d97706', lines:[
-    {label:'TV → streamers', widget:'fallback', show:function(){ return _tt.plan === 'tv'; },
-     say:"I hear you. A lot of my customers who want live TV go with our {tierSay} for streamers instead. You still get live channels, the same {speed} and {years}-year price lock, and it's {streamersPrice} all together."},
-    {label:'Streamers → internet only', widget:'fallback', show:function(){ return _tt.plan === 'streamers'; },
-     say:"Totally fair. We can do {tierSay} at {internetPrice}. Same {speed}, unlimited data, and {years}-year price lock, and your first line is still free for the year."},
-    {label:'Internet only', widget:'fallback', show:function(){ return _tt.plan === 'internet'; },
-     say:"Mobile pricing stays the same at every step. Keep the focus on the first line free and their savings."}
-  ]},
   {id:'close', emoji:'✅', label:'Close', color:'#16a34a', lines:[
-    {label:'Billing details', hero:[['confirm',0]], billing:true, say:"**Let me share some details about your next bill**: **your package**, **any fees**, all of it."},
+    {label:'Billing details', hero:[['confirm',0]], say:"**Let me share some details about your next bill**: **your package**, **any fees**, all of it.",
+     note:"Say plainly: the total, the first mobile line after year one, each added line, and accessories or protection if added."},
     {label:'Install', hero:[['confirm',1]], say:"**Let's confirm your installation details**: **Same Day WiFi**, **GSK**, **Store Pick Up**, or **Pro Install**?"},
     {label:'Approval', hero:[['confirm',2]], say:"**I'll need your confirmation to finalize your order**. **May I send you a text message to approve the details**?"}
   ]},
@@ -13859,7 +14073,7 @@ var TT_DATA = [
      say:function(ctx){ return "Now let me show you everything that came with your plan. You've got NOW TV, with 125+ live and OnDemand channels, and Peacock's included." + (ctx.pk ? " Since Peacock comes with your NOW TV, it's yours to keep. It doesn't go away after {pkYears}." : ''); },
      note:"Bring up the live sports or news they mentioned."},
     {label:'TV walkthrough', show:function(){ return _tt.plan === 'tv'; },
-     say:function(ctx){ return "Now let me show you everything that came with your plan. Your [TV tier] has [channels]" + (ctx.pk ? ", and you've also got {pkYears} of Peacock included with your internet." : '.'); }},
+     say:function(ctx){ return "Now let me show you everything that came with your plan. Your {tvName} has [channels]" + (ctx.pk ? ", and you've also got {pkYears} of Peacock included with your internet." : '.'); }},
     {label:'Internet walkthrough', show:function(ctx){ return _tt.plan === 'internet' && ctx.pk; },
      say:"You've also got {pkYears} of Peacock included with your internet. And if you ever add NOW TV, Peacock stays with you for good."},
     {label:'Internet walkthrough', show:function(ctx){ return _tt.plan === 'internet' && !ctx.pk; },
@@ -13899,11 +14113,32 @@ function ttToggleLine(si, li){
 }
 
 function ttToggleStep(si){ _tt.collapsed[si] = !_tt.collapsed[si]; ttRenderView(); }
-function ttSetPath(p){ _tt.path = p; _tt.plan = p === 'B' ? 'tv' : 'streamers'; ttRenderView(); }
+function ttSetPath(p){ _tt.path = p; _tt.plan = p === 'B' ? 'tv' : 'streamers'; ttNotesSync(); ttRenderView(); }
 function ttSetPlan(plan){ _tt.plan = plan; ttRenderView(); }
 function ttSetTier(id){ _tt.tier = id; _tt.alt = false; ttRenderView(); }
 function ttSetAlt(on){ _tt.alt = !!on; ttRenderView(); }
-function ttSetCalc(key, input){ _tt.calc[key] = input.value; ttRenderView(); }
+function ttSetBill(input){ _tt.calc.bill = input.value; ttNotesSync(); ttRenderView(); }
+
+// − / + counters: phones, tablets, watches, protect (≤ phones), tvBoxes
+function ttStep(key, delta){
+  if(key === 'tvBoxes'){
+    _tt.tvBoxes = Math.max(0, Math.min(20, (_tt.tvBoxes || 0) + delta));
+  } else {
+    var c = _tt.calc;
+    c[key] = Math.max(0, Math.min(20, ttInt(c[key]) + delta));
+    if(key === 'protect') c.protect = Math.min(c.protect, ttInt(c.phones));
+    if(key === 'phones' && ttInt(c.protect) > c.phones) c.protect = c.phones;
+  }
+  ttNotesSync();
+  ttRenderView();
+}
+
+// Android / iPhone / Both — click the selected one again to clear
+function ttSetPhoneType(type){
+  _tt.phoneType = _tt.phoneType === type ? '' : type;
+  ttNotesSync();
+  ttRenderView();
+}
 
 function ttCarrierNames(){
   var src = window.PORT_CARRIERS;
@@ -13913,19 +14148,39 @@ function ttCarrierNames(){
   return names.map(function(n){ d.innerHTML = n; return d.value; });
 }
 
-// Keep a single "Carrier: X" line in the call notes in sync with the picker.
-function ttNotesCarrier(name){
+// ── Talk Track → call notes ──
+// Everything captured in the Talk Track is kept as one block of "Label: value" lines at the end of the call
+// notes. The block is rebuilt on every change (never duplicated) and removed when the values are cleared.
+var TT_NOTE_LABELS = ['Carrier', 'Mobile bill', 'Phones', 'Tablets', 'Watches', 'Protected phones', 'TV package', 'TV boxes'];
+var TT_NOTE_LINE_RE = new RegExp('^(' + TT_NOTE_LABELS.join('|') + '): ');
+
+function ttNotesLines(){
+  var c = ttCalc(), lines = [];
+  if(_tt.carrier) lines.push('Carrier: ' + _tt.carrier);
+  if(c.bill) lines.push('Mobile bill: ' + ttBillText(c.bill) + '/mo');
+  if(c.phones || _tt.phoneType) lines.push('Phones: ' + c.phones + (_tt.phoneType ? ' (' + _tt.phoneType + ')' : ''));
+  if(c.tablets) lines.push('Tablets: ' + c.tablets);
+  if(c.watches) lines.push('Watches: ' + c.watches);
+  if(c.prot) lines.push('Protected phones: ' + c.prot);
+  if(_tt.path === 'B' && _tt.tvPkg) lines.push('TV package: ' + ttTvName(false));
+  if(_tt.path === 'B' && _tt.tvBoxes) lines.push('TV boxes: ' + _tt.tvBoxes);
+  return lines;
+}
+
+function ttNotesSync(){
+  var lines = ttNotesLines();
+  if(XCL_VIEW && !XCL_VIEW.log){ xclPost({type:'notes-block', lines:lines}); return; } // talk-only window: the tracker's notes get it
+  ttNotesApply(lines);
+}
+
+function ttNotesApply(lines){
   var el = document.getElementById('f-notes');
   if(!el) return;
-  if(XCL_VIEW && !XCL_VIEW.log){ xclPost({type:'carrier', name:name||''}); return; } // talk-only window: the tracker's notes get it
   if(typeof editingId !== 'undefined' && editingId) return; // form holds a past call's notes while editing
-  var v = el.value, re = /(^|\n)Carrier: [^\n]*/;
-  if(name){
-    v = re.test(v) ? v.replace(re, function(m, pre){ return pre + 'Carrier: ' + name; })
-                   : (v ? v.replace(/\n+$/, '') + '\n' : '') + 'Carrier: ' + name;
-  } else {
-    v = v.replace(re, '').replace(/^\n/, '');
-  }
+  var kept = el.value.split('\n').filter(function(l){ return !TT_NOTE_LINE_RE.test(l); });
+  while(kept.length && !kept[kept.length - 1].trim()) kept.pop();
+  var v = kept.join('\n');
+  if(lines && lines.length) v = (v ? v + '\n' : '') + lines.join('\n');
   if(v !== el.value){
     el.value = v;
     var op = document.getElementById('dq-opener-notes');
@@ -13936,18 +14191,68 @@ function ttNotesCarrier(name){
 function ttSetCarrier(sel){
   if(sel.value === '__other'){ _tt.carrierOther = true; _tt.carrier = ''; }
   else { _tt.carrierOther = false; _tt.carrier = sel.value; }
-  ttNotesCarrier(_tt.carrier);
+  ttNotesSync();
   ttRenderView();
 }
 function ttSetCarrierOther(input){
   _tt.carrier = input.value.trim();
-  ttNotesCarrier(_tt.carrier);
+  ttNotesSync();
   ttRenderView();
 }
 
+// ── Member name / phone at the top of the Talk Track ──
+// Kept in step with the call form's Name and Phone # fields (and the Discovery opener). A talk-only window
+// sends them to the tracker; the tracker sends form typing back to it.
+function ttSetContact(field, input){
+  if(field === 'phone') onPhoneInput(input);
+  _tt[field] = input.value;
+  if(XCL_VIEW && !XCL_VIEW.log){ xclPost({type:'contact', name:_tt.name, phone:_tt.phone}); return; }
+  ttContactToForm();
+  ttContactRefresh(input);
+}
+
+function ttContactToForm(){
+  var editing = typeof editingId !== 'undefined' && editingId;
+  [['f-cb-name', _tt.name], ['f-cb-phone', _tt.phone]].forEach(function(p){
+    if(editing){ if(_editDraft) _editDraft.values[p[0]] = p[1]; return; } // a past call is open: update the draft it returns to
+    var el = document.getElementById(p[0]); if(el) el.value = p[1];
+  });
+  if(editing) return;
+  var opNm = document.getElementById('dq-opener-name'), opPh = document.getElementById('dq-opener-phone');
+  if(opNm && document.activeElement !== opNm) opNm.value = _tt.name;
+  if(opPh && document.activeElement !== opPh) opPh.value = _tt.phone;
+}
+
+// Typing in the call form or the Discovery opener → Talk Track fields (and any talk-only window)
+function ttContactFromForm(){
+  if(typeof editingId !== 'undefined' && editingId) return;
+  var nm = document.getElementById('f-cb-name'), ph = document.getElementById('f-cb-phone');
+  _tt.name = nm ? nm.value : ''; _tt.phone = ph ? ph.value : '';
+  ttContactRefresh();
+  if(!XCL_VIEW) xclPost({type:'contact', name:_tt.name, phone:_tt.phone});
+}
+
+// Update the Talk Track inputs in place (no re-render), skipping the one being typed in
+function ttContactRefresh(skip){
+  [document, ttPipOpen() ? _ttPip.document : null].forEach(function(doc){
+    if(!doc) return;
+    [['tt-name', _tt.name], ['tt-phone', _tt.phone]].forEach(function(p){
+      var el = doc.getElementById(p[0]);
+      if(el && el !== skip && el.value !== p[1]) el.value = p[1];
+    });
+  });
+}
+
+['f-cb-name', 'f-cb-phone'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(el) el.addEventListener('input', ttContactFromForm);
+});
+
 function ttResetCall(){
+  var keepName = _tt.name, keepPhone = _tt.phone; // ↺ resets the track only; name/phone belong to the call form
   ttResetState();
-  ttNotesCarrier('');
+  _tt.name = keepName; _tt.phone = keepPhone;
+  ttNotesSync();
   _heroDone = {};
   ttRenderView();
   if(_dqCurrentView === 'hero') heroRenderView();
@@ -13959,14 +14264,54 @@ function ttChip(label, active, onclick, color){
     (active ? 'background:'+color+';color:#fff;border:1px solid '+color : 'background:var(--card);color:var(--text2);border:1px solid var(--border2)')+'">'+label+'</button>';
 }
 
-function ttInputStyle(w){
-  return 'width:'+(w||'100%')+';box-sizing:border-box;height:28px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-size:12px;color:var(--text);outline:none;font-family:var(--sans)';
+// − value + counter, same height as the inputs
+function ttStepper(label, key, value, max){
+  var btn = function(sym, delta, disabled){
+    return '<button onclick="event.stopPropagation();ttStep(\''+key+'\','+delta+')"'+(disabled ? ' disabled' : '')+' aria-label="'+(delta < 0 ? 'Fewer ' : 'More ')+label+'"'+
+      ' style="width:36px;height:36px;border:none;background:transparent;font-size:18px;font-weight:700;line-height:1;font-family:var(--sans);'+
+      'color:'+(disabled ? 'var(--text3)' : 'var(--blue)')+';opacity:'+(disabled ? '.35' : '1')+';cursor:'+(disabled ? 'default' : 'pointer')+'">'+sym+'</button>';
+  };
+  return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">'+
+    '<span style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">'+label+'</span>'+
+    '<div style="display:flex;align-items:center;background:var(--card);border:1px solid var(--border2);border-radius:7px;overflow:hidden">'+
+      btn('−', -1, value <= 0)+
+      '<span style="min-width:28px;text-align:center;font-size:14px;font-weight:700;color:'+(value ? 'var(--text)' : 'var(--text3)')+';font-variant-numeric:tabular-nums">'+value+'</span>'+
+      btn('+', 1, max != null && value >= max)+
+    '</div></div>';
 }
 
 function ttWidget(type, ctx){
   var w = '<div onclick="event.stopPropagation()" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;cursor:default">';
   if(type === 'tvq'){
     w += ttChip('No → Streaming', _tt.path === 'A', "ttSetPath('A')") + ttChip('Yes → TV', _tt.path === 'B', "ttSetPath('B')", '#7c3aed');
+    if(_tt.path === 'B'){
+      var tv = ttTvPick(), cap = 'font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);width:74px;flex-shrink:0';
+      w += '<div style="width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px">'+
+          '<span style="'+cap+'">TV package</span>'+
+          TT_TV.packages.map(function(p){ return ttChip(heroEsc(p.chip)+' · '+ttBillText(p.price), _tt.tvPkg === p.id, "ttSetTvPkg('"+p.id+"')", '#7c3aed'); }).join('')+
+        '</div>'+
+        '<div style="width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px">'+
+          '<span style="'+cap+'">Add-ons</span>'+
+          TT_TV.genres.map(function(g){
+            var gs = ttTvGenreState(g, tv.pkg);
+            if(gs === 'locked')                          // no package yet, or SEP without TV Plus / TV Premium
+              return '<span title="'+(tv.pkg ? 'Needs TV Plus or TV Premium' : 'Pick a TV package first')+'" style="padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;font-family:var(--sans);color:var(--text3);border:1px solid var(--border2);opacity:.45;cursor:not-allowed">'+heroEsc(g.chip)+' +'+ttBillText(g.price)+'</span>';
+            if(gs === 'included')                        // already part of TV Plus / TV Premium
+              return '<span title="Included with '+heroEsc(tv.pkg.chip)+'" style="padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;font-family:var(--sans);color:var(--text3);border:1px dashed var(--border2);opacity:.75">'+heroEsc(g.chip)+' · included</span>';
+            return ttChip(heroEsc(g.chip)+' +'+ttBillText(g.price), !!_tt.tvGenres[g.id], "ttToggleTvGenre('"+g.id+"')", '#7c3aed');
+          }).join('')+
+        '</div>'+
+        '<div style="width:100%;display:flex;align-items:flex-end;gap:10px;margin-top:4px">'+
+        ttStepper('TV boxes', 'tvBoxes', _tt.tvBoxes || 0, 20)+
+        '<span style="font-size:10px;color:var(--text3);padding-bottom:12px">1st box included · '+ttBillText(TT_TV.boxExtra)+' each additional'+
+          (tv.extraBoxes ? ' · <b style="color:var(--text2)">'+tv.extraBoxes+' extra = +'+ttBillText(tv.boxCost)+'/mo</b>' : '')+'</span></div>'+
+        (tv.pkg ? '<div style="width:100%;font-size:11px;color:var(--text2)">TV '+ttBillText(tv.price)+'/mo · with '+heroEsc(ttEff().chip)+' internet <b style="color:#16a34a">'+ttPlanPrice('tv')+'/mo +tax</b> · added to call notes</div>' : '');
+    }
+  } else if(type === 'bill'){
+    w += '<div style="display:flex;align-items:center;gap:8px">'+
+      '<label for="tt-bill" style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">Current bill</label>'+
+      '<input id="tt-bill" type="text" inputmode="decimal" autocomplete="off" placeholder="$0.00" value="'+heroEsc(_tt.calc.bill)+'" oninput="ttSetBill(this)" class="tt-in" style="width:130px;font-variant-numeric:tabular-nums">'+
+      '<span style="font-size:10px;color:var(--text3)">per month · added to call notes</span></div>';
   } else if(type === 'tiers'){
     var t = ttTier();
     w += promoList().map(function(p){ return ttChip(heroEsc(promoChipLabel(p)), p.id === t.id, "ttSetTier('"+p.id+"')"); }).join('');
@@ -13977,28 +14322,32 @@ function ttWidget(type, ctx){
   } else if(type === 'carrier'){
     var names = ttCarrierNames();
     var val = _tt.carrierOther ? '__other' : _tt.carrier;
-    w += '<select id="tt-carrier" onchange="ttSetCarrier(this)" style="'+ttInputStyle('210px')+';cursor:pointer">'+
+    w += '<select id="tt-carrier" onchange="ttSetCarrier(this)" class="tt-in" style="width:210px;cursor:pointer">'+
       '<option value="">Select carrier…</option>'+
       names.map(function(n){ return '<option value="'+heroEsc(n)+'"'+(n === val ? ' selected' : '')+'>'+heroEsc(n)+'</option>'; }).join('')+
       '<option value="__other"'+(val === '__other' ? ' selected' : '')+'>Other…</option></select>';
     if(_tt.carrierOther){
-      w += '<input id="tt-carrier-other" type="text" placeholder="Carrier name" value="'+heroEsc(_tt.carrier)+'" oninput="ttSetCarrierOther(this)" style="'+ttInputStyle('170px')+'">';
+      w += '<input id="tt-carrier-other" type="text" placeholder="Carrier name" value="'+heroEsc(_tt.carrier)+'" oninput="ttSetCarrierOther(this)" class="tt-in" style="width:170px">';
     }
-    w += '<span style="font-size:10px;color:var(--text3)">Adds "Carrier: …" to call notes</span>';
+    w += '<span style="font-size:10px;color:var(--text3)">Added to call notes</span>';
   } else if(type === 'calc'){
     var c = ctx.calc;
-    var f = function(label, key){
-      return '<div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:84px">'+
-        '<label style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">'+label+'</label>'+
-        '<input id="tt-calc-'+key+'" type="number" min="0" step="1" value="'+heroEsc(_tt.calc[key])+'" oninput="ttSetCalc(\''+key+'\',this)" style="'+ttInputStyle()+'"></div>';
-    };
     var tile = function(label, val, color){
       return '<div style="flex:1;min-width:90px;background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:6px 10px">'+
         '<div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">'+label+'</div>'+
         '<div style="font-size:15px;font-weight:800;color:'+(color||'var(--text)')+';font-variant-numeric:tabular-nums">'+val+'</div></div>';
     };
-    w += '<div style="display:flex;flex-wrap:wrap;gap:6px;width:100%">'+
-      f('Current bill $','bill')+f('Phones','phones')+f('Tablets','tablets')+f('Watches','watches')+f('Protected phones','protect')+'</div>';
+    w += '<div style="display:flex;align-items:center;gap:6px;width:100%">'+
+        '<span style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-right:2px">Phone type</span>'+
+        ['Android', 'iPhone', 'Both'].map(function(t){ return ttChip(t, _tt.phoneType === t, "ttSetPhoneType('"+t+"')"); }).join('')+
+      '</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:12px;width:100%;margin-top:4px">'+
+        ttStepper('Phones', 'phones', c.phones, 20)+
+        ttStepper('Tablets', 'tablets', c.tablets, 20)+
+        ttStepper('Watches', 'watches', c.watches, 20)+
+        ttStepper('Protected', 'protect', c.prot, c.phones)+
+      '</div>'+
+      '<span style="font-size:10px;color:var(--text3);width:100%">Added to call notes</span>';
     if(c.ready){
       w += '<div style="display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-top:2px">'+
         tile('XM year 1', ttMoney(c.y1))+tile('XM year 2+', ttMoney(c.y2))+
@@ -14020,8 +14369,8 @@ function ttWidget(type, ctx){
 var TT_HDR_BTN = 'height:22px;padding:0 8px;background:var(--card);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:var(--sans)';
 var _ttPip = null;
 var _ttPipOpening = false;
-var TT_PIP_FNS = ['ttToggleLine','ttToggleStep','ttSetPath','ttSetPlan','ttSetTier','ttSetAlt','ttSetCalc',
-                  'ttSetCarrier','ttSetCarrierOther','ttResetCall','ttPopOut','ttPopIn'];
+var TT_PIP_FNS = ['ttToggleLine','ttToggleStep','ttSetPath','ttSetPlan','ttSetTier','ttSetAlt','ttSetBill','ttStep','ttSetPhoneType',
+                  'ttSetCarrier','ttSetCarrierOther','ttSetContact','ttCycleOpt','ttSetTvPkg','ttToggleTvGenre','ttResetCall','ttPopOut','ttPopIn'];
 
 function ttPipOpen(){ return !!(_ttPip && !_ttPip.closed); }
 
@@ -14050,6 +14399,7 @@ function ttPopOut(){
     d.documentElement.style.zoom = '';                 // the pop-out renders at its own size, not the app scale
     d.documentElement.style.removeProperty('--vh100');
     d.body.style.cssText = 'margin:0;height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden';
+    d.addEventListener('paste', onPhonePaste, true);
     d.body.innerHTML = '<div id="tt-pip-root" style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px"></div>';
     // Inline handlers in the pop-out resolve against its own window.
     TT_PIP_FNS.forEach(function(n){ pip[n] = window[n]; });
@@ -14101,6 +14451,58 @@ function ttRenderView(){
   });
 }
 
+// ── Alternate wordings: a line's [[key]] placeholder picks one of ln.options[key]; the choice is saved per key ──
+var _ttOpts = (function(){ try{ return JSON.parse(localStorage.getItem('xcl_tt_opts')) || {}; }catch(e){ return {}; } })();
+
+function ttOptList(ln, key, ctx){
+  return ((ln.options && ln.options[key]) || []).filter(function(o){ return !o.show || o.show(ctx); });
+}
+
+// Swap each [[key]] for the chosen wording, tagged so ttSayHtml can put a ⇄ button on that line
+function ttApplyOptions(text, ln, ctx){
+  return String(text).replace(/\[\[(\w+)\]\]/g, function(m, key){
+    var list = ttOptList(ln, key, ctx);
+    if(!list.length) return '';
+    var i = (_ttOpts[key] || 0) % list.length;
+    return '\u0001' + key + '|' + i + '|' + list.length + '|' + list[i].label + '\u0001' + list[i].say;
+  });
+}
+
+function ttCycleOpt(key, count){
+  _ttOpts[key] = ((_ttOpts[key] || 0) + 1) % Math.max(count, 1);
+  try{ localStorage.setItem('xcl_tt_opts', JSON.stringify(_ttOpts)); }catch(e){}
+  ttRenderView();
+}
+
+// Script text → one sentence per line (or split on \n when the line sets its own breaks), HERO keywords (**…**) in bold blue.
+function ttSayHtml(text, done){
+  text = String(text);
+  var lines = text.indexOf('\n') >= 0 ? text.split(/\s*\n\s*/) : text.split(/(?<=[.?!])\s+(?=[A-Z*"'(\[$])/);
+  return '<div style="display:flex;flex-direction:column;gap:3px">' + lines.filter(function(s){ return s; }).map(function(s){
+    var opt = /^\u0001(\w+)\|(\d+)\|(\d+)\|([^\u0001]*)\u0001/.exec(s), btn = '';
+    if(opt){
+      s = s.slice(opt[0].length);
+      if(+opt[3] > 1) btn = ' <button onclick="event.stopPropagation();ttCycleOpt(\''+opt[1]+'\','+opt[3]+')" title="Next wording"'+
+        ' style="margin-left:4px;padding:1px 7px;border-radius:10px;border:1px solid var(--border2);background:var(--card);font-size:10px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--sans);white-space:nowrap;vertical-align:1px">⇄ '+
+        heroEsc(opt[4])+' '+(+opt[2] + 1)+'/'+opt[3]+'</button>';
+    }
+    var html = heroEsc(s).replace(/\*\*(.+?)\*\*/g, '<span style="font-weight:700;color:var(--blue)">$1</span>')
+                         .replace(/~~(.+?)~~/g, '<span style="font-weight:700;color:#16a34a">$1</span>'); // ~~money~~ in green
+    return '<div style="font-size:13.5px;line-height:1.5;padding:1px 0 1px 10px;border-left:2px solid '+(done ? 'var(--border)' : 'var(--border2)')+';color:'+(done ? 'var(--text2)' : 'var(--text)')+'">'+html+btn+'</div>';
+  }).join('') + '</div>';
+}
+
+// "If price comes up" box inside the plan card: the step-down line for the current plan, plus plan chips to switch.
+function ttObjectionHtml(list, ctx){
+  var o = list.filter(function(x){ return !x.show || x.show(ctx); })[0];
+  if(!o) return '';
+  return '<div onclick="event.stopPropagation()" style="margin-top:8px;padding:8px 10px;border-radius:8px;border:1px dashed #d97706;background:color-mix(in srgb,#d97706 7%,var(--surface));cursor:default">'+
+    '<div style="font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#d97706;margin-bottom:4px">↘️ If price comes up</div>'+
+    (o.say ? ttSayHtml(ttFill(o.say, ctx), false) : '<div style="font-size:12px;color:var(--text2);font-style:italic">'+heroEsc(o.tip)+'</div>')+
+    ttWidget('fallback', ctx)+
+  '</div>';
+}
+
 // mode: 'panel' (in the tracker), 'pip' (always-on-top pop-out), 'view' (compact app window)
 function ttBuildHtml(mode){
   var ctx = ttCtx();
@@ -14108,7 +14510,7 @@ function ttBuildHtml(mode){
   var pct = t.total ? Math.round((t.done / t.total) * 100) : 0;
   var barColor = t.done === t.total ? '#22c55e' : 'var(--blue)';
   var e = ttEff();
-  var planLabel = _tt.plan === 'streamers' ? 'Streamers' : _tt.plan === 'tv' ? 'TV' : 'Internet only';
+  var planLabel = _tt.plan === 'streamers' ? 'Streamers' : _tt.plan === 'tv' ? (ttTvPick().pkg ? ttTvPick().pkg.chip : 'TV') : 'Internet only';
 
   var html =
     '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;flex-shrink:0">'+
@@ -14125,6 +14527,16 @@ function ttBuildHtml(mode){
         ? '<button onclick="ttPopOut()" data-tip="Always-on-top pop-out (shows the site address in its title bar)" style="'+TT_HDR_BTN+'">⧉ Pop out</button>'+
           '<button onclick="xclOpenView(\'talk\')" data-tip="Open the Talk Track in its own app window" style="'+TT_HDR_BTN+'">🪟 Window</button>'
         : '')+
+    '</div>'+
+    '<div style="display:flex;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;flex-shrink:0">'+
+      '<label style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">'+
+        '<span style="font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">👤 Member name</span>'+
+        '<input id="tt-name" class="tt-in" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="First Last" value="'+heroEsc(_tt.name)+'" oninput="ttSetContact(\'name\',this)" style="width:100%">'+
+      '</label>'+
+      '<label style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">'+
+        '<span style="font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">📞 Phone #</span>'+
+        '<input id="tt-phone" class="tt-in" type="tel" maxlength="14" autocomplete="off" placeholder="(555) 867-5309" value="'+heroEsc(_tt.phone)+'" oninput="ttSetContact(\'phone\',this)" style="width:100%;font-family:var(--mono)">'+
+      '</label>'+
     '</div>';
 
   TT_DATA.forEach(function(step, si){
@@ -14154,9 +14566,9 @@ function ttBuildHtml(mode){
         var sayRaw = typeof ln.say === 'function' ? ln.say(ctx) : ln.say;
         var sayHtml;
         if(ln.savings && !(ctx.calc.ready && ctx.calc.save1 > 0)){
-          sayHtml = '<span style="color:var(--text3);font-style:italic">'+(ctx.calc.ready ? 'No savings on these numbers. Don\'t claim any.' : 'Enter the current bill and phones under Mobile discovery → Lines to fill this in.')+'</span>';
+          sayHtml = '<div style="font-size:12px;color:var(--text3);font-style:italic">'+(ctx.calc.ready ? 'No savings on these numbers. Don\'t claim any.' : 'Enter the current bill (Pricing) and phones (Lines) above to fill this in.')+'</div>';
         } else {
-          sayHtml = heroBold(ttFill(sayRaw, ctx));
+          sayHtml = ttSayHtml(ttFill(ttApplyOptions(sayRaw, ln, ctx), ctx), done);
         }
 
         html +=
@@ -14168,9 +14580,9 @@ function ttBuildHtml(mode){
                 (badgeTxt ? '<span style="font-size:9px;font-weight:700;color:var(--blue);background:var(--blue-lt);padding:1px 6px;border-radius:10px">'+badgeTxt+'</span>' : '')+
               '</div>'+
               (ln.widget === 'tiers' ? ttWidget('tiers', ctx) + '<div style="height:8px"></div>' : '')+
-              '<div style="font-size:12px;line-height:1.5;color:'+(done?'var(--text2)':'var(--text)')+'">'+sayHtml+'</div>'+
+              sayHtml+
+              (ln.objection ? ttObjectionHtml(ln.objection, ctx) : '')+
               (ln.widget && ln.widget !== 'tiers' ? ttWidget(ln.widget, ctx) : '')+
-              (ln.billing ? '<div style="margin-top:6px;font-size:10px;line-height:1.5;color:var(--text3)">Say plainly: total '+ctx.price+' a month · first mobile line free for year one, then '+ttMoney(TT_PRICING.firstLineAfter)+' · each additional line '+ttMoney(TT_PRICING.line)+' · accessories and protection if added</div>' : '')+
               (ln.note ? '<div style="margin-top:5px;font-size:10px;color:var(--text3);font-style:italic">'+heroEsc(ln.note)+'</div>' : '')+
             '</div>'+
           '</div>';
@@ -14187,11 +14599,12 @@ function ttBuildHtml(mode){
 // The full tracker (hub) answers pings, saves calls sent from compact windows, and relays its
 // stats title. Replies happen inside message events, so they still arrive when the hub window is
 // minimized (background timers get throttled; message events don't).
-var XCL_CH = ('BroadcastChannel' in window) ? new BroadcastChannel('xcl-sync') : null;
+// XCL_CH (the shared BroadcastChannel) is created in the <head> script.
 var XCL_HUB_ID = XCL_VIEW ? null : 'hub-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
 var _xclHub = {id:null, seen:0, title:''};   // compact window's view of the hub
 var _xclPending = null;                       // {id, timer} while a call waits for the hub
 var _xclCommitted = {};                       // hub: call ids already saved (dedupe)
+var _xclViewsSeen = {};                       // hub: compact window kind → last time it pinged
 var XCL_HUB_TIMEOUT = 6000;
 
 function xclPost(msg){
@@ -14205,9 +14618,13 @@ function xclHubConnected(){ return !!_xclHub.id && (Date.now() - _xclHub.seen) <
 if(XCL_CH) XCL_CH.onmessage = function(ev){
   var m = ev.data || {};
   if(!XCL_VIEW){
-    // ── Hub side ──
+    // ── Hub side ── (a duplicate tracker, or one still checking for an older copy, stays silent)
+    if(!_xclPrimaryDecided || XCL_IS_DUPLICATE) return;
     if(m.type === 'ping'){
+      if(m.kind) _xclViewsSeen[m.kind] = Date.now();
       xclPost({type:'pong', title:document.title});
+    } else if(m.type === 'view-bye' && m.kind){
+      delete _xclViewsSeen[m.kind];
     } else if(m.type === 'log-call' && m.to === XCL_HUB_ID && m.call){
       var id = String(m.call.id);
       if(!_xclCommitted[id] && !calls.some(function(c){ return String(c.id) === id; })){
@@ -14215,8 +14632,12 @@ if(XCL_CH) XCL_CH.onmessage = function(ev){
         commitCall(m.call);
       }
       xclPost({type:'committed', id:id, title:document.title});
-    } else if(m.type === 'carrier'){
-      ttNotesCarrier(m.name || '');
+    } else if(m.type === 'notes-block' && Array.isArray(m.lines)){
+      ttNotesApply(m.lines.filter(function(l){ return typeof l === 'string' && TT_NOTE_LINE_RE.test(l); }));
+    } else if(m.type === 'contact'){
+      _tt.name = String(m.name || '').slice(0, 60); _tt.phone = fmtPhone(String(m.phone || ''));
+      ttContactToForm();
+      ttContactRefresh();
     }
     return;
   }
@@ -14236,12 +14657,18 @@ if(XCL_CH) XCL_CH.onmessage = function(ev){
     // Talk-only window: a call was just logged in the tracker, so start the next call fresh
     ttResetState(); _heroDone = {}; ttRenderView();
   }
+  if(m.type === 'contact' && XCL_VIEW.talk && !XCL_VIEW.log && m.hub === _xclHub.id){
+    _tt.name = String(m.name || ''); _tt.phone = String(m.phone || '');
+    var focused = document.activeElement;
+    ttContactRefresh(focused && (focused.id === 'tt-name' || focused.id === 'tt-phone') ? focused : null);
+  }
   xclViewTitle();
   xclHubStripRender();
 };
 
 // Compact window: hand the call to the hub and wait for it to confirm before clearing the form.
 function xclSendCallToHub(c, retried){
+  if(XCL_IS_DUPLICATE) return; // this copy is paused; the original window logs calls
   if(_xclPending) return; // already waiting on the previous click
   if(!xclHubConnected()){
     if(!retried){
@@ -14276,7 +14703,7 @@ function xclSetSubmitBusy(busy){
   else if(!btn.classList.contains('ok')) btn.innerHTML = '<div class="btn-dot"></div>Log Call';
 }
 
-function xclPing(){ xclPost({type:'ping'}); }
+function xclPing(){ xclPost({type:'ping', kind:XCL_VIEW_KIND}); }
 
 function xclViewTitle(){
   if(!XCL_VIEW) return;
@@ -14335,20 +14762,41 @@ function xclViewLayout(){
 
 function xclBaseUrl(){ return location.href.split('#')[0].split('?')[0]; }
 
-// Opens (or focuses) a compact window: kind = 'log' | 'talk' | 'log+talk'. Sized for that window's saved scale.
+// Opens a named window without ever reloading it: window.open('', name) returns an existing window of that
+// name untouched (focus it), or a new blank one that we then point at url. Returns 'focused' | 'opened' | 'blocked'.
+function xclOpenNamed(url, name, features, isDuplicate){
+  var w = null;
+  try{ w = window.open('', name, features); }catch(e){}
+  if(!w) return 'blocked';
+  var blank = true;
+  try{ blank = !w.location.href || w.location.href === 'about:blank'; }catch(e){ blank = false; }
+  if(!blank){ try{ w.focus(); }catch(e){} return 'focused'; }
+  if(isDuplicate && isDuplicate()){ try{ w.close(); }catch(e){} return 'duplicate'; }
+  w.location.replace(url);
+  try{ w.focus(); }catch(e){}
+  return 'opened';
+}
+
+// Opens (or brings forward) a compact window: kind = 'log' | 'talk' | 'log+talk'. Sized for that window's saved scale.
+// Never opens a second window of the same kind and never reloads one that's open (that would wipe the form).
 function xclOpenView(kind){
   var base = {'log':[780, 640], 'talk':[430, 780], 'log+talk':[1200, 780]};
   var b = base[kind] || base['log+talk'], z = xclSavedZoom(kind);
   var sw = (screen.availWidth || 1920) - 20, sh = (screen.availHeight || 1080) - 20;
   var s = [Math.min(sw, Math.round(b[0] * z)), Math.min(sh, Math.round(b[1] * z))];
-  var w = window.open(xclBaseUrl() + '#' + kind, 'xcl-view-' + kind.replace('+', '-'), 'popup,width=' + s[0] + ',height=' + s[1]);
-  if(!w && typeof _showToast === 'function') _showToast('Window blocked — allow pop-ups for the tracker', 'warn', 4000);
-  else if(w){ try{ w.focus(); }catch(e){} }
+  var label = {'log':'Log Calls', 'talk':'Talk Track', 'log+talk':'Log Calls + Talk Track'}[kind] || 'That window';
+  // A window this tab can't reach by name (opened from the taskbar, or before a reload) still pings us with its kind.
+  var aliveElsewhere = function(){ return (Date.now() - (_xclViewsSeen[kind] || 0)) < 75000; };
+  var result = xclOpenNamed(xclBaseUrl() + '#' + kind, 'xcl-view-' + kind.replace('+', '-'),
+                            'popup,width=' + s[0] + ',height=' + s[1], aliveElsewhere);
+  if(typeof _showToast !== 'function') return;
+  if(result === 'blocked') _showToast('Window blocked — allow pop-ups for the tracker', 'warn', 4000);
+  else if(result === 'duplicate') _showToast(label + ' is already open in another window', 'warn', 3500);
 }
 
 function xclOpenMain(){
-  var w = window.open(xclBaseUrl(), 'xcl-main');
-  if(w){ try{ w.focus(); }catch(e){} }
+  // Brings the full tracker forward if this window can reach it; otherwise opens it (never reloads an open one).
+  xclOpenNamed(xclBaseUrl(), 'xcl-main', '', null);
 }
 
 // Build the compact window layout: status strip + form and/or Talk Track.
@@ -14376,6 +14824,8 @@ function xclViewInit(){
   setInterval(refresh, 5000);
   window.addEventListener('focus', refresh);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) refresh(); });
+  // Tell the tracker this window closed, so its button can open a new one right away.
+  window.addEventListener('pagehide', function(){ xclPost({type:'view-bye', kind:XCL_VIEW_KIND}); });
 }
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', xclViewInit);
 else xclViewInit();
@@ -14434,12 +14884,14 @@ function dqOpenerNotesInput(el){
 function dqOpenerNameInput(el){
   var formName = document.getElementById('f-cb-name');
   if(formName) formName.value = el.value;
+  ttContactFromForm();
 }
 
 function dqOpenerPhoneInput(el){
   onPhoneInput(el);
   var formPhone = document.getElementById('f-cb-phone');
   if(formPhone) formPhone.value = el.value;
+  ttContactFromForm();
 }
 
 function dqResetAll(){
