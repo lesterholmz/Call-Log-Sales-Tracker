@@ -25,7 +25,24 @@ var APP_VERSION = (function(date, build){
   var month = (parseInt(p[0], 10) - 2026) * 100 + parseInt(p[1], 10);
   return '0.' + month + '.' + parseInt(p[2], 10) + '.' + build;
 })(APP_UPDATED, APP_BUILD);
-document.title = 'Call Logger v' + APP_VERSION;
+// ── Compact app windows ──────────────────────────────────────────────────────
+// index.html#log, #talk or #log+talk opens a compact window (log-call form and/or Talk Track).
+// XCL_VIEW is null in the full tracker. Compact windows never sync with Sheets themselves;
+// they hand logged calls to the full tracker ("hub") over a BroadcastChannel.
+var XCL_VIEW = (function(hash){
+  var parts = String(hash || '').replace(/^#/, '').toLowerCase().split('+');
+  var v = {log: parts.indexOf('log') > -1, talk: parts.indexOf('talk') > -1};
+  return (v.log || v.talk) ? v : null;
+})(location.hash);
+var XCL_VIEW_LABEL = XCL_VIEW ? (XCL_VIEW.log && XCL_VIEW.talk ? 'Log Calls + Talk Track' : XCL_VIEW.log ? 'Log Calls' : 'Talk Track') : '';
+if(XCL_VIEW){
+  document.documentElement.classList.add('xcl-view');
+  if(XCL_VIEW.log)  document.documentElement.classList.add('xcl-view-log');
+  if(XCL_VIEW.talk) document.documentElement.classList.add('xcl-view-talk');
+}
+window.addEventListener('hashchange', function(){ location.reload(); });
+
+document.title = XCL_VIEW ? XCL_VIEW_LABEL + ' · XCL' : 'Call Logger v' + APP_VERSION;
 document.addEventListener('DOMContentLoaded', function(){
   var el = document.getElementById('brand-version');
   if(el) el.setAttribute('data-tip', 'XCL v' + APP_VERSION);
@@ -2801,6 +2818,24 @@ html{font-synthesis-weight:none;font-optical-sizing:auto}
   [style*="text-transform:uppercase"][style*="font-size:9px"],
   .settings-section-label{letter-spacing:.1em!important}
 }
+
+/* ── Compact app windows (#log / #talk / #log+talk) ── */
+#xcl-view-shell{display:none}
+html.xcl-view body{min-width:0;max-width:none;box-shadow:none}
+html.xcl-view-log body{min-width:720px}
+html.xcl-view .header,html.xcl-view .tab-bar,html.xcl-view .tab-panel,html.xcl-view #alert-bar,
+html.xcl-view #resurfaced-banner,html.xcl-view #back-to-top,html.xcl-view #sheets-load-bar,
+html.xcl-view #open-log-window-btn{display:none!important}
+html.xcl-view #xcl-view-shell{display:flex;flex-direction:column;gap:10px;padding:10px 12px;box-sizing:border-box}
+#xcl-hub-strip{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:9px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border2);color:var(--text2)}
+#xcl-hub-strip.off{border-color:rgba(248,113,113,.45);background:color-mix(in srgb,var(--red) 10%,var(--surface));color:var(--text)}
+#xcl-view-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start}
+#xcl-view-log .form-card{margin:0}
+#tt-view-root{display:flex;flex-direction:column;gap:8px}
+@media (min-width:1150px){
+  html.xcl-view-log.xcl-view-talk #xcl-view-grid{grid-template-columns:720px minmax(360px,1fr)}
+  html.xcl-view-log.xcl-view-talk #xcl-view-talk{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow-y:auto}
+}
 /* ── END UI REWORK LAYER ── */
 
 /* =========================================================================
@@ -2909,6 +2944,15 @@ html{font-synthesis-weight:none;font-optical-sizing:auto}
           onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'"
           onchange="saveSalesId(this.value.trim().toUpperCase())" data-tip="Your Sales Sales ID — tagged on all logged calls">
         <span id="s-sales-id-status" style="font-size:10px;color:var(--text3)"></span>
+      </div>
+      <!-- Compact app windows -->
+      <div style="padding:2px 0 12px;border-bottom:1px solid var(--border);margin-bottom:4px">
+        <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px">🪟 Compact windows <span style="font-weight:400;color:var(--text3)">· keep this tracker open in the background</span></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button onclick="xclOpenView('log')" style="height:28px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer">Log Calls</button>
+          <button onclick="xclOpenView('talk')" style="height:28px;padding:0 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer">Talk Track</button>
+          <button onclick="xclOpenView('log+talk')" style="height:28px;padding:0 10px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer">Log Calls + Talk Track</button>
+        </div>
       </div>
       <!-- Sale Celebration -->
       <div class="disp-section" style="margin-bottom:8px">
@@ -3462,7 +3506,7 @@ html{font-synthesis-weight:none;font-optical-sizing:auto}
 <div class="main">
   <div class="form-card" id="new-call-form-card" oninput="updateClearVisibility()">
     <div class="form-header">
-      <div class="form-header-title" onclick="callStartTimer()" title="Press when call connects" style="cursor:pointer;user-select:none;flex-shrink:0">Log New Call</div>
+      <div class="form-header-title" onclick="callStartTimer()" title="Press when call connects" style="cursor:pointer;user-select:none;flex-shrink:0">Log New Call<button id="open-log-window-btn" onclick="event.stopPropagation();xclOpenView('log')" data-tip="Open Log Calls in its own compact window" style="margin-left:6px;background:none;border:none;cursor:pointer;font-size:12px;color:var(--text3);padding:0 2px;vertical-align:middle;line-height:1" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text3)'">⧉</button></div>
       <!-- Mood slider with emoji thumb -->
       <div id="mood-slider-wrap" style="position:absolute;left:150px;width:280px;height:30px;top:50%;transform:translateY(-50%)">
         <input type="range" id="mood-slider" min="0" max="9" value="5" step="1"
@@ -4397,7 +4441,7 @@ function checkAlerts(){
     alertBar.classList.add('visible');
   }
 }
-setInterval(checkAlerts, 30000);
+if(!XCL_VIEW) setInterval(checkAlerts, 30000); // alerts run in the full tracker only
 document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});
 function fmtPhone(raw){
   // Strip country code: +1 or leading 1 before a 10-digit number
@@ -4909,25 +4953,43 @@ function logCall(){
 }
 
 function doLogCall(){
+  const c = buildCallFromForm();
+  if(!c) return;
+  if(XCL_VIEW){ xclSendCallToHub(c); return; } // compact window: the full tracker saves it, then we show feedback
+  commitCall(c);
+  logCallFeedback();
+}
+
+// Validates the form and returns the call object (or null if a required field is missing).
+function buildCallFromForm(){
   const fuType = (document.getElementById('f-fu-type')&&document.getElementById('f-fu-type').value)||'Callback';
   const isCallback = fuType === 'Callback';
   if(cbOpen){
-    if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return;}
-    if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return;}
-    if(isCallback && !document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return;}
-    if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return;}
+    if(!document.getElementById('f-cb-name').value.trim()){flash('f-cb-name','rgba(167,139,250,.35)');return null;}
+    if(rawPhone(document.getElementById('f-cb-phone').value).length<10){flash('f-cb-phone','rgba(167,139,250,.35)');return null;}
+    if(isCallback && !document.getElementById('f-cb-dt').value){flash('f-cb-dt','rgba(167,139,250,.35)');return null;}
+    if(!document.getElementById('f-notes').value.trim()){flash('f-notes','rgba(167,139,250,.4)');return null;}
   }
   const cbName=document.getElementById('f-cb-name').value.trim();
   const cbPhone=document.getElementById('f-cb-phone').value.trim();
   const cbTime=(document.getElementById('f-cb-dt')&&document.getElementById('f-cb-dt').value)||'';
   const raw=document.getElementById('f-acct').value.trim();
-  const c=compute({id:Date.now(),ts:getCallTimestamp(),backdated:_backdateActive,acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
+  return compute({id:Date.now(),ts:getCallTimestamp(),backdated:_backdateActive,acctRaw:raw,cbName,cbPhone,cbTime,fuType:cbOpen?fuType:'',cbDone:false,agentId:(_session?_session.agentId:''),sched:document.getElementById('f-sched').value,baseRev:getRevVal(),xmLines:Array.from({length:xmVal},(_,i)=>({id:i+1,schedDate:'',activated:false})),rev:getRevVal()+(xmVal*XM_LINE_REV),xm:xmVal,tv:prods.tv,chsi:prods.chsi,cdv:prods.cdv,xh:prods.xh,ie:_ieActive,bulk:_bulkActive,reason:(_nsState!=='closed'&&!isSale()?getNoSaleReason():''),
     noXmReason:(_nsState!=='closed'&&isSale()&&(xmVal===0)?getNoSaleReason():''),notes:document.getElementById('f-notes').value.trim(),mood:getMood()});
+}
+
+// Saves a call in the full tracker: call list, stats, alerts, Sheets, fiscal month registration.
+function commitCall(c){
   calls.unshift(c);_xmDeviceFilter.clear();updateXmDeviceChips();render();updateStats();checkAlerts();upsertCallToSheets(c);
-  var _wasSale=isSale(); var _wasXm=xmVal>0;
   const _fk = 'xcl_goals_' + getFiscalMonth().replace(' ','');
   if(!localStorage.getItem(_fk)) localStorage.setItem(_fk, JSON.stringify({registeredAt: Date.now()}));
   buildFiscalHistoryDropdown();
+  xclPost({type:'call-logged', id:String(c.id)});
+}
+
+// Button flash, form reset, and celebration in the window where the call was entered.
+function logCallFeedback(){
+  var _wasSale=isSale(); var _wasXm=xmVal>0;
   const btn=document.getElementById('submit-btn');btn.classList.add('ok');btn.innerHTML='<div class="btn-dot"></div>Logged!';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<div class="btn-dot"></div>Log Call';},800);
   resetForm();
   if(_wasSale) setTimeout(function(){ launchFireworks(_wasXm); },150);
@@ -7034,7 +7096,7 @@ function markActivePreset(name){
   function schedFiscalRefresh(){setTimeout(()=>{document.getElementById('month-chip-label').textContent=getFiscalMonth();schedFiscalRefresh();},msToMidnight());}
   loadColorSettings();
   schedFiscalRefresh();
-  setTimeout(loadFromSheets, 500);
+  if(!XCL_VIEW) setTimeout(loadFromSheets, 500); // compact windows never sync; the full tracker does
   window.addEventListener('scroll',function(){
     const btn=document.getElementById('back-to-top');
     if(btn) btn.classList.toggle('visible', window.scrollY > 200);
@@ -10225,8 +10287,8 @@ window.addEventListener('scroll', function(){
   const anchor = tog;
   if(!anchor || !panel) return;
   const rect = anchor.getBoundingClientRect();
-  // Close if anchor has scrolled behind the sticky header (~104px = header+tabbar)
-  if(rect.top < 104){
+  // Close if anchor has scrolled behind the sticky header (~104px = header+tabbar; compact windows have none)
+  if(rect.top < (XCL_VIEW ? 0 : 104)){
     _nsClose();
     return;
   }
@@ -10453,7 +10515,7 @@ window.addEventListener('scroll', function(){
   const btn   = document.getElementById('cb-toggle');
   if(!panel || !btn) return;
   const rect = btn.getBoundingClientRect();
-  if(rect.top < 104){ cbOpen=false; panel.style.display='none'; document.getElementById('cb-toggle').classList.remove('active'); updateNotesState(); return; }
+  if(rect.top < (XCL_VIEW ? 0 : 104)){ cbOpen=false; panel.style.display='none'; document.getElementById('cb-toggle').classList.remove('active'); updateNotesState(); return; }
   panel.style.right  = '8px';
   panel.style.left   = 'auto';
   panel.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
@@ -11434,10 +11496,12 @@ function deleteUser(agentId){
     applySettings(loadSettings());
     updateRoleBtns(); // sync cap dropdown + ACQ/MOV buttons
     updateRoleChip();
-    schedStartTicker(); // start schedule countdown after session established
+    if(!XCL_VIEW) schedStartTicker(); // start schedule countdown after session established
     // Set callback timezone dropdown to user's local timezone
     (function(){ const cbtz=document.getElementById('cb-tz'); if(!cbtz) return; const localTz=Intl.DateTimeFormat().resolvedOptions().timeZone; const opt=Array.from(cbtz.options).find(o=>o.value===localTz); if(opt) cbtz.value=opt.value; })();
     applySessionUI();
+    // Compact windows stop here: no call cache, Sales ID prompt, or Sheets sync (the full tracker does those)
+    if(XCL_VIEW) return;
     var cachedCalls = loadCallsCache();
     if(cachedCalls.length){
       calls = cachedCalls;
@@ -13831,6 +13895,7 @@ function ttCarrierNames(){
 function ttNotesCarrier(name){
   var el = document.getElementById('f-notes');
   if(!el) return;
+  if(XCL_VIEW && !XCL_VIEW.log){ xclPost({type:'carrier', name:name||''}); return; } // talk-only window: the tracker's notes get it
   if(typeof editingId !== 'undefined' && editingId) return; // form holds a past call's notes while editing
   var v = el.value, re = /(^|\n)Carrier: [^\n]*/;
   if(name){
@@ -13930,6 +13995,7 @@ function ttWidget(type, ctx){
 }
 
 // ── Talk Track pop-out (Document Picture-in-Picture, always on top) ──────────
+var TT_HDR_BTN = 'height:22px;padding:0 8px;background:var(--card);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:var(--sans)';
 var _ttPip = null;
 var _ttPipOpening = false;
 var TT_PIP_FNS = ['ttToggleLine','ttToggleStep','ttSetPath','ttSetPlan','ttSetTier','ttSetAlt','ttSetCalc',
@@ -13984,23 +14050,25 @@ function ttPlaceholderHtml(){
     '</div></div>';
 }
 
-// Renders into the tracker panel and, when popped out, into the pop-out window.
+// Renders into the tracker panel, the pop-out window (when open), and a compact window's Talk Track column.
 function ttRenderView(){
   var targets = [];
   var panel = document.getElementById('dq-right-track');
+  var viewRoot = document.getElementById('tt-view-root');
   var pipOpen = ttPipOpen();
-  if(panel) targets.push({doc:document, el:panel, pip:false});
+  if(viewRoot) targets.push({doc:document, el:viewRoot, mode:'view'});
+  else if(panel) targets.push({doc:document, el:panel, mode:'panel'});
   if(pipOpen){
     var root = _ttPip.document.getElementById('tt-pip-root');
-    if(root) targets.push({doc:_ttPip.document, el:root, pip:true});
+    if(root) targets.push({doc:_ttPip.document, el:root, mode:'pip'});
   }
   targets.forEach(function(t){
-    if(!t.pip && pipOpen){ t.el.innerHTML = ttPlaceholderHtml(); return; }
+    if(t.mode === 'panel' && pipOpen){ t.el.innerHTML = ttPlaceholderHtml(); return; }
     // Re-rendering replaces inputs — remember focus, caret and scroll so typing isn't interrupted.
     var active = t.doc.activeElement, focusId = active && t.el.contains(active) ? active.id : null, caret = null;
     try{ if(focusId && active.type === 'text') caret = active.selectionStart; }catch(e){}
     var scroll = t.el.scrollTop;
-    t.el.innerHTML = ttBuildHtml(t.pip);
+    t.el.innerHTML = ttBuildHtml(t.mode);
     t.el.scrollTop = scroll;
     if(focusId){
       var f = t.doc.getElementById(focusId);
@@ -14009,7 +14077,8 @@ function ttRenderView(){
   });
 }
 
-function ttBuildHtml(inPip){
+// mode: 'panel' (in the tracker), 'pip' (always-on-top pop-out), 'view' (compact app window)
+function ttBuildHtml(mode){
   var ctx = ttCtx();
   var t = heroTotals();
   var pct = t.total ? Math.round((t.done / t.total) * 100) : 0;
@@ -14026,9 +14095,12 @@ function ttBuildHtml(inPip){
       '<span style="font-size:11px;font-weight:800;color:'+(t.done===t.total?'#22c55e':'var(--text2)')+';font-variant-numeric:tabular-nums">'+t.done+' / '+t.total+'</span>'+
       '<span style="font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-lt);padding:2px 8px;border-radius:20px;white-space:nowrap">'+heroEsc(e.chip)+' · '+planLabel+'</span>'+
       '<button onclick="ttResetCall()" data-tip="Reset the talk track for the next call" style="background:none;border:none;cursor:pointer;font-size:13px;opacity:.4;padding:2px 3px;line-height:1;border-radius:5px" onmouseover="this.style.opacity=\'1\'" onmouseout="this.style.opacity=\'.4\'">↺</button>'+
-      (inPip
-        ? '<button onclick="ttPopIn()" title="Put the Talk Track back in the tracker" style="height:22px;padding:0 8px;background:var(--card);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:var(--sans)">⇲ Pop in</button>'
-        : '<button onclick="ttPopOut()" data-tip="Open the Talk Track in a floating always-on-top window" style="height:22px;padding:0 8px;background:var(--card);border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:var(--sans)">⧉ Pop out</button>')+
+      (mode === 'pip'
+        ? '<button onclick="ttPopIn()" title="Put the Talk Track back in the tracker" style="'+TT_HDR_BTN+'">⇲ Pop in</button>'
+        : mode === 'panel'
+        ? '<button onclick="ttPopOut()" data-tip="Always-on-top pop-out (shows the site address in its title bar)" style="'+TT_HDR_BTN+'">⧉ Pop out</button>'+
+          '<button onclick="xclOpenView(\'talk\')" data-tip="Open the Talk Track in its own app window" style="'+TT_HDR_BTN+'">🪟 Window</button>'
+        : '')+
     '</div>';
 
   TT_DATA.forEach(function(step, si){
@@ -14086,6 +14158,163 @@ function ttBuildHtml(inPip){
 
   return html;
 }
+
+// ── Compact app windows: hub ⇄ window messaging ─────────────────────────────
+// The full tracker (hub) answers pings, saves calls sent from compact windows, and relays its
+// stats title. Replies happen inside message events, so they still arrive when the hub window is
+// minimized (background timers get throttled; message events don't).
+var XCL_CH = ('BroadcastChannel' in window) ? new BroadcastChannel('xcl-sync') : null;
+var XCL_HUB_ID = XCL_VIEW ? null : 'hub-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+var _xclHub = {id:null, seen:0, title:''};   // compact window's view of the hub
+var _xclPending = null;                       // {id, timer} while a call waits for the hub
+var _xclCommitted = {};                       // hub: call ids already saved (dedupe)
+var XCL_HUB_TIMEOUT = 6000;
+
+function xclPost(msg){
+  if(!XCL_CH) return;
+  if(XCL_HUB_ID) msg.hub = XCL_HUB_ID;
+  try{ XCL_CH.postMessage(msg); }catch(e){}
+}
+
+function xclHubConnected(){ return !!_xclHub.id && (Date.now() - _xclHub.seen) < XCL_HUB_TIMEOUT; }
+
+if(XCL_CH) XCL_CH.onmessage = function(ev){
+  var m = ev.data || {};
+  if(!XCL_VIEW){
+    // ── Hub side ──
+    if(m.type === 'ping'){
+      xclPost({type:'pong', title:document.title});
+    } else if(m.type === 'log-call' && m.to === XCL_HUB_ID && m.call){
+      var id = String(m.call.id);
+      if(!_xclCommitted[id] && !calls.some(function(c){ return String(c.id) === id; })){
+        _xclCommitted[id] = true;
+        commitCall(m.call);
+      }
+      xclPost({type:'committed', id:id, title:document.title});
+    } else if(m.type === 'carrier'){
+      ttNotesCarrier(m.name || '');
+    }
+    return;
+  }
+  // ── Compact window side ──
+  if(!m.hub) return;
+  if(m.type === 'pong' || m.type === 'title' || m.type === 'committed' || m.type === 'call-logged'){
+    if(!xclHubConnected() || m.hub === _xclHub.id){ _xclHub.id = m.hub; _xclHub.seen = Date.now(); }
+    if(m.hub === _xclHub.id && m.title) _xclHub.title = m.title;
+  }
+  if(m.type === 'committed' && _xclPending && m.id === _xclPending.id){
+    clearTimeout(_xclPending.timer);
+    _xclPending = null;
+    xclSetSubmitBusy(false);
+    logCallFeedback();
+  }
+  if(m.type === 'call-logged' && XCL_VIEW.talk && !XCL_VIEW.log && m.hub === _xclHub.id){
+    // Talk-only window: a call was just logged in the tracker, so start the next call fresh
+    ttResetState(); _heroDone = {}; ttRenderView();
+  }
+  xclViewTitle();
+  xclHubStripRender();
+};
+
+// Compact window: hand the call to the hub and wait for it to confirm before clearing the form.
+function xclSendCallToHub(c, retried){
+  if(_xclPending) return; // already waiting on the previous click
+  if(!xclHubConnected()){
+    if(!retried){
+      // Status may just be stale (this window's timers slow down in the background): re-check first.
+      xclSetSubmitBusy(true);
+      xclPing();
+      setTimeout(function(){ xclSetSubmitBusy(false); xclSendCallToHub(c, true); }, 900);
+      return;
+    }
+    xclHubStripRender(true);
+    _showToast('Main tracker not open — call not logged. Your entries are kept.', 'warn', 4500);
+    return;
+  }
+  var id = String(c.id);
+  xclSetSubmitBusy(true);
+  _xclPending = {id:id, timer:setTimeout(function(){
+    _xclPending = null;
+    xclSetSubmitBusy(false);
+    _xclHub.seen = 0;
+    xclHubStripRender(true);
+    _showToast('Not logged — the main tracker didn\'t respond. Your entries are kept.', 'warn', 5000);
+  }, XCL_HUB_TIMEOUT)};
+  xclPost({type:'log-call', to:_xclHub.id, call:c});
+}
+
+function xclSetSubmitBusy(busy){
+  var btn = document.getElementById('submit-btn');
+  if(!btn) return;
+  btn.disabled = !!busy;
+  btn.style.opacity = busy ? '.6' : '';
+  if(busy) btn.innerHTML = '<div class="btn-dot"></div>Logging…';
+  else if(!btn.classList.contains('ok')) btn.innerHTML = '<div class="btn-dot"></div>Log Call';
+}
+
+function xclPing(){ xclPost({type:'ping'}); }
+
+function xclViewTitle(){
+  if(!XCL_VIEW) return;
+  document.title = XCL_VIEW_LABEL + (xclHubConnected() && _xclHub.title ? ' · ' + _xclHub.title : ' · XCL');
+}
+
+function xclHubStripRender(flash){
+  var el = document.getElementById('xcl-hub-strip');
+  if(!el) return;
+  var ok = xclHubConnected();
+  el.classList.toggle('off', !ok);
+  el.innerHTML = ok
+    ? '<span style="color:#22c55e;font-size:12px">●</span><span>Connected to tracker</span>'+
+      (_xclHub.title ? '<span style="color:var(--text3);font-family:var(--mono);font-weight:500;margin-left:4px">'+heroEsc(_xclHub.title)+'</span>' : '')+
+      '<span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--text3)">v'+APP_VERSION+'</span>'
+    : '<span style="color:var(--red);font-size:12px">●</span><span>Main tracker not open — '+(XCL_VIEW.log ? 'calls can\'t be logged here until it is' : 'carrier won\'t reach call notes')+'</span>'+
+      '<button onclick="xclOpenMain()" style="margin-left:auto;'+TT_HDR_BTN+'">Open tracker</button>';
+  if(flash){ el.style.transition = 'none'; el.style.boxShadow = '0 0 0 3px rgba(248,113,113,.45)'; setTimeout(function(){ el.style.transition = 'box-shadow .6s'; el.style.boxShadow = ''; }, 60); }
+}
+
+function xclBaseUrl(){ return location.href.split('#')[0].split('?')[0]; }
+
+// Opens (or focuses) a compact window: kind = 'log' | 'talk' | 'log+talk'
+function xclOpenView(kind){
+  var sizes = {'log':[780, 640], 'talk':[430, 780], 'log+talk':[1200, 780]};
+  var s = sizes[kind] || sizes['log+talk'];
+  var w = window.open(xclBaseUrl() + '#' + kind, 'xcl-view-' + kind.replace('+', '-'), 'popup,width=' + s[0] + ',height=' + s[1]);
+  if(!w && typeof _showToast === 'function') _showToast('Window blocked — allow pop-ups for the tracker', 'warn', 4000);
+  else if(w){ try{ w.focus(); }catch(e){} }
+}
+
+function xclOpenMain(){
+  var w = window.open(xclBaseUrl(), 'xcl-main');
+  if(w){ try{ w.focus(); }catch(e){} }
+}
+
+// Build the compact window layout: status strip + form and/or Talk Track.
+function xclViewInit(){
+  if(!XCL_VIEW){ if(!window.name) window.name = 'xcl-main'; return; }
+  var shell = document.createElement('div');
+  shell.id = 'xcl-view-shell';
+  shell.innerHTML = '<div id="xcl-hub-strip"></div><div id="xcl-view-grid">'+
+    (XCL_VIEW.log ? '<div id="xcl-view-log"></div>' : '')+
+    (XCL_VIEW.talk ? '<div id="xcl-view-talk"><div id="tt-view-root"></div></div>' : '')+
+    '</div>';
+  document.body.insertBefore(shell, document.body.firstChild);
+  if(XCL_VIEW.log){
+    var form = document.getElementById('new-call-form-card');
+    if(form) document.getElementById('xcl-view-log').appendChild(form);
+  }
+  if(XCL_VIEW.talk) ttRenderView();
+  xclHubStripRender();
+  xclViewTitle();
+  xclPing();
+  // Keep the connection status fresh; the hub answers each ping from its message handler.
+  var refresh = function(){ xclPing(); setTimeout(function(){ xclHubStripRender(); xclViewTitle(); }, 1500); };
+  setInterval(refresh, 5000);
+  window.addEventListener('focus', refresh);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) refresh(); });
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', xclViewInit);
+else xclViewInit();
 
 function dqToggleQ(lob, idx, btn){
   var data = DQ_DATA[lob];
@@ -15362,6 +15591,7 @@ if('serviceWorker' in navigator){
 }
 // ── Dynamic window title ──────────────────────────────────────────────────
 function updateWindowTitle(){
+  if(XCL_VIEW){ xclViewTitle(); return; } // compact windows show the hub's stats line instead
   try {
     var now = new Date();
     var fi = getActiveFiscalInfo();
@@ -15388,6 +15618,7 @@ function updateWindowTitle(){
   } catch(e) {
     document.title = 'Call Logger v' + APP_VERSION;
   }
+  xclPost({type:'title', title:document.title});
 }
 
 // ── Celebration Animations ────────────────────────────────────────────────
