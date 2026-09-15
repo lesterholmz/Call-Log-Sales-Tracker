@@ -11,12 +11,35 @@
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/png"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log Calls",
+      "short_name": "Log Calls",
+      "description": "Compact window for logging calls",
+      "url": "./index.html#log",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Talk Track",
+      "short_name": "Talk Track",
+      "description": "Compact Talk Track window",
+      "url": "./index.html#talk",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Log Calls + Talk Track",
+      "short_name": "Log + Talk",
+      "description": "Compact window with the call form and Talk Track",
+      "url": "./index.html#log+talk",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }
