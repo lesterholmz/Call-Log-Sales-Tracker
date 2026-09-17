@@ -18,8 +18,8 @@
 // APP_VERSION = 0.<month>.<day>.<build>, where each year after 2026 adds 100 to the month
 //   2026-09-14, 3rd release → 0.9.14.3     2027-01-05, 1st release → 0.101.5.1     2028-01-05 → 0.201.5.1
 // The page title, the "Call Logger" brand tooltip, and the Settings header read from it.
-var APP_UPDATED = '2026-09-15';
-var APP_BUILD   = 2;
+var APP_UPDATED = '2026-09-17';
+var APP_BUILD   = 1;
 var APP_VERSION = (function(date, build){
   var p = date.split('-');
   var month = (parseInt(p[0], 10) - 2026) * 100 + parseInt(p[1], 10);
@@ -183,23 +183,45 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:v
 .clock{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text3)}
 .version-chip{font-size:10px;font-weight:600;letter-spacing:0.06em;font-family:var(--mono);color:var(--text3);opacity:.6}
 .month-chip{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);background:var(--amber-lt);border:1px solid rgba(245,158,11,0.25);padding:4px 12px;border-radius:20px}
-#alert-bar{display:none;position:sticky;top:52px;z-index:190;background:rgba(45,31,5,0.75);backdrop-filter:blur(6px);border-bottom:1px solid rgba(245,158,11,0.4)}
+/* Zero-height sticky anchor under the tab bar: the card floats over the page instead of pushing it down */
+#alert-bar{display:none;position:sticky;top:92px;height:0;z-index:195}
 #resurfaced-banner{display:none;position:sticky;top:52px;z-index:189;background:rgba(30,21,53,0.75);backdrop-filter:blur(6px);border-bottom:1px dashed rgba(167,139,250,0.4);padding:8px 12px;font-size:12px;color:var(--purple);align-items:center;gap:10px}
 #resurfaced-banner.visible{display:flex}
 #resurfaced-banner .rs-msg{flex:1}
 #resurfaced-banner .rs-dismiss{background:none;border:1px dashed rgba(167,139,250,.3);border-radius:6px;color:var(--purple);font-size:11px;font-weight:600;padding:3px 10px;cursor:pointer;font-family:var(--sans)}
 #resurfaced-banner .rs-dismiss:hover{background:rgba(167,139,250,.1)}
 #alert-bar.visible{display:block}
-.alert-inner{padding:10px 12px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
-.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
-.alert-content{flex:1;min-width:200px}
-.alert-title{font-size:12px;font-weight:700;color:var(--amber);margin-bottom:4px}
-.alert-items{display:flex;flex-direction:column;gap:3px}
-.alert-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px;cursor:pointer;padding:3px 6px;border-radius:5px;transition:background .15s;margin:0 -6px}
-.alert-item:hover{background:rgba(245,158,11,.15)}
-.alert-item-time{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--amber)}
-.alert-dismiss{background:none;border:1px solid rgba(245,158,11,.3);border-radius:6px;color:var(--amber);font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;white-space:nowrap;font-family:var(--sans)}
-.alert-dismiss:hover{background:rgba(245,158,11,.1)}
+.alert-card{position:absolute;top:8px;left:10px;right:10px;max-height:calc(var(--vh100, 100vh) - 120px);overflow-y:auto;
+  background:color-mix(in srgb,#2d1f05 92%,var(--surface));border:1px solid rgba(245,158,11,.55);border-radius:12px;
+  box-shadow:0 14px 40px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.2);padding:10px 12px;animation:alertSlide .28s ease-out}
+@keyframes alertSlide{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.alert-card-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.alert-icon{font-size:16px;flex-shrink:0}
+.alert-title{flex:1;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--amber)}
+.alert-close{background:none;border:none;color:var(--amber);opacity:.6;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:5px}
+.alert-close:hover{opacity:1;background:rgba(245,158,11,.12)}
+.alert-items{display:flex;flex-direction:column;gap:6px}
+/* New alert: large, with its own actions */
+.alert-new{background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.4);border-radius:9px;padding:9px 11px;display:flex;flex-direction:column;gap:4px}
+.alert-new.pulse{animation:alertPulse 1.1s ease-in-out 3}
+@keyframes alertPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}50%{box-shadow:0 0 0 4px rgba(245,158,11,.45),0 0 18px rgba(245,158,11,.35)}}
+.alert-new-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.alert-new-name{font-size:15px;font-weight:800;color:var(--text)}
+.alert-item-time{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--amber)}
+.alert-item-time.overdue{color:#f87171}
+.alert-new-notes{font-size:12px;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.alert-actions{display:flex;gap:6px;margin-top:3px;flex-wrap:wrap}
+.alert-btn{height:26px;padding:0 11px;border-radius:6px;border:1px solid rgba(245,158,11,.35);background:none;color:var(--amber);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap}
+.alert-btn:hover{background:rgba(245,158,11,.12)}
+.alert-btn.primary{background:var(--amber);border-color:var(--amber);color:#1a1205}
+.alert-btn.primary:hover{filter:brightness(1.08)}
+.alert-snooze-row{display:flex;gap:5px;flex-wrap:wrap;padding-top:2px}
+/* Older follow-ups: one collapsed line, compact rows when opened */
+.alert-older-toggle{margin-top:8px;width:100%;text-align:left;background:none;border:none;border-top:1px dashed rgba(245,158,11,.25);padding:7px 2px 1px;color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+.alert-older-toggle:hover{color:var(--amber)}
+.alert-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px;cursor:pointer;padding:3px 6px;border-radius:5px;transition:background .15s;flex-wrap:wrap}
+.alert-item:hover{background:rgba(245,158,11,.12)}
+.alert-item-text{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stats-panel{background:var(--surface);border-bottom:1px solid var(--border)}
 .stats-section-label{padding:8px 12px 6px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:10px;position:relative}
 .stats-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -309,6 +331,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:v
 .table-header{padding:12px 18px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .table-title{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text2)}
 .table-actions{display:flex;align-items:center;gap:10px}
+.tr-view-toggle{display:flex;align-items:center;gap:2px;background:var(--border2);border-radius:8px;padding:2px;flex-shrink:0}
+.tr-view-btn{width:38px;height:28px;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;border-radius:6px;border:1px solid transparent;cursor:pointer;background:none;filter:grayscale(1);opacity:.45;transition:all .15s}
+.tr-view-btn:hover{opacity:.8}
+.tr-view-btn.active{filter:none;opacity:1;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tr-view-btn.tr-log.active{background:var(--blue-lt);border-color:var(--blue)}
+.tr-view-btn.tr-talk.active{background:color-mix(in srgb,#7c3aed 18%,var(--surface));border-color:#7c3aed}
+#tr-talk-head{flex:1;min-width:0;display:flex;align-items:center;margin-left:12px}
+#tr-talk-head[hidden],#tr-talk-view[hidden],#call-log-view[hidden]{display:none}
+#sales-id-step-enter[hidden],#sales-id-step-confirm[hidden]{display:none!important}
+#sales-id-step-confirm{display:flex}
+/* Call Log controls fill the row after the toggle, evenly spaced */
+#call-log-actions{flex:1;min-width:0;justify-content:space-between;margin-left:16px}
+#tr-talk-view{overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-height:300px;box-sizing:border-box}
 .count-chip{font-family:var(--mono);font-size:11px;color:var(--blue);background:var(--blue-lt);padding:3px 10px;border-radius:20px;font-weight:600}
 .export-btn{height:30px;padding:0 14px;background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--teal);cursor:pointer}
 .export-btn:hover{background:rgba(20,184,166,.2)}
@@ -630,15 +665,9 @@ td{padding:7px 14px;vertical-align:middle;white-space:nowrap}
 .form-row-center{display:flex;justify-content:flex-start;width:100%}
 .frow-top{display:flex;gap:8px;align-items:flex-end;width:100%;padding:5px 5px 0 5px}
 .frow-notes{display:flex;gap:0;align-items:stretch;width:100%;padding-bottom:3px}
-/* 720px: notes wraps full width, cb toggle + submit stack below */
-@media(max-width:780px){
-  .frow-notes{flex-wrap:wrap}
-  .frow-notes .notes-wrap{min-width:100%}
-  .frow-notes-actions{display:flex;gap:8px;align-items:center;justify-content:flex-end;width:100%}
-}
-@media(min-width:781px){
-  .frow-notes-actions{flex-shrink:0;display:flex;flex-direction:column;align-self:stretch}
-}
+/* The app keeps its 720px layout and scales (APP_SCALE) instead of re-flowing, so no width media queries here:
+   they'd match the real window width (a narrow, scaled-down window) and stack the form. */
+.frow-notes-actions{flex-shrink:0;display:flex;flex-direction:column;align-self:stretch}
 /* Notes wrap fills the same inline width as row 1 */
 .notes-wrap{flex:1;display:flex;flex-direction:column;gap:2px;align-self:stretch;padding:3px 0 3px 0;margin-left:3px;margin-right:3px}
 .notes-wrap label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
@@ -922,12 +951,6 @@ tr.search-highlight td{background:rgba(20,184,166,.06)}
 .form-left-col{padding:5px 5px 3px 5px;display:flex;flex-direction:column;gap:3px;flex-shrink:0;width:170px}
 .form-left-col .field input{width:100%;box-sizing:border-box}
 .notes-wrap textarea{min-height:165px;resize:vertical}
-@media(max-width:700px){
-  .frow-top{flex-wrap:wrap}
-  .frow-notes{flex-wrap:wrap}
-  .form-left-col{width:100%}
-  .notes-wrap{min-width:100%}
-}
 
 .form-left-col .field{gap:2px}
 .form-left-col .field label{font-size:9px}
@@ -1041,25 +1064,45 @@ body.tips-on [data-tip]:hover::after{opacity:1}
 #sched-countdown{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:6px 10px;margin-bottom:10px}
 #sched-countdown .scd-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
 #sched-countdown .scd-val{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);margin-left:auto}
-.sched-day-tab{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
-.sched-day-btn{flex:1;min-width:36px;height:28px;border:1px solid var(--border2);border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:var(--surface);color:var(--text3);transition:all .15s}
-.sched-day-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
-.sched-day-btn.today{border-color:var(--green);color:var(--green)}
-.sched-day-btn.today.active{background:var(--green);border-color:var(--green);color:#fff}
-.sched-shift-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sched-shift-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .sched-shift-row label{font-size:10px;font-weight:600;color:var(--text3);min-width:36px}
-.sched-shift-row input[type=time]{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;width:90px}
-.sched-break-row{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;margin-bottom:6px}
-.sched-break-emoji{font-size:14px;flex-shrink:0}
-.sched-break-label{font-size:10px;font-weight:600;color:var(--text);flex:1}
-.sched-break-time{font-family:var(--mono);font-size:11px;color:var(--text3);background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:2px 6px;width:76px}
-.sched-dur-sel{font-size:10px;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:2px 4px;color:var(--text2);cursor:pointer}
-.sched-break-del{width:18px;height:18px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;flex-shrink:0;border-radius:4px;display:flex;align-items:center;justify-content:center}
-.sched-break-del:hover{color:var(--red);background:rgba(248,113,113,.1)}
+.sched-shift-row input[type=time]{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:4px 6px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;width:112px;box-sizing:border-box}
+#sched-date-nav{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.sched-nav{width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:16px;line-height:1;cursor:pointer}
+.sched-nav:hover{border-color:var(--blue);color:var(--blue)}
+.sched-date{flex:1;text-align:center;font-size:13px;font-weight:800;color:var(--text)}
+.sched-today{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:rgba(34,197,94,.12);border-radius:10px;padding:2px 7px;margin-left:4px;vertical-align:1px}
+#sched-day-note{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--text3);background:var(--surface);border:1px dashed var(--border2);border-radius:7px;padding:5px 8px;margin-bottom:8px}
+#sched-day-note[hidden],#sched-ot-note[hidden],#sched-add-btn[hidden]{display:none}
+#sched-ot-note{font-size:10px;font-weight:600;color:var(--amber);margin:0 0 8px 44px}
+.sched-link{background:none;border:none;color:var(--blue);font-size:10px;font-weight:700;cursor:pointer;padding:0;margin-left:auto}
+#sched-breaks-list{display:flex;flex-direction:column;gap:5px;margin:8px 0}
+.sched-seg{display:grid;grid-template-columns:20px minmax(0,1fr) auto 44px;align-items:center;gap:8px;width:100%;padding:8px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;cursor:pointer;text-align:left;font-family:var(--sans);color:var(--text)}
+.sched-seg:hover{border-color:var(--blue)}
+.sched-seg.fixed{cursor:default;opacity:.7}
+.sched-seg.fixed:hover{border-color:var(--border2)}
+.sched-seg-emoji{font-size:14px;text-align:center}
+.sched-seg-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sched-seg-time{font-family:var(--mono);font-size:12px;color:var(--text2)}
+.sched-seg-len{font-family:var(--mono);font-size:11px;color:var(--text3);text-align:right}
+.sched-tag{font-size:9px;font-weight:800;color:var(--amber);background:rgba(245,158,11,.14);border-radius:8px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.sched-empty{font-size:11px;color:var(--text3);text-align:center;padding:10px}
+.sched-form{background:var(--surface);border:1px solid var(--blue);border-radius:10px;padding:10px}
+.sched-form-lbl{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.sched-form-hint{font-size:10px;color:var(--text3);margin-top:5px;font-style:italic}
+.sched-chips{display:flex;flex-wrap:wrap;gap:4px}
+.sched-chip{height:24px;padding:0 8px;border-radius:6px;border:1px solid var(--border2);background:var(--card);color:var(--text2);font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap}
+.sched-chip:hover{border-color:var(--blue)}
+.sched-chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.sched-in{height:30px;box-sizing:border-box;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none}
+.sched-in:focus{border-color:var(--blue)}
+.sched-btn{height:28px;padding:0 12px;border-radius:7px;border:1px solid var(--border2);background:var(--card);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+.sched-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.sched-btn.danger{color:var(--red);border-color:rgba(248,113,113,.4)}
+.sched-btn.danger:hover{background:rgba(248,113,113,.1)}
 .sched-add-btn{width:100%;padding:6px;background:none;border:1px dashed var(--border2);border-radius:8px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer;margin-bottom:8px;transition:all .15s}
 .sched-add-btn:hover{border-color:var(--blue);color:var(--blue)}
 .sched-reminder-row{display:flex;align-items:center;gap:8px;padding-top:8px;border-top:1px solid var(--border)}
-.sched-save-btn{width:100%;margin-top:10px;padding:8px;background:var(--blue);border:none;border-radius:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer}
 .sched-toolbar-countdown{font-size:9px;font-weight:700;color:var(--amber);font-family:var(--mono);white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis}
 /* ── Calendar Applet ── */
 #cal-applet{position:fixed;z-index:9999;display:none;flex-direction:column;
@@ -2998,7 +3041,7 @@ html.xcl-wide.xcl-view-log.xcl-view-talk #xcl-view-talk{position:sticky;top:10px
   <!-- Center: countdown -->
   <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;pointer-events:auto">
     <div style="position:relative">
-      <div onclick="toggleSchedPopover()" style="cursor:pointer;text-align:center">
+      <div id="sched-reminder" onclick="toggleSchedPopover()" style="cursor:pointer;text-align:center">
         <span id="sched-toolbar-cd" style="font-weight:700;color:var(--text);font-family:var(--mono);white-space:nowrap;position:relative"></span>
       </div>
       <div id="sched-events-popover" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 6px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:9999;min-width:220px;flex-direction:column;gap:4px"></div>
@@ -3048,7 +3091,7 @@ html.xcl-wide.xcl-view-log.xcl-view-talk #xcl-view-talk{position:sticky;top:10px
         <input id="s-sales-id" type="text" placeholder="e.g. 6XXXX" maxlength="10"
           style="width:110px;height:30px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:0 10px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none"
           onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'"
-          onchange="saveSalesId(this.value.trim().toUpperCase())" data-tip="Your Sales Sales ID — tagged on all logged calls">
+          onchange="changeSalesIdFromSettings(this)" data-tip="Your Sales ID — tagged on all logged calls">
         <span id="s-sales-id-status" style="font-size:10px;color:var(--text3)"></span>
       </div>
       <!-- Compact app windows -->
@@ -3558,7 +3601,12 @@ html.xcl-wide.xcl-view-log.xcl-view-talk #xcl-view-talk{position:sticky;top:10px
 </div>
 
 <div id="sync-toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
-<div id="alert-bar"><div class="alert-inner"><div class="alert-icon">🔔</div><div class="alert-content"><div class="alert-title">Follow-Up Alert</div><div class="alert-items" id="alert-items"></div></div><button class="alert-dismiss" onmousedown="window._adT=setTimeout(function(){window._adT=null;dismissUntilNext();},1000)" onmouseup="if(window._adT){clearTimeout(window._adT);window._adT=null;dismissAlerts();}" onmouseleave="if(window._adT){clearTimeout(window._adT);window._adT=null;}" ontouchstart="event.preventDefault();window._adT=setTimeout(function(){window._adT=null;dismissUntilNext();},1000)" ontouchend="event.preventDefault();if(window._adT){clearTimeout(window._adT);window._adT=null;dismissAlerts();}">Dismiss</button></div></div>
+<!-- Follow-up alerts: a card floating over the top of the tab (takes no space), new alerts first -->
+<div id="alert-bar"><div class="alert-card" role="alert" aria-live="assertive">
+  <div class="alert-card-head"><span class="alert-icon">🔔</span><span class="alert-title" id="alert-title">Follow-up due</span><button class="alert-close" onclick="dismissAlerts()" data-tip="Got it for all new alerts">✕</button></div>
+  <div class="alert-items" id="alert-items"></div>
+  <div id="alert-older"></div>
+</div></div>
 <div id="resurfaced-banner"><span style="font-size:14px">↻</span><span class="rs-msg" id="rs-msg"></span><button class="rs-dismiss" onclick="dismissResurfaced()">Dismiss</button></div>
 <!-- ══ TAB: TRACKER ══ -->
 <div class="tab-panel active" id="panel-tracker">
@@ -3749,13 +3797,21 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
   </div>
   <div class="table-card">
     <div class="table-header">
-      <div class="table-title">Call Log</div>
-      <div class="table-actions"><div id="xm-device-filter-row" style="display:flex;gap:4px;margin-right:24px"></div><div class="log-search-wrap"><span class="log-search-icon">🔍</span><input class="log-search-input" id="log-search" type="text" placeholder="Search acct #…" oninput="setLogSearch(this.value)" autocomplete="off" spellcheck="false"><button class="log-search-clear" id="log-search-clear" onclick="clearLogSearch()" title="Clear">✕</button></div><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
+      <div class="tr-view-toggle" id="tr-view-toggle" role="tablist">
+        <button class="tr-view-btn tr-log active" id="tr-view-btn-log" role="tab" aria-label="Call Log" data-tip="Call Log" onclick="trSetView('log')">📋</button>
+        <button class="tr-view-btn tr-talk" id="tr-view-btn-talk" role="tab" aria-label="Talk Track" data-tip="Talk Track" onclick="trSetView('talk')">💬</button>
+      </div>
+      <div id="tr-talk-head" hidden></div>
+      <div class="table-actions" id="call-log-actions"><div id="xm-device-filter-row" style="display:flex;gap:4px"></div><div class="log-search-wrap"><span class="log-search-icon">🔍</span><input class="log-search-input" id="log-search" type="text" placeholder="Search acct #…" oninput="setLogSearch(this.value)" autocomplete="off" spellcheck="false"><button class="log-search-clear" id="log-search-clear" onclick="clearLogSearch()" title="Clear">✕</button></div><select class="filter-select" id="log-filter" onchange="setLogFilter(this.value)"><option value="all">All Calls</option></select><span class="count-chip" id="count-chip">0 calls</span></div>
     </div>
+    <div id="call-log-view">
     <table>
       <thead><tr><th>Time</th><th>Acct / Ticket</th><th>Revenue</th><th>RGUs</th><th>Call Outcome</th></tr></thead>
       <tbody id="log-body"><tr><td colspan="5" class="empty">No calls logged yet — fill in the form above to get started</td></tr></tbody>
     </table>
+    </div>
+    <!-- Talk Track in place of the Call Log (📜 toggle above); sized to the window by trFitTalk() -->
+    <div id="tr-talk-view" hidden></div>
   </div>
 </div><!-- end .main -->
 
@@ -4459,83 +4515,225 @@ const NO_SALE_CATS = JSON.parse(JSON.stringify(NO_SALE_CATS_DEFAULTS));
 const ALERT_MIN=15;
 const XCL_CALLS_KEY = 'xcl_calls_cache';
 function getCallsCacheKey(){ const id = getCurrentAgentId(); return id && id !== 'guest' ? XCL_CALLS_KEY+'_'+id : XCL_CALLS_KEY; }
-// Clear any stale call caches — Sheets is now the single source of truth
-(function clearStaleCallsCache(){
-  try {
-    Object.keys(localStorage).filter(k => k.startsWith('xcl_calls_cache')).forEach(k => localStorage.removeItem(k));
-  } catch(e) {}
+// Calls are never written to this PC (they hold names, phone numbers, account numbers and notes).
+// They live in memory while the tracker is open; Google Sheets is the only stored copy.
+// Any call copy an older version saved is deleted at startup.
+function callsSyncedKey(){ return 'xcl_calls_synced_' + getCurrentAgentId(); }   // a timestamp only
+(function purgeSavedCalls(){
+  try{ Object.keys(localStorage).filter(k => k.indexOf('xcl_calls_cache') === 0).forEach(k => localStorage.removeItem(k)); }catch(e){}
 })();
+
+// Calls whose upload to Sheets hasn't been confirmed yet (memory only)
+var _unsyncedIds = new Set();
+window.addEventListener('beforeunload', function(e){
+  if(XCL_VIEW || !_unsyncedIds.size) return;
+  e.preventDefault(); e.returnValue = '';   // "Leave site?" — closing now would lose calls that haven't reached Sheets
+});
 const XM_LINE_REV = 45;
 document.getElementById('m-rgus-lbl').textContent='of '+RGU_GOAL();
 let _userCallType='acq',_userCapLevel=2;
 let _session=null; // {agentId, name, role, callType, capLevel, supervisorId}
 let _userList=[]; // cached from sheets
-let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,alertDismissed=0,editState={},activeFilter='today',_logSearch='',_activeTab='tracker',_activeJaTab='discovery',_historicalFiscal=null;
+let calls=[],prods={tv:false,chsi:false,cdv:false,xh:false},xmVal=0,cbOpen=false,editingId=null,editState={},activeFilter='today',_logSearch='',_activeTab='tracker',_activeJaTab='discovery',_historicalFiscal=null;
 var _xmDeviceFilter = new Set(); // empty = all; elements: 'phone','watch','tablet'
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});},1000);
-function checkAlerts(){
-  const now=Date.now();if(now<alertDismissed)return;
-  const windows=window._alertWindows||[15];
-  const a=calls.filter(c=>{
-    if(!c.cbTime||c.cbDone||c.mood===MOOD_EMOJIS[0])return false;
-    if(c.cbSnoozeUntil&&new Date(c.cbSnoozeUntil)>new Date(now))return false;
-    const ms=new Date(c.cbTime).getTime()-now;
-    if(ms<0)return true;
-    return windows.some(w=>ms<=w*60000);
+// ── Follow-up alerts ──
+// A due follow-up is "new" until it's acknowledged (Got it, Open, or ✕). New ones show large at the top of a floating
+// card; acknowledged / older ones fold into one "+N older" line. The card only opens when something new is due.
+// Seen state is keyed to the callback time + snooze, so a rescheduled or snoozed callback alerts again when it comes due.
+// (xcl_alert_seen2: the first version also filed anything over an hour overdue as "seen" on its first run,
+// which silenced real overdue callbacks — those marks are dropped.)
+var ALERT_SEEN_KEY = 'xcl_alert_seen2';
+try{ localStorage.removeItem('xcl_alert_seen'); }catch(e){}
+var _alertSeen = (function(){ try{ return JSON.parse(localStorage.getItem(ALERT_SEEN_KEY)) || {}; }catch(e){ return {}; } })();
+var _alertOlderOpen = false;
+var _alertPulsed = {};                      // new alerts that already pulsed (the card re-renders every 30s)
+
+function alertKey(c){ return String(c.cbTime || '') + '|' + String(c.cbSnoozeUntil || ''); }
+function alertIsNew(c){ return _alertSeen[c.id] !== alertKey(c); }
+function alertSaveSeen(){ try{ localStorage.setItem(ALERT_SEEN_KEY, JSON.stringify(_alertSeen)); }catch(e){} }
+function alertMarkSeen(ids){
+  ids = ids.map(String);
+  calls.forEach(function(c){ if(ids.indexOf(String(c.id)) >= 0) _alertSeen[c.id] = alertKey(c); });
+  alertSaveSeen();
+  checkAlerts();
+}
+// ── Getting attention when the tracker isn't in front: Windows notification + flashing title ──
+var _alertNotified = {};                                   // id -> alertKey already notified
+var _titleFlash = {base:'', timer:null, phase:false};
+var TITLE_FLASH_TEXT = '🔔 Follow-up due';
+
+function setAppTitle(t){
+  _titleFlash.base = t;
+  if(!(_titleFlash.timer && _titleFlash.phase)) document.title = t;
+}
+function xclRealTitle(){ return _titleFlash.base || document.title; }
+function trackerInFront(){ return !document.hidden && document.hasFocus(); }
+
+function alertTitleFlash(on){
+  if(on && !_titleFlash.timer){
+    if(!_titleFlash.base) _titleFlash.base = document.title;
+    _titleFlash.timer = setInterval(function(){
+      _titleFlash.phase = !_titleFlash.phase;
+      document.title = _titleFlash.phase ? TITLE_FLASH_TEXT : _titleFlash.base;
+    }, 1000);
+  } else if(!on && _titleFlash.timer){
+    clearInterval(_titleFlash.timer);
+    _titleFlash.timer = null; _titleFlash.phase = false;
+    document.title = _titleFlash.base || document.title;
+  }
+}
+
+// Ask once, on a click (Chrome ignores or hides requests that don't come from one)
+function alertAskNotifyPermission(){
+  if(!('Notification' in window) || Notification.permission !== 'default') return;
+  try{ Notification.requestPermission(); }catch(e){}
+}
+if(!XCL_VIEW) document.addEventListener('click', alertAskNotifyPermission, {once:true, capture:true});
+
+function alertNotify(fresh){
+  var inFront = trackerInFront();
+  fresh.forEach(function(c){
+    var key = alertKey(c);
+    if(_alertNotified[c.id] === key) return;
+    _alertNotified[c.id] = key;
+    if(inFront || !('Notification' in window) || Notification.permission !== 'granted') return;
+    // No customer details: Windows keeps notifications in its notification center
+    var t = alertTimeLabel(c, Date.now());
+    var kind = c.mood === MOOD_EMOJIS[0] ? 'Red flag follow-up' : (c.fuType && c.fuType !== 'Callback' ? c.fuType + ' follow-up' : 'Callback');
+    try{
+      var n = new Notification('🔔 ' + kind + ' due', {
+        body: t.text.replace(/\s*\(\d+m alert\)$/, '') + '\nOpen the tracker for details',
+        tag: 'xcl-fu-' + c.id, requireInteraction: true, icon: 'icon-192.png'
+      });
+      n.onclick = function(){ try{ window.focus(); }catch(e){} openCallFromAlert(c.id); n.close(); };
+    }catch(e){}
   });
-  const alertBar=document.getElementById('alert-bar');
-  const wasVisible=alertBar.classList.contains('visible');
-  if(!a.length){
-    if(wasVisible){ alertBar.classList.remove('visible'); render(); }
+  alertTitleFlash(fresh.length > 0 && !inFront);
+}
+if(!XCL_VIEW){
+  var _alertStopFlash = function(){ if(trackerInFront()) alertTitleFlash(false); };
+  window.addEventListener('focus', _alertStopFlash);
+  document.addEventListener('visibilitychange', _alertStopFlash);
+}
+
+function alertEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]; }); }
+
+function alertDueCalls(now){
+  var windows = window._alertWindows || [15];
+  return calls.filter(function(c){
+    if(!c.cbTime || c.cbDone) return false;   // a scheduled time alerts whatever the call's mood (🚩 included)
+    if(c.chargedBack || c.isException) return false;   // red flag resolved (Payments OK sets cbDone)
+    if(c.cbSnoozeUntil && new Date(c.cbSnoozeUntil) > new Date(now)) return false;
+    var ms = new Date(c.cbTime).getTime() - now;
+    if(ms < 0) return true;
+    return windows.some(function(w){ return ms <= w * 60000; });
+  });
+}
+
+function alertTimeLabel(c, now){
+  var windows = window._alertWindows || [15];
+  var ms = new Date(c.cbTime).getTime() - now, ov = ms < 0;
+  var totalM = Math.abs(Math.round(ms / 60000));
+  var d = Math.floor(totalM / 1440), h = Math.floor((totalM % 1440) / 60), m = totalM % 60;
+  var timeStr = d > 0 ? (d + 'd ' + (h > 0 ? h + 'h' : '') + (h === 0 && m > 0 ? m + 'm' : ''))
+              : h > 0 ? (h + 'h ' + (m > 0 ? m + 'm' : '')) : m + 'm';
+  var thresh = ov ? null : windows.filter(function(w){ return ms <= w * 60000; }).sort(function(x, y){ return x - y; })[0];
+  var sched = new Date(c.cbTime).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true});
+  return {overdue: ov, text: ov ? timeStr.trim() + ' overdue · ' + sched
+                                : (totalM === 0 ? 'due now · ' : 'in ' + timeStr.trim() + ' · ') + sched + (thresh ? ' (' + thresh + 'm alert)' : '')};
+}
+
+function alertSnoozeRow(c){
+  if(window._snoozePickId !== c.id) return '';
+  return '<div class="alert-snooze-row" onclick="event.stopPropagation()">' +
+    [[15,'15m'],[30,'30m'],[60,'60m'],[120,'2h'],['nwd','Next work day']].map(function(o){
+      return '<button class="alert-btn" onclick="event.stopPropagation();snoozeCb(' + c.id + ',\'' + o[0] + '\')">' + o[1] + '</button>';
+    }).join('') + '</div>';
+}
+
+function checkAlerts(){
+  var now = Date.now();
+  var due = alertDueCalls(now);
+  // Follow-ups already more than a day overdue when alerts first see them go straight to the older pile
+  var seenChanged = false;
+  due.forEach(function(c){
+    if(_alertSeen[c.id] === undefined && now - new Date(c.cbTime).getTime() > 24 * 60 * 60000){
+      _alertSeen[c.id] = alertKey(c); seenChanged = true;
+    }
+  });
+  // Forget seen entries only for follow-ups that are loaded and no longer due (done, rescheduled into the
+  // future). Unknown ids are kept: calls may still be loading, and dropping them would re-alert everything.
+  var dueIds = {}, byId = {};
+  due.forEach(function(c){ dueIds[c.id] = true; });
+  calls.forEach(function(c){ byId[c.id] = c; });
+  Object.keys(_alertSeen).forEach(function(id){
+    if(byId[id] && !dueIds[id]){ delete _alertSeen[id]; seenChanged = true; }
+  });
+  if(seenChanged) alertSaveSeen();
+
+  // New: most urgent (earliest due) on top. Older: most recently due first.
+  var fresh = due.filter(alertIsNew).sort(function(a, b){ return new Date(a.cbTime) - new Date(b.cbTime); });
+  var older = due.filter(function(c){ return !alertIsNew(c); }).sort(function(a, b){ return new Date(b.cbTime) - new Date(a.cbTime); });
+  var alertBar = document.getElementById('alert-bar');
+  var wasVisible = alertBar.classList.contains('visible');
+
+  alertNotify(fresh);   // desktop notification + title flash when the tracker isn't in front
+  if(!fresh.length){
+    if(wasVisible){ alertBar.classList.remove('visible'); _alertOlderOpen = false; render(); }
     return;
   }
-  document.getElementById('alert-items').innerHTML=a.map(c=>{
-    const ms=new Date(c.cbTime).getTime()-now,ov=ms<0;
-    const totalM=Math.abs(Math.round(ms/60000));
-    const d=Math.floor(totalM/1440), h=Math.floor((totalM%1440)/60), m=totalM%60;
-    const timeStr = d>0 ? (d+'d '+(h>0?h+'h':'')+(h===0&&m>0?m+'m':'')) : h>0 ? (h+'h '+(m>0?m+'m':'')) : m+'m';
-    const thresh=ov?null:windows.filter(w=>ms<=w*60000).sort((x,y)=>x-y)[0];
-    const schedTime=new Date(c.cbTime).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
-    const label=ov
-      ? timeStr+' overdue · '+schedTime
-      : 'in '+timeStr+' · '+schedTime+(thresh?' ('+thresh+'m alert)':'');
-    const name=c.cbName||c.cbPhone||(c.acctRaw?maskAcct(c.acctRaw):'')||'Unknown';
-    const isSnoozePick=window._snoozePickId===c.id;
-    const snoozeOpts=[[15,'15m'],[30,'30m'],[60,'60m'],[120,'2h'],['nwd','NWD']];
-    const pickerHtml=isSnoozePick
-      ?`<div style="width:100%;display:flex;gap:5px;padding:4px 0 2px;flex-wrap:wrap" onclick="event.stopPropagation()">`+
-        snoozeOpts.map(([v,lbl])=>
-          `<button onclick="event.stopPropagation();snoozeCb(${c.id},'${v}')" style="background:none;border:1px solid rgba(245,158,11,.3);border-radius:4px;color:var(--amber);font-size:10px;font-weight:600;padding:2px 9px;cursor:pointer;font-family:var(--mono);transition:background .1s" onmouseover="this.style.background='rgba(245,158,11,.12)'" onmouseout="this.style.background='none'">${lbl}</button>`
-        ).join('')+`</div>`
-      :'';
-    return`<div class="alert-item" onclick="openCallFromAlert(${c.id})" title="Click to go to Follow-Up" style="flex-wrap:wrap">` +
-      `<span class="alert-item-time">${label}</span>` +
-      `<span>${name}${c.notes?' — '+c.notes:''}</span>` +
-      `<span style="margin-left:auto;display:flex;align-items:center;gap:6px">` +
-      `<button onclick="event.stopPropagation();showSnoozePicker(${c.id})" title="Snooze" style="background:${isSnoozePick?'rgba(245,158,11,.15)':'none'};border:1px solid ${isSnoozePick?'rgba(245,158,11,.4)':'rgba(245,158,11,.2)'};border-radius:4px;color:var(--amber);font-size:11px;padding:1px 6px;cursor:pointer;line-height:1.4">💤</button>` +
-      `<span style="font-size:10px;opacity:.5">↗ open</span>` +
-      `</span>` +
-      pickerHtml+
-      `</div>`;
+
+  document.getElementById('alert-title').textContent = fresh.length === 1 ? 'Follow-up due' : fresh.length + ' follow-ups due';
+  document.getElementById('alert-items').innerHTML = fresh.map(function(c){
+    var t = alertTimeLabel(c, now);
+    var name = c.cbName || c.cbPhone || (c.acctRaw ? maskAcct(c.acctRaw) : '') || 'Unknown';
+    var sub = [c.cbName && c.cbPhone ? fmtPhone(String(c.cbPhone)) : '', c.fuType && c.fuType !== 'Callback' ? c.fuType : ''].filter(Boolean).join(' · ');
+    var pulse = !_alertPulsed[c.id];
+    return '<div class="alert-new' + (pulse ? ' pulse' : '') + '">' +
+      '<div class="alert-new-top"><span class="alert-new-name">' + alertEsc(name) + '</span>' +
+        (sub ? '<span style="font-size:11px;color:var(--text3)">' + alertEsc(sub) + '</span>' : '') +
+        '<span class="alert-item-time' + (t.overdue ? ' overdue' : '') + '" style="margin-left:auto">' + t.text + '</span></div>' +
+      (c.notes ? '<div class="alert-new-notes">' + alertEsc(c.notes) + '</div>' : '') +
+      '<div class="alert-actions">' +
+        '<button class="alert-btn primary" onclick="openCallFromAlert(' + c.id + ')">↗ Open</button>' +
+        '<button class="alert-btn" onclick="showSnoozePicker(' + c.id + ')">💤 Snooze</button>' +
+        '<button class="alert-btn" onclick="alertMarkSeen([' + c.id + '])">✓ Got it</button>' +
+      '</div>' + alertSnoozeRow(c) +
+    '</div>';
   }).join('');
-  // Only re-render table when alert state changes (new alert appearing)
+  fresh.forEach(function(c){ if(!_alertPulsed[c.id]) setTimeout(function(){ _alertPulsed[c.id] = true; }, 3400); });
+
+  document.getElementById('alert-older').innerHTML = !older.length ? '' :
+    '<button class="alert-older-toggle" onclick="_alertOlderOpen=!_alertOlderOpen;checkAlerts()">' +
+      (_alertOlderOpen ? '▴ Hide' : '+' + older.length) + ' older follow-up' + (older.length === 1 ? '' : 's') + (_alertOlderOpen ? '' : ' ▾') + '</button>' +
+    (_alertOlderOpen ? '<div style="display:flex;flex-direction:column;gap:2px;margin-top:4px">' + older.map(function(c){
+      var t = alertTimeLabel(c, now);
+      var name = c.cbName || c.cbPhone || (c.acctRaw ? maskAcct(c.acctRaw) : '') || 'Unknown';
+      return '<div class="alert-item" onclick="openCallFromAlert(' + c.id + ')" title="Open in Follow-Ups">' +
+        '<span class="alert-item-time' + (t.overdue ? ' overdue' : '') + '">' + t.text + '</span>' +
+        '<span class="alert-item-text">' + alertEsc(name + (c.notes ? ' — ' + c.notes : '')) + '</span>' +
+        '<button class="alert-btn" style="height:22px;padding:0 7px" onclick="event.stopPropagation();showSnoozePicker(' + c.id + ')" title="Snooze">💤</button>' +
+        alertSnoozeRow(c) +
+      '</div>';
+    }).join('') + '</div>' : '');
+
+  alertBar.classList.add('visible');
   if(!wasVisible){
-    alertBar.classList.add('visible');
-    const active=document.activeElement;
-    const isTyping=active&&(active.tagName==='TEXTAREA'||active.tagName==='INPUT'||active.tagName==='SELECT');
-    // Also block if form has any content in progress — notes/acct/rev etc.
-    const formHasContent = !!(
-      (document.getElementById('f-acct')&&document.getElementById('f-acct').value.trim()) ||
-      (document.getElementById('f-notes')&&document.getElementById('f-notes').value.trim()) ||
-      (document.getElementById('f-rev')&&document.getElementById('f-rev').value.trim()) ||
+    // Refresh the call table's due-soon states, unless a call is being entered
+    var active = document.activeElement;
+    var isTyping = active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT' || active.tagName === 'SELECT');
+    var formHasContent = !!(
+      (document.getElementById('f-acct') && document.getElementById('f-acct').value.trim()) ||
+      (document.getElementById('f-notes') && document.getElementById('f-notes').value.trim()) ||
+      (document.getElementById('f-rev') && document.getElementById('f-rev').value.trim()) ||
       xmVal > 0 || prods.tv || prods.chsi || prods.cdv || prods.xh || cbOpen
     );
     if(!isTyping && !formHasContent) render();
-  } else {
-    alertBar.classList.add('visible');
   }
 }
-if(!XCL_VIEW) xclWhenPrimary(function(){ setInterval(checkAlerts, 30000); }); // alerts run in one full tracker only
+// Alerts run in one full tracker only: once at start (cached calls), then every 30s
+if(!XCL_VIEW) xclWhenPrimary(function(){ setTimeout(checkAlerts, 1000); setInterval(checkAlerts, 30000); });
 document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});
 function fmtPhone(raw){
   // Strip country code: +1 or leading 1 before a 10-digit number
@@ -4571,29 +4769,116 @@ function onPhonePaste(e){
 }
 document.addEventListener('paste',onPhonePaste,true);
 
-function dismissAlerts(){alertDismissed=Date.now()+15*60000;document.getElementById('alert-bar').classList.remove('visible');}
-
-function dismissUntilNext(){
-  var now=Date.now();
-  var maxW=Math.max.apply(null,window._alertWindows||[15]);
-  var future=calls.filter(function(c){
-    if(!c.cbTime||c.cbDone||c.mood===MOOD_EMOJIS[0])return false;
-    if(c.cbSnoozeUntil&&new Date(c.cbSnoozeUntil)>new Date(now))return false;
-    return new Date(c.cbTime).getTime()>now;
-  });
-  future.sort(function(a,b){return new Date(a.cbTime)-new Date(b.cbTime);});
-  var next=future[0];
-  if(next){
-    var fireAt=new Date(next.cbTime).getTime()-maxW*60000;
-    alertDismissed=Math.max(fireAt,now+60000);
-    var t=new Date(next.cbTime);
-    var timeStr=t.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
-    _showToast('🔕 Snoozed until '+timeStr+' callback','ok',3000);
-  } else {
-    alertDismissed=now+8*60*60000;
-    _showToast('🔕 No upcoming callbacks — snoozed 8 hours','ok',3000);
+// ── Right-click menu: just Cut / Copy / Paste, and only where they apply ──
+// Text fields: Cut + Copy when text is selected, Paste when editable. Selected page text: Copy.
+// Anywhere else no menu opens. Shift + right-click still opens the browser's own menu.
+const CTX_TEXT_TYPES=['text','search','tel','url','email','number',''];
+function ctxEditable(el){
+  if(!el||!el.tagName)return null;
+  if(el.tagName==='TEXTAREA')return el;
+  if(el.tagName==='INPUT'&&CTX_TEXT_TYPES.includes((el.getAttribute('type')||'').toLowerCase()))return el;
+  const ce=el.closest&&el.closest('[contenteditable=""],[contenteditable="true"]');
+  return ce||null;
+}
+function ctxFieldSelection(el){
+  if(el.isContentEditable){const s=el.ownerDocument.getSelection();return s&&el.contains(s.anchorNode)?s.toString():'';}
+  try{return el.value.slice(el.selectionStart,el.selectionEnd);}catch(e){return '';} // number inputs have no selection API
+}
+function ctxClose(doc){
+  const m=(doc||document).getElementById('xcl-ctx');
+  if(m)m.remove();
+}
+function onCtxMenu(e){
+  const doc=e.target.ownerDocument||document;
+  ctxClose(doc);
+  if(e.shiftKey)return;                                   // escape hatch: the browser's own menu
+  if(doc===document&&e.target.closest&&e.target.closest('#sched-reminder')){   // right-click the shift reminder: edit the schedule
+    e.preventDefault();
+    toggleSchedule(true);
+    return;
   }
-  document.getElementById('alert-bar').classList.remove('visible');
+  const field=ctxEditable(e.target);
+  const items=[];
+  if(field){
+    const locked=field.readOnly||field.disabled;
+    const sel=ctxFieldSelection(field);
+    if(sel&&!locked&&field.type!=='number')items.push(['cut','Cut','Ctrl+X']);
+    if(sel)items.push(['copy','Copy','Ctrl+C']);
+    if(!locked)items.push(['paste','Paste','Ctrl+V']);
+  } else {
+    const s=doc.getSelection();   // only when the right-click lands on the selected text itself
+    if(s&&s.rangeCount&&s.toString().trim()&&s.containsNode(e.target,true))items.push(['copy','Copy','Ctrl+C']);
+  }
+  e.preventDefault();
+  if(!items.length)return;
+  const W=doc.defaultView||window;
+  const scale=(doc===document&&typeof APP_SCALE==='number')?APP_SCALE:1;   // the main page is zoomed; the pop-out isn't
+  const m=doc.createElement('div');
+  m.id='xcl-ctx';
+  m.setAttribute('role','menu');
+  m.style.cssText='position:fixed;z-index:100000;min-width:150px;padding:4px;background:var(--card);border:1px solid var(--border2);border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.35);font-family:var(--sans)';
+  m.innerHTML=items.map(it=>'<button type="button" role="menuitem" data-act="'+it[0]+'" style="display:flex;justify-content:space-between;align-items:center;gap:18px;width:100%;padding:6px 10px;border:none;border-radius:6px;background:none;color:var(--text);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left" onmouseover="this.style.background=\'var(--blue-lt)\'" onmouseout="this.style.background=\'none\'">'+it[1]+'<span style="font-size:10px;font-weight:500;color:var(--text3)">'+it[2]+'</span></button>').join('');
+  // Keep focus and the selection in the field while the menu is clicked
+  m.addEventListener('mousedown',ev=>ev.preventDefault());
+  m.addEventListener('click',ev=>{
+    const b=ev.target.closest('button[data-act]');
+    if(!b)return;
+    ctxClose(doc);
+    ctxRun(b.dataset.act,field,doc);
+  });
+  doc.body.appendChild(m);
+  const vw=W.innerWidth/scale, vh=W.innerHeight/scale, r=m.getBoundingClientRect();
+  const mw=r.width/scale, mh=r.height/scale;
+  m.style.left=Math.max(4,Math.min(e.clientX/scale,vw-mw-4))+'px';
+  m.style.top=Math.max(4,Math.min(e.clientY/scale,vh-mh-4))+'px';
+}
+async function ctxRun(act,field,doc){
+  const W=doc.defaultView||window;
+  if(act==='cut'||act==='copy'){
+    const text=field?ctxFieldSelection(field):(doc.getSelection()||'').toString();
+    if(doc.execCommand(act))return;                        // native: keeps undo history and fires input events
+    try{await W.navigator.clipboard.writeText(text);}catch(e){}
+    if(act==='cut'&&field&&!field.isContentEditable){
+      field.setRangeText('',field.selectionStart,field.selectionEnd,'end');
+      field.dispatchEvent(new W.Event('input',{bubbles:true}));
+    }
+    return;
+  }
+  if(act==='paste'&&field){
+    let text;
+    try{text=await W.navigator.clipboard.readText();}
+    catch(e){if(typeof _showToast==='function')_showToast('Allow clipboard access to paste here, or press Ctrl+V','warn',3500);return;}
+    if(!text)return;
+    field.focus();
+    // Same path as Ctrl+V first, so field paste handlers (phone formatting) still run
+    let handled=false;
+    try{
+      const dt=new W.DataTransfer();dt.setData('text/plain',text);
+      handled=!field.dispatchEvent(new W.ClipboardEvent('paste',{clipboardData:dt,bubbles:true,cancelable:true}));
+    }catch(e){}
+    if(handled)return;
+    if(doc.execCommand('insertText',false,text))return;
+    if(!field.isContentEditable){
+      field.setRangeText(text,field.selectionStart,field.selectionEnd,'end');
+      field.dispatchEvent(new W.Event('input',{bubbles:true}));
+    }
+  }
+}
+function ctxInstall(doc){
+  const W=doc.defaultView||window;
+  doc.addEventListener('contextmenu',onCtxMenu);
+  doc.addEventListener('mousedown',e=>{const m=doc.getElementById('xcl-ctx');if(m&&!m.contains(e.target))ctxClose(doc);},true);
+  doc.addEventListener('keydown',e=>{if(e.key==='Escape')ctxClose(doc);});
+  W.addEventListener('blur',()=>ctxClose(doc));
+  W.addEventListener('resize',()=>ctxClose(doc));
+  doc.addEventListener('scroll',()=>ctxClose(doc),true);
+}
+ctxInstall(document);
+
+// ✕ on the alert card: "Got it" for every new alert (they move to the older line; the card closes)
+function dismissAlerts(){
+  var now=Date.now();
+  alertMarkSeen(alertDueCalls(now).filter(alertIsNew).map(function(c){return c.id;}));
 }
 function checkResurfaced(){
   if(window._resurfacedDismissed) return;
@@ -4916,6 +5201,18 @@ function onFuTypeChange(){
   updateCbDisplay();
 }
 
+// Pop-out panels (follow-up scheduling, no-sale) line up with the right edge of the Call Logger they came from:
+// the new-call card, or the edit panel when a past call is open. Returns a CSS `right` for a position:fixed panel.
+function popRightInCard(anchor, container, inset){
+  inset = inset == null ? 8 : inset;
+  const card = container || (anchor && (anchor.closest('.form-card') || anchor.closest('#edit-panel'))) || document.getElementById('new-call-form-card');
+  if(!card) return '8px';
+  const r = card.getBoundingClientRect();
+  if(!r.width) return '8px';
+  // clientWidth leaves out the page scrollbar, which a fixed panel's `right` is measured from
+  return Math.max(8, (document.documentElement.clientWidth - r.right) / APP_SCALE + inset) + 'px';   // rects are screen px; style px are scaled
+}
+
 function toggleCb(){
   cbOpen = !cbOpen;
   document.getElementById('cb-toggle').classList.toggle('active', cbOpen);
@@ -4935,7 +5232,7 @@ function toggleCb(){
       panel.style.top = ((rect.bottom + 8) / z) + 'px';
       panel.style.bottom = 'auto';
     }
-    panel.style.right = '8px';
+    panel.style.right = popRightInCard(btn);
     panel.style.left = 'auto';
     // Reset type to Callback and update UI
     var typeSel = document.getElementById('f-fu-type');
@@ -5912,42 +6209,110 @@ function set2ndSwing(id){
   setTimeout(renderCallbacksTab,300);
 }
 
+// Reopening a red-flag resolution undoes it: the chargeback comes back off next month, the exception's credit
+// returns. Returns false if the user cancels.
+function rfUndoResolution(c){
+  if(!(c.chargedBack || c.isException)) return true;
+  var what=c.chargedBack?'chargeback':'exception';
+  if(!confirm('Reopen this red flag and undo the '+what+'?')) return false;
+  if(c.chargedBack){
+    var applied=cbAppliedLoad(), a=applied[c.id];
+    if(a){ cbAdjustMonth(a.month, a.amounts, -1); delete applied[c.id]; localStorage.setItem(cbAppliedKey(), JSON.stringify(applied)); cbSyncBundle(); }
+  }
+  c.chargedBack=false; c.isException=false; c.cb2ndSwing=false;
+  return true;
+}
+
 function revert2ndSwing(id){
   var c=calls.find(function(x){return String(x.id)===String(id);});
   if(!c) return;
+  if(!rfUndoResolution(c)) return;   // older red flags that went through 2nd Swing
   c.cb2ndSwing=false;
   saveCallsCache(); upsertCallToSheets(c);
+  render(); updateStats(); checkAlerts();
   setTimeout(renderCallbacksTab,300);
 }
 
+// ── Red flag resolutions (each one ends the follow-up's alerts) ──
+// Payments OK: follow-up closed, the logged sale is left exactly as it was.
 function clearRedFlag(id){
   var c=calls.find(function(x){return String(x.id)===String(id);});
   if(!c) return;
-  c.mood=MOOD_EMOJIS[5];
+  c.cbDone=true;
   saveCallsCache(); upsertCallToSheets(c);
   _showToast('✓ Payments confirmed — follow-up closed','ok',2500);
-  render(); setTimeout(renderCallbacksTab,300);
+  render(); checkAlerts(); setTimeout(renderCallbacksTab,300);
 }
 
+// Fiscal month label after the given one ("September 2026" → "October 2026")
+function nextFiscalMonthLabel(label){
+  var names=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var p=String(label||getFiscalMonth()).match(/([A-Za-z]+)\s+(\d{4})/);
+  if(!p) return getFiscalMonth();
+  var m=names.indexOf(p[1]), y=+p[2];
+  return m===11 ? 'January '+(y+1) : names[m+1]+' '+y;
+}
+
+// Chargebacks applied from red flags: {callId: {month, amounts}} so a Reopen can take them back out.
+// Stored under the agent's xcl_cb_ prefix, so it syncs with the other chargeback records.
+function cbAppliedKey(){ return 'xcl_cb_'+getCurrentAgentId()+'_applied'; }
+function cbAppliedLoad(){ try{ return JSON.parse(localStorage.getItem(cbAppliedKey())||'{}'); }catch(e){ return {}; } }
+
+// Add (sign +1) or remove (sign -1) a sale's units in a month's chargeback record
+function cbAdjustMonth(month, amounts, sign){
+  var key=getCbKey(month), cur;
+  try{ cur=JSON.parse(localStorage.getItem(key)||'{}'); }catch(e){ cur={}; }
+  var map={rev:'cbRev', xm:'cbXm', tv:'cbTv', chsi:'cbChsi', cdv:'cbCdv', xh:'cbXh'};
+  Object.keys(map).forEach(function(k){
+    var v=Math.round(((+cur[map[k]]||0) + sign*(+amounts[k]||0))*100)/100;
+    cur[map[k]]=Math.max(0, v);
+  });
+  localStorage.setItem(key, JSON.stringify(cur));
+}
+
+// Chargeback records aren't part of a call, so they sync on their own (personal settings merge per agent)
+function cbSyncBundle(){
+  var id=getCurrentAgentId();
+  if(!getSheetsUrl() || !hasSalesId()) return;
+  var bundle={};
+  for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k && k.indexOf('xcl_cb_'+id+'_')===0) bundle[k]=localStorage.getItem(k); }
+  sheetsPost({action:'saveSettings', agentId:id, personal:JSON.stringify({chargebacks:bundle})}).catch(function(){});
+}
+
+// Charged back: the sale stays in this month, and its units come off next fiscal month (you start it behind)
 function markChargeback(id){
   var c=calls.find(function(x){return String(x.id)===String(id);});
   if(!c) return;
+  var applied=cbAppliedLoad();
+  if(!applied[c.id]){
+    var month=nextFiscalMonthLabel(getFiscalMonth());
+    var amounts={rev:+c.rev||0, xm:+c.xm||0, tv:c.tv?1:0, chsi:+c.chsiRgu||0, cdv:c.cdv?1:0, xh:c.xh?1:0};
+    cbAdjustMonth(month, amounts, 1);
+    applied[c.id]={month:month, amounts:amounts};
+    localStorage.setItem(cbAppliedKey(), JSON.stringify(applied));
+    cbSyncBundle();
+  }
   c.chargedBack=true;
-  c.cb2ndSwing=true;
+  c.cbDone=true;          // red flag resolutions close the follow-up (no 2nd Swing step)
   saveCallsCache(); upsertCallToSheets(c);
-  _showToast('💸 Chargeback recorded — sale removed from stats','warn',3500);
-  render(); updateStats(); setTimeout(renderCallbacksTab,300);
+  var mo=(applied[c.id]||{}).month||nextFiscalMonthLabel();
+  _showToast('💸 Chargeback recorded — these units come off '+mo,'warn',4000);
+  render(); updateStats(); checkAlerts(); setTimeout(renderCallbacksTab,300);
 }
 
+// Exception: per a business rule no credit was received, so the sale gives no credit
 function markException(id){
   var c=calls.find(function(x){return String(x.id)===String(id);});
   if(!c) return;
   c.isException=true;
-  c.cb2ndSwing=true;
+  c.cbDone=true;          // red flag resolutions close the follow-up (no 2nd Swing step)
   saveCallsCache(); upsertCallToSheets(c);
-  _showToast('⚠️ Exception recorded — sale excluded from stats','warn',3500);
-  render(); updateStats(); setTimeout(renderCallbacksTab,300);
+  _showToast('⚠️ Exception recorded — no credit for this sale','warn',3500);
+  render(); updateStats(); checkAlerts(); setTimeout(renderCallbacksTab,300);
 }
+
+// Sales that count toward your credit (goals, revenue, RGUs): exceptions don't
+function creditCalls(list){ return list.filter(function(c){ return !c.isException; }); }
 function fmtR(v){return Number.isInteger(v)?String(v):v.toFixed(2);}
 function fmtCb(iso){if(!iso)return'';const d=new Date(iso);return d.toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}
 function cbStatus(c){if(!c.cbTime)return null;if(c.cbDone)return'done';const ms=new Date(c.cbTime).getTime()-Date.now();if(ms<0)return'overdue';const maxW=Math.max(...(window._alertWindows||[15]));if(ms<maxW*60000)return'due-soon';return'pending';}
@@ -6285,15 +6650,16 @@ function updateStats(){
   // ── Filter calls for the active fiscal period ────────────────────────────
   const today = new Date().toDateString();
   const td    = calls.filter(c => c.ts.toDateString() === today && !c.cbSale);  // call count only
-  const tdAll = calls.filter(c => c.ts.toDateString() === today);                   // RGUs/sales/rev incl cbSale
+  const tdAll = creditCalls(calls.filter(c => c.ts.toDateString() === today));      // RGUs/sales/rev incl cbSale (no exceptions)
 
+  // Credit totals leave out exception sales in every view
   let mc;
   if (statsView === 'installs') {
-    mc = calls.filter(c => c.hasSale && inActiveFiscal(c.sched) && !c.isException);
+    mc = creditCalls(calls.filter(c => c.hasSale && inActiveFiscal(c.sched)));
   } else if (statsView === 'pipeline') {
-    mc = calls.filter(c => c.hasSale && inNextFiscal(c.sched));
+    mc = creditCalls(calls.filter(c => c.hasSale && inNextFiscal(c.sched)));
   } else {
-    mc = calls.filter(c => inActiveFiscalTs(c.ts));
+    mc = creditCalls(calls.filter(c => inActiveFiscalTs(c.ts)));
   }
 
   const allFiscal = calls.filter(c => inActiveFiscalTs(c.ts));
@@ -6316,7 +6682,7 @@ function updateStats(){
   const mChsi = _mChsi - (apCB ? CB.chsi : 0);
   const mCdv  = _mCdv  - (apCB ? CB.cdv  : 0);
   const mXh   = _mXh   - (apCB ? CB.xh   : 0);
-  const mRgus = _mRgus - (apCB ? ((CB.xm>0?1:0)+CB.tv+CB.chsi+CB.cdv+CB.xh) : 0);
+  const mRgus = _mRgus - (apCB ? (CB.xm+CB.tv+CB.chsi+CB.cdv+CB.xh) : 0);   // each XM line is an RGU
 
   // ── Update monthly stat cards ────────────────────────────────────────────
   const fmtMoney = v => (v < 0 ? '-$' + Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})
@@ -6651,10 +7017,12 @@ function getFiscalKey(type, cap, month){
   return 'xcl_goals_'+t+'_cap'+c+'_'+m.replace(' ','');
 }
 
+// The stored Sales ID is the only source of the agent. There is no guest mode: with no ID the tracker asks for
+// one (showSalesIdPrompt) and nothing agent-specific is saved. 'guest' is just the "no ID yet" marker.
 function getCurrentAgentId(){
-  // Always prefer localStorage directly — _session may not be set yet at startup
-  return localStorage.getItem('xcl_sales_id') || (_session && _session.agentId) || 'guest';
+  return localStorage.getItem('xcl_sales_id') || 'guest';
 }
+function hasSalesId(){ return !!localStorage.getItem('xcl_sales_id'); }
 
 // ── Per-agent settings ───────────────────────────────────────────────────────
 // Schedules and cap level/type are unique per agent, so on a shared browser they
@@ -6675,6 +7043,7 @@ function loadAgentShift(id){
 }
 
 function saveAgentShift(shift, id){
+  if(!id && !hasSalesId()) return;   // no Sales ID yet: nothing to save it under
   var clean = {};
   if(shift.schedule === '5x8' || shift.schedule === '4x10') clean.schedule = shift.schedule;
   if(Array.isArray(shift.workDays)) clean.workDays = shift.workDays;
@@ -6806,7 +7175,23 @@ function toggleSettings(){
   const p=document.getElementById('settings-panel');
   const ov=document.getElementById('settings-overlay');
   const opening=!p.classList.contains('open');
-  if(!opening){ nsCommitEditorToCats(); } // commit any in-progress outcome edits on close
+  if(!opening){
+    nsCommitEditorToCats(); // commit any in-progress outcome edits on close
+    // Unsaved no-sale reason edits: they're shared, so save them on purpose or put them back
+    if(_nsOpenSnapshot !== null && JSON.stringify(NO_SALE_CATS) !== _nsOpenSnapshot){
+      if(confirm('Save your changes to the no-sale reasons?\n\nThey\'re shared with everyone.\nCancel puts the reasons back the way they were.')){
+        saveSettings();          // saves and closes the panel
+        _nsOpenSnapshot = null;
+        return;
+      }
+      const prev = JSON.parse(_nsOpenSnapshot);
+      Object.keys(NO_SALE_CATS).forEach(k => delete NO_SALE_CATS[k]);
+      Object.assign(NO_SALE_CATS, prev);
+    }
+    _nsOpenSnapshot = null;
+  } else {
+    _nsOpenSnapshot = JSON.stringify(NO_SALE_CATS);
+  }
   p.classList.toggle('open');
   if(ov) ov.style.display=opening?'block':'none';
   if(opening){
@@ -6917,9 +7302,10 @@ function saveSettings(){
   if(JSON.stringify(s.alertWindows) !== JSON.stringify(prevGlobal.alertWindows||[15])){
     changedSections.push('🔔 Alerts · '+s.alertWindows.join('/')+'min');
   }
-  // Outcomes / no-sale changed?
-  if(JSON.stringify(s.outcomes) !== JSON.stringify(prevGlobal.outcomes||[]) ||
-     JSON.stringify(s.noSaleCats) !== JSON.stringify(prevGlobal.noSaleCats||{})){
+  // Outcomes / no-sale changed? (no-sale: compared with the list as it was when Settings opened, so a first
+  // save on a new computer doesn't stamp the defaults as the newest shared copy)
+  const nsChanged = _nsOpenSnapshot !== null && JSON.stringify(s.noSaleCats) !== _nsOpenSnapshot;
+  if(JSON.stringify(s.outcomes) !== JSON.stringify(prevGlobal.outcomes||[]) || nsChanged){
     changedSections.push('📋 Outcomes');
   }
   // Sheets URL changed?
@@ -6948,11 +7334,13 @@ function saveSettings(){
   saveAgentShift({schedule:s.schedule, workDays:s.workDays});
   delete globalFields.schedule; delete globalFields.workDays;
   globalFields.settingsVersion = SETTINGS_VERSION;
+  globalFields.noSaleCatsUpdatedAt = nsChanged ? Date.now() : (+prevGlobal.noSaleCatsUpdatedAt || 0);
+  if(_nsOpenSnapshot !== null) _nsOpenSnapshot = JSON.stringify(s.noSaleCats);   // saved: no longer "unsaved"
   localStorage.setItem('xcl_settings', JSON.stringify(globalFields));
   localStorage.setItem('xcl_settings_version', String(SETTINGS_VERSION));
   saveColorSettings();
   // Push full merged settings to Sheets for multi-user sharing
-  if(getSheetsUrl()) pushSettingsToSheets(Object.assign({}, goalFields, cbFields, globalFields, {schedule:s.schedule, workDays:s.workDays, settingsVersion: SETTINGS_VERSION}));
+  if(getSheetsUrl()) pushSettingsToSheets(Object.assign({}, goalFields, cbFields, globalFields, {schedule:s.schedule, workDays:s.workDays, settingsVersion: SETTINGS_VERSION}), nsChanged);
   applySettings(s);
   saveUserProfile(); // persist cap+type with settings
   updateStats();
@@ -6977,7 +7365,7 @@ function saveSettings(){
 // (promos, theme, celebration, tips, Discovery edits, Sales ID, Sheets URL, goals,
 // chargebacks, PTO, schedule, disputes, cap level). Calls re-download from Sheets.
 var CLEAR_CACHE_KEYS     = ['xcl_user_cache','xcl_session','xcl_token','xcl_debug','xcl_cap_not_set'];
-var CLEAR_CACHE_PREFIXES = ['xcl_calls_cache'];
+var CLEAR_CACHE_PREFIXES = ['xcl_calls_cache', 'xcl_calls_synced_'];
 
 function clearAppCacheAndReload(){
   if(!confirm('This will clear cached app data and reload the latest version.\n\nKept: your settings, promos, theme, goals, schedule, Sales ID, and Sheets connection.\nYour call history in Google Sheets is NOT affected.\n\nContinue?')) return;
@@ -7438,13 +7826,18 @@ function upsertCallToSheets(call) {
   payload.ts = call.ts instanceof Date ? call.ts.toISOString() : call.ts;
 
   _showToast('Saving to sheet…', 'syncing');
+  var cid = String(call.id);
+  _unsyncedIds.add(cid);
 
   sheetsPost({ action: 'upsert', call: payload })
     .then(function() {
+      _unsyncedIds.delete(cid);
       _showToast('✓ Saved to sheet', 'ok', 2500);
     })
     .catch(function(err) {
-      _showToast('✗ Sheet save failed — ' + (err.message || 'check connection'), 'err', 5000);
+      // Kept in memory; the next successful sync uploads it (and the retry keeps trying)
+      _showToast('✗ Sheet save failed — ' + (err.message || 'check connection') + '. Keep the tracker open until it uploads.', 'err', 6000);
+      if(!XCL_VIEW && !XCL_IS_DUPLICATE && !_sheetsRetry.timer) sheetsLoadFailed(err.message || 'Sheet save failed');
     });
 }
 
@@ -7548,13 +7941,14 @@ function normalizeCall(sc){
 function loadFromSheets(){
   const url = getSheetsUrl();
   if(!url) return;
+  if(!hasSalesId()) return;   // no Sales ID yet: the prompt is up, and there's no one to load calls for
   _syncShow('Loading from Google Sheets\u2026', '', 0);
 
   sheetsGet({action:'load', agentId: getCurrentAgentId()})
   .then(d => {
     if(d.status !== 'ok'){
       _syncHide();
-      setSheetsStatus('✗ '+(d.message||'Sync failed'), 'var(--red)');
+      sheetsLoadFailed(d.message || 'Sync failed');
       return;
     }
     _syncShow('Merging calls\u2026', '', 60);
@@ -7571,6 +7965,9 @@ function loadFromSheets(){
     let pulled = 0;
     sheetMap.forEach((sc, id) => {
       if(!localMap.has(id)){ localMap.set(id, sc); pulled++; }
+      else if(_unsyncedIds.has(id)){
+        upsertCallToSheets(localMap.get(id));   // edited here but the upload failed: this copy is newer, send it again
+      }
       else {
         // Sheet wins for all fields, but rescue callback data if sheet lost it
         const lc = localMap.get(id);
@@ -7581,9 +7978,14 @@ function loadFromSheets(){
         localMap.set(id, sc);
       }
     });
+    // Calls here but not in the sheet: push ones logged since the last good sync (or never synced);
+    // older ones were removed from the sheet, so drop them instead of bringing them back.
+    const lastSync = +localStorage.getItem(callsSyncedKey()) || 0;
     let pushed = 0;
     localMap.forEach((lc, id) => {
-      if(!sheetMap.has(id)){ upsertCallToSheets(lc); pushed++; }
+      if(sheetMap.has(id)) return;
+      if(!lastSync || (+lc.id || 0) > lastSync - 10*60000){ upsertCallToSheets(lc); pushed++; }
+      else localMap.delete(id);
     });
 
     calls = [...localMap.values()].sort((a,b) => new Date(b.ts) - new Date(a.ts));
@@ -7593,6 +7995,9 @@ function loadFromSheets(){
     saveCallsCache();
     buildFiscalHistoryDropdown();
     checkResurfaced();
+    try{ localStorage.setItem(callsSyncedKey(), String(Date.now())); }catch(e){}
+    _sheetsRetry.n = 0; clearTimeout(_sheetsRetry.timer);
+    if(!XCL_VIEW && !XCL_IS_DUPLICATE) checkAlerts();   // calls just arrived: don't wait for the 30s tick
 
     _syncShow('Sync complete',
       '\u2713 ' + calls.length + ' calls loaded' +
@@ -7606,8 +8011,21 @@ function loadFromSheets(){
   })
   .catch(err => {
     _syncHide();
-    setSheetsStatus('✗ '+err.message, 'var(--red)');
+    sheetsLoadFailed(err.message);
   });
+}
+
+// A failed load retries on its own (15s, 30s, 1m, 2m, then every 5m) — the Apps Script errors come and go.
+// Calls already in memory stay in use meanwhile; nothing is saved on the PC.
+var _sheetsRetry = {n:0, timer:null};
+function sheetsLoadFailed(msg){
+  var delays = [15, 30, 60, 120], wait = _sheetsRetry.n < delays.length ? delays[_sheetsRetry.n] : 300;
+  _sheetsRetry.n++;
+  var note = _unsyncedIds.size ? ' · ' + _unsyncedIds.size + ' call' + (_unsyncedIds.size === 1 ? '' : 's') + ' waiting to upload — keep the tracker open' : '';
+  setSheetsStatus('✗ ' + msg + note + ' · retrying in ' + (wait >= 60 ? (wait / 60) + 'm' : wait + 's'), 'var(--red)');
+  clearTimeout(_sheetsRetry.timer);
+  if(XCL_VIEW || XCL_IS_DUPLICATE) return;
+  _sheetsRetry.timer = setTimeout(loadFromSheets, wait * 1000);
 }
 
 /* ── Theme color system ── */
@@ -7734,6 +8152,7 @@ function switchTab(tab){
     buildReconFiscalOptions();
     setReconType(_reconType);
   }
+  if(typeof trApplyView === 'function') trApplyView(); // Talk Track moves between the Tracker tab and Job Aids
 }
 
 /* ── Reports ── */
@@ -7908,7 +8327,7 @@ function renderTrends(){
   for(let i=0;i<sortedDays.length;i++){if(byDate[sortedDays[i]].sales>0)streak++;else break;}
 
   const fiscalCalls = mc.filter(c=>inActiveFiscalTs(c.ts)&&!c.cbSale);
-  const fiscalSales = fiscalCalls.filter(c=>c.hasSale);
+  const fiscalSales = creditCalls(fiscalCalls.filter(c=>c.hasSale));   // credited sales (no exceptions)
   const fiscalRev = fiscalSales.reduce((s,c)=>s+c.rev,0);
   const fiscalDays = dayKeys.filter(d=>{const dt=new Date(byDate[d].ts);return dt>=fi.fiscalStart&&dt<=fi.fiscalEnd;}).length;
   const daysLeft = Math.max(0,Math.ceil((fi.fiscalEnd-now)/86400000));
@@ -7951,7 +8370,7 @@ function renderTrends(){
   const todayStr=now.toDateString();
   const todayCalls=mc.filter(c=>c.ts.toDateString()===todayStr&&!c.cbSale); // call count only
   const todayAll=mc.filter(c=>c.ts.toDateString()===todayStr);              // incl cbSale for stats
-  const todaySales=todayAll.filter(c=>c.hasSale);
+  const todaySales=creditCalls(todayAll.filter(c=>c.hasSale));
   const todayRev=todaySales.reduce((s,c)=>s+c.rev,0);
   const todayRgus=todaySales.reduce((s,c)=>s+c.rgus,0);
 
@@ -9491,7 +9910,7 @@ function downloadReconCSV(){
 }
 
 function openCallFromAlert(id){
-  dismissAlerts();
+  // Opening doesn't clear the alert: it stays new until Got it, a snooze, or the follow-up is resolved
   var needsRender = false;
   if(_activeTab !== 'callbacks'){
     switchTab('callbacks');
@@ -10258,11 +10677,11 @@ function renderNsCatEditor(){
     hlabel.className = 'ns-ed-cat-label';
     const hinp = document.createElement('input');
     hinp.value = cat;
-    hinp.addEventListener('blur', () => nsRenameCat(cat, hinp.value));
+    hinp.addEventListener('blur', () => nsCatNameBlur(catDiv, hinp));
     hlabel.appendChild(hinp);
     const hdel = document.createElement('button');
     hdel.className = 'ns-ed-cat-del'; hdel.textContent = '×';
-    hdel.addEventListener('click', () => nsDelCat(cat));
+    hdel.addEventListener('click', () => nsDelCat(catDiv));
     hdr.appendChild(hhandle); hdr.appendChild(hlabel); hdr.appendChild(hdel);
     catDiv.appendChild(hdr);
 
@@ -10280,10 +10699,10 @@ function renderNsCatEditor(){
     addRow.className = 'ns-ed-add-reason';
     const addInp = document.createElement('input');
     addInp.placeholder = 'Add reason…';
-    addInp.onkeydown = function(e){ if(e.key==='Enter') nsAddReason(cat, this); };
+    addInp.onkeydown = function(e){ if(e.key==='Enter') nsAddReason(catDiv, this); };
     const addBtn = document.createElement('button');
     addBtn.textContent = '+ Add';
-    addBtn.onclick = () => nsAddReason(cat, addInp);
+    addBtn.onclick = () => nsAddReason(catDiv, addInp);
     addRow.appendChild(addInp);
     addRow.appendChild(addBtn);
     reasonsDiv.appendChild(addRow);
@@ -10308,10 +10727,10 @@ function makeReasonRow(cat, reason){
   handle.className = 'ns-ed-reason-handle'; handle.textContent = '⠿';
   const inp = document.createElement('input');
   inp.value = reason;
-  inp.addEventListener('blur', () => nsRenameReason(cat, reason, inp.value));
+  inp.addEventListener('blur', () => nsReasonBlur(row, inp));
   const del = document.createElement('button');
   del.className = 'ns-ed-reason-del'; del.textContent = '×';
-  del.addEventListener('click', () => nsDelReason(cat, reason));
+  del.addEventListener('click', () => nsDelReason(row));
   row.appendChild(handle); row.appendChild(inp); row.appendChild(del);
   row.addEventListener('dragstart', e => { _nsDragReason = row; e.stopPropagation(); e.dataTransfer.effectAllowed='move'; setTimeout(()=>row.style.opacity='.4',0); });
   row.addEventListener('dragend', () => { row.style.opacity=''; _nsDragReason=null; nsCommitEditorToCats(); });
@@ -10319,19 +10738,21 @@ function makeReasonRow(cat, reason){
   return row;
 }
 
+// The editor on screen is the working copy: every action first copies it into NO_SALE_CATS, then works
+// from the names as they read now (so renaming a category and then adding/deleting still hits it).
 function nsCommitEditorToCats(){
   const ed = document.getElementById('ns-cat-editor');
   if(!ed) return;
   const newCats = {};
   ed.querySelectorAll('.ns-ed-cat').forEach(catDiv => {
-    const catInp = catDiv.querySelector('.ns-ed-cat-label input');
-    const catName = catInp ? catInp.value.trim() : catDiv.dataset.cat;
+    const catName = nsEdCatName(catDiv);
     if(!catName) return;
     const reasons = [...catDiv.querySelectorAll('.ns-ed-reason')].map(r => {
       const inp = r.querySelector('input');
-      return inp ? inp.value.trim() : r.dataset.reason;
+      return (inp ? inp.value.trim() : '') || r.dataset.reason;
     }).filter(Boolean);
-    newCats[catName] = reasons;
+    // Safety net: a repeated name merges instead of wiping the earlier category's reasons
+    newCats[catName] = newCats[catName] ? newCats[catName].concat(reasons.filter(r => !newCats[catName].includes(r))) : reasons;
   });
   // Only update if editor actually had content — empty result means editor was never rendered
   if(Object.keys(newCats).length > 0){
@@ -10340,52 +10761,128 @@ function nsCommitEditorToCats(){
   }
 }
 
-function nsRenameCat(oldName, newName){
-  newName = newName.trim();
-  if(!newName || newName === oldName) return;
-  const reasons = NO_SALE_CATS[oldName] || [];
-  const newCats = {};
-  Object.keys(NO_SALE_CATS).forEach(k => { newCats[k===oldName ? newName : k] = NO_SALE_CATS[k]; });
-  Object.keys(NO_SALE_CATS).forEach(k => delete NO_SALE_CATS[k]);
-  Object.assign(NO_SALE_CATS, newCats);
+// A category's current name (a blank box falls back to its last good name)
+function nsEdCatName(catDiv){
+  const inp = catDiv.querySelector('.ns-ed-cat-label input');
+  return (inp ? inp.value.trim() : '') || catDiv.dataset.cat;
+}
+function nsSameName(a, b){ return a.trim().toLowerCase() === b.trim().toLowerCase(); }
+
+function nsCatNameBlur(catDiv, inp){
+  const name = inp.value.trim(), prev = catDiv.dataset.cat;
+  if(name === prev) return;
+  if(!name){ inp.value = prev; _showToast('A category needs a name. Use × to delete it.', 'warn', 3000); return; }
+  const others = [...document.querySelectorAll('#ns-cat-editor .ns-ed-cat')].filter(d => d !== catDiv);
+  if(others.some(d => nsSameName(nsEdCatName(d), name))){
+    inp.value = prev; _showToast('There\'s already a category named ' + name, 'warn', 3000); return;
+  }
+  inp.value = name;
+  catDiv.dataset.cat = name;
+  nsCommitEditorToCats();
 }
 
-function nsDelCat(cat){
-  delete NO_SALE_CATS[cat];
+function nsReasonBlur(row, inp){
+  const val = inp.value.trim(), prev = row.dataset.reason;
+  if(val === prev) return;
+  if(!val){ inp.value = prev; _showToast('Use × to delete a reason', 'warn', 2500); return; }
+  const siblings = [...row.parentNode.querySelectorAll('.ns-ed-reason')].filter(r => r !== row);
+  if(siblings.some(r => nsSameName(r.querySelector('input').value, val))){
+    inp.value = prev; _showToast('That reason is already in this category', 'warn', 2500); return;
+  }
+  inp.value = val;
+  row.dataset.reason = val;
+  nsCommitEditorToCats();
+}
+
+function nsDelCat(catDiv){
+  nsCommitEditorToCats();
+  const name = nsEdCatName(catDiv), n = (NO_SALE_CATS[name] || []).length;
+  if(n && !confirm('Delete "' + name + '" and its ' + n + ' reason' + (n === 1 ? '' : 's') + '?\n\nNo-sale reasons are shared with everyone once saved.')) return;
+  delete NO_SALE_CATS[name];
   renderNsCatEditor();
 }
 
 function nsAddCat(){
+  nsCommitEditorToCats();
   const inp = document.getElementById('ns-new-cat-input');
   const name = inp.value.trim();
-  if(!name || NO_SALE_CATS[name]) return;
+  if(!name) return;
+  if(Object.keys(NO_SALE_CATS).some(k => nsSameName(k, name))){ _showToast('There\'s already a category named ' + name, 'warn', 3000); return; }
   NO_SALE_CATS[name] = [];
   inp.value = '';
   renderNsCatEditor();
 }
 
-function nsRenameReason(cat, oldR, newR){
-  newR = newR.trim();
-  if(!newR || newR === oldR || !NO_SALE_CATS[cat]) return;
-  NO_SALE_CATS[cat] = NO_SALE_CATS[cat].map(r => r===oldR ? newR : r);
-}
-
-function nsDelReason(cat, reason){
-  if(!NO_SALE_CATS[cat]) return;
-  NO_SALE_CATS[cat] = NO_SALE_CATS[cat].filter(r => r !== reason);
+function nsDelReason(row){
+  row.remove();
+  nsCommitEditorToCats();
   renderNsCatEditor();
 }
 
-function nsAddReason(cat, inp){
-  const val = inp.value.trim();
-  if(!val || !NO_SALE_CATS[cat]) return;
-  NO_SALE_CATS[cat].push(val);
-  inp.value = '';
+function nsAddReason(catDiv, inp){
+  nsCommitEditorToCats();
+  const name = nsEdCatName(catDiv), val = inp.value.trim();
+  if(!val || !NO_SALE_CATS[name]) return;
+  if(NO_SALE_CATS[name].some(r => nsSameName(r, val))){ _showToast('That reason is already in ' + name, 'warn', 2500); return; }
+  NO_SALE_CATS[name].push(val);
   renderNsCatEditor();
+  // keep adding to the same category
+  const again = [...document.querySelectorAll('#ns-cat-editor .ns-ed-cat')].find(d => d.dataset.cat === name);
+  const addInp = again && again.querySelector('.ns-ed-add-reason input');
+  if(addInp) addInp.focus();
 }
 
 
-const SHARED_SETTINGS_KEYS  = ['noSaleCats','noSaleCatsVersion','outcomes','settingsVersion','goals'];
+const SHARED_SETTINGS_KEYS  = ['noSaleCats','noSaleCatsVersion','noSaleCatsUpdatedAt','outcomes','settingsVersion','goals'];
+
+// ── No-sale reasons are shared by everyone ──
+// noSaleCatsUpdatedAt marks the last real edit. The newest copy wins: every tracker pulls the shared copy at
+// start, and a save that didn't change the reasons sends the sheet's copy back instead of this computer's.
+var _nsOpenSnapshot = null;   // reasons as they were when Settings opened (to spot unsaved edits)
+
+function nsParseCats(v){
+  try{ v = typeof v === 'string' ? JSON.parse(v) : v; }catch(e){ return null; }
+  if(!v || typeof v !== 'object') return null;
+  return Object.values(v).some(a => Array.isArray(a) && a.length > 0) ? v : null;
+}
+
+// A shared settings record from Sheets: take its reasons if they're at least as new as the saved copy here
+function nsApplyRemoteShared(rs){
+  if(!rs) return false;
+  const cats = nsParseCats(rs.noSaleCats);
+  if(!cats) return false;
+  const local = JSON.parse(localStorage.getItem('xcl_settings') || '{}');
+  const remoteAt = +rs.noSaleCatsUpdatedAt || 0, localAt = +local.noSaleCatsUpdatedAt || 0;
+  if(local.noSaleCats && remoteAt < localAt) return false;          // this computer saved a newer edit
+  if(remoteAt === localAt && JSON.stringify(local.noSaleCats) === JSON.stringify(cats)) return false;
+  local.noSaleCats = cats;
+  local.noSaleCatsUpdatedAt = remoteAt;
+  if(rs.noSaleCatsVersion) local.noSaleCatsVersion = rs.noSaleCatsVersion;
+  localStorage.setItem('xcl_settings', JSON.stringify(local));
+  // Use them now, unless Settings is open (don't swap the list under someone editing it)
+  const panel = document.getElementById('settings-panel');
+  if(!(panel && panel.classList.contains('open'))) applySettings(loadSettings());
+  return true;
+}
+
+// Before a Settings save goes out: if the reasons weren't edited in this save, send the sheet's (newer or equal)
+// copy rather than this computer's, so an old copy here can't overwrite someone else's edit.
+function nsReconcileBeforePush(shared, changedNow){
+  if(changedNow || !shared.noSaleCats) return Promise.resolve(shared);
+  const agentId = localStorage.getItem('xcl_sales_id') || '';
+  return sheetsGet({action:'loadAllSettings', agentId:agentId}).then(function(d){
+    let rs = d && d.status === 'ok' ? d.shared : null;
+    try{ rs = typeof rs === 'string' ? JSON.parse(rs) : rs; }catch(e){ rs = null; }
+    const cats = rs && nsParseCats(rs.noSaleCats);
+    if(cats && (+rs.noSaleCatsUpdatedAt || 0) >= (+shared.noSaleCatsUpdatedAt || 0)){
+      shared.noSaleCats = cats;
+      shared.noSaleCatsUpdatedAt = +rs.noSaleCatsUpdatedAt || 0;
+      if(rs.noSaleCatsVersion) shared.noSaleCatsVersion = rs.noSaleCatsVersion;
+      nsApplyRemoteShared(rs);
+    }
+    return shared;
+  }).catch(function(){ return shared; });
+}
 const PERSONAL_SETTINGS_KEYS = ['schedule','workDays','alertWindows','sheetsUrl','callType','capLevel'];
 
 /* ── Settings sync to Google Sheets ─────────────────────────────────────
@@ -10394,7 +10891,7 @@ const PERSONAL_SETTINGS_KEYS = ['schedule','workDays','alertWindows','sheetsUrl'
  * Identity via Session.getActiveUser().getEmail() in Apps Script
  */
 
-function pushSettingsToSheets(allSettings){
+function pushSettingsToSheets(allSettings, nsChangedNow){
   if(!getSheetsUrl()) return Promise.resolve();
   const shared   = {};
   const personal = {};
@@ -10421,9 +10918,11 @@ function pushSettingsToSheets(allSettings){
   if(Object.keys(ptoBundle).length) personal.ptoHistory = ptoBundle;
   if(personal.schedule !== undefined && personal.schedule !== '5x8' && personal.schedule !== '4x10') delete personal.schedule;
   const breakSched = localStorage.getItem('xcl_schedule_' + agentId);
-  if(breakSched) personal.breakSchedule = breakSched;
-  const _agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || '';
-  return sheetsPost({ action:'saveSettings', agentId:_agentId, shared:JSON.stringify(shared), personal:JSON.stringify(personal) })
+  if(breakSched){ try{ personal.breakSchedule = schedRemotePayload(JSON.parse(breakSched)); }catch(e){} }
+  // The signed-in Sales ID only (a cached user from someone else must never receive this computer's settings)
+  const _agentId = localStorage.getItem('xcl_sales_id') || '';
+  return nsReconcileBeforePush(shared, !!nsChangedNow)
+    .then(sharedOut => sheetsPost({ action:'saveSettings', agentId:_agentId, shared:JSON.stringify(sharedOut), personal:JSON.stringify(personal) }))
     .then(()  => _showToast('✓ Settings saved to sheet', 'ok', 2500))
     .catch(err => _showToast('⚠ Settings not synced — ' + (err.message||''), 'err', 4000));
 }
@@ -10451,10 +10950,9 @@ window.addEventListener('scroll', function(){
     _nsClose();
     return;
   }
-  const panelW2 = Math.max(280, panel.offsetWidth) * APP_SCALE;
-  const maxLeft2 = window.innerWidth - panelW2 - 8;
-  panel.style.top  = ((rect.bottom + 6) / APP_SCALE) + 'px';
-  panel.style.left = (Math.min(rect.left, maxLeft2) / APP_SCALE) + 'px';
+  panel.style.top   = ((rect.bottom + 6) / APP_SCALE) + 'px';
+  panel.style.right = popRightInCard(anchor);
+  panel.style.left  = 'auto';
 }, { passive: true });
 
 function renderNxmTable(){
@@ -10675,7 +11173,7 @@ window.addEventListener('scroll', function(){
   if(!panel || !btn) return;
   const rect = btn.getBoundingClientRect();
   if(rect.top < (XCL_VIEW ? 0 : 104 * APP_SCALE)){ cbOpen=false; panel.style.display='none'; document.getElementById('cb-toggle').classList.remove('active'); updateNotesState(); return; }
-  panel.style.right  = '8px';
+  panel.style.right  = popRightInCard(btn);
   panel.style.left   = 'auto';
   panel.style.bottom = ((window.innerHeight - rect.top + 8) / APP_SCALE) + 'px';
 }, { passive: true });
@@ -10987,11 +11485,9 @@ function positionNsPanel(anchorEl){
   // Fallback if anchor is hidden/offscreen
   const top  = rect.bottom > 0 ? rect.bottom + offsetY + 6 : 200;
   panel.style.minWidth = '280px';
-  // Keep the panel on screen (it's wider on screen when the app is scaled up)
-  const panelW = Math.max(280, panel.offsetWidth) * APP_SCALE;
-  const left = Math.max(8, Math.min(rect.left > 0 ? rect.left + offsetX : 20, window.innerWidth - panelW - 8));
-  panel.style.top  = (top  / APP_SCALE) + 'px'; // rects are screen px; style px are scaled by APP_SCALE
-  panel.style.left = (left / APP_SCALE) + 'px';
+  panel.style.top   = (top / APP_SCALE) + 'px'; // rects are screen px; style px are scaled by APP_SCALE
+  panel.style.right = popRightInCard(anchorEl); // right edge lines up with the Call Logger
+  panel.style.left  = 'auto';
 }
 
 function updateRevTotal(){
@@ -11137,27 +11633,9 @@ function inActiveFiscalTs(ts){
   return ts >= fi.fiscalStart && ts <= endOfLastDay;
 }
 
-function saveCallsCache(){
-  var key = getCallsCacheKey();
-  if(!key) return;
-  try {
-    var data = calls.map(function(c){
-      return Object.assign({}, c, {ts: c.ts instanceof Date ? c.ts.toISOString() : c.ts});
-    });
-    localStorage.setItem(key, JSON.stringify(data));
-  } catch(e){}
-}
-function loadCallsCache(){
-  var key = getCallsCacheKey();
-  if(!key) return [];
-  try {
-    var raw = localStorage.getItem(key);
-    if(!raw) return [];
-    var arr = JSON.parse(raw);
-    if(!Array.isArray(arr)) return [];
-    return arr.map(function(c){ c.ts = c.ts ? new Date(c.ts) : new Date(); return c; });
-  } catch(e){ return []; }
-}
+// Calls aren't saved on this PC (personal info), so these do nothing; callers are left as they are.
+function saveCallsCache(){}
+function loadCallsCache(){ return []; }
 
 function setTooltips(on){
   document.body.classList.toggle('tips-on', on);
@@ -11275,10 +11753,11 @@ function setUserCap(level){
 }
 
 function saveUserProfile(){
+  if(!hasSalesId()) return;   // no Sales ID yet: nothing to save it under
   localStorage.setItem(agentProfileKey(), JSON.stringify({callType:_userCallType, capLevel:_userCapLevel}));
   // Push to Sheets so it persists per Sales ID
   if(getSheetsUrl()){
-    var agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || '';
+    var agentId = localStorage.getItem('xcl_sales_id') || '';   // same agent the local profile was saved under
     if(agentId){
       var personal = {callType:_userCallType, capLevel:_userCapLevel, settingsVersion:SETTINGS_VERSION};
       sheetsPost({action:'saveSettings', agentId:agentId, personal:JSON.stringify(personal)})
@@ -11639,8 +12118,10 @@ function deleteUser(agentId){
   var _initProfile = JSON.parse(localStorage.getItem(agentProfileKey())||'{}');
   _userCallType = _initProfile.callType || 'acq';
   _userCapLevel = parseInt(_initProfile.capLevel) || 2;
+  // Leftovers from the old no-ID fallback
+  ['xcl_schedule_guest','xcl_profile_guest','xcl_shift_guest'].forEach(function(k){ localStorage.removeItem(k); });
   // On first load with no profile for this agent, flag that cap level needs to be set
-  if(!localStorage.getItem(agentProfileKey())){
+  if(hasSalesId() && !localStorage.getItem(agentProfileKey())){
     localStorage.setItem(agentProfileKey(), JSON.stringify({callType:_userCallType, capLevel:_userCapLevel}));
     localStorage.setItem('xcl_cap_not_set', '1');
   }
@@ -11649,7 +12130,8 @@ function deleteUser(agentId){
   _userList = cached;
   const savedId = localStorage.getItem('xcl_sales_id');
   const savedUser = savedId ? cached.find(function(u){ return u.agentId===savedId; }) : null;
-  _session = savedUser || cached[0] || {agentId: savedId||'guest', name:'', role:'admin', callType:_userCallType, capLevel:_userCapLevel, supervisorId:''};
+  // Never borrow another cached user: the session is whoever the stored Sales ID says (or nobody yet)
+  _session = savedUser || {agentId: savedId || '', name:'', role:'admin', callType:_userCallType, capLevel:_userCapLevel, supervisorId:''};
   if(savedId) _session.agentId = savedId;
   hideLoginScreen();
   setTimeout(function(){
@@ -11658,7 +12140,7 @@ function deleteUser(agentId){
     applySettings(loadSettings());
     updateRoleBtns(); // sync cap dropdown + ACQ/MOV buttons
     updateRoleChip();
-    if(!XCL_VIEW) xclWhenPrimary(schedStartTicker); // start schedule countdown (one tracker only)
+    if(!XCL_VIEW) xclWhenPrimary(function(){ schedStartTicker(); schedPullRemote(); }); // schedule countdown + edits from other computers (one tracker only)
     // Set callback timezone dropdown to user's local timezone
     (function(){ const cbtz=document.getElementById('cb-tz'); if(!cbtz) return; const localTz=Intl.DateTimeFormat().resolvedOptions().timeZone; const opt=Array.from(cbtz.options).find(o=>o.value===localTz); if(opt) cbtz.value=opt.value; })();
     applySessionUI();
@@ -11745,9 +12227,15 @@ function checkFirstRun(){
   }
 }
 
+// Sales ID prompt: shown whenever no ID is stored (it can't be dismissed). Two steps: enter, then confirm.
+function normalizeSalesId(v){ return String(v || '').replace(/\s+/g, '').toUpperCase(); }
+
 function showSalesIdPrompt(){
   var modal = document.getElementById('sales-id-prompt');
-  if(modal) modal.style.display='flex';
+  if(!modal || modal.style.display === 'flex') return;
+  salesIdPromptStep('enter');
+  modal.style.display='flex';
+  setTimeout(function(){ var i = document.getElementById('prompt-sales-id'); if(i) i.focus(); }, 50);
 }
 
 function hideSalesIdPrompt(){
@@ -11755,11 +12243,49 @@ function hideSalesIdPrompt(){
   if(modal) modal.style.display='none';
 }
 
+function salesIdPromptStep(step){
+  var enter = document.getElementById('sales-id-step-enter'), conf = document.getElementById('sales-id-step-confirm');
+  if(enter) enter.hidden = step !== 'enter';
+  if(conf) conf.hidden = step !== 'confirm';
+  if(step === 'enter') setTimeout(function(){ var i = document.getElementById('prompt-sales-id'); if(i) i.focus(); }, 30);
+}
+
 function confirmSalesIdPrompt(){
-  var val = (document.getElementById('prompt-sales-id').value||'').trim().toUpperCase();
-  if(!val){ document.getElementById('prompt-sales-id').style.borderColor='var(--red)'; return; }
-  saveSalesId(val);
+  var input = document.getElementById('prompt-sales-id');
+  var val = normalizeSalesId(input.value);
+  if(!val){ input.style.borderColor='var(--red)'; return; }
+  input.value = val;
+  document.getElementById('sales-id-confirm-val').textContent = val;
+  salesIdPromptStep('confirm');
+}
+
+function acceptSalesIdPrompt(){
+  var val = normalizeSalesId(document.getElementById('prompt-sales-id').value);
+  if(!val){ salesIdPromptStep('enter'); return; }
   hideSalesIdPrompt();
+  saveSalesId(val);
+}
+
+// Settings field: the ID shouldn't change on these PCs, so a change has to be confirmed
+function changeSalesIdFromSettings(input){
+  var val = normalizeSalesId(input.value), cur = localStorage.getItem('xcl_sales_id') || '';
+  if(val === cur){ input.value = cur; return; }
+  if(!val){ input.value = cur; _showToast('Sales ID can\'t be blank', 'warn', 2500); return; }
+  var msg = cur ? 'Change Sales ID from ' + cur + ' to ' + val + '?\n\nCalls, schedule and settings will load for ' + val + '.'
+                : 'Use Sales ID ' + val + '?';
+  if(!window.confirm(msg)){ input.value = cur; return; }
+  input.value = val;
+  saveSalesId(val);
+}
+
+// If the ID ever goes missing while the tracker is open (site data cleared elsewhere), ask again
+function checkSalesIdPresent(){
+  if(XCL_VIEW || XCL_IS_DUPLICATE) return;
+  if(!hasSalesId()) showSalesIdPrompt();
+}
+if(!XCL_VIEW){
+  window.addEventListener('storage', function(e){ if(e.key === 'xcl_sales_id' || e.key === null) xclWhenPrimary(checkSalesIdPresent); });
+  window.addEventListener('focus', function(){ xclWhenPrimary(checkSalesIdPresent); });
 }
 
 function showLoginUrlConfig(){
@@ -11807,6 +12333,8 @@ function saveSalesId(val){
   if(!_session) _session = {};
   _session.agentId = val;
   localStorage.setItem('xcl_sales_id', val);
+  const sidField = document.getElementById('s-sales-id');
+  if(sidField) sidField.value = val;
   // Switch to this agent's own cap level/type and schedules right away (Sheets restore may refine them below)
   loadUserProfile();
   updateRoleBtns();
@@ -11833,9 +12361,8 @@ function saveSalesId(val){
             // Restore global settings (outcomes, noSaleCats) into xcl_settings
             var existingSettings = JSON.parse(localStorage.getItem('xcl_settings')||'{}');
             if(shared.outcomes) existingSettings.outcomes = shared.outcomes;
-            if(shared.noSaleCats) existingSettings.noSaleCats = shared.noSaleCats;
-            if(shared.noSaleCatsVersion) existingSettings.noSaleCatsVersion = shared.noSaleCatsVersion;
             localStorage.setItem('xcl_settings', JSON.stringify(existingSettings));
+            nsApplyRemoteShared(shared);   // no-sale reasons: newest copy wins
             applySettings(loadSettings());
           }catch(e){}
         }
@@ -11879,18 +12406,17 @@ function saveSalesId(val){
             // Restore break schedule (new "breakSchedule" key, or a legacy object stored under "schedule")
             var breakSched = personal.breakSchedule ||
               (personal.schedule && personal.schedule !== '5x8' && personal.schedule !== '4x10' ? personal.schedule : null);
-            if(breakSched){
-              var schedStr = typeof breakSched==='string' ? breakSched : JSON.stringify(breakSched);
-              var schedAgentId = (_session && _session.agentId) || val;
-              try{ JSON.parse(schedStr); localStorage.setItem('xcl_schedule_' + schedAgentId, schedStr); }catch(e){}
-              if(typeof schedLoad === 'function') schedLoad();
-            }
+            // Stored under the Sales ID this restore was for (not whoever is current by the time it arrives)
+            if(breakSched) schedApplyRemote(val, breakSched);
             applySettings(loadSettings()); // apply everything at once
             reloadGoalsForRole();
             schedStartTicker(); // restart ticker with agent schedule
           }catch(e){}
         }
-        _showToast('\u2713 Settings restored for ' + val, 'ok', 2500);
+        var hadPersonal = false;
+        try{ var pObj = typeof d.personal === 'string' ? JSON.parse(d.personal) : d.personal; hadPersonal = !!pObj && Object.keys(pObj).length > 0; }catch(e){}
+        if(hadPersonal) _showToast('\u2713 Settings restored for ' + val, 'ok', 2500);
+        else _showToast('No saved settings found for ' + val + '. If that\'s not a brand-new ID, check it in Settings.', 'warn', 7000);
         // Now load calls for this agent from their sheet tab
         loadFromSheets();
       } else {
@@ -12003,6 +12529,7 @@ const SCHED_BREAK_TYPES = [
   {emoji:'📋',label:'Coaching'},
   {emoji:'🏛',label:'Town Hall'},
   {emoji:'⚠️',label:'System Problem'},
+  {emoji:'⏱',label:'Overtime',ot:true},
   {emoji:'✏️',label:'Custom'},
 ];
 const SCHED_DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -12018,20 +12545,30 @@ const SCHED_DEFAULT = {
 };
 
 var _schedData = {}; // keyed by day key
-var _schedViewDay = null;
 var _schedTimerInterval = null;
 var _schedRemindMins = 5;
-var _schedFiredToday = {};
+var _schedFiredToday = {};   // reminders already shown today: 'YYYY-MM-DD-<segment id>'
 var _schedNextBreakId = 10;
+var _schedAgent = null;      // Sales ID the in-memory schedule belongs to
+var _schedSavedAt = 0;       // when this agent's schedule was last edited (for Sheets restore conflicts)
+
+// Schedules are per agent: xcl_schedule_<Sales ID>. The Sales ID in storage is the agent actually signed in;
+// _session can be a cached user from someone else before an ID is entered.
+function schedAgentId(){ return localStorage.getItem('xcl_sales_id') || 'guest'; }
 
 function schedLoad(){
-  var agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || 'guest';
+  var agentId = schedAgentId();
   var key = 'xcl_schedule_' + agentId;
+  _schedAgent = agentId;
   try{
     var d = JSON.parse(localStorage.getItem(key)||'{}');
     _schedData = d.days || {};
     _schedRemindMins = d.remindMins || 5;
-    _schedFiredToday = d.firedToday || {};
+    _schedSavedAt = +d.savedAt || 0;
+    // Keep only today's "already reminded" marks (older ones would silence next week's reminders)
+    var todayPrefix = schedDateKey(new Date()) + '-';
+    _schedFiredToday = {};
+    Object.keys(d.firedToday || {}).forEach(function(k){ if(k.indexOf(todayPrefix) === 0) _schedFiredToday[k] = true; });
     if(d.shiftStart) _schedData._shiftStart = d.shiftStart;
     if(d.shiftEnd)   _schedData._shiftEnd   = d.shiftEnd;
   } catch(e){ _schedData={}; }
@@ -12044,28 +12581,83 @@ function schedLoad(){
     var prep = _schedData[k].breaks.find(function(b){return b.fixed;});
     if(prep) prep.time = _schedData._shiftStart;
   });
+  // One-date changes: drop ones more than a week old
+  var dates = _schedData._dates || {}, cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 7);
+  var cutKey = schedDateKey(cutoff);
+  Object.keys(dates).forEach(function(ds){ if(ds < cutKey) delete dates[ds]; });
+  // New segment ids continue after the highest saved one (they used to restart at 10 and could collide)
+  var maxId = 9;
+  SCHED_DAY_KEYS.forEach(function(k){ _schedData[k].breaks.forEach(function(b){ maxId = Math.max(maxId, +b.id || 0); }); });
+  Object.keys(dates).forEach(function(ds){ (dates[ds].breaks || []).forEach(function(b){ maxId = Math.max(maxId, +b.id || 0); }); });
+  _schedNextBreakId = Math.max(_schedNextBreakId, maxId + 1);
 }
 
-function schedSave(){
-  var agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || 'guest';
-  var key = 'xcl_schedule_' + agentId;
+// opts.localOnly: bookkeeping (reminder marks) — stays on this computer and isn't an edit.
+function schedSave(opts){
+  var agentId = schedAgentId();
+  if(!_schedAgent || agentId === 'guest') return;           // nothing loaded yet / no Sales ID to save under
+  if(_schedAgent !== agentId){ schedLoad(); return; }       // Sales ID changed: never write one agent's schedule under another
+  var localOnly = !!(opts && opts.localOnly);
+  if(!localOnly) _schedSavedAt = Date.now();
   var payload = {
     days: _schedData,
     remindMins: _schedRemindMins,
     firedToday: _schedFiredToday,
     shiftStart: _schedData._shiftStart || '08:00',
     shiftEnd:   _schedData._shiftEnd   || '17:00',
+    savedAt:    _schedSavedAt
   };
-  localStorage.setItem(key, JSON.stringify(payload));
-  // Push to Sheets personal settings
-  if(getSheetsUrl() && agentId && agentId !== 'guest'){
-    sheetsPost({
-      action: 'saveSettings',
-      agentId: agentId,
-      // breakSchedule, not schedule — "schedule" is the 5x8/4x10 shift pattern
-      personal: { breakSchedule: JSON.stringify(payload) }
-    }).catch(function(e){ console.warn('Schedule sync failed:', e); });
+  localStorage.setItem('xcl_schedule_' + agentId, JSON.stringify(payload));
+  if(!localOnly) schedPushRemote(agentId, payload);
+}
+
+// Sheets copy of the schedule (without this computer's reminder marks)
+function schedRemotePayload(payload){
+  var p = Object.assign({}, payload);
+  delete p.firedToday;
+  return JSON.stringify(p);
+}
+function schedPushRemote(agentId, payload){
+  if(!getSheetsUrl() || !agentId || agentId === 'guest') return;
+  sheetsPost({
+    action: 'saveSettings',
+    agentId: agentId,
+    // breakSchedule, not schedule — "schedule" is the 5x8/4x10 shift pattern
+    personal: { breakSchedule: schedRemotePayload(payload) }
+  }).catch(function(e){ console.warn('Schedule sync failed:', e); });
+}
+
+// A schedule from Sheets for agentId: the newer of it and this computer's copy wins.
+// Older saves have no savedAt (0), so Sheets wins those, as before.
+function schedApplyRemote(agentId, breakSched){
+  if(!breakSched || !agentId || agentId === 'guest') return;
+  var remote;
+  try{ remote = typeof breakSched === 'string' ? JSON.parse(breakSched) : breakSched; }catch(e){ return; }
+  if(!remote || typeof remote !== 'object' || !remote.days) return;
+  var key = 'xcl_schedule_' + agentId, local = null;
+  try{ local = JSON.parse(localStorage.getItem(key) || 'null'); }catch(e){}
+  var remoteAt = +remote.savedAt || 0, localAt = local ? (+local.savedAt || 0) : -1;
+  if(!local || remoteAt >= localAt){
+    remote.firedToday = (local && local.firedToday) || {};   // keep today's reminder marks
+    localStorage.setItem(key, JSON.stringify(remote));
+  } else {
+    schedPushRemote(agentId, local);                         // this computer has newer edits (a sync failed): send them up
   }
+  if(schedAgentId() === agentId){ schedLoad(); schedUpdateCountdown(); schedRender(); }
+}
+
+// Pick up edits made on another computer (the full tracker, once per start)
+function schedPullRemote(){
+  var agentId = schedAgentId();
+  if(!getSheetsUrl() || agentId === 'guest') return;
+  sheetsGet({action:'loadAllSettings', agentId:agentId}).then(function(d){
+    if(!d || d.status !== 'ok') return;
+    // Shared no-sale reasons edited on another computer
+    try{ nsApplyRemoteShared(typeof d.shared === 'string' ? JSON.parse(d.shared) : d.shared); }catch(e){}
+    if(!d.personal) return;
+    var personal = typeof d.personal === 'string' ? JSON.parse(d.personal) : d.personal;
+    if(personal && personal.breakSchedule) schedApplyRemote(agentId, personal.breakSchedule);
+  }).catch(function(){});
 }
 
 function schedSaveReminder(){
@@ -12077,133 +12669,255 @@ function schedSaveReminder(){
 function schedSaveShiftTimes(){
   var start = document.getElementById('sched-start').value;
   var end   = document.getElementById('sched-end').value;
+  if(!start || !end) return;
   _schedData._shiftStart = start;
   _schedData._shiftEnd   = end;
-  // Update Prep time on all days
-  SCHED_DAY_KEYS.forEach(function(k){
-    if(_schedData[k]){
-      _schedData[k].start = start;
-      _schedData[k].end   = end;
-      var prep = _schedData[k].breaks.find(function(b){return b.fixed;});
-      if(prep) prep.time = start;
-    }
+  // Prep follows the shift start everywhere (weekly pattern and one-date lists)
+  var lists = SCHED_DAY_KEYS.map(function(k){ return _schedData[k] && _schedData[k].breaks; });
+  Object.keys(schedDates()).forEach(function(ds){ lists.push(schedDates()[ds].breaks); });
+  SCHED_DAY_KEYS.forEach(function(k){ if(_schedData[k]){ _schedData[k].start = start; _schedData[k].end = end; } });
+  lists.forEach(function(list){
+    (list || []).forEach(function(b){ if(b.fixed) b.time = start; });
   });
   schedSave();
+  schedUpdateCountdown();
+  schedRender();
 }
 
-function schedSaveDay(){
-  var k = _schedViewDay;
-  if(!k) return;
-  schedSave();
-  schedStartTicker();
-  _showToast('✓ Schedule saved','ok',1500);
+// ── Weekly pattern + one-date changes ──
+// _schedData[sun..sat].breaks is the weekly pattern. _schedData._dates['YYYY-MM-DD'] = {breaks} replaces the
+// pattern for that one date ("Just this day"). The shift start/end is one time for every day; Overtime
+// segments before the start or after the end stretch that day's shift.
+var _schedViewDate = null;   // 'YYYY-MM-DD' shown in the editor
+var _schedEdit = null;       // open form: {id (null = adding), label, emoji, ot, time, duration, repeat, days}
+
+function schedDateKey(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function schedParseDate(s){ var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+function schedWeekdayKey(s){ return SCHED_DAY_KEYS[schedParseDate(s).getDay()]; }
+function schedWorkDayKeys(){ return (window._workDays || [1,2,3,4,5]).map(function(i){ return SCHED_DAY_KEYS[i]; }); }
+function schedDates(){ return _schedData._dates || (_schedData._dates = {}); }
+function schedFmt12(t){
+  var m = schedTimeToMins(t), h = Math.floor(m / 60), mm = m % 60;
+  return (h % 12 || 12) + ':' + (mm < 10 ? '0' : '') + mm + ' ' + (h >= 12 ? 'PM' : 'AM');
+}
+function schedFmtLen(n){ n = +n; return n >= 60 && n % 60 === 0 ? (n / 60) + 'h' : n >= 60 ? Math.floor(n / 60) + 'h ' + (n % 60) + 'm' : n + 'm'; }
+
+// Segments for a date: its one-date list if it has one, else its weekday's pattern. Sorted by time.
+function schedBreaksFor(dateStr){
+  var o = schedDates()[dateStr];
+  var list = o ? o.breaks : ((_schedData[schedWeekdayKey(dateStr)] || {}).breaks || []);
+  return list.slice().sort(function(a, b){ return schedTimeToMins(a.time) - schedTimeToMins(b.time); });
+}
+// Shift window (minutes) for a date, stretched by any Overtime segments
+function schedShiftFor(dateStr){
+  var s = schedTimeToMins(_schedData._shiftStart || '08:00'), e = schedTimeToMins(_schedData._shiftEnd || '17:00');
+  schedBreaksFor(dateStr).forEach(function(b){
+    if(!b.ot) return;
+    var bs = schedTimeToMins(b.time);
+    s = Math.min(s, bs); e = Math.max(e, bs + (+b.duration || 0));
+  });
+  return {start:s, end:e};
 }
 
-function schedAddBreak(){
-  var k = _schedViewDay;
-  if(!k) return;
-  var newBreak = {id:_schedNextBreakId++, emoji:'☕', label:'Break', duration:15, time:'12:00', fixed:false};
-  _schedData[k].breaks.push(newBreak);
-  schedRenderBreaks(k);
-  schedSave();
-}
-
-function schedRemoveBreak(id){
-  var k = _schedViewDay;
-  if(!k) return;
-  _schedData[k].breaks = _schedData[k].breaks.filter(function(b){return b.id!==id;});
-  schedRenderBreaks(k);
-  schedSave();
-}
-
-function schedUpdateBreak(id, field, val){
-  var k = _schedViewDay;
-  if(!k) return;
-  var b = _schedData[k].breaks.find(function(b){return b.id===id;});
-  if(!b) return;
-  if(field==='type'){
-    var t = SCHED_BREAK_TYPES[+val];
-    if(t){ b.emoji=t.emoji; b.label=t.label==='Custom'?prompt('Label:',b.label)||b.label:t.label; }
-  } else {
-    b[field] = val;
+// Lists a change applies to. "Just this day" makes (or uses) the date's own list; repeating changes go to the
+// weekly pattern for those weekdays, plus any one-date lists from today on that fall on them.
+function schedTargets(repeat, dateStr){
+  var dates = schedDates();
+  if(repeat.mode === 'once'){
+    if(!dates[dateStr]) dates[dateStr] = {breaks: JSON.parse(JSON.stringify((_schedData[schedWeekdayKey(dateStr)] || {}).breaks || []))};
+    return [dates[dateStr].breaks];
   }
-  schedRenderBreaks(k);
+  var keys = repeat.mode === 'weekday' ? [schedWeekdayKey(dateStr)]
+           : repeat.mode === 'workdays' ? schedWorkDayKeys()
+           : SCHED_DAY_KEYS.filter(function(k){ return repeat.days[k]; });
+  var out = keys.filter(function(k){ return _schedData[k]; }).map(function(k){ return _schedData[k].breaks; });
+  var today = schedDateKey(new Date());
+  Object.keys(dates).forEach(function(ds){
+    if(ds >= today && keys.indexOf(schedWeekdayKey(ds)) >= 0) out.push(dates[ds].breaks);
+  });
+  return out;
+}
+
+// Find the segment being changed in another day's list: same id, else same name + time, else the only one with that name
+function schedFindMatch(list, orig){
+  var i = list.findIndex(function(b){ return b.id === orig.id; });
+  if(i < 0) i = list.findIndex(function(b){ return !b.fixed && b.label === orig.label && b.time === orig.time; });
+  if(i < 0){
+    var same = list.filter(function(b){ return !b.fixed && b.label === orig.label; });
+    if(same.length === 1) i = list.indexOf(same[0]);
+  }
+  return i;
+}
+
+function schedApply(kind, orig, seg, repeat){
+  schedTargets(repeat, _schedViewDate).forEach(function(list){
+    var i = orig ? schedFindMatch(list, orig) : -1;
+    if(kind === 'delete'){ if(i >= 0) list.splice(i, 1); return; }
+    if(kind === 'update' && i >= 0){ Object.assign(list[i], seg); return; }
+    list.push(Object.assign({}, seg, {id: _schedNextBreakId++}));   // add (or an update where that day had no match)
+  });
   schedSave();
+  schedUpdateCountdown();
 }
 
-function schedRenderBreaks(k){
-  var el = document.getElementById('sched-breaks-list');
-  if(!el) return;
-  var breaks = _schedData[k].breaks;
-  el.innerHTML = breaks.map(function(b){
-    var fixedAttr = b.fixed ? 'disabled' : '';
-    var delBtn = b.fixed ? '' : '<button class="sched-break-del" onclick="schedRemoveBreak('+b.id+')">✕</button>';
-    var dragHandle = b.fixed ? '<span style="width:14px;flex-shrink:0"></span>' : '<span style="cursor:grab;color:var(--text3);font-size:12px;flex-shrink:0;user-select:none" draggable="false">⠿</span>';
-    var typeOpts = SCHED_BREAK_TYPES.map(function(t,i){
-      return '<option value="'+i+'"'+(t.label===b.label?' selected':'')+'>'+t.emoji+' '+t.label+'</option>';
-    }).join('');
-    var durOpts = [15,30,45].map(function(d){
-      return '<option value="'+d+'"'+(b.duration===d?' selected':'')+'>'+d+'m</option>';
-    }).join('')+'<option value="other"'+(![15,30,45].includes(b.duration)?' selected':'')+'>Other</option>';
-    var draggable = b.fixed ? '' : 'draggable="true" ondragstart="schedDragStart(event,'+b.id+')" ondragover="schedDragOver(event)" ondrop="schedDrop(event,'+b.id+')" ondragend="schedDragEnd()"';
-    return '<div class="sched-break-row" data-bid="'+b.id+'" '+draggable+'>'+
-      dragHandle+
-      '<span class="sched-break-emoji">'+b.emoji+'</span>'+
-      (b.fixed
-        ? '<span class="sched-break-label" style="color:var(--text3)">'+b.label+' (10m)</span>'
-        : '<select class="sched-dur-sel" onchange="schedUpdateBreak('+b.id+',\'type\',this.value)" style="flex:1;max-width:110px">'+typeOpts+'</select>'
-      )+
-      '<input type="time" class="sched-break-time" value="'+b.time+'" '+fixedAttr+' onchange="schedUpdateBreak('+b.id+',\'time\',this.value)">'+
-      (b.fixed ? '' : '<select class="sched-dur-sel" onchange="schedUpdateBreak('+b.id+',\'duration\',+this.value===0?prompt(\'Minutes:\',b.duration)||b.duration:+this.value)">'+durOpts+'</select>')+
-      delBtn+
-    '</div>';
-  }).join('');
+function schedRepeatLabel(r){
+  if(r.mode === 'once') return 'this day only';
+  if(r.mode === 'weekday') return 'every ' + SCHED_DAYS[schedParseDate(_schedViewDate).getDay()];
+  if(r.mode === 'workdays') return 'every work day';
+  return 'every ' + SCHED_DAY_KEYS.filter(function(k){ return r.days[k]; }).map(function(k){ return SCHED_DAYS[SCHED_DAY_KEYS.indexOf(k)]; }).join(', ');
 }
 
-var _schedDragId = null;
-function schedDragStart(e, id){ _schedDragId = id; e.currentTarget.style.opacity='.4'; }
-function schedDragEnd(){ document.querySelectorAll('.sched-break-row').forEach(function(r){ r.style.opacity=''; r.style.borderColor=''; }); }
-function schedDragOver(e){ e.preventDefault(); e.currentTarget.style.borderColor='var(--blue)'; }
-function schedDrop(e, targetId){
-  e.preventDefault();
-  e.currentTarget.style.borderColor='';
-  if(!_schedDragId || _schedDragId===targetId) return;
-  var k = _schedViewDay;
-  var breaks = _schedData[k].breaks;
-  var fromIdx = breaks.findIndex(function(b){return b.id===_schedDragId;});
-  var toIdx   = breaks.findIndex(function(b){return b.id===targetId;});
-  if(fromIdx<0||toIdx<0) return;
-  // Don't allow dropping before fixed (Prep)
-  if(breaks[toIdx].fixed) return;
-  var item = breaks.splice(fromIdx,1)[0];
-  // Recalculate toIdx after splice
-  toIdx = breaks.findIndex(function(b){return b.id===targetId;});
-  breaks.splice(toIdx,0,item);
-  schedRenderBreaks(k);
-  _schedDragId = null;
+// ── Editor form ──
+function schedOpenEdit(id){
+  var b = id == null ? null : schedBreaksFor(_schedViewDate).find(function(x){ return x.id === id; });
+  if(id != null && (!b || b.fixed)) return;
+  var days = {}; days[schedWeekdayKey(_schedViewDate)] = true;
+  var isCustom = b && !SCHED_BREAK_TYPES.some(function(t){ return t.label !== 'Custom' && t.label === b.label; });
+  _schedEdit = b
+    ? {id:b.id, orig:JSON.parse(JSON.stringify(b)), label:b.label, emoji:b.emoji, ot:!!b.ot, time:b.time, duration:+b.duration, repeat:'once', days:days,
+       custom:isCustom, customLabel:isCustom ? b.label : ''}
+    : {id:null, orig:null, label:'Break', emoji:'☕', ot:false, time:'12:00', duration:15, repeat:'once', days:days};
+  schedRender();
+}
+function schedEditCancel(){ _schedEdit = null; schedRender(); }
+function schedEditType(i){
+  var t = SCHED_BREAK_TYPES[i]; if(!t || !_schedEdit) return;
+  _schedEdit.emoji = t.emoji; _schedEdit.ot = !!t.ot;
+  _schedEdit.label = t.label === 'Custom' ? (_schedEdit.customLabel || '') : t.label;
+  _schedEdit.custom = t.label === 'Custom';
+  if(t.ot && _schedEdit.duration < 30) _schedEdit.duration = 60;
+  schedRender();
+}
+function schedEditField(field, val){ if(_schedEdit){ _schedEdit[field] = val; } }   // no re-render: keeps typing focus
+function schedEditLen(n){ if(_schedEdit){ _schedEdit.duration = n; schedRender(); } }
+function schedEditRepeat(mode){ if(_schedEdit){ _schedEdit.repeat = mode; schedRender(); } }
+function schedEditDay(k){ if(_schedEdit){ _schedEdit.days[k] = !_schedEdit.days[k]; schedRender(); } }
+
+function schedEditRepeatObj(){
+  var e = _schedEdit;
+  if(e.repeat === 'custom' && !SCHED_DAY_KEYS.some(function(k){ return e.days[k]; })){
+    _showToast('Pick at least one day', 'warn', 2500); return null;
+  }
+  return {mode:e.repeat, days:e.days};
+}
+function schedEditSave(){
+  var e = _schedEdit; if(!e) return;
+  var label = (e.label || '').trim();
+  if(!label){ _showToast('Give the segment a name', 'warn', 2500); return; }
+  if(!e.time){ _showToast('Pick a time', 'warn', 2500); return; }
+  var mins = Math.round(+e.duration);
+  if(!(mins > 0 && mins <= 720)){ _showToast('Length must be 1–720 minutes', 'warn', 2500); return; }
+  var r = schedEditRepeatObj(); if(!r) return;
+  var seg = {label:label, emoji:e.emoji, time:e.time, duration:mins, fixed:false};
+  if(e.ot) seg.ot = true; else seg.ot = false;
+  schedApply(e.id == null ? 'add' : 'update', e.orig, seg, r);
+  _schedEdit = null;
+  schedRender();
+  _showToast('✓ ' + label + ' saved · ' + schedRepeatLabel(r), 'ok', 2200);
+}
+function schedEditDelete(){
+  var e = _schedEdit; if(!e || e.id == null) return;
+  var r = schedEditRepeatObj(); if(!r) return;
+  schedApply('delete', e.orig, null, r);
+  _schedEdit = null;
+  schedRender();
+  _showToast('Removed ' + e.orig.label + ' · ' + schedRepeatLabel(r), 'ok', 2200);
 }
 
-function schedRenderDayTabs(){
-  var el = document.getElementById('sched-day-tabs');
-  if(!el) return;
-  var today = SCHED_DAY_KEYS[new Date().getDay()];
-  el.innerHTML = SCHED_DAYS.map(function(d,i){
-    var k = SCHED_DAY_KEYS[i];
-    var cls = 'sched-day-btn'+(k===_schedViewDay?' active':'')+(k===today?' today':'');
-    return '<button class="'+cls+'" onclick="schedViewDay(\''+k+'\')">'+d+'</button>';
-  }).join('');
+function schedResetDate(){
+  delete schedDates()[_schedViewDate];
+  _schedEdit = null;
+  schedSave(); schedUpdateCountdown(); schedRender();
+}
+function schedMoveDate(delta){
+  var d = schedParseDate(_schedViewDate); d.setDate(d.getDate() + delta);
+  _schedViewDate = schedDateKey(d); _schedEdit = null; schedRender();
+}
+function schedGoToday(){ _schedViewDate = schedDateKey(new Date()); _schedEdit = null; schedRender(); }
+
+function schedFormHtml(){
+  var e = _schedEdit, wd = SCHED_DAYS[schedParseDate(_schedViewDate).getDay()];
+  var lens = e.ot ? [30, 60, 90, 120, 180, 240] : [10, 15, 30, 45, 60];
+  var chip = function(label, on, click, extra){
+    return '<button type="button" class="sched-chip' + (on ? ' on' : '') + '" onclick="' + click + '"' + (extra || '') + '>' + label + '</button>';
+  };
+  return '<div class="sched-form">' +
+    '<div class="sched-form-lbl">Type</div>' +
+    '<div class="sched-chips">' + SCHED_BREAK_TYPES.map(function(t, i){
+      var on = t.label === 'Custom' ? !!e.custom : (!e.custom && t.label === e.label);
+      return chip(t.emoji + ' ' + t.label, on, 'schedEditType(' + i + ')');
+    }).join('') + '</div>' +
+    (e.custom ? '<input class="sched-in" type="text" maxlength="30" placeholder="Name" value="' + heroEsc(e.label) + '" oninput="schedEditField(\'label\',this.value);_schedEdit.customLabel=this.value" style="width:100%;margin-top:6px">' : '') +
+    '<div style="display:flex;gap:10px;margin-top:8px;align-items:flex-end">' +
+      '<label style="display:flex;flex-direction:column;gap:3px"><span class="sched-form-lbl">' + (e.ot ? 'Starts' : 'Time') + '</span>' +
+        '<input class="sched-in" type="time" value="' + e.time + '" onchange="schedEditField(\'time\',this.value)" style="width:118px"></label>' +
+      '<label style="display:flex;flex-direction:column;gap:3px"><span class="sched-form-lbl">Minutes</span>' +
+        '<input class="sched-in" type="number" min="1" max="720" value="' + e.duration + '" onchange="schedEditLen(+this.value)" style="width:70px"></label>' +
+    '</div>' +
+    '<div class="sched-chips" style="margin-top:6px">' + lens.map(function(n){ return chip(schedFmtLen(n), +e.duration === n, 'schedEditLen(' + n + ')'); }).join('') + '</div>' +
+    (e.ot ? '<div class="sched-form-hint">Overtime before your start or after your end extends that day\'s shift.</div>' : '') +
+    '<div class="sched-form-lbl" style="margin-top:10px">Repeat</div>' +
+    '<div class="sched-chips">' +
+      chip('Just this day', e.repeat === 'once', "schedEditRepeat('once')") +
+      chip('Every ' + wd, e.repeat === 'weekday', "schedEditRepeat('weekday')") +
+      chip('Every work day', e.repeat === 'workdays', "schedEditRepeat('workdays')") +
+      chip('Custom…', e.repeat === 'custom', "schedEditRepeat('custom')") +
+    '</div>' +
+    (e.repeat === 'custom' ? '<div class="sched-chips" style="margin-top:6px">' + SCHED_DAY_KEYS.map(function(k, i){
+      return chip(SCHED_DAYS[i], !!e.days[k], "schedEditDay('" + k + "')", ' style="min-width:38px"');
+    }).join('') + '</div>' : '') +
+    '<div style="display:flex;gap:6px;margin-top:12px">' +
+      '<button type="button" class="sched-btn primary" onclick="schedEditSave()">' + (e.id == null ? 'Add' : 'Save') + '</button>' +
+      (e.id != null ? '<button type="button" class="sched-btn danger" onclick="schedEditDelete()">Delete</button>' : '') +
+      '<button type="button" class="sched-btn" style="margin-left:auto" onclick="schedEditCancel()">Cancel</button>' +
+    '</div>' +
+  '</div>';
 }
 
-function schedViewDay(k){
-  _schedViewDay = k;
-  var day = _schedData[k] || JSON.parse(JSON.stringify(SCHED_DEFAULT));
-  // Use global shift times
-  var start = _schedData._shiftStart || day.start || '08:00';
-  var end   = _schedData._shiftEnd   || day.end   || '17:00';
-  document.getElementById('sched-start').value = start;
-  document.getElementById('sched-end').value   = end;
-  schedRenderDayTabs();
-  schedRenderBreaks(k);
+function schedRender(){
+  var panel = document.getElementById('sched-panel');
+  if(!panel || panel.style.display !== 'flex' || !_schedViewDate) return;
+  var ds = _schedViewDate, d = schedParseDate(ds), todayKey = schedDateKey(new Date());
+  var isToday = ds === todayKey, isWork = schedWorkDayKeys().indexOf(schedWeekdayKey(ds)) >= 0;
+  var custom = !!schedDates()[ds];
+
+  document.getElementById('sched-date-nav').innerHTML =
+    '<button type="button" class="sched-nav" onclick="schedMoveDate(-1)" aria-label="Previous day">‹</button>' +
+    '<div class="sched-date">' + d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}) +
+      (isToday ? ' <span class="sched-today">Today</span>' : '') + '</div>' +
+    (isToday ? '' : '<button type="button" class="sched-btn" onclick="schedGoToday()" style="height:24px">Today</button>') +
+    '<button type="button" class="sched-nav" onclick="schedMoveDate(1)" aria-label="Next day">›</button>';
+
+  var notes = [];
+  if(!isWork) notes.push('<span>Day off in your work days (Settings)</span>');
+  if(custom) notes.push('<span>📌 Changed for this day only</span><button type="button" class="sched-link" onclick="schedResetDate()">Use weekly pattern</button>');
+  var noteEl = document.getElementById('sched-day-note');
+  noteEl.innerHTML = notes.join('');
+  noteEl.hidden = !notes.length;
+
+  var sh = schedShiftFor(ds), baseS = schedTimeToMins(_schedData._shiftStart || '08:00'), baseE = schedTimeToMins(_schedData._shiftEnd || '17:00');
+  document.getElementById('sched-start').value = _schedData._shiftStart || '08:00';
+  document.getElementById('sched-end').value = _schedData._shiftEnd || '17:00';
+  var otEl = document.getElementById('sched-ot-note');
+  var otTxt = (sh.start < baseS || sh.end > baseE)
+    ? '⏱ With overtime: ' + schedFmt12(Math.floor(sh.start / 60) + ':' + (sh.start % 60)) + ' – ' + schedFmt12(Math.floor(sh.end / 60) + ':' + (sh.end % 60))
+    : '';
+  otEl.textContent = otTxt; otEl.hidden = !otTxt;
+
+  var editing = _schedEdit;
+  var rows = schedBreaksFor(ds).map(function(b){
+    if(editing && editing.id === b.id) return schedFormHtml();
+    var tag = b.ot ? '<span class="sched-tag">OT</span>' : '';
+    return '<button type="button" class="sched-seg' + (b.fixed ? ' fixed' : '') + '"' + (b.fixed ? ' disabled title="Starts your shift"' : ' onclick="schedOpenEdit(' + b.id + ')"') + '>' +
+      '<span class="sched-seg-emoji">' + b.emoji + '</span>' +
+      '<span class="sched-seg-name">' + heroEsc(b.label) + tag + '</span>' +
+      '<span class="sched-seg-time">' + schedFmt12(b.time) + '</span>' +
+      '<span class="sched-seg-len">' + schedFmtLen(b.duration) + '</span>' +
+    '</button>';
+  });
+  if(editing && editing.id == null) rows.push(schedFormHtml());
+  document.getElementById('sched-breaks-list').innerHTML = rows.join('') || '<div class="sched-empty">Nothing scheduled</div>';
+  document.getElementById('sched-add-btn').hidden = !!(editing && editing.id == null);
   var remind = document.getElementById('sched-remind-mins');
   if(remind) remind.value = _schedRemindMins;
 }
@@ -12220,12 +12934,13 @@ function toggleSchedPopover(){
 
   if(!day){ pop.style.display='none'; return; }
 
-  var endMins = schedTimeToMins(_schedData._shiftEnd||day.end||'17:00');
+  var todayKey = schedDateKey(now);
+  var endMins = schedShiftFor(todayKey).end;   // includes overtime
   var remaining = [];
 
   // Check if currently in a break
   var inBreak = null;
-  day.breaks.forEach(function(b){
+  schedBreaksFor(todayKey).forEach(function(b){
     var bStart = schedTimeToMins(b.time);
     var bEnd = bStart + b.duration;
     if(nowMins >= bStart && nowMins < bEnd) inBreak = b;
@@ -12235,7 +12950,8 @@ function toggleSchedPopover(){
   // Sort remaining by time
   remaining.sort(function(a,b){ return schedTimeToMins(a.time)-schedTimeToMins(b.time); });
 
-  var html = '<div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:2px 6px 6px;border-bottom:1px solid var(--border);margin-bottom:4px">Today\'s Remaining Events</div>';
+  var html = '<div style="display:flex;align-items:center;gap:8px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:2px 6px 6px;border-bottom:1px solid var(--border);margin-bottom:4px">Today\'s Remaining Events'+
+    '<button onclick="event.stopPropagation();toggleSchedule(true)" data-tip="Edit schedule (or right-click the reminder)" style="margin-left:auto;background:none;border:1px solid var(--border2);border-radius:5px;color:var(--blue);font-size:9px;font-weight:700;letter-spacing:.04em;padding:2px 7px;cursor:pointer;text-transform:none">✎ Edit</button></div>';
 
   if(inBreak){
     var rem = schedTimeToMins(inBreak.time) + inBreak.duration - nowMins;
@@ -12292,30 +13008,31 @@ function toggleSchedPopover(){
   }, 50);
 }
 
-function toggleSchedule(){
+// Opens on today. Right-click the shift reminder in the header, or 🕐 in the month calendar.
+function toggleSchedule(forceOpen){
   var p = document.getElementById('sched-panel');
   if(!p) return;
   if(p.style.display==='flex'){
-    p.style.display='none'; return;
+    if(forceOpen) return;
+    p.style.display='none'; _schedEdit = null; return;
   }
   schedLoad();
-  var today = SCHED_DAY_KEYS[new Date().getDay()];
-  _schedViewDay = today;
+  _schedViewDate = schedDateKey(new Date());
+  _schedEdit = null;
+  var pop = document.getElementById('sched-events-popover');
+  if(pop) pop.style.display = 'none';
   p.style.display='flex';
-  // Lock to right edge of window
+  // Just under the header, lined up with the tracker's right edge (not the window's)
   p.style.top = '60px';
-  p.style.right = '8px';
+  p.style.right = popRightInCard(null, document.querySelector('.header'), 10); // 10 = .main side padding, so it lines up with the cards
   p.style.left = 'auto';
-  schedViewDay(today);
+  schedRender();
   schedUpdateCountdown();
 }
 
 // ── Countdown engine ─────────────────────────────────────────────
 function schedGetTodayBreaks(){
-  var today = SCHED_DAY_KEYS[new Date().getDay()];
-  var day = _schedData[today];
-  if(!day) return [];
-  return day.breaks.slice().sort(function(a,b){ return a.time.localeCompare(b.time); });
+  return schedBreaksFor(schedDateKey(new Date()));
 }
 
 function schedTimeToMins(t){
@@ -12335,8 +13052,9 @@ function schedUpdateCountdown(){
 
   if(!day){ if(cd)cd.textContent='—'; if(ct)ct.textContent='—'; return; }
 
-  var endMins   = schedTimeToMins(_schedData._shiftEnd   || day.end   || '17:00');
-  var startMins = schedTimeToMins(_schedData._shiftStart || day.start || '08:00');
+  var shift     = schedShiftFor(schedDateKey(now));   // includes overtime before/after the shift
+  var endMins   = shift.end;
+  var startMins = shift.start;
   if(nowMins >= endMins){
     if(cd) cd.textContent='Shift complete';
     if(ct) ct.textContent='✓';
@@ -12376,10 +13094,10 @@ function schedUpdateCountdown(){
     var diff2=schedTimeToMins(next.time)-nowMins;
     var txt2=diff2>=60?(Math.floor(diff2/60)+'h '+(diff2%60)+'m'):diff2+'m';
     // Fire reminder
-    var fkey=today+'-'+next.id;
+    var fkey=schedDateKey(now)+'-'+next.id;   // per date, so next week's reminder still fires
     if(diff2<=_schedRemindMins && !_schedFiredToday[fkey]){
       _schedFiredToday[fkey]=true;
-      schedSave();
+      schedSave({localOnly:true});             // bookkeeping only: not an edit, not synced
       _showToast(next.emoji+' '+next.label+' in '+diff2+' min','info',8000);
     }
     if(cd) cd.textContent=next.emoji+' '+next.label;
@@ -12395,20 +13113,21 @@ function schedUpdateCountdown(){
 // Start countdown ticker
 function schedStartTicker(){
   if(_schedTimerInterval) clearInterval(_schedTimerInterval);
-  var agentId = (_session && _session.agentId) || localStorage.getItem('xcl_sales_id') || '';
-  if(!agentId || agentId==='guest'){
-    // No session yet — update countdown with defaults only
+  var agentId = schedAgentId();
+  if(agentId==='guest'){
+    // No Sales ID yet — update countdown with defaults only
     schedUpdateCountdown();
     return;
   }
   schedLoad();
   schedUpdateCountdown();
   _schedTimerInterval = setInterval(function(){
+    if(_schedAgent !== schedAgentId()) schedLoad();   // Sales ID changed in another path
     schedUpdateCountdown();
     var now=new Date();
-    if(now.getHours()===0&&now.getMinutes()===0){
+    if(now.getHours()===0&&now.getMinutes()===0 && Object.keys(_schedFiredToday).length){
       _schedFiredToday={};
-      schedSave();
+      schedSave({localOnly:true});
     }
   },30000);
 }
@@ -14400,6 +15119,7 @@ function ttPopOut(){
     d.documentElement.style.removeProperty('--vh100');
     d.body.style.cssText = 'margin:0;height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden';
     d.addEventListener('paste', onPhonePaste, true);
+    ctxInstall(d);   // same Cut / Copy / Paste right-click menu in the pop-out
     d.body.innerHTML = '<div id="tt-pip-root" style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px"></div>';
     // Inline handlers in the pop-out resolve against its own window.
     TT_PIP_FNS.forEach(function(n){ pip[n] = window[n]; });
@@ -14429,9 +15149,18 @@ function ttRenderView(){
   var targets = [];
   var panel = document.getElementById('dq-right-track');
   var viewRoot = document.getElementById('tt-view-root');
+  var trRoot = document.getElementById('tr-talk-view');
   var pipOpen = ttPipOpen();
+  // Only one in-page copy at a time (inputs have ids): the Tracker tab's when it's showing, else Job Aids'.
+  var trOn = !!trRoot && !XCL_VIEW && _activeTab === 'tracker' && _trView === 'talk';
   if(viewRoot) targets.push({doc:document, el:viewRoot, mode:'view'});
-  else if(panel) targets.push({doc:document, el:panel, mode:'panel'});
+  else if(trOn){
+    targets.push({doc:document, el:trRoot, mode:'panel', noHeroBar:true});
+    if(panel) panel.innerHTML = '';
+    var trHead = document.getElementById('tr-talk-head');
+    if(trHead) trHead.innerHTML = ttHeroBarHtml('panel', true);   // HERO bar lives in the Call Log card header here
+  }
+  else if(panel){ targets.push({doc:document, el:panel, mode:'panel'}); if(trRoot) trRoot.innerHTML = ''; }
   if(pipOpen){
     var root = _ttPip.document.getElementById('tt-pip-root');
     if(root) targets.push({doc:_ttPip.document, el:root, mode:'pip'});
@@ -14442,7 +15171,7 @@ function ttRenderView(){
     var active = t.doc.activeElement, focusId = active && t.el.contains(active) ? active.id : null, caret = null;
     try{ if(focusId && active.type === 'text') caret = active.selectionStart; }catch(e){}
     var scroll = t.el.scrollTop;
-    t.el.innerHTML = ttBuildHtml(t.mode);
+    t.el.innerHTML = ttBuildHtml(t.mode, {noHeroBar:t.noHeroBar});
     t.el.scrollTop = scroll;
     if(focusId){
       var f = t.doc.getElementById(focusId);
@@ -14504,18 +15233,18 @@ function ttObjectionHtml(list, ctx){
 }
 
 // mode: 'panel' (in the tracker), 'pip' (always-on-top pop-out), 'view' (compact app window)
-function ttBuildHtml(mode){
-  var ctx = ttCtx();
+// HERO progress · plan tag · ↺ · pop-out buttons. inHeader: bare row for the Tracker tab's Call Log card header.
+function ttHeroBarHtml(mode, inHeader){
   var t = heroTotals();
   var pct = t.total ? Math.round((t.done / t.total) * 100) : 0;
   var barColor = t.done === t.total ? '#22c55e' : 'var(--blue)';
   var e = ttEff();
   var planLabel = _tt.plan === 'streamers' ? 'Streamers' : _tt.plan === 'tv' ? (ttTvPick().pkg ? ttTvPick().pkg.chip : 'TV') : 'Internet only';
-
-  var html =
-    '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;flex-shrink:0">'+
+  return (inHeader
+      ? '<div style="flex:1;min-width:0;display:flex;align-items:center;gap:8px">'
+      : '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;flex-shrink:0">')+
       '<span style="font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--text3);text-transform:uppercase">HERO</span>'+
-      '<div style="flex:1;height:6px;background:var(--card2);border-radius:4px;overflow:hidden">'+
+      '<div style="flex:1;min-width:40px;height:6px;background:'+(inHeader ? 'var(--border2)' : 'var(--card2)')+';border-radius:4px;overflow:hidden">'+
         '<div style="width:'+pct+'%;height:100%;background:'+barColor+';transition:width .2s"></div>'+
       '</div>'+
       '<span style="font-size:11px;font-weight:800;color:'+(t.done===t.total?'#22c55e':'var(--text2)')+';font-variant-numeric:tabular-nums">'+t.done+' / '+t.total+'</span>'+
@@ -14523,11 +15252,18 @@ function ttBuildHtml(mode){
       '<button onclick="ttResetCall()" data-tip="Reset the talk track for the next call" style="background:none;border:none;cursor:pointer;font-size:13px;opacity:.4;padding:2px 3px;line-height:1;border-radius:5px" onmouseover="this.style.opacity=\'1\'" onmouseout="this.style.opacity=\'.4\'">↺</button>'+
       (mode === 'pip'
         ? '<button onclick="ttPopIn()" title="Put the Talk Track back in the tracker" style="'+TT_HDR_BTN+'">⇲ Pop in</button>'
-        : mode === 'panel'
+        : mode === 'panel' && !inHeader      // the Tracker tab's header row stays compact: no Pop out / Window
         ? '<button onclick="ttPopOut()" data-tip="Always-on-top pop-out (shows the site address in its title bar)" style="'+TT_HDR_BTN+'">⧉ Pop out</button>'+
           '<button onclick="xclOpenView(\'talk\')" data-tip="Open the Talk Track in its own app window" style="'+TT_HDR_BTN+'">🪟 Window</button>'
         : '')+
-    '</div>'+
+    '</div>';
+}
+
+// opts.noHeroBar: the HERO bar is drawn elsewhere (the Tracker tab puts it in the Call Log card header)
+function ttBuildHtml(mode, opts){
+  var ctx = ttCtx();
+  var html =
+    (opts && opts.noHeroBar ? '' : ttHeroBarHtml(mode, false))+
     '<div style="display:flex;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;flex-shrink:0">'+
       '<label style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">'+
         '<span style="font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">👤 Member name</span>'+
@@ -14595,6 +15331,54 @@ function ttBuildHtml(mode){
   return html;
 }
 
+// ── Tracker tab: 📋 Call Log ⇄ 📜 Talk Track (the choice is remembered) ─────
+var _trView = (function(){ try{ return localStorage.getItem('xcl_tracker_view') === 'talk' ? 'talk' : 'log'; }catch(e){ return 'log'; } })();
+
+function trSetView(v){
+  _trView = v === 'talk' ? 'talk' : 'log';
+  try{ localStorage.setItem('xcl_tracker_view', _trView); }catch(e){}
+  trApplyView();
+}
+
+function trApplyView(){
+  var talk = _trView === 'talk';
+  var logView = document.getElementById('call-log-view'), talkView = document.getElementById('tr-talk-view');
+  if(!logView || !talkView) return;
+  logView.hidden = talk;
+  talkView.hidden = !talk;
+  var actions = document.getElementById('call-log-actions'), head = document.getElementById('tr-talk-head');
+  if(actions) actions.style.display = talk ? 'none' : '';
+  if(head){ head.hidden = !talk; if(!talk) head.innerHTML = ''; }
+  var bl = document.getElementById('tr-view-btn-log'), bt = document.getElementById('tr-view-btn-talk');
+  if(bl){ bl.classList.toggle('active', !talk); bl.setAttribute('aria-selected', String(!talk)); }
+  if(bt){ bt.classList.toggle('active', talk); bt.setAttribute('aria-selected', String(talk)); }
+  ttRenderView();
+  if(talk) trFitTalk();
+}
+
+// Size the Talk Track box to take the same on-screen space the Call Log rows get: from its top (page scrolled
+// to the top) down to the bottom of the window, so the form stays in view while the script scrolls in its box.
+// Real use is a narrow, scaled-down window where the log shows ~15 rows; very short windows get 300px.
+function trFitTalk(){
+  var el = document.getElementById('tr-talk-view');
+  if(!el || el.hidden || _activeTab !== 'tracker') return;
+  var s = APP_SCALE || 1;
+  var docTop = (el.getBoundingClientRect().top + window.scrollY) / s;
+  var h = Math.max(300, Math.floor(window.innerHeight / s - docTop - 12));
+  el.style.height = h + 'px';
+}
+
+if(!XCL_VIEW){
+  window.addEventListener('resize', trFitTalk);
+  if(window.ResizeObserver){
+    var _trRO = new ResizeObserver(function(){ trFitTalk(); });
+    ['.stats-panel', '#pace-summary', '#new-call-form-card'].forEach(function(sel){
+      var n = document.querySelector(sel); if(n) _trRO.observe(n);
+    });
+  }
+  trApplyView();
+}
+
 // ── Compact app windows: hub ⇄ window messaging ─────────────────────────────
 // The full tracker (hub) answers pings, saves calls sent from compact windows, and relays its
 // stats title. Replies happen inside message events, so they still arrive when the hub window is
@@ -14622,7 +15406,7 @@ if(XCL_CH) XCL_CH.onmessage = function(ev){
     if(!_xclPrimaryDecided || XCL_IS_DUPLICATE) return;
     if(m.type === 'ping'){
       if(m.kind) _xclViewsSeen[m.kind] = Date.now();
-      xclPost({type:'pong', title:document.title});
+      xclPost({type:'pong', title:xclRealTitle()});
     } else if(m.type === 'view-bye' && m.kind){
       delete _xclViewsSeen[m.kind];
     } else if(m.type === 'log-call' && m.to === XCL_HUB_ID && m.call){
@@ -14631,9 +15415,11 @@ if(XCL_CH) XCL_CH.onmessage = function(ev){
         _xclCommitted[id] = true;
         commitCall(m.call);
       }
-      xclPost({type:'committed', id:id, title:document.title});
+      xclPost({type:'committed', id:id, title:xclRealTitle()});
     } else if(m.type === 'notes-block' && Array.isArray(m.lines)){
       ttNotesApply(m.lines.filter(function(l){ return typeof l === 'string' && TT_NOTE_LINE_RE.test(l); }));
+    } else if(m.type === 'call-reset'){
+      xclPost({type:'call-reset'});   // a compact log window cleared its call: pass it on to a talk-only window
     } else if(m.type === 'contact'){
       _tt.name = String(m.name || '').slice(0, 60); _tt.phone = fmtPhone(String(m.phone || ''));
       ttContactToForm();
@@ -14653,7 +15439,7 @@ if(XCL_CH) XCL_CH.onmessage = function(ev){
     xclSetSubmitBusy(false);
     logCallFeedback();
   }
-  if(m.type === 'call-logged' && XCL_VIEW.talk && !XCL_VIEW.log && m.hub === _xclHub.id){
+  if((m.type === 'call-logged' || m.type === 'call-reset') && XCL_VIEW.talk && !XCL_VIEW.log && m.hub === _xclHub.id){
     // Talk-only window: a call was just logged in the tracker, so start the next call fresh
     ttResetState(); _heroDone = {}; ttRenderView();
   }
@@ -14894,6 +15680,9 @@ function dqOpenerPhoneInput(el){
   ttContactFromForm();
 }
 
+// Close for the (currently unused) #dq-modal; its ✕ and backdrop called this but it was never defined
+function dqCloseModal(){ var m = document.getElementById('dq-modal'); if(m) m.style.display = 'none'; }
+
 function dqResetAll(){
   Object.keys(_dqAsked).forEach(function(lob){
     _dqAsked[lob] = [];
@@ -14902,7 +15691,8 @@ function dqResetAll(){
   _heroDone = {};
   if(_dqCurrentView==='hero') heroRenderView();
   ttResetState();
-  if(_dqCurrentView==='track' || ttPipOpen()) ttRenderView();
+  ttRenderView();                     // panel, pop-out, or a compact window's Talk Track (clears name/phone too)
+  xclPost({type:'call-reset'});       // a talk-only window starts the next call fresh as well
   var btn = document.getElementById('broadband-label-btn');
   if(btn){ btn.setAttribute('data-active','0'); btn.style.background='none'; btn.style.color='var(--blue)'; btn.style.fontStyle='italic'; }
   var opPh = document.getElementById('dq-opener-phone');
@@ -15835,7 +16625,7 @@ function renderCallbacksTab(){
         '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:'+ftc.bg+';border:1px solid '+ftc.border+';color:'+ftc.color+';flex-shrink:0;white-space:nowrap">'+(fuTypeIcons[fuType]||'')+' '+fuType+'</span>'+
         (c.cbAttempts>0?'<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber);flex-shrink:0;white-space:nowrap">📵 '+c.cbAttempts+'</span>':'')+
         (c.cb2ndSwing&&!c.cbDone?'<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber);flex-shrink:0;white-space:nowrap">📋 2nd Swing</span>':'')+
-        (c.mood===MOOD_EMOJIS[0]&&!c.chargedBack&&!c.isException&&!c.cb2ndSwing&&c.ts?(function(){var days=Math.floor((now-new Date(c.ts))/86400000);return '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);flex-shrink:0;white-space:nowrap">'+days+'d since sale</span>';})():'')+
+        (c.mood===MOOD_EMOJIS[0]&&!c.chargedBack&&!c.isException&&!c.cb2ndSwing&&!c.cbDone&&c.ts?(function(){var days=Math.floor((now-new Date(c.ts))/86400000);return '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);flex-shrink:0;white-space:nowrap">'+days+'d since sale</span>';})():'')+
         (timeLeft?'<span style="font-size:10px;font-weight:600;color:'+sc.accent+';white-space:nowrap;flex-shrink:0">'+timeLeft+'</span>':'')+
         '<span style="font-size:11px;color:var(--text2);white-space:nowrap;flex-shrink:0;font-family:var(--mono)">'+cbFmt+'</span>'+
         '<span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;flex-shrink:0">'+(c.cbName||'—')+'</span>'+
@@ -16010,10 +16800,13 @@ function renderCallbacksTab(){
 function undoCbDone(id){
   var c = calls.find(function(x){ return String(x.id)===String(id); });
   if(!c) return;
+  var wasRf = c.mood === MOOD_EMOJIS[0];
+  if(!rfUndoResolution(c)) return;
   c.cbDone = false;
   saveCallsCache();
   upsertCallToSheets(c);
-  _showToast('\u21A9 Call back reopened', 'ok', 2000);
+  _showToast(wasRf ? '\u21A9 Red flag reopened' : '\u21A9 Call back reopened', 'ok', 2000);
+  render(); updateStats(); checkAlerts();
   setTimeout(renderCallbacksTab, 300);
 }
 
@@ -16115,10 +16908,10 @@ function updateWindowTitle(){
       var d = new Date(c.ts);
       return d.toDateString() === now.toDateString() && inActiveFiscalTs(c.ts) && !c.cbSale;
     }); // call count only
-    var todayAllCalls = calls.filter(function(c){
+    var todayAllCalls = creditCalls(calls.filter(function(c){
       var d = new Date(c.ts);
       return d.toDateString() === now.toDateString() && inActiveFiscalTs(c.ts);
-    }); // incl cbSale for stats
+    })); // incl cbSale for stats; exceptions give no credit
     var totalCalls   = todayCalls.length;
     var chsiCalls    = todayAllCalls.filter(function(c){ return c.chsi; }).length;
     var chsiClose    = totalCalls ? Math.round(chsiCalls/totalCalls*100) : 0;
@@ -16130,11 +16923,11 @@ function updateWindowTitle(){
       'XM ' + xmSales,
       '$' + rev.toFixed(0)
     ];
-    document.title = parts.join(' · ');
+    setAppTitle(parts.join(' · '));
   } catch(e) {
-    document.title = 'Call Logger v' + APP_VERSION;
+    setAppTitle('Call Logger v' + APP_VERSION);
   }
-  xclPost({type:'title', title:document.title});
+  xclPost({type:'title', title:xclRealTitle()});
 }
 
 // ── Celebration Animations ────────────────────────────────────────────────
@@ -18363,13 +19156,24 @@ window.phonesimInit = phonesimInit;
 
 <div id="sales-id-prompt" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.5);align-items:center;justify-content:center">
   <div style="width:300px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px">
-    <div style="font-size:15px;font-weight:700;color:var(--text)">Enter Your Sales ID</div>
-    <div style="font-size:11px;color:var(--text3);line-height:1.5">Your Sales ID is used to tag your calls. You can change it anytime in Settings.</div>
-    <input id="prompt-sales-id" type="text" placeholder="e.g. 61294" maxlength="10" autocomplete="off"
-      style="height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:16px;color:var(--text);outline:none;box-sizing:border-box;width:100%"
-      onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'"
-      onkeydown="if(event.key==='Enter')confirmSalesIdPrompt()">
-    <button onclick="confirmSalesIdPrompt()" style="height:38px;background:var(--blue);border:none;border-radius:8px;font-size:13px;font-weight:700;color:#fff;cursor:pointer">Continue</button>
+    <div id="sales-id-step-enter" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:15px;font-weight:700;color:var(--text)">Enter Your Sales ID</div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.5">Your Sales ID tags your calls and keeps your schedule and settings. It's needed before the tracker can save anything.</div>
+      <input id="prompt-sales-id" type="text" placeholder="e.g. 61294" maxlength="10" autocomplete="off" spellcheck="false"
+        style="height:38px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:0 12px;font-family:var(--mono);font-size:16px;color:var(--text);outline:none;box-sizing:border-box;width:100%"
+        onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border2)'"
+        onkeydown="if(event.key==='Enter')confirmSalesIdPrompt()">
+      <button onclick="confirmSalesIdPrompt()" style="height:38px;background:var(--blue);border:none;border-radius:8px;font-size:13px;font-weight:700;color:#fff;cursor:pointer">Continue</button>
+    </div>
+    <div id="sales-id-step-confirm" hidden style="flex-direction:column;gap:14px">
+      <div style="font-size:15px;font-weight:700;color:var(--text)">Is this your Sales ID?</div>
+      <div id="sales-id-confirm-val" style="font-family:var(--mono);font-size:28px;font-weight:800;letter-spacing:.08em;color:var(--text);text-align:center;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:10px"></div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.5">Every call you log is tagged with it, so double-check before continuing.</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="salesIdPromptStep('enter')" style="flex:1;height:38px;background:none;border:1px solid var(--border2);border-radius:8px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer">Change</button>
+        <button id="sales-id-accept" onclick="acceptSalesIdPrompt()" style="flex:2;height:38px;background:var(--blue);border:none;border-radius:8px;font-size:13px;font-weight:700;color:#fff;cursor:pointer">Yes, that's me</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -18466,10 +19270,7 @@ window.phonesimInit = phonesimInit;
 <div id="sched-panel">
   <div class="sched-header">
     <div class="sched-title">🕐 Shift Schedule</div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <button onclick="schedSaveDay()" style="font-size:9px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;letter-spacing:.06em;text-transform:uppercase">Save</button>
-      <button onclick="toggleSchedule()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;line-height:1">✕</button>
-    </div>
+    <button onclick="toggleSchedule()" aria-label="Close" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;line-height:1">✕</button>
   </div>
   <div class="sched-body">
     <!-- Countdown -->
@@ -18478,18 +19279,20 @@ window.phonesimInit = phonesimInit;
       <span id="scd-name" style="font-size:12px;font-weight:600;color:var(--text);margin-left:6px">—</span>
       <span class="scd-val" id="scd-time">—</span>
     </div>
-    <!-- Day tabs -->
-    <div class="sched-day-tab" id="sched-day-tabs"></div>
-    <!-- Global shift times -->
-    <div class="sched-shift-row" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+    <!-- One day at a time: ‹ date › -->
+    <div id="sched-date-nav"></div>
+    <div id="sched-day-note" hidden></div>
+    <!-- One shift time for every day (overtime segments stretch a day) -->
+    <div class="sched-shift-row">
       <label>Shift</label>
       <input type="time" id="sched-start" onchange="schedSaveShiftTimes()">
-      <label style="margin-left:8px">to</label>
+      <label style="min-width:0">to</label>
       <input type="time" id="sched-end" onchange="schedSaveShiftTimes()">
     </div>
-    <!-- Break slots -->
+    <div id="sched-ot-note" hidden></div>
+    <!-- Segments (tap to edit) -->
     <div id="sched-breaks-list"></div>
-    <button class="sched-add-btn" onclick="schedAddBreak()">+ Add Segment</button>
+    <button class="sched-add-btn" id="sched-add-btn" onclick="schedOpenEdit(null)">+ Add segment</button>
     <!-- Reminder lead time -->
     <div class="sched-reminder-row">
       <span style="font-size:10px;color:var(--text3);font-weight:600">Reminder</span>
