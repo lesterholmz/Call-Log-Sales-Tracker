@@ -19,7 +19,7 @@
 //   2026-09-14, 3rd release → 0.9.14.3     2027-01-05, 1st release → 0.101.5.1     2028-01-05 → 0.201.5.1
 // The page title, the "Call Logger" brand tooltip, and the Settings header read from it.
 var APP_UPDATED = '2026-09-17';
-var APP_BUILD   = 1;
+var APP_BUILD   = 2;
 var APP_VERSION = (function(date, build){
   var p = date.split('-');
   var month = (parseInt(p[0], 10) - 2026) * 100 + parseInt(p[1], 10);
@@ -340,6 +340,28 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:v
 #tr-talk-head{flex:1;min-width:0;display:flex;align-items:center;margin-left:12px}
 #tr-talk-head[hidden],#tr-talk-view[hidden],#call-log-view[hidden]{display:none}
 #sales-id-step-enter[hidden],#sales-id-step-confirm[hidden]{display:none!important}
+/* Call recap (transcript → notes) */
+.recap-open-btn{margin-left:auto;height:18px;padding:0 7px;border-radius:5px;border:1px solid var(--border2);background:var(--card);color:var(--blue);font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:none;cursor:pointer;font-family:var(--sans)}
+.recap-open-btn:hover{border-color:var(--blue)}
+#recap-modal{position:fixed;inset:0;z-index:99990;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+#recap-modal[hidden],#recap-step-paste[hidden],#recap-step-result[hidden],#recap-skip[hidden]{display:none}
+.recap-card{width:560px;max-width:calc(100vw - 24px);max-height:calc(var(--vh100,100vh) - 40px);overflow:auto;background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;box-shadow:0 18px 50px rgba(0,0,0,.5);box-sizing:border-box}
+.recap-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.recap-title{font-size:13px;font-weight:800;color:var(--text)}
+.recap-mode{font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:var(--surface);border:1px solid var(--border2);color:var(--text3)}
+.recap-mode.ai{color:var(--green);border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08)}
+.recap-x{margin-left:auto;background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer}
+.recap-lbl{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+#recap-input,#recap-output{width:100%;box-sizing:border-box;min-height:240px;resize:vertical;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;font-family:var(--sans);font-size:12px;line-height:1.5;color:var(--text);outline:none}
+#recap-output{min-height:170px;font-size:13px}
+#recap-input:focus,#recap-output:focus{border-color:var(--blue)}
+.recap-hint{font-size:10px;color:var(--text3);margin-top:5px;line-height:1.4}
+.recap-actions{display:flex;align-items:center;gap:8px;margin-top:10px}
+.recap-status{flex:1;font-size:11px;color:var(--text2)}
+.recap-btn{height:32px;padding:0 14px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+.recap-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.recap-btn:disabled{opacity:.5;cursor:wait}
+.recap-actions .recap-btn:first-child:not(.primary){margin-right:auto}
 #sales-id-step-confirm{display:flex}
 /* Call Log controls fill the row after the toggle, evenly spaced */
 #call-log-actions{flex:1;min-width:0;justify-content:space-between;margin-left:16px}
@@ -3754,7 +3776,7 @@ Click to select category + sub-reason" onclick="event.stopPropagation();toggleNo
           </div>
           <!-- Notes -->
           <div class="notes-wrap">
-            <label id="notes-lbl">Notes <span id="notes-badge" class="opt-badge">optional</span></label>
+            <label id="notes-lbl">Notes <span id="notes-badge" class="opt-badge">optional</span><button type="button" id="recap-open-btn" class="recap-open-btn" onclick="recapOpen()" data-tip="Paste a call transcript → recap added to notes">📝 Recap</button></label>
             <textarea id="f-notes" data-tip="Call notes — saved with the log entry" placeholder="Optional…"></textarea>
           </div>
           <!-- Divider extending from row 1 -->
@@ -14900,6 +14922,7 @@ function ttNotesApply(lines){
   while(kept.length && !kept[kept.length - 1].trim()) kept.pop();
   var v = kept.join('\n');
   if(lines && lines.length) v = (v ? v + '\n' : '') + lines.join('\n');
+  v = recapDropDuplicates(v);   // a recap line the Talk Track now covers isn't repeated
   if(v !== el.value){
     el.value = v;
     var op = document.getElementById('dq-opener-notes');
@@ -15678,6 +15701,430 @@ function dqOpenerPhoneInput(el){
   var formPhone = document.getElementById('f-cb-phone');
   if(formPhone) formPhone.value = el.value;
   ttContactFromForm();
+}
+
+// ── Call recap: HeroAssist transcript → short labeled lines in the call notes ──
+// Runs entirely on this PC: Chrome's on-device AI when it's available (Prompt API, then Summarizer), with
+// pattern matching as the fallback and as a fill-in for anything the AI leaves out. The transcript is never
+// saved, and the recap is scrubbed of personal identifiers before it can reach the notes (which go to Sheets).
+var RECAP_FIELDS = [
+  ['carrier',  'Carrier'],
+  ['bill',     'Mobile bill'],
+  ['lines',    'Lines'],
+  ['internet', 'Internet'],
+  ['tv',       'TV'],
+  ['offer',    'Offer'],
+  ['concerns', 'Concerns'],
+  ['next',     'Next step']
+];
+// Labels start with "• " so the Talk Track notes block (plain "Carrier:", "Phones:" …) never touches them
+var RECAP_PREFIX = '• ';
+
+function recapOpen(){
+  var m = document.getElementById('recap-modal');
+  _recapNames = [];
+  document.getElementById('recap-input').value = '';
+  document.getElementById('recap-output').value = '';
+  document.getElementById('recap-status').textContent = '';
+  document.getElementById('recap-step-paste').hidden = false;
+  document.getElementById('recap-step-result').hidden = true;
+  m.hidden = false;
+  setTimeout(function(){ document.getElementById('recap-input').focus(); }, 30);
+  recapModeBadge();
+}
+function recapClose(){
+  document.getElementById('recap-input').value = '';    // the transcript never outlives the box
+  document.getElementById('recap-output').value = '';
+  document.getElementById('recap-modal').hidden = true;
+}
+function recapBack(){
+  document.getElementById('recap-step-paste').hidden = false;
+  document.getElementById('recap-step-result').hidden = true;
+}
+document.addEventListener('keydown', function(e){
+  var m = document.getElementById('recap-modal');
+  if(e.key === 'Escape' && m && !m.hidden) recapClose();
+});
+
+// Which on-device model can run: {kind:'prompt'|'summarizer'|null, state:'available'|'downloadable'|'downloading'}
+var _recapAi = null;   // last check, so Refine can start the model straight from the click
+async function recapAiKind(){
+  try{
+    if(typeof LanguageModel !== 'undefined'){
+      var a = await LanguageModel.availability({expectedInputs:[{type:'text', languages:['en']}], expectedOutputs:[{type:'text', languages:['en']}]});
+      if(a && a !== 'unavailable') return {kind:'prompt', state:a};
+    }
+  }catch(e){}
+  try{
+    if(typeof Summarizer !== 'undefined'){
+      var s = await Summarizer.availability();
+      if(s && s !== 'unavailable') return {kind:'summarizer', state:s};
+    }
+  }catch(e){}
+  return {kind:null, state:'unavailable'};
+}
+async function recapModeBadge(){
+  var el = document.getElementById('recap-mode');
+  el.textContent = 'Checking…'; el.className = 'recap-mode';
+  _recapAi = await recapAiKind();
+  var k = _recapAi.kind, needsDl = _recapAi.state === 'downloadable' || _recapAi.state === 'downloading';
+  el.textContent = !k ? 'Basic' : needsDl ? 'On-device AI · one-time download' : 'On-device AI';
+  el.className = 'recap-mode' + (k ? ' ai' : '');
+  el.title = !k ? 'Chrome\'s on-device AI isn\'t available on this PC — using pattern matching'
+           : needsDl ? 'Chrome downloads its AI model the first time you press Refine (it can take a few minutes)'
+           : 'Chrome\'s built-in AI, running on this PC';
+}
+
+var _recapSkip = null;   // resolves when "Use basic now" is pressed during an AI run
+async function recapRun(){
+  var text = document.getElementById('recap-input').value.trim();
+  var status = document.getElementById('recap-status'), btn = document.getElementById('recap-run');
+  if(text.length < 40){ status.textContent = 'Paste the transcript first.'; return; }
+  btn.disabled = true;
+  var info = _recapAi || await recapAiKind();   // cached, so the model starts while this still counts as a click
+  var fields = recapRules(text), ai = null;
+  _recapNames = recapFindNames(text);   // scrubbed from the recap, including anything typed into it later
+  if(info.kind){
+    var sp = recapSplitSpeakers(text), aiText = sp.labeled ? sp.normalized : text;   // V/A → Customer/Agent for the model
+    var aiRun = info.kind === 'prompt' ? recapWithPrompt(aiText, status) : recapWithSummarizer(aiText, status);
+    aiRun.catch(function(){});   // a skipped run may still fail later; that's fine
+    status.textContent = (info.state === 'available' ? 'Refining with on-device AI…' : 'Starting on-device AI download…');
+    var skip = new Promise(function(res){ _recapSkip = res; });
+    recapShowSkip(true);
+    try{
+      ai = await Promise.race([aiRun, skip]);
+      if(ai === 'skip') ai = null;
+    }catch(e){
+      console.warn('On-device AI failed, using pattern matching:', e);
+      _showToast('On-device AI couldn\'t run (' + (e.name || 'error') + ') — used the basic recap', 'warn', 5000);
+    }
+    recapShowSkip(false); _recapSkip = null;
+  }
+  if(ai && ai.fields) RECAP_FIELDS.forEach(function(f){ if(ai.fields[f[0]]) fields[f[0]] = ai.fields[f[0]]; });   // AI wins, rules fill gaps
+  var lines = RECAP_FIELDS.filter(function(f){ return fields[f[0]]; }).map(function(f){ return RECAP_PREFIX + f[1] + ': ' + fields[f[0]]; });
+  if(ai && ai.points) ai.points.forEach(function(p){ lines.push(RECAP_PREFIX + 'Note: ' + p); });
+  lines = lines.map(recapScrub).filter(function(l){ return l.replace(/^[•\s]*[^:]+:\s*/, '').trim(); });
+  btn.disabled = false;
+  status.textContent = '';
+  if(!lines.length){ status.textContent = 'Nothing sales-related found in that text.'; return; }
+  document.getElementById('recap-output').value = lines.join('\n');
+  document.getElementById('recap-input').value = '';   // done with the transcript
+  document.getElementById('recap-step-paste').hidden = true;
+  document.getElementById('recap-step-result').hidden = false;
+  document.getElementById('recap-output').focus();
+}
+
+function recapShowSkip(on){
+  var b = document.getElementById('recap-skip');
+  if(b) b.hidden = !on;
+}
+function recapSkipAi(){ if(_recapSkip) _recapSkip('skip'); }
+
+var RECAP_AI_INSTRUCTIONS =
+  'You turn Xfinity sales call transcripts into short notes for the sales rep\'s follow-up call. ' +
+  'Only use facts stated in the transcript. Keep each value under 14 words; use "" when not discussed. ' +
+  'First names are fine, but never include last names, phone numbers, account or order numbers, card numbers, emails, or street addresses.';
+var RECAP_SCHEMA = {
+  type:'object',
+  properties:{
+    carrier:{type:'string', description:'current mobile carrier'},
+    bill:{type:'string', description:'current monthly mobile bill amount'},
+    lines:{type:'string', description:'number of phone lines and device types (iPhone/Android, tablets, watches)'},
+    internet:{type:'string', description:'current internet provider, how they use WiFi, speed/plan interest'},
+    tv:{type:'string', description:'interest in TV service or streaming'},
+    offer:{type:'string', description:'what was offered or quoted, with prices'},
+    concerns:{type:'string', description:'objections or hesitations (price, contract, spouse, timing)'},
+    next:{type:'string', description:'agreed next step and callback timing'},
+    points:{type:'array', items:{type:'string'}, maxItems:3, description:'other sales-relevant facts'}
+  },
+  required:['carrier','bill','lines','internet','tv','offer','concerns','next','points']
+};
+
+async function recapWithPrompt(text, status){
+  var session = await LanguageModel.create({
+    initialPrompts:[{role:'system', content:RECAP_AI_INSTRUCTIONS}],
+    expectedInputs:[{type:'text', languages:['en']}], expectedOutputs:[{type:'text', languages:['en']}],
+    monitor:function(m){ m.addEventListener('downloadprogress', function(e){ status.textContent = 'Downloading on-device AI… ' + Math.round(e.loaded * 100) + '%'; }); }
+  });
+  try{
+    var input = text;
+    if(session.inputQuota){   // keep inside what the model accepts (rough: 1 token ≈ 4 characters)
+      var max = Math.floor(session.inputQuota * 3);
+      if(input.length > max) input = input.slice(0, max);
+    }
+    var raw = await session.prompt('Transcript ("Customer" is the member, "Agent" is the Xfinity rep):\n' + input, {responseConstraint:RECAP_SCHEMA});
+    var o = JSON.parse(raw);
+    var fields = {};
+    RECAP_FIELDS.forEach(function(f){ if(typeof o[f[0]] === 'string') fields[f[0]] = o[f[0]].trim(); });
+    return {fields:fields, points:(Array.isArray(o.points) ? o.points : []).map(String).filter(Boolean).slice(0, 3)};
+  } finally { try{ session.destroy(); }catch(e){} }
+}
+
+async function recapWithSummarizer(text, status){
+  var s = await Summarizer.create({
+    type:'key-points', format:'plain-text', length:'short',
+    sharedContext:'Xfinity sales call transcript. Notes for the rep\'s follow-up call: mobile carrier, bill, lines, internet use, TV interest, offers, objections, next steps. ' +
+      'First names are fine; leave out last names, phone numbers, account numbers and addresses.',
+    expectedInputLanguages:['en'], outputLanguage:'en',
+    monitor:function(m){ m.addEventListener('downloadprogress', function(e){ status.textContent = 'Downloading on-device AI… ' + Math.round(e.loaded * 100) + '%'; }); }
+  });
+  try{
+    var summarizeAll = async function(t, depth){
+      try{ return await s.summarize(t); }
+      catch(e){
+        if(depth > 3 || t.length < 2000) throw e;   // too long: summarize halves, then the summaries
+        var mid = t.lastIndexOf('\n', Math.floor(t.length / 2)); if(mid < 0) mid = Math.floor(t.length / 2);
+        var a = await summarizeAll(t.slice(0, mid), depth + 1), b = await summarizeAll(t.slice(mid), depth + 1);
+        return await summarizeAll(a + '\n' + b, depth + 1);
+      }
+    };
+    var out = await summarizeAll(text, 0);
+    var points = String(out).split(/\n+/).map(function(l){ return l.replace(/^\s*[-*•\d.)]+\s*/, '').trim(); }).filter(Boolean).slice(0, 5);
+    return {fields:{}, points:points};
+  } finally { try{ s.destroy(); }catch(e){} }
+}
+
+// ── Pattern matching (always available) ──
+// HeroAssist transcripts: "V:" = the member (visitor), "A:" = the agent. The first entry can be the agent's
+// greeting even though it's marked V. Lines without a label continue the previous speaker.
+var RECAP_SPEAKER_RE = /^\s*(?:\[?\d{1,2}:\d{2}(?::\d{2})?\]?\s*)?([VA])\b\s*(?:\[?\d{1,2}:\d{2}(?::\d{2})?\]?\s*)?[:\-–]\s*/;
+function recapSplitSpeakers(text){
+  var lines = String(text).replace(/\r/g, '').split('\n'), cust = [], agent = [], out = [], who = null, first = true, labeled = 0;
+  lines.forEach(function(raw){
+    var m = RECAP_SPEAKER_RE.exec(raw), body = m ? raw.slice(m[0].length) : raw;
+    if(m){
+      labeled++;
+      who = m[1] === 'A' ? 'agent' : 'cust';
+      if(first && who === 'cust' && /thank(s| you) for (calling|choosing)|xfinity|comcast|my name is|how (can|may) i (help|assist)/i.test(body)) who = 'agent';
+      first = false;
+    }
+    if(!body.trim()) return;
+    (who === 'agent' ? agent : cust).push(body.trim());
+    out.push((who === 'agent' ? 'Agent: ' : who === 'cust' ? 'Customer: ' : '') + body.trim());
+  });
+  return {labeled:labeled > 0, cust:cust.join('\n'), agent:agent.join('\n'), normalized:out.join('\n')};
+}
+
+function recapRules(text){
+  var sp = recapSplitSpeakers(text);
+  var mem = sp.labeled ? sp.cust : text;        // what the member said: their carrier, bill, lines, concerns
+  var agt = sp.labeled ? sp.agent : text;       // what the agent said: the offer
+  var t = ' ' + mem.replace(/\r/g, '') + ' ', low = t.toLowerCase(), f = {};
+  var numWord = {one:1, two:2, three:3, four:4, five:5, six:6, seven:7, eight:8, nine:9, ten:10};
+  var toNum = function(w){ w = String(w).toLowerCase(); return numWord[w] || parseInt(w, 10) || 0; };
+  var splitS = function(s){ return String(s).replace(/\r/g, '').split(/(?<=[.?!])\s+|\n+/).map(function(x){ return x.replace(RECAP_SPEAKER_RE, '').replace(/^\s*(agent|rep|customer|caller|member|visitor|speaker\s*\d+)\s*[:\-]\s*/i, '').trim(); }).filter(Boolean); };
+  var sentences = splitS(mem), agentSentences = splitS(agt), allSentences = splitS(text);
+  var find = function(re, from){ return (from || sentences).filter(function(s){ return re.test(s); }); };
+  var clip = function(s, n){ s = s.replace(/\s+/g, ' ').trim(); return s.length > (n || 90) ? s.slice(0, (n || 90) - 1).replace(/\s+\S*$/, '') + '…' : s; };
+
+  // Carrier: looked for in phone/line talk first, so an internet provider (Spectrum, AT&T Fiber…) isn't taken for it
+  var carriers = ttCarrierNames().concat(['AT&T','ATT','Straight Talk','Tracfone','Google Fi','US Cellular','Consumer Cellular','Total Wireless','Metro PCS','MetroPCS','Cricket','Boost']);
+  var escRe = function(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); };
+  var pickCarrier = function(hay){
+    var best = null;
+    carriers.forEach(function(c){
+      var lc = c.toLowerCase(), key;
+      if(/^spectrum/.test(lc)) key = 'spectrum mobile';                 // plain "Spectrum" is usually their internet
+      else if(lc === 'visible') key = 'visible (?:wireless|mobile)';     // "visible" is also an everyday word
+      else key = escRe(lc.replace(/ (wireless|mobile)$| by t-mobile$/, ''));
+      if(key.length < 3) return;
+      var re = new RegExp('(^|[^a-z])' + key + '(?![a-z])(?!\\s*fiber)', 'i');   // whole word; "AT&T Fiber" is internet
+      var m = re.exec(hay);
+      if(m && (best === null || m.index < best.i)) best = {i:m.index, name:c.replace(/^ATT$/, 'AT&T').replace(/^Metro ?PCS$/, 'Metro by T-Mobile')};
+    });
+    return best && best.name;
+  };
+  var phoneTalk = find(/\b(lines?|phones?|mobile|carrier|wireless|cell(ular)?|iphone|android|samsung)\b/i).join(' ').toLowerCase();
+  f.carrier = pickCarrier(phoneTalk) || pickCarrier(low) || pickCarrier(find(/\b(lines?|phones?|mobile|carrier|wireless|cell)\b/i, allSentences).join(' ').toLowerCase()) || undefined;
+
+  // Mobile bill: a dollar amount in a sentence about the bill / paying
+  var billS = find(/\b(bill|pay|paying|per month|a month|monthly)\b/i).map(function(s){ return (s.match(/\$\s?(\d{2,4}(?:\.\d{2})?)|\b(\d{2,4})\s*(?:dollars|bucks)\b/i) || []); }).filter(function(m){ return m.length; })[0];
+  if(billS) f.bill = '~$' + (billS[1] || billS[2]) + '/mo';
+
+  // Lines & devices
+  var parts = [];
+  var ln = low.match(/\b(one|two|three|four|five|six|seven|eight|\d{1,2})\s+(?:phone\s+|cell\s+)?(lines?|phones?)\b/);
+  if(ln){ var nLn = toNum(ln[1]), isLine = /^line/.test(ln[2]); parts.push(nLn + ' ' + (isLine ? 'line' : 'phone') + (nLn === 1 ? '' : 's')); }
+  var types = [];
+  if(/\biphones?\b/.test(low)) types.push('iPhone');
+  if(/\b(android|samsung|galaxy|pixel|motorola|moto)\b/.test(low)) types.push('Android');
+  if(types.length) parts.push(types.join(' + '));
+  var tab = low.match(/\b(one|two|three|\d)\s+(tablets?|ipads?)\b/) || (/\b(tablet|ipad)\b/.test(low) ? [0, 'a', 'tablet'] : null);
+  if(tab) parts.push((tab[1] === 'a' ? '' : toNum(tab[1]) + ' ') + 'tablet' + (toNum(tab[1]) > 1 ? 's' : ''));
+  var wat = low.match(/\b(one|two|three|\d)\s+(apple\s+)?watch(es)?\b/) || (/\b(smart ?watch|apple watch|galaxy watch|pixel watch)\b|\ban? (?:apple |smart ?)?watch\b/.test(low) ? [0, 'a'] : null);
+  if(wat) parts.push((wat[1] === 'a' ? '' : toNum(wat[1]) + ' ') + 'watch' + (toNum(wat[1]) > 1 ? 'es' : ''));
+  if(/\b(protection|insurance|protect(ed)? (the |their )?phones?)\b/.test(low)) parts.push('asked about protection');
+  if(parts.length) f.lines = parts.join(', ');
+
+  // Internet: provider, usage, speed interest, complaints
+  var net = [];
+  var isp = low.match(/\b(at&t fiber|att fiber|spectrum|frontier|verizon fios|fios|t-mobile home internet|starlink|cox|centurylink|lumen|hughesnet|google fiber|metronet)\b/);
+  var ISP_NAMES = {'at&t fiber':'AT&T Fiber','att fiber':'AT&T Fiber','spectrum':'Spectrum','frontier':'Frontier','verizon fios':'Verizon Fios','fios':'Verizon Fios',
+    't-mobile home internet':'T-Mobile Home Internet','starlink':'Starlink','cox':'Cox','centurylink':'CenturyLink','lumen':'Lumen','hughesnet':'HughesNet','google fiber':'Google Fiber','metronet':'Metronet'};
+  if(isp) net.push('has ' + (ISP_NAMES[isp[1]] || isp[1]));
+  var use = [];
+  if(/work(ing)? from home|remote work|\bwfh\b/.test(low)) use.push('works from home');
+  if(/\bstream(ing|s)?\b|netflix|youtube|hulu|disney/.test(low)) use.push('streams');
+  if(/\bgam(e|es|ing|er)\b|xbox|playstation|ps5/.test(low)) use.push('gaming');
+  if(use.length) net.push(use.join(', '));
+  var sp = low.match(/\b(2 ?gig|1\.2 ?gig|gig(?:abit)?|500|300)\s*(?:mbps|meg|internet|plan|speed)?\b/);
+  if(sp && /\b(gig|mbps|meg|internet|plan|speed)\b/.test(low)) net.push('interested in ' + sp[1].replace(/gig(abit)?/, 'Gig').replace(/^(\d)\s?Gig/, '$1 Gig').replace(/^(300|500)$/, '$1 Mbps'));
+  if(/\b(slow|buffer(ing)?|drops?|dropping|keeps? cutting|spotty|dead spots?)\b/.test(low)) net.push('complains of slow/unreliable WiFi');
+  if(net.length) f.internet = net.join('; ');
+
+  // TV
+  if(/\b(no|don'?t (want|need)|not interested in|just (the )?internet|cut the cord|cancel(led)? (cable|tv))\b[^.]{0,30}\b(tv|cable)\b|just (the )?internet/.test(low)) f.tv = 'not interested';
+  else if(/\b(tv|cable|local channels|sports|espn|nfl|live tv|channels)\b/.test(low)){
+    var tvBits = [];
+    if(/sports|espn|nfl|nba|football/.test(low)) tvBits.push('sports');
+    if(/local channels|local news/.test(low)) tvBits.push('local channels');
+    f.tv = 'interested' + (tvBits.length ? ' (' + tvBits.join(', ') + ')' : '');
+  }
+
+  // Offer / quote
+  var offerS = find(/\$\s?\d+/, agentSentences).filter(function(s){ return /\b(gig|internet|plan|price lock|now tv|peacock|mobile|line|tv (core|plus|premium))\b/i.test(s) && !/\b(bill|paying|pay)\b/i.test(s); })[0];
+  if(offerS) f.offer = clip(offerS.replace(/^(so\s+)?(i'?d|i would|we can|i can|let me)\s+(recommend|suggest|offer|do|get you)\s+(you\s+)?(our\s+|the\s+)?/i, ''), 80);
+
+  // Concerns
+  var conc = [];
+  if(/too (much|expensive|high)|can'?t afford|expensive|cheaper|lower (price|bill)|out of (my|our) budget/.test(low)) conc.push('price');
+  if(/\bcontract\b/.test(low)) conc.push('contract');
+  if(/credit (check|score)|deposit/.test(low)) conc.push('credit/deposit');
+  if(/talk (to|with) (my )?(wife|husband|spouse|partner|boyfriend|girlfriend|mom|dad|family)|check with (my )?(wife|husband|spouse|partner)/.test(low)) conc.push('wants to talk it over at home');
+  if(/think about it|not (right )?now|not ready|maybe later/.test(low)) conc.push('not ready yet');
+  if(/pay ?day|get paid|next check/.test(low)) conc.push('waiting on payday');
+  if(/switch(ing)? (is|would be) (a )?hassle|keep (my|our) (phone )?numbers?|\bport(ing)? (my|our|the) numbers?\b|\bport(ing)? (it|them) over\b/.test(low)) conc.push('switching/number port');
+  if(/\b(install|technician|tech visit)\b/.test(low) && /\b(can'?t|not home|schedule|busy)\b/.test(low)) conc.push('install timing');
+  if(conc.length) f.concerns = conc.join(', ');
+
+  // Next step / callback timing
+  var nextS = find(/\b(call (me |you )?back|call me|reach (out|me)|follow up|circle back|tomorrow|next week|on (mon|tues|wednes|thurs|fri|satur|sun)day|(mon|tues|wednes|thurs|fri|satur|sun)day|after (\d|pay)|payday)\b/i, allSentences);
+  if(nextS.length) f.next = clip(nextS[nextS.length - 1], 90);
+
+  return f;
+}
+
+// Last names introduced in the transcript ("this is Maria Lopez" → Lopez, "Mrs. Lopez", "Maria Lopez:").
+// First names are fine to keep in the notes.
+var _recapNames = [];
+function recapFindNames(text){
+  var names = {}, m;
+  var stop = /^(the|a|an|calling|here|just|not|so|good|fine|great|sure|with|from|about|trying|looking|interested|xfinity|comcast|customer|agent|speaking|and|monday|tuesday|wednesday|thursday|friday|saturday|sunday|january|february|march|april|may|june|july|august|september|october|november|december|gig|mobile|internet|verizon|spectrum|cricket|boost|visible|mint)$/i;
+  var full = /\b(?:[Tt]his is|[Mm]y name is|[Nn]ame'?s|[Ss]peaking with|[Tt]alking (?:to|with))\s+[A-Z][a-z'’-]+\s+([A-Z][a-z'’-]+)/g;
+  while((m = full.exec(text))){ if(!stop.test(m[1])) names[m[1]] = 1; }
+  var title = /\b(?:Mr|Mrs|Ms|Miss|Dr)\.?\s+([A-Z][a-z'’-]+)/g;   // a title goes with the last name
+  while((m = title.exec(text))){ if(!stop.test(m[1])) names[m[1]] = 1; }
+  var who = /(?:^|\n)\s*[A-Z][a-z'’-]+\s+([A-Z][a-z'’-]+)\s*:/g;   // "Maria Lopez:" speaker labels
+  while((m = who.exec(text))){ if(!stop.test(m[1])) names[m[1]] = 1; }
+  return Object.keys(names).filter(function(n){ return n.length > 1; });
+}
+
+// Strip personal identifiers from any recap line
+function recapScrub(s){
+  var out = String(s);
+  _recapNames.forEach(function(n){ out = out.replace(new RegExp('\\b' + n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'g'), '[name]'); });
+  return out
+    .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '[email]')
+    .replace(/\b\d{3}[-\s]\d{2}[-\s]\d{4}\b/g, '[ssn]')
+    .replace(/\b(?:\d[ -]?){13,19}\b/g, '[number]')
+    .replace(/\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, '[phone]')
+    .replace(/\b\d{7,}\b/g, '[number]')
+    .replace(/\b\d{1,6}\s+(?:[NSEW]\.?\s+|North\s+|South\s+|East\s+|West\s+)?(?:[A-Z0-9][\w'-]*\s+){0,4}(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Way|Ct|Court|Cir|Circle|Pl|Place|Pkwy|Parkway|Hwy|Highway|Ter|Terrace|Trl|Trail)\b\.?(?:\s*(?:Apt|Unit|#)\s*\w+)?/gi, '[address]')
+    .replace(/\b(?:apt|apartment|unit|suite)\s*#?\s*\w+/gi, '[unit]')
+    .replace(/\b(?:zip(?:\s*code)?:?\s*|[A-Z]{2},?\s+)\d{5}(?:-\d{4})?\b/g, '[zip]')
+    .replace(/\s{2,}/g, ' ').trim();
+}
+
+// Recap labels the Talk Track notes block already covers (recap label → Talk Track label)
+var RECAP_TT_DUP = {'Carrier':'Carrier', 'Mobile bill':'Mobile bill', 'Lines':'Phones', 'TV':'TV package'};
+
+// Current call: carrier / bill / lines go into the Talk Track (which writes them to the notes once) instead of
+// being repeated in the recap. Values already entered in the Talk Track win. Returns the lines still to add.
+function recapFeedTalkTrack(lines){
+  var keep = [], changed = false, numWord = {one:1, two:2, three:3, four:4, five:5, six:6, seven:7, eight:8, nine:9, ten:10};
+  var n = function(w){ return numWord[String(w).toLowerCase()] || parseInt(w, 10) || 0; };
+  lines.forEach(function(l){
+    var m = /^•\s*([^:]+):\s*(.*)$/.exec(l);
+    if(!m){ keep.push(l); return; }
+    var label = m[1].trim(), val = m[2].trim();
+    if(label === 'Carrier'){
+      if(!_tt.carrier){
+        var known = ttCarrierNames().filter(function(c){ return c.toLowerCase() === val.toLowerCase(); })[0];
+        _tt.carrier = known || val; _tt.carrierOther = !known; changed = true;
+      }
+      return;
+    }
+    if(label === 'Mobile bill'){
+      var b = ttBillNum(val);
+      if(!b){ keep.push(l); return; }
+      if(!ttBillNum(_tt.calc.bill)){ _tt.calc.bill = String(b); changed = true; }
+      return;
+    }
+    if(label === 'Lines'){
+      var low = val.toLowerCase(), rest = [];
+      val.split(/\s*,\s*/).forEach(function(part){
+        var p = part.toLowerCase(), mm;
+        if((mm = /^(\w+)\s+(lines?|phones?)$/.exec(p))){ if(!_tt.calc.phones && n(mm[1])){ _tt.calc.phones = Math.min(20, n(mm[1])); changed = true; } return; }
+        if(/^(iphone|android)( \+ (iphone|android))?$/.test(p)){
+          if(!_tt.phoneType){ _tt.phoneType = /\+/.test(p) ? 'Both' : (/iphone/.test(p) ? 'iPhone' : 'Android'); changed = true; }
+          return;
+        }
+        if((mm = /^(?:(\w+)\s+)?tablets?$/.exec(p))){ if(!_tt.calc.tablets){ _tt.calc.tablets = Math.min(20, n(mm[1] || 1) || 1); changed = true; } return; }
+        if((mm = /^(?:(\w+)\s+)?watch(es)?$/.exec(p))){ if(!_tt.calc.watches){ _tt.calc.watches = Math.min(20, n(mm[1] || 1) || 1); changed = true; } return; }
+        rest.push(part);   // e.g. "asked about protection" isn't a Talk Track field
+      });
+      if(rest.length) keep.push(RECAP_PREFIX + 'Lines: ' + rest.join(', '));
+      return;
+    }
+    if(label === 'TV' && _tt.path === 'B' && _tt.tvPkg) return;   // the TV package line says it
+    keep.push(l);
+  });
+  if(changed){ ttNotesSync(); ttRenderView(); }
+  return keep;
+}
+
+// Remove recap lines that a Talk Track line in the same notes now covers (and a recap header left empty)
+function recapDropDuplicates(text){
+  var lines = String(text).split('\n');
+  var have = {};
+  lines.forEach(function(l){ var m = TT_NOTE_LINE_RE.exec(l); if(m) have[m[1]] = 1; });
+  var out = lines.filter(function(l){
+    var m = /^•\s*([^:]+):/.exec(l);
+    return !(m && RECAP_TT_DUP[m[1].trim()] && have[RECAP_TT_DUP[m[1].trim()]]);
+  });
+  return out.filter(function(l, i){ return !(/^Recap \d+\/\d+:$/.test(l) && !/^•/.test(out[i + 1] || '')); }).join('\n');
+}
+
+function recapAddToNotes(){
+  var out = document.getElementById('recap-output').value.split('\n').map(function(l){ return recapScrub(l).trim(); }).filter(Boolean);
+  out = out.map(function(l){ return /^•/.test(l) ? l : RECAP_PREFIX + l; });
+  var ta = document.getElementById('f-notes');
+  if(!ta) return;
+  var editing = typeof editingId !== 'undefined' && editingId;
+  if(!editing) out = recapFeedTalkTrack(out);   // current call: those facts live in the Talk Track block
+  // Skip lines already in the notes (an earlier recap, or the Talk Track block)
+  var existing = ta.value.split('\n').map(function(l){ return l.trim(); });
+  var have = {};
+  existing.forEach(function(l){ var m = TT_NOTE_LINE_RE.exec(l); if(m) have[m[1]] = 1; });
+  out = out.filter(function(l){
+    if(existing.indexOf(l) >= 0) return false;
+    var m = /^•\s*([^:]+):/.exec(l);
+    return !(m && RECAP_TT_DUP[m[1].trim()] && have[RECAP_TT_DUP[m[1].trim()]]);
+  });
+  if(!out.length){
+    recapClose();
+    _showToast('📝 Recap added to the Talk Track (nothing new for the notes)', 'ok', 3000);
+    return;
+  }
+  var stamp = new Date().toLocaleDateString('en-US', {month:'numeric', day:'numeric'});
+  var block = 'Recap ' + stamp + ':\n' + out.join('\n');
+  ta.value = (ta.value.trim() ? ta.value.replace(/\s+$/, '') + '\n' : '') + block;
+  ta.dispatchEvent(new Event('input', {bubbles:true}));
+  var op = document.getElementById('dq-opener-notes'); if(op) op.value = ta.value;
+  if(typeof ttNotesSync === 'function') ttNotesSync();   // keeps the Talk Track block last
+  if(typeof updateNotesState === 'function') updateNotesState();
+  recapClose();
+  _showToast('📝 Recap added to notes', 'ok', 2500);
 }
 
 // Close for the (currently unused) #dq-modal; its ✕ and backdrop called this but it was never defined
@@ -19154,7 +19601,36 @@ window.phonesimInit = phonesimInit;
 </div>
 
 
-<div id="sales-id-prompt" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.5);align-items:center;justify-content:center">
+<!-- Transcript → recap. The transcript is only held in this box and cleared on close; nothing is saved. -->
+<div id="recap-modal" hidden onclick="if(event.target===this)recapClose()">
+  <div class="recap-card" role="dialog" aria-label="Call recap">
+    <div class="recap-head">
+      <span class="recap-title">📝 Call recap</span>
+      <span id="recap-mode" class="recap-mode"></span>
+      <button type="button" class="recap-x" onclick="recapClose()" aria-label="Close">✕</button>
+    </div>
+    <div id="recap-step-paste">
+      <div class="recap-lbl">Paste the HeroAssist transcript</div>
+      <textarea id="recap-input" spellcheck="false" placeholder="Paste the call transcript here…"></textarea>
+      <div class="recap-hint">Stays on this PC and is cleared when you close this box. Last names, phone and account numbers, and addresses are left out of the recap.</div>
+      <div class="recap-actions">
+        <span id="recap-status" class="recap-status"></span>
+        <button type="button" class="recap-btn" id="recap-skip" hidden onclick="recapSkipAi()">Use basic now</button>
+        <button type="button" class="recap-btn primary" id="recap-run" onclick="recapRun()">Refine</button>
+      </div>
+    </div>
+    <div id="recap-step-result" hidden>
+      <div class="recap-lbl">Recap — edit anything before adding</div>
+      <textarea id="recap-output" spellcheck="true"></textarea>
+      <div class="recap-actions">
+        <button type="button" class="recap-btn" onclick="recapBack()">← Back</button>
+        <button type="button" class="recap-btn primary" onclick="recapAddToNotes()">Add to notes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sales-id-prompt"style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.5);align-items:center;justify-content:center">
   <div style="width:300px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px">
     <div id="sales-id-step-enter" style="display:flex;flex-direction:column;gap:14px">
       <div style="font-size:15px;font-weight:700;color:var(--text)">Enter Your Sales ID</div>
