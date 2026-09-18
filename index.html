@@ -19,7 +19,7 @@
 //   2026-09-14, 3rd release → 0.9.14.3     2027-01-05, 1st release → 0.101.5.1     2028-01-05 → 0.201.5.1
 // The page title, the "Call Logger" brand tooltip, and the Settings header read from it.
 var APP_UPDATED = '2026-09-17';
-var APP_BUILD   = 2;
+var APP_BUILD   = 15;
 var APP_VERSION = (function(date, build){
   var p = date.split('-');
   var month = (parseInt(p[0], 10) - 2026) * 100 + parseInt(p[1], 10);
@@ -201,6 +201,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:v
 .alert-close{background:none;border:none;color:var(--amber);opacity:.6;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:5px}
 .alert-close:hover{opacity:1;background:rgba(245,158,11,.12)}
 .alert-items{display:flex;flex-direction:column;gap:6px}
+.alert-card[hidden],.alert-mini[hidden]{display:none}
+/* Minimized: one line in the flow, under the tabs and above the stats. Only the open banner floats. */
+#alert-bar.min{height:auto}
+.alert-mini{display:flex;align-items:center;gap:8px;width:100%;margin:0;
+  background:color-mix(in srgb,#2d1f05 92%,var(--surface));border:none;border-bottom:1px solid rgba(245,158,11,.55);border-radius:0;
+  box-shadow:0 6px 16px rgba(0,0,0,.35);padding:8px 14px;cursor:pointer;font-family:var(--sans);text-align:left}
+.alert-mini:hover{border-color:rgba(245,158,11,.85)}
+.alert-mini-text{flex:1;font-size:12px;font-weight:700;color:var(--amber)}
+.alert-mini-open{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
 /* New alert: large, with its own actions */
 .alert-new{background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.4);border-radius:9px;padding:9px 11px;display:flex;flex-direction:column;gap:4px}
 .alert-new.pulse{animation:alertPulse 1.1s ease-in-out 3}
@@ -216,6 +225,46 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:v
 .alert-btn.primary{background:var(--amber);border-color:var(--amber);color:#1a1205}
 .alert-btn.primary:hover{filter:brightness(1.08)}
 .alert-snooze-row{display:flex;gap:5px;flex-wrap:wrap;padding-top:2px}
+.fu-sec{display:flex;align-items:center;gap:7px;padding:9px 4px 5px;cursor:pointer;user-select:none}
+.fu-sec-caret{font-size:11px;color:var(--text3);transition:transform .15s}
+.fu-sec.closed .fu-sec-caret{transform:rotate(-90deg)}
+.fu-sec-name{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.fu-sec-count{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text3);background:var(--surface);border:1px solid var(--border2);border-radius:9px;padding:0 6px}
+.fu-sec-body{display:flex;flex-direction:column;gap:4px}
+.fu-row{border-radius:9px;overflow:hidden}
+.fu-stab-count{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;margin-left:4px;border-radius:8px;background:var(--red);color:#fff;font-size:9px;font-weight:800;vertical-align:1px}
+.rf-day{font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap;flex:none;min-width:46px}
+.rf-meta{font-size:10px;color:var(--text3);white-space:nowrap;flex:none}
+.rf-left{font-size:10px;font-weight:700;white-space:nowrap;margin-left:auto;flex:none}
+.rf-bar{height:3px;background:var(--surface);margin:0 10px 8px;border-radius:2px;overflow:hidden}
+.rf-bar span{display:block;height:100%;border-radius:2px}
+/* Resolution buttons stay on the right of the row, at a size worth aiming at */
+.rf-row .fu-row-head{padding:9px 10px 7px;gap:9px}
+.rf-row .fu-row-acts{gap:5px}
+.rf-row .fu-act{width:32px;height:32px;font-size:15px;border-radius:8px;color:var(--text2)}
+.rf-row .fu-act:hover{border-color:var(--blue);background:var(--blue-glow)}
+.rf-acct{font-family:var(--mono);font-size:11px;color:var(--blue);white-space:nowrap;flex:none}
+.fu-acct{font-family:var(--mono);font-size:11px;color:var(--blue);white-space:nowrap;cursor:pointer;user-select:none;border-bottom:1px dotted transparent}
+.fu-acct:hover{border-bottom-color:currentColor}
+.rf-copy{cursor:pointer;user-select:none;border-bottom:1px dotted transparent}
+.rf-copy:hover{border-bottom-color:currentColor}
+.rf-sub{font-size:10px;color:var(--text3);line-height:1.45;padding:0 10px 8px 14px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.rf-snooze-pop{position:fixed;z-index:99995;display:flex;flex-direction:column;gap:2px;padding:4px;background:var(--card);border:1px solid var(--border2);border-radius:8px;box-shadow:0 12px 28px rgba(0,0,0,.45)}
+.rf-snooze-pop button{height:26px;padding:0 12px;background:none;border:none;border-radius:5px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;text-align:left;font-family:var(--sans);white-space:nowrap}
+.rf-snooze-pop button:hover{background:var(--surface);color:var(--blue)}
+.fu-row-head{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;user-select:none;min-width:0}
+.fu-row-time{font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap;flex:none;min-width:52px}
+.fu-row-type{font-size:10px;line-height:1;border:1px solid;border-radius:6px;padding:3px 5px;flex:none}
+.fu-row-name{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.fu-row-phone{font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;flex:none}
+.fu-badge{font-size:9px;font-weight:800;padding:1px 6px;border-radius:9px;border:1px solid;white-space:nowrap;flex:none}
+.fu-row-late{font-size:10px;font-weight:700;white-space:nowrap;margin-left:auto;flex:none}
+.fu-row-acts{display:flex;gap:3px;margin-left:auto;flex:none}
+.fu-row-late+.fu-row-acts{margin-left:6px}
+.fu-act{width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer;font-family:var(--sans);padding:0}
+.fu-act:hover{border-color:var(--blue);color:var(--blue)}
+.fu-row-chev{color:var(--text3);font-size:13px;flex:none;line-height:1}
+.fu-row-note{font-size:11px;color:var(--text3);line-height:1.4;padding:0 10px 7px 62px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 /* Older follow-ups: one collapsed line, compact rows when opened */
 .alert-older-toggle{margin-top:8px;width:100%;text-align:left;background:none;border:none;border-top:1px dashed rgba(245,158,11,.25);padding:7px 2px 1px;color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)}
 .alert-older-toggle:hover{color:var(--amber)}
@@ -344,17 +393,28 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:v
 .recap-open-btn{margin-left:auto;height:18px;padding:0 7px;border-radius:5px;border:1px solid var(--border2);background:var(--card);color:var(--blue);font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:none;cursor:pointer;font-family:var(--sans)}
 .recap-open-btn:hover{border-color:var(--blue)}
 #recap-modal{position:fixed;inset:0;z-index:99990;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
-#recap-modal[hidden],#recap-step-paste[hidden],#recap-step-result[hidden],#recap-skip[hidden]{display:none}
+#recap-modal[hidden],#recap-step-paste[hidden],#recap-step-result[hidden]{display:none}
 .recap-card{width:560px;max-width:calc(100vw - 24px);max-height:calc(var(--vh100,100vh) - 40px);overflow:auto;background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;box-shadow:0 18px 50px rgba(0,0,0,.5);box-sizing:border-box}
 .recap-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .recap-title{font-size:13px;font-weight:800;color:var(--text)}
-.recap-mode{font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:var(--surface);border:1px solid var(--border2);color:var(--text3)}
-.recap-mode.ai{color:var(--green);border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08)}
+.recap-pick{display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer}
+.recap-pick:hover{background:var(--card)}
+.recap-pick input{margin:3px 0 0;accent-color:var(--blue);flex:none}
+.recap-pick-tag{flex:none;min-width:76px;padding-top:1px;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
+.recap-pick.on .recap-pick-tag{color:var(--blue)}
+.recap-pick.fill{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.25);margin-bottom:3px}
+.recap-pick.fill .recap-pick-tag,.recap-pick.fill .recap-pick-txt{color:var(--green)}
+.recap-pick.fill .recap-pick-txt{font-weight:700}
+.recap-pick-txt{font-size:12px;line-height:1.45;color:var(--text2)}
+.recap-pick.on .recap-pick-txt{color:var(--text)}
+#recap-picks{max-height:330px;overflow:auto;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:4px}
+.recap-more{display:block;background:none;border:none;color:var(--blue);font-size:10px;font-weight:700;cursor:pointer;padding:7px 2px 0;font-family:var(--sans)}
+.recap-more[hidden]{display:none}
+.recap-none{font-size:11px;color:var(--text3);text-align:center;padding:12px}
 .recap-x{margin-left:auto;background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer}
 .recap-lbl{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
-#recap-input,#recap-output{width:100%;box-sizing:border-box;min-height:240px;resize:vertical;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;font-family:var(--sans);font-size:12px;line-height:1.5;color:var(--text);outline:none}
-#recap-output{min-height:170px;font-size:13px}
-#recap-input:focus,#recap-output:focus{border-color:var(--blue)}
+#recap-input{width:100%;box-sizing:border-box;min-height:240px;resize:vertical;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;font-family:var(--sans);font-size:12px;line-height:1.5;color:var(--text);outline:none}
+#recap-input:focus{border-color:var(--blue)}
 .recap-hint{font-size:10px;color:var(--text3);margin-top:5px;line-height:1.4}
 .recap-actions{display:flex;align-items:center;gap:8px;margin-top:10px}
 .recap-status{flex:1;font-size:11px;color:var(--text2)}
@@ -3624,8 +3684,8 @@ html.xcl-wide.xcl-view-log.xcl-view-talk #xcl-view-talk{position:sticky;top:10px
 
 <div id="sync-toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
 <!-- Follow-up alerts: a card floating over the top of the tab (takes no space), new alerts first -->
-<div id="alert-bar"><div class="alert-card" role="alert" aria-live="assertive">
-  <div class="alert-card-head"><span class="alert-icon">🔔</span><span class="alert-title" id="alert-title">Follow-up due</span><button class="alert-close" onclick="dismissAlerts()" data-tip="Got it for all new alerts">✕</button></div>
+<div id="alert-bar"><button class="alert-mini" id="alert-mini" onclick="expandAlerts()" hidden></button><div class="alert-card" id="alert-card" role="alert" aria-live="assertive">
+  <div class="alert-card-head"><span class="alert-icon">🔔</span><span class="alert-title" id="alert-title">Follow-up due</span><button class="alert-close" onclick="minimizeAlerts()" data-tip="Minimize to one line">✕</button></div>
   <div class="alert-items" id="alert-items"></div>
   <div id="alert-older"></div>
 </div></div>
@@ -4224,6 +4284,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
   <!-- Sub-tab bar -->
   <div class="fu-subtab-bar">
     <div class="fu-stab active" id="fu-stab-callbacks" onclick="switchFuSubtab('callbacks')">🔔 Follow-Ups</div>
+    <div class="fu-stab" id="fu-stab-redflags" onclick="switchFuSubtab('redflags')">🚩 Red Flags <span id="fu-stab-rf-count" class="fu-stab-count"></span></div>
     <div class="fu-stab" id="fu-stab-mobile" onclick="switchFuSubtab('mobile')">📱 Mobile Lines</div>
   </div>
 
@@ -4246,6 +4307,7 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
           <button onclick="setCbTabFilter('due-today')" id="cbtf-due-today" style="padding:0 11px;border:none;border-right:1px solid var(--border2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">Today</button>
           <button onclick="setCbTabFilter('all')" id="cbtf-all" style="padding:0 11px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s">All</button>
         </div>
+        <button id="fu-dense-btn" onclick="fuToggleDense()" style="height:30px;width:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:14px;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center" title="Two lines with notes — click for one line">≡</button>
         <button onclick="renderCallbacksTab()" style="height:30px;width:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:14px;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center" title="Refresh">↻</button>
 <button onclick="if(window._lastCbDoneId){undoCbDone(window._lastCbDoneId);window._lastCbDoneId=null;}" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer">↩ Undo</button>
       </div>
@@ -4260,6 +4322,23 @@ Flag this call for callback, collections, construction, or exception">🔔</div>
     </div>
   </div>
   </div><!-- end fu-panel-callbacks -->
+
+  <!-- Red Flags sub-panel: the payment watch -->
+  <div id="fu-panel-redflags" style="display:none">
+    <div style="padding:14px 24px 12px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:92px;z-index:100">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);display:flex;align-items:center;justify-content:center;font-size:14px">🚩</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);line-height:1">Red Flags</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px" id="rf-subtitle">90-day window</div>
+        </div>
+      </div>
+      <button onclick="renderRedFlagsTab()" style="height:30px;width:30px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:14px;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center" title="Refresh">↻</button>
+    </div>
+    <div style="padding:16px 24px">
+      <div id="rf-cards" style="display:flex;flex-direction:column;gap:4px"></div>
+    </div>
+  </div>
 
   <!-- Mobile Lines sub-panel -->
   <div id="fu-panel-mobile" style="display:none">
@@ -4565,23 +4644,67 @@ setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocal
 // Seen state is keyed to the callback time + snooze, so a rescheduled or snoozed callback alerts again when it comes due.
 // (xcl_alert_seen2: the first version also filed anything over an hour overdue as "seen" on its first run,
 // which silenced real overdue callbacks — those marks are dropped.)
-var ALERT_SEEN_KEY = 'xcl_alert_seen2';
-try{ localStorage.removeItem('xcl_alert_seen'); }catch(e){}
-var _alertSeen = (function(){ try{ return JSON.parse(localStorage.getItem(ALERT_SEEN_KEY)) || {}; }catch(e){ return {}; } })();
+// ✕ minimizes the banner to a single line; clicking that line opens it again. It reopens on its own when
+// something new comes due — a new follow-up, or a snooze that has run out (both change the call's alertKey).
+var ALERT_STATE_KEY = 'xcl_alert_state';
+try{ localStorage.removeItem('xcl_alert_seen'); localStorage.removeItem('xcl_alert_seen2'); }catch(e){}
+var _alertState = (function(){
+  try{
+    var s = JSON.parse(localStorage.getItem(ALERT_STATE_KEY)) || {};
+    return {min: !!s.min, known: s.known || {}};
+  }catch(e){ return {min:false, known:{}}; }
+})();
 var _alertOlderOpen = false;
 var _alertPulsed = {};                      // new alerts that already pulsed (the card re-renders every 30s)
 
-function alertKey(c){ return String(c.cbTime || '') + '|' + String(c.cbSnoozeUntil || ''); }
-function alertIsNew(c){ return _alertSeen[c.id] !== alertKey(c); }
-function alertSaveSeen(){ try{ localStorage.setItem(ALERT_SEEN_KEY, JSON.stringify(_alertSeen)); }catch(e){} }
-function alertMarkSeen(ids){
-  ids = ids.map(String);
-  calls.forEach(function(c){ if(ids.indexOf(String(c.id)) >= 0) _alertSeen[c.id] = alertKey(c); });
-  alertSaveSeen();
+function alertKey(c){
+  if(!c.cbTime) return 'rf|' + String(c.sched || '') + '|' + String(c.rfSnoozeUntil || '');
+  return String(c.cbTime) + '|' + String(c.cbSnoozeUntil || '');
+}
+function alertWhen(c){                        // when this alert became due, for ordering
+  if(c.cbTime) return new Date(c.cbTime).getTime();
+  var d = rfCheckDate(c); return d ? d.getTime() : 0;
+}
+function alertIsNew(c){ return _alertState.known[c.id] !== alertKey(c); }
+function alertSaveState(){ try{ localStorage.setItem(ALERT_STATE_KEY, JSON.stringify(_alertState)); }catch(e){} }
+// ✕ — everything due right now is filed away and the banner shrinks to one line
+function minimizeAlerts(){
+  _alertState.known = {};
+  alertDueCalls(Date.now()).forEach(function(c){ _alertState.known[c.id] = alertKey(c); });
+  _alertState.min = true;
+  alertSaveState();
+  alertTitleFlash(false);
   checkAlerts();
 }
-// ── Getting attention when the tracker isn't in front: Windows notification + flashing title ──
-var _alertNotified = {};                                   // id -> alertKey already notified
+function expandAlerts(){
+  _alertState.min = false;
+  alertSaveState();
+  checkAlerts();
+}
+// The open banner covers the stats and the calendar strip and stops there, so the log stays readable
+// underneath it. Measured px are viewport px: divide by APP_SCALE before assigning them back.
+function alertCardFit(){
+  var card = document.getElementById('alert-card'), bar = document.getElementById('alert-bar');
+  if(!card || card.hidden || !bar || !bar.classList.contains('visible')) return;
+  var scale = window.APP_SCALE || 1;
+  var anchor = document.getElementById('pace-summary');
+  var top = bar.getBoundingClientRect().top, max;
+  if(anchor && anchor.offsetParent !== null) max = (anchor.getBoundingClientRect().bottom - top) / scale - 16;
+  else max = (window.innerHeight - top) / scale - 60;      // another tab: fall back to the window
+  card.style.maxHeight = Math.max(150, max) + 'px';
+}
+if(!XCL_VIEW){
+  var _alertFitQueued = false;
+  var _alertFitSoon = function(){
+    if(_alertFitQueued) return;
+    _alertFitQueued = true;
+    requestAnimationFrame(function(){ _alertFitQueued = false; alertCardFit(); });
+  };
+  window.addEventListener('resize', _alertFitSoon);
+  window.addEventListener('scroll', _alertFitSoon, {passive:true});
+}
+// ── Getting attention when the tracker isn't in front: the taskbar title flashes ──
+// No browser notifications: the user turned those off (they carried nothing useful and needed permission).
 var _titleFlash = {base:'', timer:null, phase:false};
 var TITLE_FLASH_TEXT = '🔔 Follow-up due';
 
@@ -4606,32 +4729,8 @@ function alertTitleFlash(on){
   }
 }
 
-// Ask once, on a click (Chrome ignores or hides requests that don't come from one)
-function alertAskNotifyPermission(){
-  if(!('Notification' in window) || Notification.permission !== 'default') return;
-  try{ Notification.requestPermission(); }catch(e){}
-}
-if(!XCL_VIEW) document.addEventListener('click', alertAskNotifyPermission, {once:true, capture:true});
-
 function alertNotify(fresh){
-  var inFront = trackerInFront();
-  fresh.forEach(function(c){
-    var key = alertKey(c);
-    if(_alertNotified[c.id] === key) return;
-    _alertNotified[c.id] = key;
-    if(inFront || !('Notification' in window) || Notification.permission !== 'granted') return;
-    // No customer details: Windows keeps notifications in its notification center
-    var t = alertTimeLabel(c, Date.now());
-    var kind = c.mood === MOOD_EMOJIS[0] ? 'Red flag follow-up' : (c.fuType && c.fuType !== 'Callback' ? c.fuType + ' follow-up' : 'Callback');
-    try{
-      var n = new Notification('🔔 ' + kind + ' due', {
-        body: t.text.replace(/\s*\(\d+m alert\)$/, '') + '\nOpen the tracker for details',
-        tag: 'xcl-fu-' + c.id, requireInteraction: true, icon: 'icon-192.png'
-      });
-      n.onclick = function(){ try{ window.focus(); }catch(e){} openCallFromAlert(c.id); n.close(); };
-    }catch(e){}
-  });
-  alertTitleFlash(fresh.length > 0 && !inFront);
+  alertTitleFlash(fresh.length > 0 && !trackerInFront());
 }
 if(!XCL_VIEW){
   var _alertStopFlash = function(){ if(trackerInFront()) alertTitleFlash(false); };
@@ -4641,11 +4740,86 @@ if(!XCL_VIEW){
 
 function alertEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]; }); }
 
+// ── Red flags: a payment watch, not a callback ──────────────────────────────
+// A red flag means the sale is at risk until the account has paid. If it disconnects inside the 90 days
+// after install it's a chargeback, so the flag is checked at day 40 and closes itself once day 90 passes.
+// Day 40 is the first check because day 90 is too late to do anything about it; the closer the window gets
+// to closing, the harder the flag pushes, and a snooze can never park it past RF_LAST_DAY.
+var RF_CHECK_DAY = 40, RF_LATE_DAY = 60, RF_LAST_DAY = 75, RF_WINDOW = 90;
+function isActiveRedFlag(c){
+  return c.mood === MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone;
+}
+// Day 0 is the install date — the call's existing Sched field. With no install date the clock runs from the
+// day the sale was logged instead, so a flag still comes up at day 40 (the row says which date it's counting).
+function rfFromSale(c){ return !rfSchedDate(c); }
+function rfSchedDate(c){
+  if(!c.sched) return null;
+  var d = new Date(String(c.sched).length <= 10 ? c.sched + 'T00:00:00' : c.sched);
+  return isNaN(d) ? null : d;
+}
+function rfDay0(c){
+  var d = rfSchedDate(c);
+  if(d) return d;
+  var t = c.ts ? new Date(c.ts) : null;
+  return t && !isNaN(t) ? t : null;
+}
+function rfDays(c, now){
+  var d0 = rfDay0(c);
+  return d0 ? Math.floor(((now || Date.now()) - d0.getTime()) / 86400000) : 0;
+}
+function rfCheckDate(c){
+  var d0 = rfDay0(c);
+  if(!d0) return null;
+  var d = new Date(d0); d.setDate(d.getDate() + RF_CHECK_DAY); return d;
+}
+function rfSnoozed(c, now){ return !!(c.rfSnoozeUntil && new Date(c.rfSnoozeUntil).getTime() > (now || Date.now())); }
+function rfCheckDue(c, now){
+  if(!isActiveRedFlag(c) || rfSnoozed(c, now)) return false;
+  var cd = rfCheckDate(c);
+  return !!cd && cd.getTime() <= (now || Date.now());
+}
+// Past day 90 the chargeback window is closed: the flag clears itself
+function rfAutoClose(){
+  if(XCL_VIEW || !calls.length) return;
+  var now = Date.now(), done = [];
+  calls.forEach(function(c){
+    if(isActiveRedFlag(c) && rfDay0(c) && rfDays(c, now) >= RF_WINDOW){
+      c.cbDone = true; c.rfAutoCleared = true;
+      done.push(c);
+    }
+  });
+  if(!done.length) return;
+  done.forEach(function(c){ upsertCallToSheets(c); });
+  _showToast('🚩 ' + done.length + ' red flag' + (done.length === 1 ? '' : 's') + ' past ' + RF_WINDOW + ' days — closed', 'ok', 5000);
+  render(); updateStats();
+  if(_fuSubtab === 'redflags') renderRedFlagsTab();
+}
+function rfSnooze(id, days){
+  var c = calls.find(function(x){ return String(x.id) === String(id); });
+  if(!c) return;
+  var until = new Date(Date.now() + Number(days) * 86400000);
+  // Never park a flag past the point where anything can still be done about it, and once it's late the
+  // longest it can be pushed is a few days
+  var d0 = rfDay0(c), dayNow = rfDays(c, Date.now());
+  if(d0){
+    var cap = new Date(Date.now() + 3 * 86400000);
+    if(dayNow >= RF_LATE_DAY && until > cap) until = cap;
+    var last = new Date(d0.getTime() + RF_LAST_DAY * 86400000);
+    if(until > last) until = last.getTime() > Date.now() + 86400000 ? last : cap;
+  }
+  c.rfSnoozeUntil = until.toISOString();
+  window._snoozePickId = null;
+  saveCallsCache(); upsertCallToSheets(c);
+  _showToast('💤 Checking back ' + until.toLocaleDateString('en-US', {month:'short', day:'numeric'}), 'ok', 2500);
+  checkAlerts();
+  if(_fuSubtab === 'redflags') renderRedFlagsTab();
+}
+
 function alertDueCalls(now){
   var windows = window._alertWindows || [15];
   return calls.filter(function(c){
-    if(!c.cbTime || c.cbDone) return false;   // a scheduled time alerts whatever the call's mood (🚩 included)
-    if(c.chargedBack || c.isException) return false;   // red flag resolved (Payments OK sets cbDone)
+    if(c.cbDone || c.chargedBack || c.isException) return false;   // resolved (Payments OK sets cbDone)
+    if(!c.cbTime) return rfCheckDue(c, now);   // red flag with no time of its own: the day-40 payment check
     if(c.cbSnoozeUntil && new Date(c.cbSnoozeUntil) > new Date(now)) return false;
     var ms = new Date(c.cbTime).getTime() - now;
     if(ms < 0) return true;
@@ -4654,6 +4828,10 @@ function alertDueCalls(now){
 }
 
 function alertTimeLabel(c, now){
+  if(!c.cbTime){                              // red flag payment check
+    var day = rfDays(c, now);
+    return {overdue:true, text:'day ' + day + ' of ' + RF_WINDOW};
+  }
   var windows = window._alertWindows || [15];
   var ms = new Date(c.cbTime).getTime() - now, ov = ms < 0;
   var totalM = Math.abs(Math.round(ms / 60000));
@@ -4668,49 +4846,71 @@ function alertTimeLabel(c, now){
 
 function alertSnoozeRow(c){
   if(window._snoozePickId !== c.id) return '';
+  var rf = !c.cbTime;                         // a payment check waits days, not minutes
+  var opts = rf ? [[3,'3 days'],[7,'1 week'],[14,'2 weeks'],[30,'30 days']]
+                : [[15,'15m'],[30,'30m'],[60,'60m'],[120,'2h'],['nwd','Next work day']];
+  var fn = rf ? 'rfSnooze' : 'snoozeCb';
   return '<div class="alert-snooze-row" onclick="event.stopPropagation()">' +
-    [[15,'15m'],[30,'30m'],[60,'60m'],[120,'2h'],['nwd','Next work day']].map(function(o){
-      return '<button class="alert-btn" onclick="event.stopPropagation();snoozeCb(' + c.id + ',\'' + o[0] + '\')">' + o[1] + '</button>';
+    opts.map(function(o){
+      return '<button class="alert-btn" onclick="event.stopPropagation();' + fn + '(' + c.id + ',\'' + o[0] + '\')">' + o[1] + '</button>';
     }).join('') + '</div>';
 }
 
 function checkAlerts(){
   var now = Date.now();
-  var due = alertDueCalls(now);
-  // Follow-ups already more than a day overdue when alerts first see them go straight to the older pile
-  var seenChanged = false;
-  due.forEach(function(c){
-    if(_alertSeen[c.id] === undefined && now - new Date(c.cbTime).getTime() > 24 * 60 * 60000){
-      _alertSeen[c.id] = alertKey(c); seenChanged = true;
-    }
-  });
-  // Forget seen entries only for follow-ups that are loaded and no longer due (done, rescheduled into the
-  // future). Unknown ids are kept: calls may still be loading, and dropping them would re-alert everything.
-  var dueIds = {}, byId = {};
-  due.forEach(function(c){ dueIds[c.id] = true; });
-  calls.forEach(function(c){ byId[c.id] = c; });
-  Object.keys(_alertSeen).forEach(function(id){
-    if(byId[id] && !dueIds[id]){ delete _alertSeen[id]; seenChanged = true; }
-  });
-  if(seenChanged) alertSaveSeen();
-
-  // New: most urgent (earliest due) on top. Older: most recently due first.
-  var fresh = due.filter(alertIsNew).sort(function(a, b){ return new Date(a.cbTime) - new Date(b.cbTime); });
-  var older = due.filter(function(c){ return !alertIsNew(c); }).sort(function(a, b){ return new Date(b.cbTime) - new Date(a.cbTime); });
+  rfAutoClose();                    // flags past the 90-day window close themselves first
+  var due = alertDueCalls(now).sort(function(a, b){ return alertWhen(a) - alertWhen(b); });
   var alertBar = document.getElementById('alert-bar');
   var wasVisible = alertBar.classList.contains('visible');
 
+  // Forget filed entries only for follow-ups that are loaded and no longer due (done, rescheduled into the
+  // future). Unknown ids are kept: calls may still be loading, and dropping them would re-alert everything.
+  var dueIds = {}, byId = {}, changed = false;
+  due.forEach(function(c){ dueIds[c.id] = true; });
+  calls.forEach(function(c){ byId[c.id] = c; });
+  Object.keys(_alertState.known).forEach(function(id){
+    if(byId[id] && !dueIds[id]){ delete _alertState.known[id]; changed = true; }
+  });
+
+  var fresh = due.filter(alertIsNew);
+  if(_alertState.min && (fresh.length || !due.length)){ _alertState.min = false; changed = true; }
+  if(changed) alertSaveState();
+
   alertNotify(fresh);   // desktop notification + title flash when the tracker isn't in front
-  if(!fresh.length){
+  if(!due.length){
     if(wasVisible){ alertBar.classList.remove('visible'); _alertOlderOpen = false; render(); }
     return;
   }
 
-  document.getElementById('alert-title').textContent = fresh.length === 1 ? 'Follow-up due' : fresh.length + ' follow-ups due';
-  document.getElementById('alert-items').innerHTML = fresh.map(function(c){
+  var card = document.getElementById('alert-card');
+  var mini = document.getElementById('alert-mini');
+  if(_alertState.min){
+    card.hidden = true;
+    mini.hidden = false;
+    alertBar.classList.add('min');
+    mini.innerHTML = '<span class="alert-icon">🔔</span>' +
+      '<span class="alert-mini-text">' + due.length + ' follow-up' + (due.length === 1 ? '' : 's') + ' need' + (due.length === 1 ? 's' : '') + ' addressing</span>' +
+      '<span class="alert-mini-open">open ▾</span>';
+    alertBar.classList.add('visible');
+    return;
+  }
+  card.hidden = false;
+  mini.hidden = true;
+  alertBar.classList.remove('min');   // open: floats over the page instead of pushing it down
+
+  // Anything new leads; when nothing is new (the banner was opened by hand) the whole list is compact.
+  var big = fresh.length ? fresh : [];
+  var rest = fresh.length ? due.filter(function(c){ return !alertIsNew(c); }).sort(function(a, b){ return alertWhen(b) - alertWhen(a); }) : due;
+  var restLabel = fresh.length ? 'older follow-up' : 'follow-up';
+
+  document.getElementById('alert-title').textContent = fresh.length
+    ? (fresh.length === 1 ? 'Follow-up due' : fresh.length + ' follow-ups due')
+    : due.length + ' follow-up' + (due.length === 1 ? '' : 's') + ' due';
+
+  document.getElementById('alert-items').innerHTML = big.map(function(c){
     var t = alertTimeLabel(c, now);
     var name = c.cbName || c.cbPhone || (c.acctRaw ? maskAcct(c.acctRaw) : '') || 'Unknown';
-    var sub = [c.cbName && c.cbPhone ? fmtPhone(String(c.cbPhone)) : '', c.fuType && c.fuType !== 'Callback' ? c.fuType : ''].filter(Boolean).join(' · ');
+    var sub = [c.cbName && c.cbPhone ? fmtPhone(String(c.cbPhone)) : '', !c.cbTime ? '🚩 red flag' : (c.fuType && c.fuType !== 'Callback' ? c.fuType : '')].filter(Boolean).join(' · ');
     var pulse = !_alertPulsed[c.id];
     return '<div class="alert-new' + (pulse ? ' pulse' : '') + '">' +
       '<div class="alert-new-top"><span class="alert-new-name">' + alertEsc(name) + '</span>' +
@@ -4720,16 +4920,13 @@ function checkAlerts(){
       '<div class="alert-actions">' +
         '<button class="alert-btn primary" onclick="openCallFromAlert(' + c.id + ')">↗ Open</button>' +
         '<button class="alert-btn" onclick="showSnoozePicker(' + c.id + ')">💤 Snooze</button>' +
-        '<button class="alert-btn" onclick="alertMarkSeen([' + c.id + '])">✓ Got it</button>' +
       '</div>' + alertSnoozeRow(c) +
     '</div>';
   }).join('');
-  fresh.forEach(function(c){ if(!_alertPulsed[c.id]) setTimeout(function(){ _alertPulsed[c.id] = true; }, 3400); });
+  big.forEach(function(c){ if(!_alertPulsed[c.id]) setTimeout(function(){ _alertPulsed[c.id] = true; }, 3400); });
 
-  document.getElementById('alert-older').innerHTML = !older.length ? '' :
-    '<button class="alert-older-toggle" onclick="_alertOlderOpen=!_alertOlderOpen;checkAlerts()">' +
-      (_alertOlderOpen ? '▴ Hide' : '+' + older.length) + ' older follow-up' + (older.length === 1 ? '' : 's') + (_alertOlderOpen ? '' : ' ▾') + '</button>' +
-    (_alertOlderOpen ? '<div style="display:flex;flex-direction:column;gap:2px;margin-top:4px">' + older.map(function(c){
+  var compactRows = function(list){
+    return '<div style="display:flex;flex-direction:column;gap:2px;margin-top:4px">' + list.map(function(c){
       var t = alertTimeLabel(c, now);
       var name = c.cbName || c.cbPhone || (c.acctRaw ? maskAcct(c.acctRaw) : '') || 'Unknown';
       return '<div class="alert-item" onclick="openCallFromAlert(' + c.id + ')" title="Open in Follow-Ups">' +
@@ -4738,9 +4935,16 @@ function checkAlerts(){
         '<button class="alert-btn" style="height:22px;padding:0 7px" onclick="event.stopPropagation();showSnoozePicker(' + c.id + ')" title="Snooze">💤</button>' +
         alertSnoozeRow(c) +
       '</div>';
-    }).join('') + '</div>' : '');
+    }).join('') + '</div>';
+  };
+  document.getElementById('alert-older').innerHTML = !rest.length ? '' :
+    (!fresh.length ? compactRows(rest) :
+      '<button class="alert-older-toggle" onclick="_alertOlderOpen=!_alertOlderOpen;checkAlerts()">' +
+        (_alertOlderOpen ? '▴ Hide' : '+' + rest.length) + ' ' + restLabel + (rest.length === 1 ? '' : 's') + (_alertOlderOpen ? '' : ' ▾') + '</button>' +
+      (_alertOlderOpen ? compactRows(rest) : ''));
 
   alertBar.classList.add('visible');
+  alertCardFit();
   if(!wasVisible){
     // Refresh the call table's due-soon states, unless a call is being entered
     var active = document.activeElement;
@@ -4898,10 +5102,7 @@ function ctxInstall(doc){
 ctxInstall(document);
 
 // ✕ on the alert card: "Got it" for every new alert (they move to the older line; the card closes)
-function dismissAlerts(){
-  var now=Date.now();
-  alertMarkSeen(alertDueCalls(now).filter(alertIsNew).map(function(c){return c.id;}));
-}
+function dismissAlerts(){ minimizeAlerts(); }   // kept: the ✕ used to mean "got it for all"
 function checkResurfaced(){
   if(window._resurfacedDismissed) return;
   const banner=document.getElementById('resurfaced-banner');
@@ -15703,38 +15904,29 @@ function dqOpenerPhoneInput(el){
   ttContactFromForm();
 }
 
-// ── Call recap: HeroAssist transcript → short labeled lines in the call notes ──
-// Runs entirely on this PC: Chrome's on-device AI when it's available (Prompt API, then Summarizer), with
-// pattern matching as the fallback and as a fill-in for anything the AI leaves out. The transcript is never
-// saved, and the recap is scrubbed of personal identifiers before it can reach the notes (which go to Sheets).
-var RECAP_FIELDS = [
-  ['carrier',  'Carrier'],
-  ['bill',     'Mobile bill'],
-  ['lines',    'Lines'],
-  ['internet', 'Internet'],
-  ['tv',       'TV'],
-  ['offer',    'Offer'],
-  ['concerns', 'Concerns'],
-  ['next',     'Next step']
-];
-// Labels start with "• " so the Talk Track notes block (plain "Carrier:", "Phones:" …) never touches them
+// ── Call recap: HeroAssist transcript → key points in the call notes ──
+// What's wanted on a callback is a handful of the member's own sentences: what they called about, what they
+// pay, what's holding them back, and the personal details worth referencing. Chrome's on-device AI is blocked
+// on the work PC, so the rules tag candidates and the rep taps what to keep — imperfect tagging costs a tap,
+// not a bad note. The transcript is never saved, and kept lines are scrubbed before they reach the notes.
+// Kept lines start with "• " so the Talk Track notes block (plain "Carrier:", "Phones:" …) never touches them
 var RECAP_PREFIX = '• ';
 
 function recapOpen(){
   var m = document.getElementById('recap-modal');
-  _recapNames = [];
+  _recapNames = []; _recapPicks = []; _recapFields = {}; _recapShowAll = false;
   document.getElementById('recap-input').value = '';
-  document.getElementById('recap-output').value = '';
+  document.getElementById('recap-picks').innerHTML = '';
   document.getElementById('recap-status').textContent = '';
   document.getElementById('recap-step-paste').hidden = false;
   document.getElementById('recap-step-result').hidden = true;
   m.hidden = false;
   setTimeout(function(){ document.getElementById('recap-input').focus(); }, 30);
-  recapModeBadge();
 }
 function recapClose(){
   document.getElementById('recap-input').value = '';    // the transcript never outlives the box
-  document.getElementById('recap-output').value = '';
+  document.getElementById('recap-picks').innerHTML = '';
+  _recapPicks = [];
   document.getElementById('recap-modal').hidden = true;
 }
 function recapBack(){
@@ -15746,163 +15938,195 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape' && m && !m.hidden) recapClose();
 });
 
-// Which on-device model can run: {kind:'prompt'|'summarizer'|null, state:'available'|'downloadable'|'downloading'}
-var _recapAi = null;   // last check, so Refine can start the model straight from the click
-async function recapAiKind(){
-  try{
-    if(typeof LanguageModel !== 'undefined'){
-      var a = await LanguageModel.availability({expectedInputs:[{type:'text', languages:['en']}], expectedOutputs:[{type:'text', languages:['en']}]});
-      if(a && a !== 'unavailable') return {kind:'prompt', state:a};
-    }
-  }catch(e){}
-  try{
-    if(typeof Summarizer !== 'undefined'){
-      var s = await Summarizer.availability();
-      if(s && s !== 'unavailable') return {kind:'summarizer', state:s};
-    }
-  }catch(e){}
-  return {kind:null, state:'unavailable'};
-}
-async function recapModeBadge(){
-  var el = document.getElementById('recap-mode');
-  el.textContent = 'Checking…'; el.className = 'recap-mode';
-  _recapAi = await recapAiKind();
-  var k = _recapAi.kind, needsDl = _recapAi.state === 'downloadable' || _recapAi.state === 'downloading';
-  el.textContent = !k ? 'Basic' : needsDl ? 'On-device AI · one-time download' : 'On-device AI';
-  el.className = 'recap-mode' + (k ? ' ai' : '');
-  el.title = !k ? 'Chrome\'s on-device AI isn\'t available on this PC — using pattern matching'
-           : needsDl ? 'Chrome downloads its AI model the first time you press Refine (it can take a few minutes)'
-           : 'Chrome\'s built-in AI, running on this PC';
-}
+// ── Picking key points ──────────────────────────────────────────────────────
+// A 20-minute call is hundreds of wrapped lines. The rules tag the member's sentences, pre-check the few
+// worth keeping, and hide the rest behind "Show everything they said" so nothing is lost.
+var _recapPicks = [], _recapFields = {}, _recapShowAll = false;
 
-var _recapSkip = null;   // resolves when "Use basic now" is pressed during an AI run
-async function recapRun(){
-  var text = document.getElementById('recap-input').value.trim();
-  var status = document.getElementById('recap-status'), btn = document.getElementById('recap-run');
-  if(text.length < 40){ status.textContent = 'Paste the transcript first.'; return; }
-  btn.disabled = true;
-  var info = _recapAi || await recapAiKind();   // cached, so the model starts while this still counts as a click
-  var fields = recapRules(text), ai = null;
-  _recapNames = recapFindNames(text);   // scrubbed from the recap, including anything typed into it later
-  if(info.kind){
-    var sp = recapSplitSpeakers(text), aiText = sp.labeled ? sp.normalized : text;   // V/A → Customer/Agent for the model
-    var aiRun = info.kind === 'prompt' ? recapWithPrompt(aiText, status) : recapWithSummarizer(aiText, status);
-    aiRun.catch(function(){});   // a skipped run may still fail later; that's fine
-    status.textContent = (info.state === 'available' ? 'Refining with on-device AI…' : 'Starting on-device AI download…');
-    var skip = new Promise(function(res){ _recapSkip = res; });
-    recapShowSkip(true);
-    try{
-      ai = await Promise.race([aiRun, skip]);
-      if(ai === 'skip') ai = null;
-    }catch(e){
-      console.warn('On-device AI failed, using pattern matching:', e);
-      _showToast('On-device AI couldn\'t run (' + (e.name || 'error') + ') — used the basic recap', 'warn', 5000);
-    }
-    recapShowSkip(false); _recapSkip = null;
-  }
-  if(ai && ai.fields) RECAP_FIELDS.forEach(function(f){ if(ai.fields[f[0]]) fields[f[0]] = ai.fields[f[0]]; });   // AI wins, rules fill gaps
-  var lines = RECAP_FIELDS.filter(function(f){ return fields[f[0]]; }).map(function(f){ return RECAP_PREFIX + f[1] + ': ' + fields[f[0]]; });
-  if(ai && ai.points) ai.points.forEach(function(p){ lines.push(RECAP_PREFIX + 'Note: ' + p); });
-  lines = lines.map(recapScrub).filter(function(l){ return l.replace(/^[•\s]*[^:]+:\s*/, '').trim(); });
-  btn.disabled = false;
+function recapFind(){
+  var text = document.getElementById('recap-input').value;
+  var status = document.getElementById('recap-status');
+  if(text.trim().length < 40){ status.textContent = 'Paste the transcript first.'; return; }
+  _recapNames = recapFindNames(text);       // last names, scrubbed out of anything kept
+  _recapFields = recapRules(text);          // carrier / bill / lines go to the Talk Track, not the notes
+  _recapPicks = recapCandidates(text);
+  // A name or number the member gave fills an empty form field, once the rep leaves the row checked
+  var c = recapContact(recapSplitSpeakers(text)), fills = [];
+  if(c.name && !_tt.name)   fills.push({id:9001, fill:'name',  emoji:'👤', label:'Fill name',  text:c.name, strong:true, on:true});
+  if(c.phone && !_tt.phone) fills.push({id:9002, fill:'phone', emoji:'☎',  label:'Fill phone', text:fmtPhone(c.phone), strong:true, on:true});
+  _recapPicks = fills.concat(_recapPicks);
+  _recapShowAll = false;
   status.textContent = '';
-  if(!lines.length){ status.textContent = 'Nothing sales-related found in that text.'; return; }
-  document.getElementById('recap-output').value = lines.join('\n');
-  document.getElementById('recap-input').value = '';   // done with the transcript
+  if(!_recapPicks.length){ status.textContent = 'Nothing worth keeping found in that text.'; return; }
   document.getElementById('recap-step-paste').hidden = true;
   document.getElementById('recap-step-result').hidden = false;
-  document.getElementById('recap-output').focus();
+  recapRenderPicks();
 }
 
-function recapShowSkip(on){
-  var b = document.getElementById('recap-skip');
-  if(b) b.hidden = !on;
-}
-function recapSkipAi(){ if(_recapSkip) _recapSkip('skip'); }
-
-var RECAP_AI_INSTRUCTIONS =
-  'You turn Xfinity sales call transcripts into short notes for the sales rep\'s follow-up call. ' +
-  'Only use facts stated in the transcript. Keep each value under 14 words; use "" when not discussed. ' +
-  'First names are fine, but never include last names, phone numbers, account or order numbers, card numbers, emails, or street addresses.';
-var RECAP_SCHEMA = {
-  type:'object',
-  properties:{
-    carrier:{type:'string', description:'current mobile carrier'},
-    bill:{type:'string', description:'current monthly mobile bill amount'},
-    lines:{type:'string', description:'number of phone lines and device types (iPhone/Android, tablets, watches)'},
-    internet:{type:'string', description:'current internet provider, how they use WiFi, speed/plan interest'},
-    tv:{type:'string', description:'interest in TV service or streaming'},
-    offer:{type:'string', description:'what was offered or quoted, with prices'},
-    concerns:{type:'string', description:'objections or hesitations (price, contract, spouse, timing)'},
-    next:{type:'string', description:'agreed next step and callback timing'},
-    points:{type:'array', items:{type:'string'}, maxItems:3, description:'other sales-relevant facts'}
-  },
-  required:['carrier','bill','lines','internet','tv','offer','concerns','next','points']
-};
-
-async function recapWithPrompt(text, status){
-  var session = await LanguageModel.create({
-    initialPrompts:[{role:'system', content:RECAP_AI_INSTRUCTIONS}],
-    expectedInputs:[{type:'text', languages:['en']}], expectedOutputs:[{type:'text', languages:['en']}],
-    monitor:function(m){ m.addEventListener('downloadprogress', function(e){ status.textContent = 'Downloading on-device AI… ' + Math.round(e.loaded * 100) + '%'; }); }
+function recapRenderPicks(){
+  var box = document.getElementById('recap-picks'), html = '';
+  _recapPicks.forEach(function(p){
+    if(!_recapShowAll && !p.strong) return;
+    html += '<label class="recap-pick' + (p.on ? ' on' : '') + (p.strong ? '' : ' weak') + (p.fill ? ' fill' : '') + '">' +
+      '<input type="checkbox"' + (p.on ? ' checked' : '') + ' onchange="recapTogglePick(' + p.id + ',this)">' +
+      '<span class="recap-pick-tag">' + p.emoji + ' ' + heroEsc(p.label) + '</span>' +
+      '<span class="recap-pick-txt">' + heroEsc(p.text) + '</span></label>';
   });
-  try{
-    var input = text;
-    if(session.inputQuota){   // keep inside what the model accepts (rough: 1 token ≈ 4 characters)
-      var max = Math.floor(session.inputQuota * 3);
-      if(input.length > max) input = input.slice(0, max);
+  box.innerHTML = html || '<div class="recap-none">Nothing stood out — try "Show everything they said".</div>';
+  var more = document.getElementById('recap-more');
+  var weak = _recapPicks.filter(function(p){ return !p.strong; }).length;
+  more.hidden = !weak;
+  more.textContent = _recapShowAll ? '\u25B4 Just the key points' : '\u25BE Show everything they said (' + weak + ' more)';
+  recapCountBtn();
+}
+function recapTogglePick(id, el){
+  var p = _recapPicks.filter(function(x){ return x.id === id; })[0];
+  if(!p) return;
+  p.on = el.checked;
+  if(el.parentNode) el.parentNode.classList.toggle('on', p.on);
+  recapCountBtn();
+}
+function recapToggleAll(){ _recapShowAll = !_recapShowAll; recapRenderPicks(); }
+function recapCountBtn(){
+  var on = _recapPicks.filter(function(p){ return p.on; });
+  var n = on.filter(function(p){ return !p.fill; }).length;
+  var b = document.getElementById('recap-add');
+  if(!b) return;
+  b.textContent = n ? 'Add ' + n + ' to notes' : (on.length ? 'Fill the form' : 'Add to notes');
+  b.disabled = !on.length;
+}
+
+function recapSentences(t){
+  return String(t).split(/(?<=[.?!])\s+/).map(function(s){ return s.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+}
+var RECAP_FILLER_RE = /^(?:(?:yeah|yes|yep|no|nope|okay|ok|right|sure|uh[- ]?huh|mhm+|hmm+|correct|exactly|got it|i see|thank you|thanks|hello|hi|hey|alright|perfect|awesome|sounds good|absolutely|of course|please|sorry|really|wow)\b[\s,.!?]*)+$/i;
+function recapClip(s, n){
+  s = String(s).replace(/\s+/g, ' ').trim();
+  n = n || 130;
+  return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '\u2026' : s;
+}
+// First match wins, so this order is the priority order
+function recapTagOf(s){
+  var low = ' ' + s.toLowerCase() + ' ', has = function(re){ return re.test(low); };
+  if(has(/\b(call(ed|ing)? (in )?(about|because|to)|reason (i|we) called|bill went up|price went up|rates? went up|promo(tion)? (ended|expired|ran out)|out of contract|just moved|we'?re moving|moving (in|to|next)|new (house|place|apartment)|closing on)\b/)) return ['why', '\uD83D\uDCDE', 'Called about'];
+  if(has(/\b(call (me|us|him|her) back|reach (me|out)|follow up|circle back|tomorrow|next week|(mon|tues|wednes|thurs|fri|satur|sun)day|this (afternoon|evening|weekend)|after (work|\d)|pay ?day|get paid|when i get)\b/)) return ['next', '\uD83D\uDD50', 'Next step'];
+  if(has(/\b(too (much|expensive|high)|can'?t afford|cheaper|contract|credit (check|score)|deposit|think about it|not (right )?now|not ready|maybe later|talk (to|with) (my )?(wife|husband|spouse|partner)|check with (my )?(wife|husband|spouse)|run it by|hassle|keep (my|our) (phone )?numbers?|hesitant|burned)\b/)) return ['concern', '\u26A0', 'Hesitation'];
+  if(has(/\$ ?\d|\b\d{2,4} ?(dollars|bucks)\b|\b\d{2,4}\b/) && has(/\b(bill|pay|paying|a month|per month|monthly|cost|costs|budget|charge|quoted?)\b/)) return ['money', '\uD83D\uDCB2', 'Bill'];
+  if(has(/\b(wife|husband|spouse|partner|son|daughter|kids?|children|grand(kids?|son|daughter)|mom|dad|mother|father|retired|my (job|work|shift|business)|work(ing)? from home|college|school|semester|graduat|vacation|trip|surgery|hospital|deployed|military|veteran|dog|cat|baby|wedding)\b/)) return ['personal', '\uD83D\uDDE3', 'Context'];
+  if(has(/\b(tv|cable|channels?|espn|sports|football|basketball|netflix|hulu|peacock|stream(ing|s)?|roku|firestick)\b/)) return ['tv', '\uD83D\uDCFA', 'TV'];
+  if(has(/\b(lines?|phones?|iphone|android|samsung|galaxy|carrier|wireless|verizon|at&t|t-?mobile|cricket|boost|metro|mint|visible|straight talk|tracfone|tablets?|ipads?|watch(es)?)\b/)) return ['mobile', '\uD83D\uDCF6', 'Mobile'];
+  if(has(/\b(internet|wi-?fi|speed|gig|mbps|router|modem|buffer(ing)?|slow|spotty|drops?|dead spots?|spectrum|frontier|fios|cox|centurylink|starlink|hughesnet|metronet)\b/)) return ['internet', '\uD83C\uDF10', 'Internet'];
+  return null;
+}
+// Candidates in call order: the member's sentences, plus any price the agent actually quoted
+function recapCandidates(text){
+  var sp = recapSplitSpeakers(text), picks = [], id = 0, seen = {}, perTag = {}, strong = 0;
+  var push = function(tag, emoji, label, s, isStrong){
+    var key = s.toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 60);
+    if(!key || seen[key]) return;
+    seen[key] = 1;
+    if(isStrong && ++strong > 14) isStrong = false;      // a pre-checked list has to stay scannable
+    picks.push({id:id++, tag:tag, emoji:emoji, label:label, text:recapClip(s), strong:!!isStrong, on:!!isStrong});
+  };
+  (sp.turns || []).forEach(function(t){
+    if(!t.text) return;
+    if(t.who === 'agent'){
+      recapSentences(t.text).forEach(function(s){        // so the callback opens on the same numbers
+        if(/\$ ?\d/.test(s) && /\b(gig|internet|plan|price lock|now tv|peacock|mobile|lines?|unlimited|tv (core|plus|premium))\b/i.test(s) && s.length < 220)
+          push('offer', '\uD83D\uDCAC', 'Quoted', s, true);
+      });
+      return;
     }
-    var raw = await session.prompt('Transcript ("Customer" is the member, "Agent" is the Xfinity rep):\n' + input, {responseConstraint:RECAP_SCHEMA});
-    var o = JSON.parse(raw);
-    var fields = {};
-    RECAP_FIELDS.forEach(function(f){ if(typeof o[f[0]] === 'string') fields[f[0]] = o[f[0]].trim(); });
-    return {fields:fields, points:(Array.isArray(o.points) ? o.points : []).map(String).filter(Boolean).slice(0, 3)};
-  } finally { try{ session.destroy(); }catch(e){} }
+    recapSentences(t.text).forEach(function(s){
+      if(RECAP_FILLER_RE.test(s)) return;
+      var words = s.split(/\s+/).length;
+      if(words < 4 && !/\d/.test(s)) return;
+      var tag = recapTagOf(s);
+      if(tag){
+        perTag[tag[0]] = (perTag[tag[0]] || 0) + 1;
+        push(tag[0], tag[1], tag[2], s, perTag[tag[0]] <= 3);   // the first few of a kind carry the meaning
+      } else if(words >= 6){
+        push('other', '\u00B7', 'Note', s, false);
+      }
+    });
+  });
+  return picks;
 }
 
-async function recapWithSummarizer(text, status){
-  var s = await Summarizer.create({
-    type:'key-points', format:'plain-text', length:'short',
-    sharedContext:'Xfinity sales call transcript. Notes for the rep\'s follow-up call: mobile carrier, bill, lines, internet use, TV interest, offers, objections, next steps. ' +
-      'First names are fine; leave out last names, phone numbers, account numbers and addresses.',
-    expectedInputLanguages:['en'], outputLanguage:'en',
-    monitor:function(m){ m.addEventListener('downloadprogress', function(e){ status.textContent = 'Downloading on-device AI… ' + Math.round(e.loaded * 100) + '%'; }); }
+// The member's name and number, taken only where they said it themselves or agreed when the agent said it
+// back. Used to fill an empty Name / Phone field; a value the rep already typed is never overwritten.
+var RECAP_NAME_SELF_RE = /\b(?:[Tt]his is|[Mm]y name'?s?(?: is)?|[Ii]t'?s|[Ii]'?m)\s+([A-Z][a-z'’-]{1,20})\b/;
+var RECAP_NAME_ASK_RE = /\b(?:[Ii]s this|[Aa]m i speaking (?:with|to)|[Ss]peaking with|[Tt]his is)\s+([A-Z][a-z'’-]{1,20})\b/;
+var RECAP_YES_RE = /^(?:yes|yeah|yep|yup|correct|that'?s right|that is|it is|speaking|uh[- ]?huh|mhm+|sure|right)\b/i;
+var RECAP_NAME_STOP = /^(?:calling|good|fine|great|sure|okay|yes|no|just|the|an?|xfinity|comcast|internet|mobile|actually|really|sorry|thanks?|today|here|speaking)$/i;
+var RECAP_PHONE_RE = /\b(?:\+?1[-.\s]?)?\(?([2-9]\d{2})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})\b/;
+var RECAP_PHONE_CTX_RE = /\b(number|phone|reach|call (me|us|you)|cell|text)\b/i;
+function recapContact(sp){
+  var out = {name:'', phone:''}, turns = sp.turns || [];
+  turns.forEach(function(t, i){
+    if(out.name && out.phone) return;
+    if(t.who === 'cust'){
+      recapSentences(t.text).forEach(function(s){
+        var m;
+        if(!out.name && (m = RECAP_NAME_SELF_RE.exec(s)) && !RECAP_NAME_STOP.test(m[1])) out.name = m[1];
+        if(!out.phone && RECAP_PHONE_CTX_RE.test(s) && (m = RECAP_PHONE_RE.exec(s))) out.phone = m[1] + m[2] + m[3];
+      });
+      return;
+    }
+    var nx = turns[i + 1], m2;                       // the agent read it back: only counts if the member agreed
+    if(!nx || nx.who !== 'cust' || !RECAP_YES_RE.test(nx.text.trim())) return;
+    if(!out.name && (m2 = RECAP_NAME_ASK_RE.exec(t.text)) && !RECAP_NAME_STOP.test(m2[1])) out.name = m2[1];
+    if(!out.phone && RECAP_PHONE_CTX_RE.test(t.text) && (m2 = RECAP_PHONE_RE.exec(t.text))) out.phone = m2[1] + m2[2] + m2[3];
   });
-  try{
-    var summarizeAll = async function(t, depth){
-      try{ return await s.summarize(t); }
-      catch(e){
-        if(depth > 3 || t.length < 2000) throw e;   // too long: summarize halves, then the summaries
-        var mid = t.lastIndexOf('\n', Math.floor(t.length / 2)); if(mid < 0) mid = Math.floor(t.length / 2);
-        var a = await summarizeAll(t.slice(0, mid), depth + 1), b = await summarizeAll(t.slice(mid), depth + 1);
-        return await summarizeAll(a + '\n' + b, depth + 1);
-      }
-    };
-    var out = await summarizeAll(text, 0);
-    var points = String(out).split(/\n+/).map(function(l){ return l.replace(/^\s*[-*•\d.)]+\s*/, '').trim(); }).filter(Boolean).slice(0, 5);
-    return {fields:{}, points:points};
-  } finally { try{ s.destroy(); }catch(e){} }
+  return out;
+}
+function recapFillContact(field, val){
+  if(_tt[field]) return false;                       // whatever the rep typed wins
+  _tt[field] = field === 'phone' ? fmtPhone(val) : val;
+  ttContactToForm();
+  if(typeof ttContactRefresh === 'function') ttContactRefresh();
+  if(!XCL_VIEW && typeof xclPost === 'function') xclPost({type:'contact', name:_tt.name, phone:_tt.phone});
+  return true;
 }
 
 // ── Pattern matching (always available) ──
-// HeroAssist transcripts: "V:" = the member (visitor), "A:" = the agent. The first entry can be the agent's
-// greeting even though it's marked V. Lines without a label continue the previous speaker.
-var RECAP_SPEAKER_RE = /^\s*(?:\[?\d{1,2}:\d{2}(?::\d{2})?\]?\s*)?([VA])\b\s*(?:\[?\d{1,2}:\d{2}(?::\d{2})?\]?\s*)?[:\-–]\s*/;
+// HeroAssist transcripts: "V:" = the member (visitor), "A:" = the agent, no timestamps, turns wrapped over
+// several lines. The first block runs the agent's intro straight into the member's answer; the intro ends at
+// "…and who am I speaking with today?", so the block is split there.
+var RECAP_SPEAKER_RE = /^\s*([VA])\b\s*[:\-\u2013]\s*/;
+var RECAP_INTRO_END_RE = /\b(?:who\s+am\s+i\s+speaking\s+(?:with|to)|who\s+do\s+i\s+have\s+the\s+pleasure\s+of\s+speaking\s+with|may\s+i\s+ask\s+who\s+i'?m\s+speaking\s+(?:with|to))\b[^?.!]*[?.!]/i;
+var RECAP_GREETING_RE = /thank(s| you) for (calling|choosing)|xfinity|comcast|my name is|how (can|may) i (help|assist)/i;
 function recapSplitSpeakers(text){
-  var lines = String(text).replace(/\r/g, '').split('\n'), cust = [], agent = [], out = [], who = null, first = true, labeled = 0;
+  var lines = String(text).replace(/\r/g, '').split('\n'), turns = [], who = null, labeled = 0;
   lines.forEach(function(raw){
     var m = RECAP_SPEAKER_RE.exec(raw), body = m ? raw.slice(m[0].length) : raw;
-    if(m){
-      labeled++;
-      who = m[1] === 'A' ? 'agent' : 'cust';
-      if(first && who === 'cust' && /thank(s| you) for (calling|choosing)|xfinity|comcast|my name is|how (can|may) i (help|assist)/i.test(body)) who = 'agent';
-      first = false;
-    }
-    if(!body.trim()) return;
-    (who === 'agent' ? agent : cust).push(body.trim());
-    out.push((who === 'agent' ? 'Agent: ' : who === 'cust' ? 'Customer: ' : '') + body.trim());
+    if(m){ labeled++; who = m[1] === 'A' ? 'agent' : 'cust'; turns.push({who:who, text:''}); }
+    body = body.trim();
+    if(!body) return;
+    if(!turns.length) turns.push({who:who || 'cust', text:''});
+    var cur = turns[turns.length - 1];
+    cur.text += (cur.text ? ' ' : '') + body;      // a wrapped line continues the same turn
   });
-  return {labeled:labeled > 0, cust:cust.join('\n'), agent:agent.join('\n'), normalized:out.join('\n')};
+  var f = turns[0], cut = -1, m2;
+  if(f && f.who !== 'agent'){
+    if((m2 = RECAP_INTRO_END_RE.exec(f.text))) cut = m2.index + m2[0].length;
+    else if(RECAP_GREETING_RE.test(f.text)){
+      var q = f.text.indexOf('?');
+      cut = q > 0 ? q + 1 : f.text.length;         // no closing question: the whole block is the intro
+    }
+    if(cut > 0){
+      var rest = f.text.slice(cut).trim();
+      turns[0] = {who:'agent', text:f.text.slice(0, cut).trim()};
+      if(rest) turns.splice(1, 0, {who:'cust', text:rest});
+    }
+  }
+  var cust = [], agent = [], out = [];
+  turns.forEach(function(t){
+    if(!t.text) return;
+    (t.who === 'agent' ? agent : cust).push(t.text);
+    out.push((t.who === 'agent' ? 'Agent: ' : 'Customer: ') + t.text);
+  });
+  return {labeled:labeled > 0, turns:turns, cust:cust.join('\n'), agent:agent.join('\n'), normalized:out.join('\n')};
 }
 
 function recapRules(text){
@@ -15937,9 +16161,13 @@ function recapRules(text){
   var phoneTalk = find(/\b(lines?|phones?|mobile|carrier|wireless|cell(ular)?|iphone|android|samsung)\b/i).join(' ').toLowerCase();
   f.carrier = pickCarrier(phoneTalk) || pickCarrier(low) || pickCarrier(find(/\b(lines?|phones?|mobile|carrier|wireless|cell)\b/i, allSentences).join(' ').toLowerCase()) || undefined;
 
-  // Mobile bill: a dollar amount in a sentence about the bill / paying
-  var billS = find(/\b(bill|pay|paying|per month|a month|monthly)\b/i).map(function(s){ return (s.match(/\$\s?(\d{2,4}(?:\.\d{2})?)|\b(\d{2,4})\s*(?:dollars|bucks)\b/i) || []); }).filter(function(m){ return m.length; })[0];
-  if(billS) f.bill = '~$' + (billS[1] || billS[2]) + '/mo';
+  // Mobile bill: an amount in a sentence about paying for phone service. This fills the Talk Track's mobile
+  // bill (which drives the savings figure), so a sentence that's about the internet bill is left alone.
+  var billS = find(/\b(bill|pay|paying|per month|a month|monthly)\b/i)
+    .filter(function(s){ return /\b(phone|mobile|cell|wireless|lines?|carrier|verizon|at&t|t-?mobile)\b/i.test(s) && !/\b(internet|wi-?fi|cable|tv)\b/i.test(s); })
+    .map(function(s){ return (s.match(/\$\s?(\d{2,4}(?:\.\d{2})?)|\b(\d{2,4})\s*(?:dollars|bucks)\b|\b(\d{2,4})\s*(?:a|per)\s+month\b/i) || []); })
+    .filter(function(m){ return m.length; })[0];
+  if(billS) f.bill = '~$' + (billS[1] || billS[2] || billS[3]) + '/mo';
 
   // Lines & devices
   var parts = [];
@@ -16096,24 +16324,36 @@ function recapDropDuplicates(text){
 }
 
 function recapAddToNotes(){
-  var out = document.getElementById('recap-output').value.split('\n').map(function(l){ return recapScrub(l).trim(); }).filter(Boolean);
-  out = out.map(function(l){ return /^•/.test(l) ? l : RECAP_PREFIX + l; });
+  var filled = [];
+  _recapPicks.forEach(function(p){                  // name / phone go to the call form, not the notes
+    if(p.fill && p.on && recapFillContact(p.fill, p.text)) filled.push(p.fill);
+  });
+  var out = _recapPicks.filter(function(p){ return p.on && !p.fill; })
+    .map(function(p){ return recapScrub(RECAP_PREFIX + p.label + ': ' + p.text); })
+    .filter(function(l){ return l.replace(/^[\u2022\s]*[^:]+:\s*/, '').trim(); });
   var ta = document.getElementById('f-notes');
   if(!ta) return;
   var editing = typeof editingId !== 'undefined' && editingId;
-  if(!editing) out = recapFeedTalkTrack(out);   // current call: those facts live in the Talk Track block
+  if(!editing){                                   // current call: these facts belong in the Talk Track block
+    var facts = [];
+    if(_recapFields.carrier) facts.push(RECAP_PREFIX + 'Carrier: ' + _recapFields.carrier);
+    if(_recapFields.bill)    facts.push(RECAP_PREFIX + 'Mobile bill: ' + _recapFields.bill);
+    if(_recapFields.lines)   facts.push(RECAP_PREFIX + 'Lines: ' + _recapFields.lines);
+    if(facts.length) out = recapFeedTalkTrack(facts).concat(out);   // whatever the Talk Track can't hold
+  }
   // Skip lines already in the notes (an earlier recap, or the Talk Track block)
   var existing = ta.value.split('\n').map(function(l){ return l.trim(); });
   var have = {};
   existing.forEach(function(l){ var m = TT_NOTE_LINE_RE.exec(l); if(m) have[m[1]] = 1; });
   out = out.filter(function(l){
     if(existing.indexOf(l) >= 0) return false;
-    var m = /^•\s*([^:]+):/.exec(l);
+    var m = /^\u2022\s*([^:]+):/.exec(l);
     return !(m && RECAP_TT_DUP[m[1].trim()] && have[RECAP_TT_DUP[m[1].trim()]]);
   });
+  var fillMsg = filled.length ? ' \u00B7 ' + filled.join(' and ') + ' filled in' : '';
   if(!out.length){
     recapClose();
-    _showToast('📝 Recap added to the Talk Track (nothing new for the notes)', 'ok', 3000);
+    _showToast('\uD83D\uDCDD Recap added to the Talk Track (nothing new for the notes)' + fillMsg, 'ok', 3000);
     return;
   }
   var stamp = new Date().toLocaleDateString('en-US', {month:'numeric', day:'numeric'});
@@ -16124,7 +16364,7 @@ function recapAddToNotes(){
   if(typeof ttNotesSync === 'function') ttNotesSync();   // keeps the Talk Track block last
   if(typeof updateNotesState === 'function') updateNotesState();
   recapClose();
-  _showToast('📝 Recap added to notes', 'ok', 2500);
+  _showToast('\uD83D\uDCDD Recap added to notes' + fillMsg, 'ok', 2500);
 }
 
 // Close for the (currently unused) #dq-modal; its ✕ and backdrop called this but it was never defined
@@ -16557,13 +16797,124 @@ var _xmExpanded = new Set();
 
 function switchFuSubtab(tab){
   _fuSubtab = tab;
-  ['callbacks','mobile'].forEach(function(t){
+  ['callbacks','redflags','mobile'].forEach(function(t){
     var st = document.getElementById('fu-stab-'+t);
     var pn = document.getElementById('fu-panel-'+t);
     if(st) st.classList.toggle('active', t===tab);
     if(pn) pn.style.display = t===tab ? 'block' : 'none';
   });
   if(tab==='mobile') renderMobileLines();
+  if(tab==='redflags') renderRedFlagsTab();
+}
+
+// ── Red Flags tab ───────────────────────────────────────────────────────────
+var RF_SECTIONS = [
+  {key:'late',    label:'Running out of time', color:'var(--red)', hint:'day ' + RF_LATE_DAY + '+ — act while it can still be fixed'},
+  {key:'check',   label:'Check now',        color:'var(--amber)', hint:'day ' + RF_CHECK_DAY + ' or later'},
+  {key:'snoozed', label:'Checking back later', color:'var(--amber)', hint:''},
+  {key:'watch',   label:'Watching',         color:'var(--text3)', hint:'inside the first ' + RF_CHECK_DAY + ' days'},
+  {key:'nodate',  label:'No date to count from', color:'var(--amber)', hint:'neither an install nor a sale date on the call'}
+];
+function rfGroupOf(c, now){
+  if(!rfDay0(c)) return 'nodate';
+  var day = rfDays(c, now);
+  if(day >= RF_LATE_DAY) return 'late';        // late flags surface even while snoozed: time is nearly up
+  if(rfSnoozed(c, now)) return 'snoozed';
+  return day >= RF_CHECK_DAY ? 'check' : 'watch';
+}
+function renderRedFlagsTab(){
+  var badge = document.getElementById('fu-stab-rf-count');
+  var el = document.getElementById('rf-cards');
+  var now = Date.now();
+  var list = calls.filter(isActiveRedFlag);
+  var groups = {late:[], check:[], snoozed:[], watch:[], nodate:[]};
+  list.forEach(function(c){ groups[rfGroupOf(c, now)].push(c); });
+  groups.late.sort(function(a,b){ return rfDays(b, now) - rfDays(a, now); });
+  groups.check.sort(function(a,b){ return rfDays(b, now) - rfDays(a, now); });
+  groups.watch.sort(function(a,b){ return rfDays(b, now) - rfDays(a, now); });
+  groups.snoozed.sort(function(a,b){ return new Date(a.rfSnoozeUntil) - new Date(b.rfSnoozeUntil); });
+  var needAction = groups.late.length + groups.check.length;
+  if(badge){
+    badge.textContent = needAction || '';
+    badge.style.display = needAction ? '' : 'none';
+  }
+  var sub = document.getElementById('rf-subtitle');
+  if(sub) sub.textContent = list.length + ' open · ' + needAction + ' to check' +
+    (groups.late.length ? ' · ' + groups.late.length + ' running out of time' : '');
+  if(!el) return;
+  if(!list.length){
+    el.innerHTML = '<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🚩</div><div>No red flags open</div><div style="font-size:11px">Flags clear themselves once the 90-day window passes.</div></div>';
+    return;
+  }
+  el.innerHTML = '';
+  RF_SECTIONS.forEach(function(sec){
+    var items = groups[sec.key];
+    if(!items.length) return;
+    var head = document.createElement('div');
+    head.className = 'fu-sec';
+    head.style.cursor = 'default';
+    head.innerHTML = '<span class="fu-sec-name" style="color:' + sec.color + '">' + sec.label + '</span>' +
+      '<span class="fu-sec-count">' + items.length + '</span>' +
+      (sec.hint ? '<span style="font-size:10px;color:var(--text3)">' + sec.hint + '</span>' : '');
+    el.appendChild(head);
+    var wrap = document.createElement('div');
+    wrap.className = 'fu-sec-body';
+    items.forEach(function(c){ wrap.appendChild(rfBuildRow(c, now, sec.key)); });
+    el.appendChild(wrap);
+  });
+}
+function rfBuildRow(c, now, group){
+  var day = rfDays(c, now), d0 = rfDay0(c);
+  var left = d0 ? RF_WINDOW - day : null;
+  var pct = d0 ? Math.max(0, Math.min(100, Math.round(day / RF_WINDOW * 100))) : 0;
+  var accent = group === 'late' ? 'var(--red)' : group === 'check' ? 'var(--amber)' : group === 'snoozed' ? 'var(--text2)' : 'var(--text3)';
+  var phone = c.cbPhone ? fmtPhone(String(c.cbPhone)) : '';
+  var note = fuNotePreview(c);
+  var sold = c.ts ? new Date(c.ts).toLocaleDateString('en-US', {month:'numeric', day:'numeric'}) : '—';
+  var inst = d0 ? d0.toLocaleDateString('en-US', {month:'numeric', day:'numeric'}) : '';
+  var row = document.createElement('div');
+  row.className = 'fu-row rf-row';
+  row.style.cssText = 'background:' + (group === 'late' ? 'rgba(248,113,113,.07)' : group === 'check' ? 'rgba(245,158,11,.05)' : 'var(--card)') +
+    ';border:1px solid ' + (group === 'late' ? 'rgba(248,113,113,.4)' : group === 'check' ? 'rgba(245,158,11,.3)' : 'var(--border)') + ';border-left:3px solid ' + accent;
+  var acct = c.acctRaw ? maskAcct(String(c.acctRaw)) : '';
+  var dates = 'sold ' + sold + (rfFromSale(c) ? ' · counting from the sale date' : ' · installed ' + inst) +
+    (group === 'snoozed' ? ' · 💤 back ' + new Date(c.rfSnoozeUntil).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : '');
+  row.innerHTML =
+    '<div class="fu-row-head">' +
+      '<span class="rf-day" style="color:' + accent + '">' + (d0 ? 'Day ' + day : 'Day —') + '</span>' +
+      '<span class="fu-row-name">' + alertEsc(c.cbName || '—') + '</span>' +
+      (phone ? '<span class="fu-row-phone rf-copy" title="Click to copy" onclick="fuCopyPhone(' + c.id + ')">' + alertEsc(phone) + '</span>' : '') +
+      (acct ? '<span class="rf-acct rf-copy" title="Click to copy the account number" onclick="copyToClip(\'' + String(c.acctRaw).replace(/'/g, "\\'") + '\',\'Account #\')">' + alertEsc(acct) + '</span>' : '') +
+      (d0 && left !== null ? '<span class="rf-left" style="color:' + accent + '">' + (left > 0 ? left + 'd left' : 'window closed') + '</span>' : '<span class="rf-left" style="color:var(--amber)">no install date</span>') +
+      '<span class="fu-row-acts">' +
+        '<button class="fu-act" title="Payments OK — close this flag" onclick="clearRedFlag(' + c.id + ')">✓</button>' +
+        '<button class="fu-act" title="Mark chargeback" onclick="markChargeback(' + c.id + ')">💸</button>' +
+        '<button class="fu-act" title="Business-rule exception (no credit)" onclick="markException(' + c.id + ')">⚠</button>' +
+        '<button class="fu-act" title="Check back later" onclick="rfSnoozeMenu(' + c.id + ',this)">💤</button>' +
+        '<button class="fu-act" title="Open the call" onclick="openEdit(' + c.id + ')">✎</button>' +
+      '</span>' +
+    '</div>' +
+    '<div class="rf-bar"><span style="width:' + pct + '%;background:' + accent + '"></span></div>' +
+    '<div class="rf-sub">' + alertEsc(dates) + (note ? ' — ' + alertEsc(note) : '') + '</div>';
+  return row;
+}
+// Snooze menu on a red flag row
+function rfSnoozeMenu(id, btn){
+  var old = document.getElementById('rf-snooze-pop');
+  if(old) old.remove();
+  var pop = document.createElement('div');
+  pop.id = 'rf-snooze-pop';
+  pop.className = 'rf-snooze-pop';
+  pop.innerHTML = [[3,'3 days'],[7,'1 week'],[14,'2 weeks'],[30,'30 days']].map(function(o){
+    return '<button onclick="rfSnooze(' + id + ',\'' + o[0] + '\');var p=document.getElementById(\'rf-snooze-pop\');if(p)p.remove()">' + o[1] + '</button>';
+  }).join('');
+  var r = btn.getBoundingClientRect(), s = (window.APP_SCALE || 1);
+  pop.style.top = (r.bottom / s + 4) + 'px';
+  pop.style.left = Math.max(8, (r.left / s) - 60) + 'px';
+  document.body.appendChild(pop);
+  setTimeout(function(){
+    document.addEventListener('click', function close(){ var p = document.getElementById('rf-snooze-pop'); if(p) p.remove(); document.removeEventListener('click', close); });
+  }, 10);
 }
 
 function setXmFilter(f){
@@ -16910,12 +17261,8 @@ function renderCallbacksTab(){
   var filtered = typeFiltered.filter(function(c){
     var s = getCbStatus(c);
     if(s === null) return false; // no fuType and no parseable cbTime — truly nothing to show
-    // Active red flags are exclusive to the red-flag filter until 40 days post-sale
-    var isActiveRedFlag = c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone;
-    if(isActiveRedFlag){
-      if(filter==='red-flag') return true;
-      return Math.floor((now - c.ts) / 86400000) >= 40;
-    }
+    // Red flags are a payment watch, not a callback: they live in their own sub-tab
+    if(isActiveRedFlag(c)) return false;
     if(filter==='open')      return s !== 'done';
     if(filter==='overdue')   return s === 'overdue';
     if(filter==='due-today') return s === 'due-today' || s === 'due-soon';
@@ -16923,7 +17270,7 @@ function renderCallbacksTab(){
     if(filter==='pending')    return s === 'pending';
     if(filter==='done')       return s === 'done';
     if(filter==='2nd-swing')  return c.cb2ndSwing && !c.cbDone;
-    if(filter==='red-flag')   return isActiveRedFlag;
+    if(filter==='red-flag')   return false;   // red flags live in their own sub-tab
     return true; // 'all'
   });
 
@@ -16941,7 +17288,7 @@ function renderCallbacksTab(){
     var s=getCbStatus(c);
     if(s && counts[s]!==undefined) counts[s]++;
     if(c.cb2ndSwing && !c.cbDone) counts['2nd-swing']++;
-    if(c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone) counts['red-flag']++;
+    if(isActiveRedFlag(c)) counts['red-flag']++;
   });
   var summEl=document.getElementById('cb-tab-summary');
   if(summEl){
@@ -16950,14 +17297,15 @@ function renderCallbacksTab(){
       {label:'Due Soon', key:'due-soon', color:'#f59e0b', bg:'rgba(245,158,11,.1)'},
       {label:'Due Today', key:'due-today', color:'#38bdf8', bg:'rgba(56,189,248,.1)'},
       {label:'Pending', key:'pending', color:'var(--text3)', bg:'transparent'},
-      {label:'Red Flag', key:'red-flag', color:'#f87171', bg:'rgba(248,113,113,.1)'},
+      {label:'Red Flag', key:'red-flag', color:'#f87171', bg:'rgba(248,113,113,.1)', tab:'redflags'},
       {label:'2nd Swing', key:'2nd-swing', color:'#f59e0b', bg:'rgba(245,158,11,.1)'},
       {label:'Done', key:'done', color:'#22c55e', bg:'rgba(34,197,94,.1)'},
     ];
     summEl.innerHTML = strips.map(function(s){
       var isActive = filter === s.key;
       var activeBorder = isActive ? ';box-shadow:inset 0 -2px 0 '+s.color+';filter:brightness(1.25)' : '';
-      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-right:1px solid var(--border);cursor:pointer;background:'+s.bg+';transition:filter .15s'+activeBorder+'" onclick="setCbTabFilter(\''+s.key+'\')" title="Filter: '+s.label+(isActive?' (active)':'')+'">'+
+      var go = s.tab ? 'switchFuSubtab(\''+s.tab+'\')' : 'setCbTabFilter(\''+s.key+'\')';
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-right:1px solid var(--border);cursor:pointer;background:'+s.bg+';transition:filter .15s'+activeBorder+'" onclick="'+go+'" title="'+(s.tab?'Open the Red Flags tab':'Filter: '+s.label+(isActive?' (active)':''))+'">'+
         '<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:'+s.color+';line-height:1">'+(s.key==='due-today'?counts['due-today']+counts['due-soon']:counts[s.key])+'</div>'+
         '<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:'+(isActive?s.color:'var(--text3)')+';margin-top:2px">'+s.label+'</div>'+
       '</div>';
@@ -16993,7 +17341,7 @@ function renderCallbacksTab(){
     // Count open callbacks that exist but are hidden by the current filter
     var openCount = typeFiltered.filter(function(c){ var s=getCbStatus(c); return s && s !== 'done'; }).length;
     var hiddenMsg = (filter !== 'open' && filter !== 'all' && openCount > 0)
-      ? '<div style="margin-top:4px;font-size:12px">'+openCount+' open callback'+(openCount!==1?'s':'')+' hidden by this filter &nbsp;·&nbsp; <span onclick="setCbTabFilter(\'open\')" style="color:var(--blue);cursor:pointer;text-decoration:underline">Show open</span></div>'
+      ? '<div style="margin-top:4px;font-size:12px">'+openCount+' open follow-up'+(openCount!==1?'s':'')+' hidden by this filter &nbsp;·&nbsp; <span onclick="setCbTabFilter(\'open\')" style="color:var(--blue);cursor:pointer;text-decoration:underline">Show open</span></div>'
       : '';
     el.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="font-size:32px;opacity:.3">🔔</div><div>No follow-ups match this filter</div>'+hiddenMsg+'</div>';
     return;
@@ -17009,9 +17357,7 @@ function renderCallbacksTab(){
 
   el.innerHTML='';
 
-  // Warn when overdue items exist in the full callback set but are hidden by the active tab
-  // filter (e.g. 'pending', 'due-today') or the active type filter (e.g. 'Exception').
-  // Alerts fire without any filter, so users would see the alert but find nothing in the tab.
+  // Overdue items hidden by the type filter (the tab filter no longer hides anything that's open)
   var overdueInAll  = cbCalls.filter(function(c){ return getCbStatus(c) === 'overdue'; }).length;
   var overdueShown  = filtered.filter(function(c){ return getCbStatus(c) === 'overdue'; }).length;
   var overdueHidden = overdueInAll - overdueShown;
@@ -17026,212 +17372,28 @@ function renderCallbacksTab(){
   }
 
   var _renderErrors = [];
-  filtered.forEach(function(c){
-    try {
-    var status=getCbStatus(c);
-    var cbDate=c.cbTime?new Date(c.cbTime):null;
-    var cbFmt=cbDate&&!isNaN(cbDate)?
-      (cbDate.toDateString()===now.toDateString()?'Today ':cbDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' ')+
-      cbDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
-    var diff=cbDate?(cbDate-now)/60000:null;
-    var timeLeft='';
-    if(status==='overdue'&&diff!==null){ var m=Math.abs(Math.round(diff)); timeLeft=m<60?m+'m overdue':Math.floor(m/60)+'h '+(m%60)+'m overdue'; }
-    else if((status==='due-soon'||status==='due-today')&&diff!==null){ var m=Math.round(diff); timeLeft=m<60?'in '+m+'m':'in '+Math.floor(m/60)+'h '+(m%60)+'m'; }
+  var groups = {};
+  FU_SECTIONS.forEach(function(s){ groups[s.key] = []; });
+  filtered.forEach(function(c){ groups[fuGroupOf(c, getCbStatus(c), now)].push(c); });
 
-    var sc={
-      overdue:   {accent:'var(--red)',   bg:'rgba(248,113,113,.06)',border:'rgba(248,113,113,.35)',strip:'#f87171',icon:'⚠',label:'Overdue'},
-      'due-soon':{accent:'var(--amber)', bg:'rgba(245,158,11,.06)', border:'rgba(245,158,11,.35)', strip:'#f59e0b',icon:'🔔',label:'Due Soon'},
-      'due-today':{accent:'var(--blue)', bg:'rgba(59,130,246,.05)', border:'rgba(59,130,246,.25)',strip:'#3b82f6',icon:'📅',label:'Due Today'},
-      pending:   {accent:'var(--text3)', bg:'var(--card)',           border:'var(--border)',       strip:'#475569',icon:'⏳',label:'Pending'},
-      done:      {accent:'var(--green)', bg:'rgba(34,197,94,.04)',   border:'rgba(34,197,94,.2)',  strip:'#22c55e',icon:'✓',label:'Done'},
-      unknown:   {accent:'var(--text3)', bg:'var(--card)',           border:'var(--border)',       strip:'#475569',icon:'—',label:'Unknown'},
-    }[status]||{accent:'var(--text3)',bg:'var(--card)',border:'var(--border)',strip:'#475569',icon:'?',label:'?'};
-
-    if(c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone){
-      sc={accent:'var(--red)',bg:'rgba(248,113,113,.06)',border:'rgba(248,113,113,.35)',strip:'#f87171',icon:'🚩',label:'Red Flag'};
-    }
-    if(c.cb2ndSwing && !c.cbDone){
-      sc={accent:'var(--amber)',bg:'rgba(245,158,11,.06)',border:'rgba(245,158,11,.35)',strip:'#f59e0b',icon:'📋',label:'2nd Swing'};
-    }
-
-    var logDate=c.ts?c.ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
-    var fuType = c.fuType || 'Callback';
-    var ftc = fuTypeColors[fuType]||fuTypeColors.Callback;
-
-    var card=document.createElement('div');
-    card.id='fu-outer-'+c.id;
-    card.style.cssText='background:'+sc.bg+';border:1px solid '+sc.border+';border-radius:12px;overflow:hidden;transition:box-shadow .3s';
-
-    var lbl='font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:3px';
-    var cardId = 'fucard-'+c.id;
-    var inner=
-      '<div style="height:3px;background:'+sc.strip+';width:100%"></div>'+
-      // ── Collapsed header — always visible, click to expand ──
-      '<div class="fu-card-header" onclick="toggleFuCard(\''+cardId+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;flex-wrap:nowrap;min-width:0">'+
-        '<span style="font-size:11px;font-weight:700;color:'+sc.accent+';flex-shrink:0">'+sc.icon+' '+sc.label+'</span>'+
-        '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:'+ftc.bg+';border:1px solid '+ftc.border+';color:'+ftc.color+';flex-shrink:0;white-space:nowrap">'+(fuTypeIcons[fuType]||'')+' '+fuType+'</span>'+
-        (c.cbAttempts>0?'<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber);flex-shrink:0;white-space:nowrap">📵 '+c.cbAttempts+'</span>':'')+
-        (c.cb2ndSwing&&!c.cbDone?'<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber);flex-shrink:0;white-space:nowrap">📋 2nd Swing</span>':'')+
-        (c.mood===MOOD_EMOJIS[0]&&!c.chargedBack&&!c.isException&&!c.cb2ndSwing&&!c.cbDone&&c.ts?(function(){var days=Math.floor((now-new Date(c.ts))/86400000);return '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);flex-shrink:0;white-space:nowrap">'+days+'d since sale</span>';})():'')+
-        (timeLeft?'<span style="font-size:10px;font-weight:600;color:'+sc.accent+';white-space:nowrap;flex-shrink:0">'+timeLeft+'</span>':'')+
-        '<span style="font-size:11px;color:var(--text2);white-space:nowrap;flex-shrink:0;font-family:var(--mono)">'+cbFmt+'</span>'+
-        '<span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;flex-shrink:0">'+(c.cbName||'—')+'</span>'+
-        (c.notes?'<span style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1">'+String(c.notes).split('\n')[0]+'</span>':'<span style="flex:1"></span>')+
-        '<span id="fu-chevron-'+c.id+'" style="color:var(--text3);font-size:16px;flex-shrink:0;transition:transform .2s;line-height:1">▾</span>'+
-      '</div>'+
-      // ── Expanded body — hidden by default ──
-      '<div id="'+cardId+'" style="display:none;border-top:1px solid '+sc.border+'">'+
-        '<div style="padding:12px 16px">'+
-          // Info + Notes row
-          '<div style="display:flex;gap:12px;margin-bottom:10px">'+
-            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;flex:0 0 auto;min-width:0;width:260px">'+
-              '<div><div style="'+lbl+'">Customer</div><div style="font-size:12px;font-weight:600;color:var(--text)">'+(c.cbName||'—')+'</div></div>'+
-              '<div><div style="'+lbl+'">Phone</div><div onclick="copyToClip((\''+( String(c.cbPhone||'')).replace(/'/g,"\\'")+'\').replace(/\\D/g,\'\'),\'Phone\')" title="Click to copy" style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--text);cursor:pointer;user-select:none">'+(c.cbPhone?fmtPhone(String(c.cbPhone)):'—')+'</div></div>'+
-              '<div><div style="'+lbl+'">Account #</div><div onclick="copyToClip(\''+( String(c.acctRaw||'')).replace(/'/g,"\\'")+'\',' +'\'Account #\')" title="Click to copy" style="font-size:12px;font-weight:600;font-family:var(--mono);color:var(--blue);cursor:pointer;user-select:none">'+(c.acctRaw?maskAcct(String(c.acctRaw)):'—')+'</div></div>'+
-            '</div>'+
-            '<div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">'+
-              '<div style="display:flex;align-items:center;justify-content:space-between">'+
-                '<div style="display:flex;align-items:center;gap:6px">'+
-                  '<div style="'+lbl+'margin-bottom:0">Call Notes</div>'+
-                  '<div style="font-size:9px;color:var(--text3);font-style:italic">edits update the call log</div>'+
-                '</div>'+
-                '<button id="cb-notes-save-'+c.id+'" onclick="saveFuNotes(\''+c.id+'\')" style="display:none;height:22px;padding:0 10px;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:5px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">Save</button>'+
-              '</div>'+
-              '<textarea id="cb-notes-ta-'+c.id+'" oninput="onFuNotesInput(\''+c.id+'\')" style="flex:1;min-height:60px;width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:7px 10px;font-size:11px;font-family:var(--sans);color:var(--text2);line-height:1.5;resize:none;outline:none;transition:border-color .15s" placeholder="No notes on this call…"></textarea>'+
-            '</div>'+
-          '</div>'+
-          // Action buttons + logged footer
-          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
-            '<div style="display:flex;gap:6px;flex-wrap:wrap;flex:1" id="cbcard-btns-'+c.id+'"></div>'+
-            '<div style="font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:auto;padding-left:8px">'+logDate+'</div>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
-
-    card.innerHTML=inner;
-
-    // Set notes value via JS
-    var ta = card.querySelector('#cb-notes-ta-'+c.id);
-    if(ta){
-      ta.value = c.notes || '';
-      ta.addEventListener('focus', function(){ this.style.borderColor='var(--blue)'; });
-      ta.addEventListener('blur',  function(){ this.style.borderColor='var(--border2)'; });
-    }
-
-    var btns=card.querySelector('#cbcard-btns-'+c.id);
-    if(c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone){
-      // ── Active Red Flag state ──
-      var payOkBtn=document.createElement('button');
-      payOkBtn.innerHTML='✓ Payments OK';
-      payOkBtn.style.cssText='height:28px;padding:0 14px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer';
-      payOkBtn.dataset.cbid=c.id;
-      payOkBtn.onclick=function(){ clearRedFlag(this.dataset.cbid); };
-      btns.appendChild(payOkBtn);
-
-      var cbBtn=document.createElement('button');
-      cbBtn.innerHTML='💸 Mark Chargeback';
-      cbBtn.style.cssText='height:28px;padding:0 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--red);cursor:pointer';
-      cbBtn.dataset.cbid=c.id;
-      cbBtn.onclick=function(){ markChargeback(this.dataset.cbid); };
-      btns.appendChild(cbBtn);
-
-      var excBtn=document.createElement('button');
-      excBtn.innerHTML='⚠️ Exception';
-      excBtn.style.cssText='height:28px;padding:0 14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--amber);cursor:pointer';
-      excBtn.dataset.cbid=c.id;
-      excBtn.onclick=function(){ markException(this.dataset.cbid); };
-      btns.appendChild(excBtn);
-
-    } else if(c.cb2ndSwing && !c.cbDone){
-      // ── 2nd Swing state ──
-      var ticketBtn=document.createElement('button');
-      ticketBtn.innerHTML='✓ 2nd Swing Done';
-      ticketBtn.style.cssText='height:28px;padding:0 14px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;letter-spacing:.02em';
-      ticketBtn.dataset.cbid=c.id;
-      ticketBtn.onclick=function(){
-        var id=this.dataset.cbid;
-        markCbDone(id); window._lastCbDoneId=id;
-        _showToast('✓ Follow-up complete','ok',2500);
-        setTimeout(renderCallbacksTab,300);
-      };
-      btns.appendChild(ticketBtn);
-
-      var reopenBtn=document.createElement('button');
-      reopenBtn.innerHTML='↩ Reopen';
-      reopenBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
-      reopenBtn.dataset.cbid=c.id;
-      reopenBtn.onclick=function(){ revert2ndSwing(this.dataset.cbid); };
-      btns.appendChild(reopenBtn);
-
-    } else if(status!=='done'){
-      // ── Open / attempting state ──
-      var closeLabel = (c.cbAttempts >= 1) ? '🏃 Move On' : '✓ Mark Done';
-      var closeBtn=document.createElement('button');
-      closeBtn.innerHTML=closeLabel;
-      closeBtn.style.cssText='height:28px;padding:0 14px;background:var(--green-lt);border:1px solid rgba(34,197,94,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;letter-spacing:.02em';
-      closeBtn.dataset.cbid=c.id;
-      closeBtn.onclick=function(){ set2ndSwing(this.dataset.cbid); };
-      btns.appendChild(closeBtn);
-
-      if(c.fuType==='Callback'||!c.fuType){
-        var saleBtn=document.createElement('button');
-        saleBtn.innerHTML='💰 Sale Made';
-        saleBtn.style.cssText='height:28px;padding:0 14px;background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--amber);cursor:pointer';
-        saleBtn.dataset.cbid=c.id;
-        saleBtn.onclick=function(){ logCallbackSale(parseInt(this.dataset.cbid)); };
-        btns.appendChild(saleBtn);
-      }
-
-      var noAnsBtn=document.createElement('button');
-      noAnsBtn.innerHTML='📵 No Answer';
-      noAnsBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
-      noAnsBtn.dataset.cbid=c.id;
-      noAnsBtn.onclick=function(){ logNoAnswer(this.dataset.cbid); };
-      btns.appendChild(noAnsBtn);
-
-      var reschedBtn=document.createElement('button');
-      reschedBtn.innerHTML='🕒 Reschedule';
-      reschedBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
-      reschedBtn.dataset.cbid=c.id;
-      reschedBtn.onclick=function(){
-        var row=document.getElementById('cb-resched-'+this.dataset.cbid);
-        if(row) row.style.display=row.style.display==='flex'?'none':'flex';
-      };
-      btns.appendChild(reschedBtn);
-
-    } else {
-      // ── Done state ──
-      var undoneBtn=document.createElement('button');
-      undoneBtn.innerHTML='↩ Mark Undone';
-      undoneBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
-      undoneBtn.dataset.cbid=c.id;
-      undoneBtn.onclick=function(){ undoCbDone(this.dataset.cbid); };
-      btns.appendChild(undoneBtn);
-    }
-
-    // ✎ Edit Log button — opens the call in the Tracker tab edit row
-    var editLogBtn=document.createElement('button');
-    editLogBtn.innerHTML='✎ Edit Log';
-    editLogBtn.style.cssText='height:28px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer';
-    editLogBtn.dataset.cbid=c.id;
-    editLogBtn.onclick=function(){
-      openEdit(parseInt(this.dataset.cbid));
-    };
-    btns.appendChild(editLogBtn);
-
-    // Reschedule panel
-    var reschedPanel=document.createElement('div');
-    reschedPanel.id='cb-resched-'+c.id;
-    reschedPanel.style.cssText='display:none;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:8px';
-    reschedPanel.innerHTML=
-      '<span style="font-size:11px;font-weight:600;color:var(--text2)">New time:</span>'+
-      '<input type="datetime-local" id="cb-resched-dt-'+c.id+'" style="height:30px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;flex:1;min-width:180px">'+
-      '<button onclick="saveCbResched(\''+c.id+'\')" style="height:30px;padding:0 14px;background:var(--purple);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Save</button>'+
-      '<button onclick="document.getElementById(\'cb-resched-'+c.id+'\').style.display=\'none\'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer">Cancel</button>';
-    var reschedTarget = card.querySelector('div[style*="padding:12px 16px"]') || card.querySelector('.fu-card-body') || card;
-    reschedTarget.appendChild(reschedPanel);
-    el.appendChild(card);
-    } catch(e) { _renderErrors.push('id='+c.id+' err='+e.message); }
+  FU_SECTIONS.forEach(function(sec){
+    var list = groups[sec.key];
+    if(!list.length) return;
+    var open = fuSectionOpen(sec.key);
+    var head = document.createElement('div');
+    head.className = 'fu-sec' + (open ? '' : ' closed');
+    head.onclick = function(){ fuToggleSection(sec.key); };
+    head.innerHTML = '<span class="fu-sec-caret">▾</span><span class="fu-sec-name" style="color:'+sec.color+'">'+sec.label+'</span>'+
+      '<span class="fu-sec-count">'+list.length+'</span>';
+    el.appendChild(head);
+    if(!open) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'fu-sec-body';
+    list.forEach(function(c){
+      try{ wrap.appendChild(fuBuildRow(c, getCbStatus(c), now, fuTypeIcons, fuTypeColors)); }
+      catch(e){ _renderErrors.push('id='+c.id+' err='+e.message); }
+    });
+    el.appendChild(wrap);
   });
 
   if(_renderErrors.length){
@@ -17242,7 +17404,199 @@ function renderCallbacksTab(){
   }
 }
 
+// ── Follow-Ups tab: sections by when it's due ───────────────────────────────
+// Nothing leaves this tab until it's completed. Acknowledging an alert only quiets the alert card.
+var FU_SECTIONS = [
+  {key:'overdue',  label:'Overdue',      color:'var(--red)'},
+  {key:'today',    label:'Today',        color:'var(--blue)'},
+  {key:'tomorrow', label:'Tomorrow',     color:'var(--text2)'},
+  {key:'week',     label:'This week',    color:'var(--text2)'},
+  {key:'later',    label:'Later',        color:'var(--text3)'},
+  {key:'nodate',   label:'No date set',  color:'var(--text3)'},
+  {key:'done',     label:'Completed',    color:'var(--green)'}
+];
+var _fuSecClosed = (function(){ try{ return JSON.parse(localStorage.getItem('xcl_fu_sections')) || {done:1}; }catch(e){ return {done:1}; } })();
+function fuSectionOpen(key){ return !_fuSecClosed[key]; }
+function fuToggleSection(key){
+  if(_fuSecClosed[key]) delete _fuSecClosed[key]; else _fuSecClosed[key] = 1;
+  try{ localStorage.setItem('xcl_fu_sections', JSON.stringify(_fuSecClosed)); }catch(e){}
+  renderCallbacksTab();
+}
+function fuGroupOf(c, status, now){
+  if(status === 'done') return 'done';
+  var t = c.cbTime ? new Date(c.cbTime) : null;
+  if(!t || isNaN(t)) return 'nodate';
+  if(t < now) return 'overdue';
+  var day = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var days = Math.floor((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - day) / 86400000);
+  return days === 0 ? 'today' : days === 1 ? 'tomorrow' : days <= 7 ? 'week' : 'later';
+}
+// Dense rows drop the notes line
+var _fuDense = (function(){ try{ return localStorage.getItem('xcl_fu_dense') === '1'; }catch(e){ return false; } })();
+function fuToggleDense(){
+  _fuDense = !_fuDense;
+  try{ localStorage.setItem('xcl_fu_dense', _fuDense ? '1' : '0'); }catch(e){}
+  var b = document.getElementById('fu-dense-btn');
+  if(b){ b.textContent = _fuDense ? '☰' : '≡'; b.title = _fuDense ? 'One line per follow-up — click for notes' : 'Two lines with notes — click for one line'; }
+  renderCallbacksTab();
+}
+// The line under the name: what was said last, recap bullets included
+function fuNotePreview(c){
+  var lines = String(c.notes || '').split('\n')
+    .map(function(l){ return l.replace(/^[•\s]+/, '').trim(); })
+    .filter(function(l){ return l && !/^Recap \d+\/\d+:$/.test(l); });
+  var s = lines.slice(0, 3).join(' · ');
+  return s.length > 150 ? s.slice(0, 149).replace(/\s+\S*$/, '') + '…' : s;
+}
+function fuQuickComplete(id){
+  var c = calls.find(function(x){ return String(x.id)===String(id); });
+  if(!c) return;
+  if(c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone){
+    toggleFuCard('fucard-'+c.id);                    // a red flag closes through a resolution, not a checkmark
+    _showToast('🚩 Pick Payments OK, Chargeback or Exception','warn',3000);
+    return;
+  }
+  window._lastCbDoneId = c.id;
+  if(c.cb2ndSwing){ markCbDone(c.id); _showToast('✓ Follow-up complete','ok',2500); setTimeout(renderCallbacksTab,300); }
+  else set2ndSwing(c.id);                            // same step the expanded "Mark Done" takes
+}
+function fuQuickResched(id){
+  toggleFuCard('fucard-'+id, true);
+  var row = document.getElementById('cb-resched-'+id);
+  if(row){ row.style.display='flex'; var inp=document.getElementById('cb-resched-dt-'+id); if(inp) setTimeout(function(){ inp.focus(); }, 60); }
+}
+function fuCopyPhone(id){
+  var c = calls.find(function(x){ return String(x.id)===String(id); });
+  var p = c && c.cbPhone ? String(c.cbPhone).replace(/\D/g,'') : '';
+  if(!p){ _showToast('No phone number on this call','warn',2000); return; }
+  copyToClip(p, 'Phone');
+}
 
+function fuBuildRow(c, status, now, fuTypeIcons, fuTypeColors){
+  var cbDate=c.cbTime?new Date(c.cbTime):null;
+  if(cbDate && isNaN(cbDate)) cbDate = null;
+  var sameDay = cbDate && cbDate.toDateString()===now.toDateString();
+  var cbFmt = cbDate ? (sameDay ? '' : cbDate.toLocaleDateString('en-US',{month:'numeric',day:'numeric'})+' ') +
+    cbDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}).replace(' ','').toLowerCase() : '—';
+  var diff=cbDate?(cbDate-now)/60000:null;
+  var timeLeft='';
+  if(status==='overdue'&&diff!==null){ var m=Math.abs(Math.round(diff)); timeLeft = m<60?m+'m late':m<1440?Math.floor(m/60)+'h late':Math.floor(m/1440)+'d late'; }
+  else if((status==='due-soon')&&diff!==null){ var m2=Math.round(diff); timeLeft = m2<60?'in '+m2+'m':'in '+Math.floor(m2/60)+'h'; }
+
+  var sc={
+    overdue:   {accent:'var(--red)',   bg:'rgba(248,113,113,.06)',border:'rgba(248,113,113,.35)',strip:'#f87171',icon:'⚠',label:'Overdue'},
+    'due-soon':{accent:'var(--amber)', bg:'rgba(245,158,11,.06)', border:'rgba(245,158,11,.35)', strip:'#f59e0b',icon:'🔔',label:'Due Soon'},
+    'due-today':{accent:'var(--blue)', bg:'rgba(59,130,246,.05)', border:'rgba(59,130,246,.25)',strip:'#3b82f6',icon:'📅',label:'Due Today'},
+    pending:   {accent:'var(--text3)', bg:'var(--card)',           border:'var(--border)',       strip:'#475569',icon:'⏳',label:'Pending'},
+    done:      {accent:'var(--green)', bg:'rgba(34,197,94,.04)',   border:'rgba(34,197,94,.2)',  strip:'#22c55e',icon:'✓',label:'Done'},
+  }[status]||{accent:'var(--text3)',bg:'var(--card)',border:'var(--border)',strip:'#475569',icon:'—',label:'—'};
+  var isRedFlag = c.mood===MOOD_EMOJIS[0] && !c.chargedBack && !c.isException && !c.cb2ndSwing && !c.cbDone;
+  if(isRedFlag) sc={accent:'var(--red)',bg:'rgba(248,113,113,.06)',border:'rgba(248,113,113,.35)',strip:'#f87171',icon:'🚩',label:'Red Flag'};
+  if(c.cb2ndSwing && !c.cbDone) sc={accent:'var(--amber)',bg:'rgba(245,158,11,.06)',border:'rgba(245,158,11,.35)',strip:'#f59e0b',icon:'📋',label:'2nd Swing'};
+
+  var logDate=c.ts?c.ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+c.ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'—';
+  var fuType = c.fuType || 'Callback';
+  var ftc = fuTypeColors[fuType]||fuTypeColors.Callback;
+  var lbl='font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:3px';
+  var cardId = 'fucard-'+c.id;
+  var esc = function(s){ return alertEsc(s); };
+  var phone = c.cbPhone ? fmtPhone(String(c.cbPhone)) : '';
+  var note = _fuDense ? '' : fuNotePreview(c);
+
+  var badges =
+    (isRedFlag?'<span class="fu-badge" style="background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.3);color:var(--red)">🚩 '+(c.ts?Math.floor((now-new Date(c.ts))/86400000)+'d':'flag')+'</span>':'')+
+    (c.cb2ndSwing&&!c.cbDone?'<span class="fu-badge" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:var(--amber)">📋 2nd</span>':'')+
+    (c.cbAttempts>0?'<span class="fu-badge" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:var(--amber)">📵 '+c.cbAttempts+'</span>':'')+
+    (status==='done'?'<span class="fu-badge" style="background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:var(--green)">✓ done</span>':'');
+
+  var acts =
+    (status!=='done'?'<button class="fu-act" title="'+(c.cb2ndSwing?'2nd Swing done — close this follow-up':isRedFlag?'Resolve this red flag':'Mark done (creates the 2nd Swing step)')+'" onclick="event.stopPropagation();fuQuickComplete('+c.id+')">✓</button>':'')+
+    (status!=='done'?'<button class="fu-act" title="Reschedule" onclick="event.stopPropagation();fuQuickResched('+c.id+')">🕒</button>':'')+
+    (phone?'<button class="fu-act" title="Copy '+esc(phone)+'" onclick="event.stopPropagation();fuCopyPhone('+c.id+')">⧉</button>':'')+
+    '<button class="fu-act" title="Open the call" onclick="event.stopPropagation();openEdit('+c.id+')">✎</button>';
+
+  var card=document.createElement('div');
+  card.id='fu-outer-'+c.id;
+  card.className='fu-row';
+  card.style.cssText='background:'+sc.bg+';border:1px solid '+sc.border+';border-left:3px solid '+sc.strip+'';
+  card.innerHTML=
+    '<div class="fu-row-head" onclick="toggleFuCard(\''+cardId+'\')">'+
+      '<span class="fu-row-time" style="color:'+sc.accent+'">'+esc(cbFmt)+'</span>'+
+      '<span class="fu-row-type" style="background:'+ftc.bg+';border-color:'+ftc.border+';color:'+ftc.color+'" title="'+esc(fuType)+'">'+(fuTypeIcons[fuType]||'📞')+'</span>'+
+      '<span class="fu-row-name">'+esc(c.cbName||'—')+'</span>'+
+      (phone?'<span class="fu-row-phone">'+esc(phone)+'</span>':'')+
+      badges+
+      (timeLeft?'<span class="fu-row-late" style="color:'+sc.accent+'">'+timeLeft+'</span>':'')+
+      '<span class="fu-row-acts">'+acts+'</span>'+
+      '<span id="fu-chevron-'+c.id+'" class="fu-row-chev">▾</span>'+
+    '</div>'+
+    (note?'<div class="fu-row-note" onclick="toggleFuCard(\''+cardId+'\')">'+esc(note)+'</div>':'')+
+    '<div id="'+cardId+'" style="display:none;border-top:1px solid '+sc.border+'">'+
+      '<div style="padding:12px 16px">'+
+        // Name, phone, time and status already sit in the row above; the space goes to the notes instead
+        '<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;min-width:0">'+
+          '<div style="display:flex;align-items:center;gap:8px">'+
+            '<div style="'+lbl+'margin-bottom:0">Call Notes</div>'+
+            '<div style="font-size:9px;color:var(--text3);font-style:italic">edits update the call log</div>'+
+            (c.acctRaw?'<div class="fu-acct" onclick="copyToClip(\''+String(c.acctRaw).replace(/'/g,"\\'")+'\',\'Account #\')" title="Click to copy the account number">'+maskAcct(String(c.acctRaw))+'</div>':'')+
+            '<button id="cb-notes-save-'+c.id+'" onclick="saveFuNotes(\''+c.id+'\')" style="display:none;height:22px;padding:0 10px;margin-left:auto;background:var(--blue-lt);border:1px solid rgba(59,130,246,.3);border-radius:5px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer">Save</button>'+
+          '</div>'+
+          '<textarea id="cb-notes-ta-'+c.id+'" oninput="onFuNotesInput(\''+c.id+'\')" style="height:210px;max-height:calc(var(--vh100,100vh) * .5);width:100%;box-sizing:border-box;overflow-y:auto;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:8px 11px;font-size:12px;font-family:var(--sans);color:var(--text2);line-height:1.55;resize:vertical;outline:none;transition:border-color .15s" placeholder="No notes on this call…"></textarea>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;flex:1" id="cbcard-btns-'+c.id+'"></div>'+
+          '<div style="font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:auto;padding-left:8px">'+logDate+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+
+  var ta = card.querySelector('#cb-notes-ta-'+c.id);
+  if(ta){
+    ta.value = c.notes || '';
+    ta.addEventListener('focus', function(){ this.style.borderColor='var(--blue)'; });
+    ta.addEventListener('blur',  function(){ this.style.borderColor='var(--border2)'; });
+  }
+
+  var btns=card.querySelector('#cbcard-btns-'+c.id);
+  var mk=function(html, css, fn){
+    var b=document.createElement('button');
+    b.innerHTML=html; b.style.cssText='height:28px;padding:0 14px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;'+css;
+    b.dataset.cbid=c.id; b.onclick=fn; btns.appendChild(b); return b;
+  };
+  if(isRedFlag){
+    mk('✓ Payments OK','background:var(--green-lt);border:1px solid rgba(34,197,94,.3);color:var(--green)',function(){ clearRedFlag(this.dataset.cbid); });
+    mk('💸 Mark Chargeback','background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--red)',function(){ markChargeback(this.dataset.cbid); });
+    mk('⚠️ Exception','background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--amber)',function(){ markException(this.dataset.cbid); });
+  } else if(c.cb2ndSwing && !c.cbDone){
+    mk('✓ 2nd Swing Done','background:var(--green-lt);border:1px solid rgba(34,197,94,.3);color:var(--green)',function(){
+      var id=this.dataset.cbid; markCbDone(id); window._lastCbDoneId=id;
+      _showToast('✓ Follow-up complete','ok',2500); setTimeout(renderCallbacksTab,300);
+    });
+    mk('↩ Reopen','background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-weight:600',function(){ revert2ndSwing(this.dataset.cbid); });
+  } else if(status!=='done'){
+    mk((c.cbAttempts>=1?'🏃 Move On':'✓ Mark Done'),'background:var(--green-lt);border:1px solid rgba(34,197,94,.3);color:var(--green)',function(){ set2ndSwing(this.dataset.cbid); });
+    if(fuType==='Callback') mk('💰 Sale Made','background:var(--amber-lt);border:1px solid rgba(245,158,11,.3);color:var(--amber)',function(){ logCallbackSale(parseInt(this.dataset.cbid)); });
+    mk('📵 No Answer','background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-weight:600',function(){ logNoAnswer(this.dataset.cbid); });
+    mk('🕒 Reschedule','background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-weight:600',function(){
+      var row=document.getElementById('cb-resched-'+this.dataset.cbid);
+      if(row) row.style.display=row.style.display==='flex'?'none':'flex';
+    });
+  } else {
+    mk('↩ Mark Undone','background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-weight:600',function(){ undoCbDone(this.dataset.cbid); });
+  }
+  mk('✎ Edit Log','background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-weight:600',function(){ openEdit(parseInt(this.dataset.cbid)); });
+
+  var reschedPanel=document.createElement('div');
+  reschedPanel.id='cb-resched-'+c.id;
+  reschedPanel.style.cssText='display:none;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:8px';
+  reschedPanel.innerHTML=
+    '<span style="font-size:11px;font-weight:600;color:var(--text2)">New time:</span>'+
+    '<input type="datetime-local" id="cb-resched-dt-'+c.id+'" style="height:30px;background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:0 8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;flex:1;min-width:180px">'+
+    '<button onclick="saveCbResched(\''+c.id+'\')" style="height:30px;padding:0 14px;background:var(--purple);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Save</button>'+
+    '<button onclick="document.getElementById(\'cb-resched-'+c.id+'\').style.display=\'none\'" style="height:30px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer">Cancel</button>';
+  (card.querySelector('div[style*="padding:12px 16px"]') || card).appendChild(reschedPanel);
+  return card;
+}
 
 function undoCbDone(id){
   var c = calls.find(function(x){ return String(x.id)===String(id); });
@@ -17277,12 +17631,12 @@ function saveFuNotes(id){
   _showToast('✓ Notes saved', 'ok', 1500);
 }
 
-function toggleFuCard(id){
+function toggleFuCard(id, keepOpen){
   var body = document.getElementById(id);
   var cardId = id.replace('fucard-','');
   var chevron = document.getElementById('fu-chevron-'+cardId);
   if(!body) return;
-  var open = body.style.display !== 'none';
+  var open = keepOpen ? false : body.style.display !== 'none';
   body.style.display = open ? 'none' : 'block';
   if(chevron) chevron.style.transform = open ? '' : 'rotate(180deg)';
 }
@@ -19601,30 +19955,29 @@ window.phonesimInit = phonesimInit;
 </div>
 
 
-<!-- Transcript → recap. The transcript is only held in this box and cleared on close; nothing is saved. -->
+<!-- Transcript → key points. The transcript is only held in this box and cleared on close; nothing is saved. -->
 <div id="recap-modal" hidden onclick="if(event.target===this)recapClose()">
   <div class="recap-card" role="dialog" aria-label="Call recap">
     <div class="recap-head">
       <span class="recap-title">📝 Call recap</span>
-      <span id="recap-mode" class="recap-mode"></span>
       <button type="button" class="recap-x" onclick="recapClose()" aria-label="Close">✕</button>
     </div>
     <div id="recap-step-paste">
       <div class="recap-lbl">Paste the HeroAssist transcript</div>
       <textarea id="recap-input" spellcheck="false" placeholder="Paste the call transcript here…"></textarea>
-      <div class="recap-hint">Stays on this PC and is cleared when you close this box. Last names, phone and account numbers, and addresses are left out of the recap.</div>
+      <div class="recap-hint">Stays on this PC and is cleared when you close this box. Last names, phone and account numbers, and addresses are left out of whatever you keep.</div>
       <div class="recap-actions">
         <span id="recap-status" class="recap-status"></span>
-        <button type="button" class="recap-btn" id="recap-skip" hidden onclick="recapSkipAi()">Use basic now</button>
-        <button type="button" class="recap-btn primary" id="recap-run" onclick="recapRun()">Refine</button>
+        <button type="button" class="recap-btn primary" id="recap-run" onclick="recapFind()">Find key points</button>
       </div>
     </div>
     <div id="recap-step-result" hidden>
-      <div class="recap-lbl">Recap — edit anything before adding</div>
-      <textarea id="recap-output" spellcheck="true"></textarea>
+      <div class="recap-lbl">Tap what's worth keeping</div>
+      <div id="recap-picks"></div>
+      <button type="button" class="recap-more" id="recap-more" hidden onclick="recapToggleAll()"></button>
       <div class="recap-actions">
         <button type="button" class="recap-btn" onclick="recapBack()">← Back</button>
-        <button type="button" class="recap-btn primary" onclick="recapAddToNotes()">Add to notes</button>
+        <button type="button" class="recap-btn primary" id="recap-add" onclick="recapAddToNotes()">Add to notes</button>
       </div>
     </div>
   </div>
