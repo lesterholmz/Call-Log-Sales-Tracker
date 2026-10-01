@@ -18,8 +18,8 @@
 // APP_VERSION = 0.<month>.<day>.<build>, where each year after 2026 adds 100 to the month
 //   2026-09-14, 3rd release → 0.9.14.3     2027-01-05, 1st release → 0.101.5.1     2028-01-05 → 0.201.5.1
 // The page title, the "Call Logger" brand tooltip, and the Settings header read from it.
-var APP_UPDATED = '2026-09-17';
-var APP_BUILD   = 15;
+var APP_UPDATED = '2026-10-01';
+var APP_BUILD   = 1;
 var APP_VERSION = (function(date, build){
   var p = date.split('-');
   var month = (parseInt(p[0], 10) - 2026) * 100 + parseInt(p[1], 10);
@@ -389,6 +389,31 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:v
 #tr-talk-head{flex:1;min-width:0;display:flex;align-items:center;margin-left:12px}
 #tr-talk-head[hidden],#tr-talk-view[hidden],#call-log-view[hidden]{display:none}
 #sales-id-step-enter[hidden],#sales-id-step-confirm[hidden]{display:none!important}
+/* Hidden game: arcade on purpose, but tidy and legible */
+/* Fully opaque: nothing of the tracker (or a customer's details) shows through behind the game */
+#tetris-modal{display:none;position:fixed;inset:0;z-index:99999;background:#040404;align-items:center;justify-content:center}
+.tet-wrap{display:flex;gap:18px;align-items:stretch;font-family:var(--mono)}
+.tet-board{position:relative;background:#050505;border:1px solid #2a2a2a;border-radius:10px;padding:6px;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 18px 50px rgba(0,0,0,.6)}
+.tet-board canvas{display:block;border-radius:5px}
+#tetris-overlay{position:absolute;inset:6px;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.78);border-radius:5px;padding:12px;text-align:center}
+#tetris-msg{font-size:20px;font-weight:700;color:#fbbf24;letter-spacing:.08em;margin-bottom:8px}
+#tetris-sub{font-size:11px;color:#9ca3af;line-height:1.5}
+.tet-panel{width:140px;display:flex;flex-direction:column;gap:12px;color:#e5e7eb}
+.tet-stat-row{display:flex;gap:12px}
+.tet-stat-row .tet-stat{flex:1}
+.tet-label{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:3px}
+.tet-val{font-size:20px;font-weight:700;line-height:1.1;color:#f3f4f6}
+.tet-stat-row .tet-val{font-size:15px}
+.tet-val.accent{color:#fbbf24}
+.tet-val.dim{font-size:13px;color:#9ca3af}
+#tetris-next{display:block;background:#050505;border:1px solid #2a2a2a;border-radius:6px}
+.tet-btns{display:flex;flex-direction:column;gap:6px;margin-top:auto}
+.tet-btn{width:100%;padding:7px 10px;border-radius:7px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid #333;color:#d1d5db}
+.tet-btn:hover{background:rgba(255,255,255,.09)}
+.tet-btn.new{color:#60a5fa;border-color:rgba(96,165,250,.4)}
+.tet-btn.save{color:#4ade80;border-color:rgba(74,222,128,.35)}
+.tet-keys{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;font-size:9px;color:#6b7280;line-height:1.5;border-top:1px solid #262626;padding-top:8px}
+.tet-keys span:nth-child(odd){color:#9ca3af;white-space:nowrap}
 /* Call recap (transcript → notes) */
 .recap-open-btn{margin-left:auto;height:18px;padding:0 7px;border-radius:5px;border:1px solid var(--border2);background:var(--card);color:var(--blue);font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:none;cursor:pointer;font-family:var(--sans)}
 .recap-open-btn:hover{border-color:var(--blue)}
@@ -5023,6 +5048,11 @@ function onCtxMenu(e){
     toggleSchedule(true);
     return;
   }
+  if(doc===document&&e.target.closest&&e.target.closest('#tetris-modal')){      // the game has its own menu
+    e.preventDefault();
+    tetMenu(e);
+    return;
+  }
   const field=ctxEditable(e.target);
   const items=[];
   if(field){
@@ -7930,6 +7960,9 @@ function getOutcomeEditorValues(){
 }
 
 /* ── Google Sheets Sync ── */
+// NOTE: this page is served publicly (GitHub Pages), so this fallback URL is readable by anyone who opens
+// the page, and an Apps Script deployed for "Anyone" needs no credentials. Kept for now at the user's
+// request; remove it (and retire those deployments) before the next production build.
 function getSheetsUrl(){return window._sheetsUrl||localStorage.getItem('xcl_sheets_url')||'https://script.google.com/macros/s/AKfycbxOwwNu4GuENLqy8NIyLIkn8EPIxKprI8-ZsgrIic_XLscg3Gv_RpFv_YE4fi1e1yFo/exec';}
 
 function sheetsPost(payload){
@@ -8163,8 +8196,8 @@ function normalizeCall(sc){
 
 function loadFromSheets(){
   const url = getSheetsUrl();
-  if(!url) return;
   if(!hasSalesId()) return;   // no Sales ID yet: the prompt is up, and there's no one to load calls for
+  if(!url){ sheetsAskForUrl(); return; }   // with no URL stored, ask for one instead of failing quietly
   _syncShow('Loading from Google Sheets\u2026', '', 0);
 
   sheetsGet({action:'load', agentId: getCurrentAgentId()})
@@ -10132,29 +10165,44 @@ function downloadReconCSV(){
   a.click();URL.revokeObjectURL(a.href);
 }
 
+// Opening doesn't clear the alert: it stays until the follow-up is resolved or snoozed.
+// The target has to be MADE visible before we look for it — a red flag lives in its own sub-tab, a
+// callback's section may be collapsed, and the filters may exclude it. Anything still not found says
+// so out loud; silently doing nothing is what made this look like a broken button.
 function openCallFromAlert(id){
-  // Opening doesn't clear the alert: it stays new until Got it, a snooze, or the follow-up is resolved
-  var needsRender = false;
-  if(_activeTab !== 'callbacks'){
-    switchTab('callbacks');
+  var c = calls.find(function(x){ return String(x.id) === String(id); });
+  if(!c){ _showToast('That call is no longer in the tracker', 'warn', 3000); return; }
+  if(_activeTab !== 'callbacks') switchTab('callbacks');
+
+  var rowId;
+  if(isActiveRedFlag(c)){
+    switchFuSubtab('redflags');          // red flags are a payment watch, not a callback
+    renderRedFlagsTab();
+    rowId = 'rf-row-' + c.id;
   } else {
-    needsRender = true;
-  }
-  if(_cbTabFilter !== 'open'){ _cbTabFilter = 'open'; needsRender = true; }
-  if(_cbTypeFilter !== 'all'){ _cbTypeFilter = 'all'; needsRender = true; }
-  if(needsRender){
     switchFuSubtab('callbacks');
-    renderCallbacksTab();
-  }
-  setTimeout(function(){
-    var card=document.getElementById('fu-outer-'+id);
-    if(card){
-      card.scrollIntoView({behavior:'smooth',block:'center'});
-      card.style.boxShadow='0 0 0 2px var(--amber)';
-      setTimeout(function(){ card.style.boxShadow=''; }, 1800);
-      var body=document.getElementById('fucard-'+id);
-      if(body && body.style.display==='none') toggleFuCard('fucard-'+id);
+    _cbTabFilter = 'open';
+    _cbTypeFilter = 'all';
+    var sec = fuGroupOf(c, c.cbDone ? 'done' : '', new Date());
+    if(_fuSecClosed[sec]){                // expand the section it lives in, or it won't be rendered
+      delete _fuSecClosed[sec];
+      try{ localStorage.setItem('xcl_fu_sections', JSON.stringify(_fuSecClosed)); }catch(e){}
     }
+    renderCallbacksTab();
+    rowId = 'fu-outer-' + c.id;
+  }
+
+  setTimeout(function(){
+    var row = document.getElementById(rowId);
+    if(!row){
+      _showToast('Couldn\'t show that follow-up — it may have been completed', 'warn', 3500);
+      return;
+    }
+    row.scrollIntoView({behavior:'smooth', block:'center'});
+    row.style.boxShadow = '0 0 0 2px var(--amber)';
+    setTimeout(function(){ row.style.boxShadow = ''; }, 1800);
+    var body = document.getElementById('fucard-' + c.id);
+    if(body && body.style.display === 'none') toggleFuCard('fucard-' + c.id);
   }, 150);
 }
 
@@ -12511,6 +12559,15 @@ if(!XCL_VIEW){
   window.addEventListener('focus', function(){ xclWhenPrimary(checkSalesIdPresent); });
 }
 
+// With no URL stored, the tracker has nowhere to load from — say so instead of showing an empty log
+var _sheetsUrlAsked = false;
+function sheetsAskForUrl(){
+  if(XCL_VIEW || _sheetsUrlAsked) return;
+  _sheetsUrlAsked = true;
+  showLoginUrlConfig();
+  if(typeof _showToast === 'function') _showToast('Paste your Apps Script URL to load your calls — it stays on this PC', 'warn', 6000);
+}
+
 function showLoginUrlConfig(){
   var modal = document.getElementById('login-url-config');
   var input = document.getElementById('login-url-input');
@@ -13632,6 +13689,31 @@ function tetSound(type){
 }
 
 // ── Drawing ───────────────────────────────────────────────────────────────────
+// The board fills whatever window it opens in, and both canvases are drawn at the screen's real pixel
+// density (the page's CSS zoom multiplies it), so blocks stay sharp instead of being a stretched bitmap.
+function tetPixelRatio(){ return (window.devicePixelRatio||1)*(window.APP_SCALE||1); }
+function tetSizeCanvas(cv,ctx,w,h){
+  var ratio=tetPixelRatio();
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  cv.width=Math.round(w*ratio); cv.height=Math.round(h*ratio);
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+}
+function tetFit(){
+  if(!TET.canvas||!TET.ctx) return;
+  var scale=window.APP_SCALE||1;
+  var vw=window.innerWidth/scale, vh=window.innerHeight/scale;     // layout px, the units the modal uses
+  var byH=Math.floor((vh-56)/TET.ROWS);
+  var byW=Math.floor((vw-TET_PANEL_W-72)/TET.COLS);
+  TET.BLOCK=Math.max(12,Math.min(42,Math.min(byH,byW)));
+  TET.NEXT_BLOCK=Math.max(8,Math.round(TET.BLOCK*0.7));
+  tetSizeCanvas(TET.canvas,TET.ctx,TET.COLS*TET.BLOCK,TET.ROWS*TET.BLOCK);
+  var n=TET.NEXT_BLOCK*4+10;
+  tetSizeCanvas(TET.nextCanvas,TET.nextCtx,n,n);
+  if(TET.board&&TET.board.length) tetDraw();     // fitting can run before the first board exists
+  if(TET.nextPiece) tetDrawNext();
+}
+var TET_PANEL_W=140;
+
 function tetDrawBlock(ctx,x,y,color,alpha){
   var B=TET.BLOCK;
   ctx.globalAlpha=alpha||1;
@@ -13652,16 +13734,14 @@ function tetDraw(){
   var ctx=TET.ctx;
   var B=TET.BLOCK;
   // Background
-  ctx.fillStyle='#0a0a0a';
+  ctx.fillStyle='#050505';
   ctx.fillRect(0,0,TET.COLS*B,TET.ROWS*B);
-  // Grid lines
-  ctx.strokeStyle='#1a1a1a';ctx.lineWidth=1;
-  for(var r=0;r<TET.ROWS;r++){
-    ctx.beginPath();ctx.moveTo(0,r*B);ctx.lineTo(TET.COLS*B,r*B);ctx.stroke();
-  }
-  for(var c=0;c<TET.COLS;c++){
-    ctx.beginPath();ctx.moveTo(c*B,0);ctx.lineTo(c*B,TET.ROWS*B);ctx.stroke();
-  }
+  // Grid: barely there, so the pieces carry the contrast
+  ctx.strokeStyle='rgba(255,255,255,.055)';ctx.lineWidth=1;
+  ctx.beginPath();
+  for(var r=1;r<TET.ROWS;r++){ ctx.moveTo(0,r*B+.5); ctx.lineTo(TET.COLS*B,r*B+.5); }
+  for(var c=1;c<TET.COLS;c++){ ctx.moveTo(c*B+.5,0); ctx.lineTo(c*B+.5,TET.ROWS*B); }
+  ctx.stroke();
 
   // Board
   for(var row=0;row<TET.ROWS;row++){
@@ -13672,16 +13752,19 @@ function tetDraw(){
     }
   }
 
-  // Ghost piece
+  // Ghost piece — an outline where it will land, readable without competing with the real blocks
   if(TET.piece&&TET.state==='playing'){
     var gy=tetGhostY();
+    ctx.save();
+    ctx.strokeStyle=TET.piece.color; ctx.globalAlpha=.55; ctx.lineWidth=2;
     for(var pr=0;pr<TET.piece.shape.length;pr++){
       for(var pc=0;pc<TET.piece.shape[pr].length;pc++){
         if(TET.piece.shape[pr][pc]){
-          tetDrawBlock(ctx,TET.piece.x+pc,gy+pr,TET.piece.color,0.2);
+          ctx.strokeRect(((TET.piece.x+pc)*B)+2.5,((gy+pr)*B)+2.5,B-5,B-5);
         }
       }
     }
+    ctx.restore();
     // Current piece
     for(var pr2=0;pr2<TET.piece.shape.length;pr2++){
       for(var pc2=0;pc2<TET.piece.shape[pr2].length;pc2++){
@@ -13701,24 +13784,33 @@ function tetDraw(){
 }
 
 function tetDrawNext(){
-  if(!TET.nextCanvas||!TET.nextPiece) return;
+  if(!TET.nextCanvas||!TET.nextPiece||!TET.nextCtx) return;
   var ctx=TET.nextCtx;
-  var B=TET.BLOCK;
-  ctx.fillStyle='#111';
-  ctx.fillRect(0,0,TET.nextCanvas.width,TET.nextCanvas.height);
+  var B=TET.NEXT_BLOCK||Math.round((TET.BLOCK||20)*0.7);
+  var size=B*4+10;
+  ctx.clearRect(0,0,size,size);
+  ctx.fillStyle='#050505';
+  ctx.fillRect(0,0,size,size);
   var p=TET.nextPiece;
   var rows=p.shape.length,cols=p.shape[0].length;
-  var ox=Math.floor((4-cols)/2),oy=Math.floor((4-rows)/2);
+  // Centre on the piece's filled cells, not its 4x4 box, so every piece sits in the middle
+  var minR=rows,maxR=-1,minC=cols,maxC=-1;
+  for(var r0=0;r0<rows;r0++) for(var c0=0;c0<cols;c0++) if(p.shape[r0][c0]){
+    if(r0<minR)minR=r0; if(r0>maxR)maxR=r0; if(c0<minC)minC=c0; if(c0>maxC)maxC=c0;
+  }
+  if(maxR<0) return;
+  var w=(maxC-minC+1)*B, hgt=(maxR-minR+1)*B;
+  var ox=(size-w)/2-minC*B, oy=(size-hgt)/2-minR*B;
   for(var r=0;r<rows;r++){
     for(var c=0;c<cols;c++){
-      if(p.shape[r][c]){
-        var bx=(ox+c)*B*0.85+4;
-        var by=(oy+r)*B*0.85+4;
-        ctx.fillStyle=p.color;
-        ctx.fillRect(bx+1,by+1,B*0.85-2,B*0.85-2);
-        ctx.fillStyle='rgba(255,255,255,0.25)';
-        ctx.fillRect(bx+1,by+1,B*0.85-2,3);
-      }
+      if(!p.shape[r][c]) continue;
+      var bx=ox+c*B, by=oy+r*B;
+      ctx.fillStyle=p.color;
+      ctx.fillRect(bx+1,by+1,B-2,B-2);
+      ctx.fillStyle='rgba(255,255,255,0.28)';
+      ctx.fillRect(bx+1,by+1,B-2,Math.max(2,Math.round(B*0.18)));
+      ctx.fillStyle='rgba(0,0,0,0.32)';
+      ctx.fillRect(bx+1,by+B-1-Math.max(2,Math.round(B*0.18)),B-2,Math.max(2,Math.round(B*0.18)));
     }
   }
 }
@@ -13781,17 +13873,7 @@ function tetKeyDown(e){
     if(e.code==='KeyN'){ tetStartGame(); return; }
     else { tetLoadSave(); return; }
   }
-  if(e.code==='KeyP'||e.code==='Escape'){
-    if(TET.state==='playing'){
-      TET.state='paused';
-      tetShowOverlay('PAUSED','Press P to resume');
-    } else if(TET.state==='paused'){
-      TET.state='playing';
-      tetHideOverlay();
-      TET.lastTime=0;
-    }
-    return;
-  }
+  if(e.code==='KeyP'){ tetTogglePause(); return; }
   if(TET.state!=='playing') return;
 
   if(TET_AUDIO&&TET_AUDIO.state==='suspended') TET_AUDIO.resume();
@@ -13803,6 +13885,60 @@ function tetKeyDown(e){
     case 'ArrowUp':   case 'KeyW': e.preventDefault(); tetRotatePiece(); break;
     case 'Space': e.preventDefault(); tetHardDrop(); break;
   }
+}
+
+function tetTogglePause(){
+  if(TET.state==='playing'){
+    TET.state='paused';
+    tetShowOverlay('PAUSED','Click the board or press P to resume');
+  } else if(TET.state==='paused'){
+    TET.state='playing';
+    tetHideOverlay();
+    TET.lastTime=0;
+    TET.lastDrop=0;
+  }
+}
+// Left click on the board pauses and resumes
+function tetBoardClick(e){
+  if(e.button!==0) return;
+  if(TET.state==='resumeprompt'){ tetLoadSave(); return; }
+  if(TET.state==='gameover'){ tetStartGame(); return; }
+  tetTogglePause();
+}
+// Right click anywhere in the game: its own menu (the app's cut/copy/paste menu stays out of here)
+function tetMenu(e){
+  ctxClose(document);
+  var playing=TET.state==='playing', paused=TET.state==='paused';
+  var items=[];
+  if(playing||paused) items.push(['pause',(playing?'Pause':'Resume'),'P']);
+  items.push(['new','New game','N']);
+  if(playing||paused) items.push(['save','Save game','']);
+  items.push(['exit','Exit','Esc']);
+  var m=document.createElement('div');
+  m.id='xcl-ctx';
+  m.setAttribute('role','menu');
+  m.style.cssText='position:fixed;z-index:100001;min-width:150px;padding:4px;background:#111;border:1px solid #333;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.6);font-family:var(--mono)';
+  m.innerHTML=items.map(function(it){
+    return '<button type="button" role="menuitem" data-act="'+it[0]+'" style="display:flex;justify-content:space-between;align-items:center;gap:18px;width:100%;padding:7px 10px;border:none;border-radius:6px;background:none;color:#eee;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;text-align:left" onmouseover="this.style.background=\'rgba(255,255,255,.08)\'" onmouseout="this.style.background=\'none\'">'+it[1]+
+      '<span style="font-size:10px;font-weight:500;color:#777">'+it[2]+'</span></button>';
+  }).join('');
+  m.addEventListener('mousedown',function(ev){ ev.preventDefault(); });
+  m.addEventListener('click',function(ev){
+    var b=ev.target.closest('button[data-act]');
+    if(!b) return;
+    ctxClose(document);
+    var act=b.dataset.act;
+    if(act==='pause') tetTogglePause();
+    else if(act==='new') tetStartGame();
+    else if(act==='save') tetSaveGame();
+    else if(act==='exit') closeTetris();
+  });
+  document.body.appendChild(m);
+  var scale=window.APP_SCALE||1;
+  var vw=window.innerWidth/scale, vh=window.innerHeight/scale, r=m.getBoundingClientRect();
+  var mw=r.width/scale, mh=r.height/scale;
+  m.style.left=Math.max(4,Math.min(e.clientX/scale,vw-mw-4))+'px';
+  m.style.top=Math.max(4,Math.min(e.clientY/scale,vh-mh-4))+'px';
 }
 
 function tetKeyUp(e){
@@ -13886,6 +14022,7 @@ function tetLoadSave(){
   }catch(e){return false;}
 }
 
+var _tetResize=null;
 function openTetris(){
   var modal=document.getElementById('tetris-modal');
   TET.canvas=document.getElementById('tetris-canvas');
@@ -13894,6 +14031,13 @@ function openTetris(){
   TET.nextCtx=TET.nextCanvas.getContext('2d');
   TET.highScore=parseInt(localStorage.getItem('xcl_tetris_high')||'0');
   modal.style.display='flex';
+  tetFit();
+  if(!_tetResize){
+    _tetResize=function(){ tetFit(); };
+    window.addEventListener('resize',_tetResize);
+  }
+  TET.canvas.onmousedown=null;
+  TET.canvas.onclick=tetBoardClick;
   document.addEventListener('keydown',tetKeyDown);
   document.addEventListener('keyup',tetKeyUp);
   // Try to resume saved game
@@ -13912,6 +14056,8 @@ function openTetris(){
 
 function closeTetris(){
   document.getElementById('tetris-modal').style.display='none';
+  ctxClose(document);
+  if(_tetResize){ window.removeEventListener('resize',_tetResize); _tetResize=null; }
   if(TET.rafId){cancelAnimationFrame(TET.rafId);TET.rafId=null;}
   tetClearRepeat();
   document.removeEventListener('keydown',tetKeyDown);
@@ -16873,6 +17019,7 @@ function rfBuildRow(c, now, group){
   var sold = c.ts ? new Date(c.ts).toLocaleDateString('en-US', {month:'numeric', day:'numeric'}) : '—';
   var inst = d0 ? d0.toLocaleDateString('en-US', {month:'numeric', day:'numeric'}) : '';
   var row = document.createElement('div');
+  row.id = 'rf-row-' + c.id;            // an alert needs something to scroll to and highlight
   row.className = 'fu-row rf-row';
   row.style.cssText = 'background:' + (group === 'late' ? 'rgba(248,113,113,.07)' : group === 'check' ? 'rgba(245,158,11,.05)' : 'var(--card)') +
     ';border:1px solid ' + (group === 'late' ? 'rgba(248,113,113,.4)' : group === 'check' ? 'rgba(245,158,11,.3)' : 'var(--border)') + ';border-left:3px solid ' + accent;
@@ -20154,51 +20301,39 @@ window.phonesimInit = phonesimInit;
 
 
 <!-- ══ TETRIS EASTER EGG ══ -->
-<div id="tetris-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.92);align-items:center;justify-content:center">
-  <div style="display:flex;gap:16px;align-items:flex-start">
-    <!-- Game board -->
-    <div style="background:#000;border:2px solid #333;border-radius:8px;padding:8px;position:relative">
-      <canvas id="tetris-canvas" width="200" height="400" style="display:block"></canvas>
-      <div id="tetris-overlay" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);border-radius:6px">
-        <div style="text-align:center;font-family:monospace">
-          <div id="tetris-msg" style="font-size:22px;font-weight:700;color:#ff0;margin-bottom:12px"></div>
-          <div id="tetris-sub" style="font-size:13px;color:#aaa"></div>
+<div id="tetris-modal">
+  <div class="tet-wrap">
+    <!-- Board -->
+    <div class="tet-board">
+      <canvas id="tetris-canvas" width="200" height="400"></canvas>
+      <div id="tetris-overlay">
+        <div style="text-align:center">
+          <div id="tetris-msg"></div>
+          <div id="tetris-sub"></div>
         </div>
       </div>
     </div>
-    <!-- Side panel -->
-    <div style="display:flex;flex-direction:column;gap:12px;font-family:monospace;color:#fff;min-width:100px">
-      <div>
-        <div style="font-size:10px;color:#888;letter-spacing:.1em">SCORE</div>
-        <div id="tet-score" style="font-size:22px;font-weight:700;color:#ff0">0</div>
+    <!-- Panel -->
+    <div class="tet-panel">
+      <div class="tet-stat"><div class="tet-label">Score</div><div class="tet-val accent" id="tet-score">0</div></div>
+      <div class="tet-stat-row">
+        <div class="tet-stat"><div class="tet-label">Lines</div><div class="tet-val" id="tet-lines">0</div></div>
+        <div class="tet-stat"><div class="tet-label">Level</div><div class="tet-val" id="tet-level">1</div></div>
       </div>
-      <div>
-        <div style="font-size:10px;color:#888;letter-spacing:.1em">LINES</div>
-        <div id="tet-lines" style="font-size:18px;font-weight:700">0</div>
+      <div class="tet-stat"><div class="tet-label">Next</div><canvas id="tetris-next" width="80" height="80"></canvas></div>
+      <div class="tet-stat"><div class="tet-label">High</div><div class="tet-val dim" id="tet-high">0</div></div>
+      <div class="tet-btns">
+        <button class="tet-btn new" onclick="tetStartGame()">NEW GAME</button>
+        <button class="tet-btn save" onclick="tetSaveGame()">SAVE</button>
       </div>
-      <div>
-        <div style="font-size:10px;color:#888;letter-spacing:.1em">LEVEL</div>
-        <div id="tet-level" style="font-size:18px;font-weight:700">1</div>
-      </div>
-      <div>
-        <div style="font-size:10px;color:#888;letter-spacing:.1em;margin-bottom:4px">NEXT</div>
-        <canvas id="tetris-next" width="80" height="80" style="background:#111;border:1px solid #333;border-radius:4px"></canvas>
-      </div>
-      <div>
-        <div style="font-size:10px;color:#888;letter-spacing:.1em;margin-bottom:4px">HIGH</div>
-        <div id="tet-high" style="font-size:14px;color:#aaa">0</div>
-      </div>
-      <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
-        <button onclick="tetStartGame()" style="padding:6px 10px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:6px;font-family:monospace;font-size:11px;font-weight:700;color:#60a5fa;cursor:pointer">NEW GAME</button>
-        <button onclick="tetSaveGame()" style="padding:6px 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:6px;font-family:monospace;font-size:11px;font-weight:700;color:#4ade80;cursor:pointer">SAVE</button>
-      </div>
-      <div style="margin-top:8px;font-size:10px;color:#555;line-height:1.8">
-        ←→ Move<br>
-        ↑ Rotate<br>
-        ↓ Soft drop<br>
-        Space Hard drop<br>
-        P Pause<br>
-        ESC Close
+      <div class="tet-keys">
+        <span>← →</span><span>Move</span>
+        <span>↑</span><span>Rotate</span>
+        <span>↓</span><span>Soft drop</span>
+        <span>Space</span><span>Hard drop</span>
+        <span>Click / P</span><span>Pause</span>
+        <span>Right-click</span><span>Menu</span>
+        <span>Esc</span><span>Exit</span>
       </div>
     </div>
   </div>
